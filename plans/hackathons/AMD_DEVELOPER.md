@@ -45,11 +45,12 @@ AMD, MindsDB, Hugging Face, Akash Systems, NYSE Wired, theCUBE, Qwen.
 - **Mission:** High-performance AI training pipeline for token market intelligence.
 - **Track:** Models & Training / Fine-Tuning LLMs.
 - **Implementation Roadmap:**
-    1. **[ ] Dataset Gen (Rust):** Transform 77K+ social signals into SFT/DPO JSONL pairs.
-    2. **[ ] ROCm Training:** Fine-tune Qwen-2.5-7B using LoRA on AMD hardware.
-    3. **[ ] Benchmark:** Compare fine-tuned "Conviction" vs base model.
-    4. **[ ] HF Space:** Deploy a ROCm-accelerated Docker container for the demo.
-    5. **[ ] Video Pitch:** 3-min demo of end-to-end pipeline.
+    1. **[X] Dataset Gen (Rust):** `tools/dataset-gen` → 33K SFT + DPO pairs from on-chain outcomes.
+    2. **[X] ROCm Training Script:** `tools/training/train_qwen_rocm.py` with LoRA/QLoRA + benchmarking.
+    3. **[ ] Execute Training:** Run on AMD Developer Cloud credits or local ROCm hardware.
+    4. **[ ] Benchmark:** Compare fine-tuned conviction vs base model on held-out signals.
+    5. **[ ] HF Space:** Deploy ROCm-optimized container for live demo.
+    6. **[ ] Video Pitch:** 3-min end-to-end pipeline demo for judges.
 
 ---
-*Status: 🔴 LIVE. Hacking May 4–10. Registration closed — commit and ship.*
+*Status: 🔴 LIVE. Dataset + pipeline shipped. Next: Execute training run on AMD hardware.*
