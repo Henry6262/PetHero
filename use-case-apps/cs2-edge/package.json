@@ -14,9 +14,9 @@
     "db:studio": "bunx prisma studio"
   },
   "dependencies": {
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "^6",
     "hono": "^4.12.18",
-    "prisma": "^7.8.0",
+    "prisma": "^6",
     "zod": "^4.4.3"
   },
   "devDependencies": {
