@@ -4,8 +4,13 @@ node_modules
 # output
 out
 dist
+build/
+.next/
 *.tgz
 artifacts
+
+# deployment
+.vercel/
 
 # code coverage
 coverage
