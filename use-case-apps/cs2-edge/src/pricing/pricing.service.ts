@@ -77,4 +77,46 @@ export class PricingService {
       };
     });
   }
+
+  /** Returns the last N snapshots for all items. */
+  async getRecentHistory(
+    marketplace: Marketplace = Marketplace.SKINPORT,
+    limitPerItem: number = 12, // e.g. last hour if polling every 5 min
+  ): Promise<Map<string, PriceSummary[]>> {
+    // This is more complex in raw SQL or multiple queries. 
+    // For now, let's fetch snapshots from the last 24h for all items.
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const snapshots = await this.prisma.priceSnapshot.findMany({
+      where: {
+        marketplace,
+        snappedAt: { gte: oneDayAgo },
+      },
+      orderBy: [
+        { itemId: "asc" },
+        { snappedAt: "desc" },
+      ],
+    });
+
+    const historyMap = new Map<string, PriceSummary[]>();
+    for (const s of snapshots) {
+      if (!historyMap.has(s.itemId)) {
+        historyMap.set(s.itemId, []);
+      }
+      const list = historyMap.get(s.itemId)!;
+      if (list.length < limitPerItem) {
+        const min = Number(s.minPrice);
+        const median = Number(s.medianPrice);
+        list.push({
+          itemId: s.itemId,
+          marketplace: s.marketplace,
+          minPrice: min,
+          medianPrice: median,
+          spreadPct: median > 0 ? Math.round(((median - min) / median) * 10000) / 100 : null,
+          volume24h: s.volume24h,
+          snappedAt: s.snappedAt,
+        });
+      }
+    }
+    return historyMap;
+  }
 }

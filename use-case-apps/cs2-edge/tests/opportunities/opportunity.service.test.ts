@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 beforeAll(() => prisma.$connect());
 afterAll(() => prisma.$disconnect());
 beforeEach(async () => {
+  await prisma.tradeAttempt.deleteMany({});
   await prisma.opportunityScore.deleteMany({});
   await prisma.listing.deleteMany({});
   await prisma.saleEvent.deleteMany({});

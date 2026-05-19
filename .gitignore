@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.env
+*.log
+dist/
+out/
+artifacts/
+coverage/
+.idea/
+.vscode/
+.mcp.json
+bun.lock
+pnpm-lock.yaml
+package-lock.json

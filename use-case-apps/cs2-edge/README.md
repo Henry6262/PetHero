@@ -1,15 +1,48 @@
-# cs2-edge
+# cs2-edge 🔪
 
-To install dependencies:
+Automated CS2 Skin Trading & Opportunity Scoring Engine.
 
-```bash
-bun install
-```
+## Quick Start
 
-To run:
+1. **Install Dependencies:**
+   ```bash
+   bun install
+   ```
 
-```bash
-bun run index.ts
-```
+2. **Setup DB:**
+   Start the project-local PostgreSQL stack and keep separate databases for live ingestion and smoke tests.
+   ```bash
+   docker compose up -d
+   bunx prisma migrate deploy
+   DATABASE_URL='postgresql://postgres:postgres@localhost:5432/cs2_edge_test' bunx prisma migrate deploy
+   ```
 
-This project was created using `bun init` in bun v1.3.13. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+3. **Run the Engine:**
+   ```bash
+   bun run src/index.ts
+   ```
+
+4. **Verify Scoring:**
+   ```bash
+   bun smoke-test.ts
+   ```
+
+5. **Archive A Run Before Stopping:**
+   ```bash
+   bun run export-run
+   ```
+
+6. **Stop Local Infra When Done:**
+   ```bash
+   docker compose down
+   ```
+
+## Key Features
+
+- **Multi-Marketplace Ingestion:** Polls Skinport, DMarket, CSFloat, and Buff.163.
+- **Real-time Feeds:** Low-latency pricing via Bitskins and Skinport WebSockets.
+- **Smart Scoring:** Ranks items based on net profit (after fees), liquidity, and ML-predicted fair value.
+- **Execution Bot:** Automated alpha trading based on customizable profit and confidence thresholds.
+- **Durable Run Exports:** Writes snapshots, opportunities, and trade attempts to `artifacts/runs/<timestamp>/`.
+
+For detailed logic and API specs, see [docs/USER_GUIDE.md](./docs/USER_GUIDE.md).

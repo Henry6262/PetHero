@@ -50,7 +50,7 @@ export class SkinportClient {
   }
 
   async getItems(currency = "USD", appId = 730): Promise<SkinportItem[]> {
-    const url = `${this.baseUrl}/v1/items?app_id=${appId}&currency=${encodeURIComponent(currency)}&tradable=0`;
+    const url = `${this.baseUrl}/v1/items?app_id=${appId}&currency=${encodeURIComponent(currency)}&tradable=1`;
     const res = await fetch(url, { headers: DEFAULT_HEADERS });
     const data = await handleResponse(res);
     return z.array(SkinportItemSchema).parse(data);

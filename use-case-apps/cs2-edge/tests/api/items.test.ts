@@ -14,6 +14,8 @@ beforeAll(() => prisma.$connect());
 afterAll(() => prisma.$disconnect());
 
 beforeEach(async () => {
+  await prisma.tradeAttempt.deleteMany({});
+  await prisma.executionCycle.deleteMany({});
   await prisma.opportunityScore.deleteMany({});
   await prisma.saleEvent.deleteMany({});
   await prisma.listing.deleteMany({});

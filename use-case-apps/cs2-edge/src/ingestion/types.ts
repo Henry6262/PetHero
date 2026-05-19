@@ -45,6 +45,25 @@ export const SkinportSalesHistorySchema = z.object({
 export type SkinportSalesHistory = z.infer<typeof SkinportSalesHistorySchema>;
 export type LastXDays = z.infer<typeof LastXDaysSchema>;
 
+// ─── CSFloat API ─────────────────────────────────────────────────────────────
+
+export const CSFloatItemSchema = z.object({
+  id: z.string(),
+  item: z.object({
+    market_hash_name: z.string(),
+    type: z.string(),
+    rarity: z.string(),
+  }),
+  price: z.number(), // in cents
+  created_at: z.string(),
+});
+
+export type CSFloatItem = z.infer<typeof CSFloatItemSchema>;
+
+export const CSFloatListingsResponseSchema = z.object({
+  data: z.array(CSFloatItemSchema),
+});
+
 // ─── WebSocket sale feed (Socket.IO + msgpack) ────────────────────────────────
 // Note: prices in WS events are INTEGER CENTS, not floats like REST endpoints.
 // Divide by 100 to get currency unit value.
@@ -71,7 +90,7 @@ const CharmSchema = z.object({
   name: z.string(),
   name_localized: z.string(),
   img: z.string(),
-  pattern: z.number().int(),
+  pattern: z.number().int().nullable(),
   slug: z.string().nullable(),
   value: z.string().nullable(),
 });

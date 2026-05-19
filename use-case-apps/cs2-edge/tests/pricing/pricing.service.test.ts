@@ -10,6 +10,7 @@ afterAll(() => prisma.$disconnect());
 
 beforeEach(async () => {
   // Delete in FK-safe order (children before parents)
+  await prisma.tradeAttempt.deleteMany({});
   await prisma.opportunityScore.deleteMany({});
   await prisma.saleEvent.deleteMany({});
   await prisma.listing.deleteMany({});

@@ -18,6 +18,7 @@ afterAll(async () => {
 
 // Clean up test data before each test
 beforeEach(async () => {
+  await prisma.tradeAttempt.deleteMany({});
   await prisma.opportunityScore.deleteMany({});
   await prisma.saleEvent.deleteMany({});
   await prisma.listing.deleteMany({});
@@ -79,7 +80,7 @@ describe("IngestionService.poll", () => {
     expect(snaps[0]?.marketplace).toBe("SKINPORT");
   });
 
-  test("creates a new snapshot on each poll (accumulates history)", async () => {
+  test("does not create a duplicate snapshot when market data is unchanged", async () => {
     const svc = new IngestionService(prisma, makeStubClient(), makeStubWsHandler());
     await svc.poll();
     await svc.poll();
@@ -87,8 +88,33 @@ describe("IngestionService.poll", () => {
     const snaps = await prisma.priceSnapshot.findMany({
       where: { itemId: mockItem.market_hash_name },
     });
-    // Two polls = two snapshots (skipDuplicates won't deduplicate on different cuid ids)
-    expect(snaps.length).toBeGreaterThanOrEqual(1);
+    expect(snaps).toHaveLength(1);
+  });
+
+  test("creates a new snapshot when market data changes", async () => {
+    const svc = new IngestionService(prisma, makeStubClient(), makeStubWsHandler());
+    await svc.poll();
+
+    const changedItem = {
+      ...mockItem,
+      min_price: 10.5,
+      median_price: 12.25,
+      quantity: 46,
+    };
+
+    const changedSvc = new IngestionService(
+      prisma,
+      makeStubClient([changedItem]),
+      makeStubWsHandler(),
+    );
+    await changedSvc.poll();
+
+    const snaps = await prisma.priceSnapshot.findMany({
+      where: { itemId: mockItem.market_hash_name },
+      orderBy: { snappedAt: "asc" },
+    });
+    expect(snaps).toHaveLength(2);
+    expect(Number(snaps[1]?.minPrice)).toBe(10.5);
   });
 
   test("handles poll with multiple items", async () => {

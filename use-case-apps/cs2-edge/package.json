@@ -7,6 +7,10 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
+    "smoke-test": "bun smoke-test.ts",
+    "export-data": "bun scripts/export-training-data.ts",
+    "export-run": "bun scripts/export-run-snapshot.ts",
+    "report": "bun scripts/daily-report.ts",
     "test": "bun test tests/",
     "typecheck": "tsc --noEmit",
     "db:generate": "bunx prisma generate",
@@ -16,7 +20,12 @@
   "dependencies": {
     "@prisma/client": "^6",
     "hono": "^4.12.18",
+    "playwright": "^1.59.1",
     "prisma": "^6",
+    "steam-totp": "^2.1.2",
+    "steam-tradeoffer-manager": "^2.13.0",
+    "steam-user": "^5.3.0",
+    "steamcommunity": "^3.50.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

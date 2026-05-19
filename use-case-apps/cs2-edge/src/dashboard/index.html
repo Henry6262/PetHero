@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CS2 Edge Command</title>
+    <link rel="stylesheet" href="/dashboard/dashboard.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <div class="brand-mark">CE</div>
+        <div>
+          <div class="brand-title">CS2 Edge</div>
+          <div class="brand-subtitle">Command Deck</div>
+        </div>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a href="#overview" class="nav-link nav-link--active">Overview</a>
+        <a href="#opportunities" class="nav-link">Opportunities</a>
+        <a href="#execution" class="nav-link">Execution</a>
+        <a href="#inspector" class="nav-link">Inspector</a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <div class="footer-label">Mode</div>
+        <div class="footer-value">Paper-first</div>
+      </div>
+    </aside>
+
+    <div class="shell">
+      <header class="command-bar">
+        <div class="command-chip">
+          <span id="healthDot" class="status-dot status-dot--offline"></span>
+          <span id="healthText">Checking API</span>
+        </div>
+        <div class="command-chip">
+          <span class="chip-label">Market</span>
+          <span>Skinport / CS2</span>
+        </div>
+        <div class="command-chip">
+          <span class="chip-label">Execution</span>
+          <span id="executionMode">Paper Mode</span>
+        </div>
+        <div class="command-chip command-chip--right">
+          <span class="chip-label">Last Refresh</span>
+          <span id="lastRefresh">Pending</span>
+        </div>
+      </header>
+
+      <main class="main">
+        <section id="overview" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Overview</p>
+              <h1>Trading operator dashboard</h1>
+            </div>
+            <button id="refreshButton" class="ghost-button" type="button">Refresh</button>
+          </div>
+
+          <div class="hero-grid">
+            <article class="hero-card hero-card--accent">
+              <p class="hero-label">System posture</p>
+              <h2 id="heroStatus">Loading live state</h2>
+              <p id="heroNarrative" class="hero-copy">
+                Pulling opportunity, execution, and inventory data from the local engine.
+              </p>
+            </article>
+
+            <article class="hero-card">
+              <p class="hero-label">Latest cycle</p>
+              <div id="latestCycleSummary" class="hero-stack">
+                <span class="metric-placeholder">Waiting for execution metrics</span>
+              </div>
+            </article>
+          </div>
+
+          <div id="kpiGrid" class="kpi-grid"></div>
+        </section>
+
+        <section id="opportunities" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Opportunities</p>
+              <h2>Current trade candidates</h2>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <label class="field">
+              <span>Search</span>
+              <input id="searchInput" type="text" placeholder="AK-47, glove, knife..." />
+            </label>
+            <label class="field">
+              <span>Min Score</span>
+              <input id="minScoreInput" type="number" value="50" min="0" step="1" />
+            </label>
+            <label class="field">
+              <span>Min Profit %</span>
+              <input id="minProfitInput" type="number" value="10" min="0" step="1" />
+            </label>
+            <label class="field">
+              <span>Buy Range</span>
+              <div class="field-pair">
+                <input id="minBuyInput" type="number" value="20" min="0" step="1" />
+                <input id="maxBuyInput" type="number" value="500" min="0" step="1" />
+              </div>
+            </label>
+            <label class="field">
+              <span>Min Volume</span>
+              <input id="minVolumeInput" type="number" value="0" min="0" step="1" />
+            </label>
+          </div>
+
+          <div class="panel">
+            <div class="panel__header">
+              <div>
+                <p class="panel-title">Ranked opportunities</p>
+                <p id="tableSummary" class="panel-subtitle">Loading candidates</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Score</th>
+                    <th>Profit %</th>
+                    <th>Net Edge</th>
+                    <th>Buy</th>
+                    <th>Target</th>
+                    <th>Volume</th>
+                    <th>Confidence</th>
+                  </tr>
+                </thead>
+                <tbody id="opportunitiesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="execution" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Execution</p>
+              <h2>Cycle behavior and paper-trade audit trail</h2>
+            </div>
+          </div>
+
+          <div class="execution-grid">
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <p class="panel-title">Recent cycles</p>
+                  <p class="panel-subtitle">Why the engine traded, skipped, or idled</p>
+                </div>
+              </div>
+              <div id="cycleList" class="list-stack"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <p class="panel-title">Recent attempts</p>
+                  <p class="panel-subtitle">Persisted trade intent for dashboard and review</p>
+                </div>
+              </div>
+              <div id="attemptList" class="list-stack"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="inspector" class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Inspector</p>
+              <h2>Selected item drilldown</h2>
+            </div>
+          </div>
+
+          <div class="inspector-grid">
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <p class="panel-title">Selected item</p>
+                  <p id="inspectorLabel" class="panel-subtitle">Pick an opportunity from the table</p>
+                </div>
+              </div>
+              <div id="inspectorSummary" class="metric-stack">
+                <span class="metric-placeholder">No item selected</span>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <p class="panel-title">Snapshot history</p>
+                  <p class="panel-subtitle">Latest stored price observations</p>
+                </div>
+              </div>
+              <div id="snapshotList" class="list-stack">
+                <span class="metric-placeholder">Select an item to load snapshot history</span>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <p class="panel-title">Recent sales</p>
+                  <p class="panel-subtitle">Last observed sale events for the same item</p>
+                </div>
+              </div>
+              <div id="salesList" class="list-stack">
+                <span class="metric-placeholder">Select an item to load sale history</span>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/dashboard/dashboard.js"></script>
+  </body>
+</html>

@@ -130,6 +130,35 @@ describe("SkinportWsHandler", () => {
     expect(evt.sales[0]?.salePrice).toBe(1250);
   });
 
+  test("accepts null charm pattern values from feed payloads", () => {
+    const received: unknown[] = [];
+    handler.onEvent(evt => received.push(evt));
+    handler.connect();
+    mockSocket.triggerConnect();
+    mockSocket.triggerEvent("saleFeed", {
+      ...validSaleFeedPayload,
+      sales: [
+        {
+          ...validSaleFeedPayload.sales[0],
+          charms: [
+            {
+              name: "Charm | Test",
+              name_localized: "Charm | Test",
+              img: "/img/charm.png",
+              pattern: null,
+              slug: "charm-test",
+              value: null,
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(received).toHaveLength(1);
+    const evt = received[0] as { sales: Array<{ charms: Array<{ pattern: number | null }> }> };
+    expect(evt.sales[0]?.charms[0]?.pattern).toBeNull();
+  });
+
   test("handles 'sold' eventType correctly", () => {
     const received: unknown[] = [];
     handler.onEvent(evt => received.push(evt));

@@ -13,10 +13,13 @@ model Item {
   type      String // "Rifle", "Knife", "Gloves", etc.
   rarity    String // "Mil-Spec", "Restricted", "Classified", etc.
   createdAt DateTime        @default(now())
+  
   listings           Listing[]
   snapshots          PriceSnapshot[]
   sales              SaleEvent[]
   opportunityScores  OpportunityScore[]
+  tradeAttempts      TradeAttempt[]
+  executionCycles    ExecutionCycle[]
 }
 
 model Listing {
@@ -84,9 +87,62 @@ model OpportunityScore {
   listedPrice       Decimal     @db.Decimal(12, 2)
   targetSellPrice   Decimal     @db.Decimal(12, 2)
   volume24h         Int
+  
+  // Phase 3 ML Fields
+  predictedValue    Decimal?    @db.Decimal(12, 2)
+  confidence        Float?      @default(0.0)
+  modelId           String?
+
   scoredAt          DateTime    @updatedAt
   item              Item        @relation(fields: [itemId], references: [id])
 
   @@id([itemId, marketplace])
   @@index([marketplace, score])
+}
+
+model TradeAttempt {
+  id                String      @id @default(uuid())
+  itemId            String
+  marketplace       Marketplace
+  buyPrice          Decimal     @db.Decimal(12, 2)
+  resellPrice       Decimal     @db.Decimal(12, 2)
+  expectedProfitPct Float
+  expectedNetProfit Decimal     @db.Decimal(12, 2)
+  score             Float
+  confidence        Float?
+  mode              String      @default("PAPER")
+  status            String      // "SUCCESS", "FAILED", "INSUFFICIENT_FUNDS", "API_ERROR"
+  error             String?
+  orderId           String?
+  cycleId           String?
+  attemptedAt       DateTime    @default(now())
+
+  item              Item        @relation(fields: [itemId], references: [id])
+  cycle             ExecutionCycle? @relation(fields: [cycleId], references: [id])
+
+  @@index([attemptedAt])
+  @@index([status, attemptedAt])
+}
+
+model ExecutionCycle {
+  id                      String       @id @default(uuid())
+  mode                    String
+  status                  String
+  candidateCount          Int
+  qualifiedCount          Int
+  affordableCount         Int          @default(0)
+  selectedItemId          String?
+  selectedBuyPrice        Decimal?     @db.Decimal(12, 2)
+  selectedTargetSellPrice Decimal?     @db.Decimal(12, 2)
+  selectedExpectedProfitPct Float?
+  selectedExpectedNetProfit Decimal?   @db.Decimal(12, 2)
+  selectedScore           Float?
+  selectedConfidence      Float?
+  reason                  String?
+  executedAt              DateTime     @default(now())
+
+  item                    Item?        @relation(fields: [selectedItemId], references: [id])
+  tradeAttempts           TradeAttempt[]
+
+  @@index([executedAt])
 }
