@@ -25,8 +25,40 @@ export class OpportunityService {
     this.pricing = new PricingService(prisma);
   }
 
-  async scoreAll(_marketplace: Marketplace = Marketplace.SKINPORT): Promise<void> {
-    throw new Error("not implemented");
+  async scoreAll(marketplace: Marketplace = Marketplace.SKINPORT): Promise<void> {
+    const summaries = await this.pricing.getAllPriceSummaries(marketplace);
+    if (summaries.length === 0) return;
+
+    const CHUNK_SIZE = 200;
+    for (let i = 0; i < summaries.length; i += CHUNK_SIZE) {
+      const chunk = summaries.slice(i, i + CHUNK_SIZE);
+      await this.prisma.$transaction(
+        chunk.map(s => {
+          const { score, expectedProfitPct } = computeScore(s.minPrice, s.medianPrice, s.volume24h);
+          return this.prisma.opportunityScore.upsert({
+            where: {
+              itemId_marketplace: { itemId: s.itemId, marketplace: s.marketplace },
+            },
+            create: {
+              itemId: s.itemId,
+              marketplace: s.marketplace,
+              score,
+              expectedProfitPct,
+              listedPrice: s.minPrice,
+              targetSellPrice: s.medianPrice,
+              volume24h: s.volume24h,
+            },
+            update: {
+              score,
+              expectedProfitPct,
+              listedPrice: s.minPrice,
+              targetSellPrice: s.medianPrice,
+              volume24h: s.volume24h,
+            },
+          });
+        }),
+      );
+    }
   }
 
   async getRanked(_marketplace: Marketplace = Marketplace.SKINPORT): Promise<OpportunityScore[]> {
