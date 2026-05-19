@@ -61,7 +61,10 @@ export class OpportunityService {
     }
   }
 
-  async getRanked(_marketplace: Marketplace = Marketplace.SKINPORT): Promise<OpportunityScore[]> {
-    throw new Error("not implemented");
+  async getRanked(marketplace: Marketplace = Marketplace.SKINPORT): Promise<OpportunityScore[]> {
+    return this.prisma.opportunityScore.findMany({
+      where: { marketplace, score: { gt: 0 } },
+      orderBy: { score: "desc" },
+    });
   }
 }

@@ -112,3 +112,72 @@ describe("OpportunityService.scoreAll", () => {
     expect(count).toBe(1);
   });
 });
+
+// ─── getRanked ────────────────────────────────────────────────────────────────
+
+describe("OpportunityService.getRanked", () => {
+  test("returns items sorted by score descending", async () => {
+    await prisma.item.createMany({
+      data: [
+        { id: "Item A", name: "Item A", type: "Rifle", rarity: "Classified" },
+        { id: "Item B", name: "Item B", type: "Rifle", rarity: "Classified" },
+      ],
+    });
+    await prisma.opportunityScore.createMany({
+      data: [
+        {
+          itemId: "Item A",
+          marketplace: Marketplace.SKINPORT,
+          score: 2.5,
+          expectedProfitPct: 10,
+          listedPrice: 10,
+          targetSellPrice: 12,
+          volume24h: 10,
+        },
+        {
+          itemId: "Item B",
+          marketplace: Marketplace.SKINPORT,
+          score: 7.0,
+          expectedProfitPct: 25,
+          listedPrice: 8,
+          targetSellPrice: 12,
+          volume24h: 30,
+        },
+      ],
+    });
+
+    const service = new OpportunityService(prisma);
+    const ranked = await service.getRanked(Marketplace.SKINPORT);
+
+    expect(ranked).toHaveLength(2);
+    expect(ranked[0]!.itemId).toBe("Item B");
+    expect(ranked[1]!.itemId).toBe("Item A");
+  });
+
+  test("excludes items with score = 0", async () => {
+    await prisma.item.create({
+      data: { id: "Loser Item", name: "Loser Item", type: "Rifle", rarity: "Mil-Spec" },
+    });
+    await prisma.opportunityScore.create({
+      data: {
+        itemId: "Loser Item",
+        marketplace: Marketplace.SKINPORT,
+        score: 0,
+        expectedProfitPct: -5,
+        listedPrice: 12,
+        targetSellPrice: 12,
+        volume24h: 5,
+      },
+    });
+
+    const service = new OpportunityService(prisma);
+    const ranked = await service.getRanked(Marketplace.SKINPORT);
+    expect(ranked).toHaveLength(0);
+  });
+
+  test("returns empty array when table is empty", async () => {
+    const service = new OpportunityService(prisma);
+    const ranked = await service.getRanked(Marketplace.SKINPORT);
+    expect(ranked).toHaveLength(0);
+  });
+});
