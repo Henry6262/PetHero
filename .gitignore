@@ -12,3 +12,9 @@ coverage/
 bun.lock
 pnpm-lock.yaml
 package-lock.json
+
+# Nested standalone repo (github.com/Henry6262/kickback)
+kickback/
+
+# standalone project (own repo)
+pokedex-landing/
