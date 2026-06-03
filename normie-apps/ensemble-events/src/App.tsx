@@ -1,10 +1,12 @@
 import { Grain } from "@app/components/Grain";
 import { Divider } from "@app/components/Divider";
+import { SmoothScroll } from "@app/components/SmoothScroll";
 import { Nav } from "@app/sections/Nav";
 import { Hero } from "@app/sections/Hero";
 import { Wedge } from "@app/sections/Wedge";
 import { Services } from "@app/sections/Services";
 import { Brigade } from "@app/sections/Brigade";
+import { About } from "@app/sections/About";
 import { BeforeAfter } from "@app/sections/BeforeAfter";
 import { Portfolio } from "@app/sections/Portfolio";
 import { Stats } from "@app/sections/Stats";
@@ -17,6 +19,7 @@ export function App() {
   return (
     <>
       <Grain />
+      <SmoothScroll />
       <Nav />
       <main>
         <Hero />
@@ -30,22 +33,25 @@ export function App() {
         <Divider numeral="III" kicker="The brigade" tone="espresso" />
         <Brigade />
 
-        <Divider numeral="IV" kicker="Transformation" tone="cream" />
+        <Divider numeral="IV" kicker="Our people" tone="espresso" />
+        <About />
+
+        <Divider numeral="V" kicker="Transformation" tone="cream" />
         <BeforeAfter />
 
-        <Divider numeral="V" kicker="Selected work" tone="cream" />
+        <Divider numeral="VI" kicker="Selected work" tone="cream" />
         <Portfolio />
 
-        <Divider numeral="VI" kicker="In numbers" tone="espresso" />
+        <Divider numeral="VII" kicker="In numbers" tone="espresso" />
         <Stats />
 
-        <Divider numeral="VII" kicker="In confidence" tone="cream" />
+        <Divider numeral="VIII" kicker="In confidence" tone="cream" />
         <Proof />
 
-        <Divider numeral="VIII" kicker="The method" tone="espresso" />
+        <Divider numeral="IX" kicker="The method" tone="espresso" />
         <Process />
 
-        <Divider numeral="IX" kicker="Begin" tone="espresso" />
+        <Divider numeral="X" kicker="Begin" tone="espresso" />
         <Contact />
       </main>
       <Footer />

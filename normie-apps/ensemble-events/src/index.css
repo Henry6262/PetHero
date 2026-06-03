@@ -1,21 +1,19 @@
 @import "tailwindcss";
-@import "@fontsource/cormorant/400.css";
-@import "@fontsource/cormorant/500.css";
-@import "@fontsource/cormorant/600.css";
-@import "@fontsource/cormorant/400-italic.css";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/fraunces/wght-italic.css";
 @import "@fontsource-variable/inter";
 
 @theme {
   --color-cream: #f4efe6;
   --color-ink: #16140f;
   --color-gold: #c0a160;
-  --color-gold-soft: #d8c290;
+  --color-gold-soft: #ddc794;
   --color-greige: #cabfa6;
   --color-espresso: #14110c;
   --color-espresso-2: #1d190f;
   --color-cream-dark: #efe7d6;
 
-  --font-display: "Cormorant", ui-serif, Georgia, "Times New Roman", serif;
+  --font-display: "Fraunces Variable", "Fraunces", ui-serif, Georgia, serif;
   --font-body: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -23,8 +21,19 @@
   color-scheme: dark;
 }
 
-html {
-  scroll-behavior: smooth;
+/* Lenis smooth-scroll required styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
 }
 
 body {
@@ -38,17 +47,44 @@ body {
 
 .font-display {
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.012em;
+  font-optical-sizing: auto;
+  font-weight: 380;
+  letter-spacing: -0.015em;
 }
 
-/* tracked uppercase label — the editorial "eyebrow" voice */
 .label {
   font-family: var(--font-body);
   text-transform: uppercase;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.34em;
   font-size: 0.7rem;
   font-weight: 500;
+}
+
+/* thin gold frame for imagery */
+.frame-gold {
+  position: relative;
+}
+.frame-gold::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(192, 161, 96, 0.55);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* glass surface */
+.glass {
+  background: rgba(244, 239, 230, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(244, 239, 230, 0.1);
+}
+.glass-dark {
+  background: rgba(20, 17, 12, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(192, 161, 96, 0.18);
 }
 
 /* Film-grain overlay (fixed, whole viewport) */
@@ -67,7 +103,6 @@ body {
   color: var(--color-espresso);
 }
 
-/* hide scrollbars on horizontal rails */
 .no-bar {
   scrollbar-width: none;
 }

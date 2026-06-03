@@ -1,6 +1,8 @@
 import AnimatedContent from "@/free/Animations/AnimatedContent/AnimatedContent";
 import { useT } from "@app/i18n";
 import { useReducedMotion } from "@app/lib/useReducedMotion";
+import { SERVICE_IMG } from "@app/assets/placeholders";
+import { cn } from "@app/lib/cn";
 
 const KEYS = ["catering", "artists", "brigade", "production"] as const;
 
@@ -11,26 +13,45 @@ export function Services() {
   return (
     <section id="services" className="bg-cream px-6 py-28 text-ink md:px-10 md:py-40">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <h2 className="max-w-2xl font-display text-[2.6rem] leading-[1.02] text-ink md:text-6xl">
+        <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <h2 className="max-w-2xl font-display text-[2.8rem] leading-[1.0] text-ink md:text-[5rem]">
             {t("services.title")}
           </h2>
           <p className="label text-gold">{t("services.eyebrow")}</p>
         </div>
 
-        <div className="border-t border-ink/15">
+        <div className="flex flex-col gap-20 md:gap-28">
           {KEYS.map((key, i) => {
+            const flip = i % 2 === 1;
             const Row = (
-              <article className="group grid grid-cols-12 items-baseline gap-4 border-b border-ink/15 py-9 transition-colors duration-500 hover:bg-ink/[0.03] md:py-12">
-                <span className="col-span-2 font-display text-2xl text-gold md:text-3xl">
-                  {`0${i + 1}`}
-                </span>
-                <h3 className="col-span-10 font-display text-3xl leading-tight text-ink md:col-span-5 md:text-[2.6rem]">
-                  {t(`services.items.${key}.title`)}
-                </h3>
-                <p className="col-span-12 mt-3 max-w-md text-sm leading-relaxed text-ink/65 md:col-span-5 md:col-start-8 md:mt-0">
-                  {t(`services.items.${key}.body`)}
-                </p>
+              <article className="grid items-center gap-8 md:grid-cols-2 md:gap-16">
+                <figure
+                  className={cn(
+                    "frame-gold relative aspect-[4/5] overflow-hidden md:aspect-[5/6]",
+                    flip && "md:order-2"
+                  )}
+                >
+                  <img
+                    src={SERVICE_IMG[key]}
+                    alt={t(`services.items.${key}.title`)}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-[1.2s] hover:scale-[1.04]"
+                  />
+                  <span className="absolute left-5 top-5 z-[3] font-display text-2xl text-cream drop-shadow">
+                    {`0${i + 1}`}
+                  </span>
+                </figure>
+
+                <div className={cn(flip && "md:order-1")}>
+                  <span className="label text-gold">{`0${i + 1} — ${t("services.eyebrow")}`}</span>
+                  <h3 className="mt-5 font-display text-4xl leading-tight text-ink md:text-[3.4rem]">
+                    {t(`services.items.${key}.title`)}
+                  </h3>
+                  <p className="mt-6 max-w-md text-base leading-relaxed text-ink/70 md:text-lg">
+                    {t(`services.items.${key}.body`)}
+                  </p>
+                  <span className="mt-8 block h-px w-16 bg-gold" />
+                </div>
               </article>
             );
             return reduced ? (
@@ -38,14 +59,13 @@ export function Services() {
             ) : (
               <AnimatedContent
                 key={key}
-                distance={30}
+                distance={50}
                 direction="vertical"
-                duration={0.9}
+                duration={1}
                 ease="power3.out"
                 initialOpacity={0}
                 animateOpacity
-                threshold={0.1}
-                delay={i * 0.04}
+                threshold={0.12}
               >
                 {Row}
               </AnimatedContent>

@@ -6,18 +6,30 @@ const pic = (seed: string, w: number, h: number) =>
 
 export const HERO_POSTER = pic("ensemble-hero", 1920, 1280);
 
+// One signature image per discipline (Services split rows)
+export const SERVICE_IMG: Record<string, string> = {
+  catering: pic("ens-catering", 1100, 1300),
+  artists: pic("ens-artists", 1100, 1300),
+  brigade: pic("ens-brigade", 1100, 1300),
+  production: pic("ens-production", 1100, 1300),
+};
+
+export const WEDGE_IMG = pic("ens-wedge", 1100, 1400);
+export const FOUNDER_IMG = pic("ens-founder", 1100, 1400);
+
 export const BRIGADE_SHOTS = [
   pic("ensemble-kitchen", 900, 1200),
   pic("ensemble-dj", 1200, 900),
   pic("ensemble-floor", 900, 1200),
   pic("ensemble-plating", 1200, 900),
   pic("ensemble-pour", 900, 1200),
+  pic("ensemble-table", 1200, 900),
 ];
 
 export const TEAM = [
-  { name: "Founder Name", role: "Founder & Creative Director", img: pic("ensemble-t1", 600, 800) },
-  { name: "Head Chef", role: "Executive Chef", img: pic("ensemble-t2", 600, 800) },
-  { name: "Floor Lead", role: "Maître d'hôtel", img: pic("ensemble-t3", 600, 800) },
+  { name: "Founder Name", role: "Founder & Creative Director", img: pic("ensemble-t1", 700, 900) },
+  { name: "Head Chef", role: "Executive Chef", img: pic("ensemble-t2", 700, 900) },
+  { name: "Floor Lead", role: "Maître d'hôtel", img: pic("ensemble-t3", 700, 900) },
 ];
 
 export const BEFORE_IMG = pic("ensemble-empty-venue", 1400, 900);

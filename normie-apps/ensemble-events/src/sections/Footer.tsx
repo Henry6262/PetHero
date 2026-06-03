@@ -29,7 +29,7 @@ export function Footer() {
         <span>
           © {BRAND_NAME} · {t("footer.rights")}
         </span>
-        <span>DE / EN</span>
+        <span>EN / CH · Schweizerdeutsch</span>
       </div>
     </footer>
   );

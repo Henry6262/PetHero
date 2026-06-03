@@ -1,10 +1,14 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import en from "./en";
 import de from "./de";
 
 export type Lang = "en" | "de";
 
 const DICTS: Record<Lang, unknown> = { en, de };
+
+// `de` is Swiss German (Swiss High German, de-CH) — labelled "CH" in the UI.
+export const LANG_LABEL: Record<Lang, string> = { en: "EN", de: "CH" };
+const HTML_LANG: Record<Lang, string> = { en: "en", de: "de-CH" };
 
 /** Resolve a dot-path key against a dictionary; fall back to the key itself. */
 export function translate(lang: Lang, key: string): string {
@@ -34,6 +38,9 @@ export function I18nProvider({
   initial?: Lang;
 }) {
   const [lang, setLang] = useState<Lang>(initial);
+  useEffect(() => {
+    document.documentElement.lang = HTML_LANG[lang];
+  }, [lang]);
   const value = useMemo<I18nContextValue>(
     () => ({ lang, setLang, t: (key: string) => translate(lang, key) }),
     [lang]

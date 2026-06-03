@@ -109,8 +109,16 @@ const de: Strings = {
     concierge: "Oder erreichen Sie uns direkt",
     privacy: "Wir speichern das Minimum, geben nichts weiter und achten das Schweizer Datenschutzrecht.",
   },
+  about: {
+    title: "Ein Haus, das auf Beziehungen baut – nicht auf Transaktionen.",
+    body: "Ensemble ist in Zürich entstanden, aus einer einzigen Überzeugung: Die Familien und Häuser, die wir betreuen, verdienen ein Team, das sie kennt – nicht jedes Mal eine andere Crew. Ausgebildet in den Grandhotels und Privatküchen der Schweiz, bleiben unsere Leute. Darum kommen unsere Kundinnen und Kunden zurück.",
+    point1: "Ausgebildet in der Schweizer Grandhotellerie",
+    point2: "Eine vollständig eigene Brigade",
+    point3: "Diskret von Natur aus · NDA auf Anfrage",
+    statLabel: "unserer Anlässe stammen von Stammkunden und Empfehlungen",
+  },
   footer: {
-    tagline: "Full-Service-Luxusevents. Ein Team, von Anfang bis Ende.",
+    tagline: "Full-Service-Luxusanlässe. Ein Team, von Anfang bis Ende.",
     discretion: "Privat von Natur aus · NDA auf Anfrage",
     rights: "Alle Rechte vorbehalten.",
   },

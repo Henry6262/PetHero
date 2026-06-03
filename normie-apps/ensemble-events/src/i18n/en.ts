@@ -108,6 +108,14 @@ const en = {
     concierge: "Or reach us directly",
     privacy: "We store the minimum, never share it, and honour Swiss data-protection law.",
   },
+  about: {
+    title: "A house built on relationships, not transactions.",
+    body: "Founded in Zürich, Ensemble grew from one conviction: the families and houses we serve deserve a team that knows them — not a different crew each time. Trained in Switzerland's grand hotels and private kitchens, our people stay. That is why our clients return.",
+    point1: "Trained in Swiss grand-hôtellerie",
+    point2: "An entirely in-house brigade",
+    point3: "Discretion by default · NDA on request",
+    statLabel: "of our events come from repeat clients and referrals",
+  },
   footer: {
     tagline: "Full-service luxury events. One team, end to end.",
     discretion: "Private by default · NDA on request",

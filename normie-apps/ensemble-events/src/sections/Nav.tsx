@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BRAND_NAME } from "@app/brand";
-import { useT, type Lang } from "@app/i18n";
+import { useT, type Lang, LANG_LABEL } from "@app/i18n";
 import { cn } from "@app/lib/cn";
 
 export function Nav() {
@@ -137,7 +137,7 @@ function LangSwitch({
               lang === l && "!text-gold"
             )}
           >
-            {l}
+            {LANG_LABEL[l]}
           </button>
         </span>
       ))}
