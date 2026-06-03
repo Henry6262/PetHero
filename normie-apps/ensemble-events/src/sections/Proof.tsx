@@ -53,16 +53,25 @@ export function Proof() {
             ))}
           </div>
         ) : (
-          <div className="relative h-[420px] w-full">
-            <CardSwap width={460} height={300} cardDistance={50} verticalDistance={62} delay={4200} pauseOnHover>
+          // Cap the box width and pin it to the right of the column so the
+          // fanned stack stays in its own lane and never reaches the heading.
+          <div className="relative mx-auto h-[440px] w-full max-w-[420px] md:ml-auto md:mr-0">
+            <CardSwap
+              width={360}
+              height={232}
+              cardDistance={40}
+              verticalDistance={46}
+              delay={4200}
+              pauseOnHover
+            >
               {TESTIMONIALS.map((tt, i) => (
                 <Card
                   key={i}
-                  customClass="rounded-sm border border-gold/30 bg-espresso p-8 text-cream shadow-2xl"
+                  customClass="rounded-sm !border-gold/30 bg-espresso p-7 text-cream shadow-2xl"
                 >
-                  <span className="font-display text-5xl leading-none text-gold/50">“</span>
-                  <p className="-mt-4 font-display text-2xl leading-snug text-cream">{tt.quote}</p>
-                  <footer className="mt-6 text-xs uppercase tracking-[0.2em] text-gold-soft">
+                  <span className="font-display text-4xl leading-none text-gold/50">“</span>
+                  <p className="-mt-3 font-display text-xl leading-snug text-cream">{tt.quote}</p>
+                  <footer className="mt-5 text-[0.65rem] uppercase tracking-[0.2em] text-gold-soft">
                     {tt.author} · {tt.detail}
                   </footer>
                 </Card>
