@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@import "@fontsource/cormorant/400.css";
+@import "@fontsource/cormorant/500.css";
+@import "@fontsource/cormorant/600.css";
+@import "@fontsource/cormorant/400-italic.css";
+@import "@fontsource-variable/inter";
+
+@theme {
+  --color-cream: #f4efe6;
+  --color-ink: #16140f;
+  --color-gold: #c0a160;
+  --color-gold-soft: #d8c290;
+  --color-greige: #cabfa6;
+  --color-espresso: #14110c;
+  --color-espresso-2: #1d190f;
+  --color-cream-dark: #efe7d6;
+
+  --font-display: "Cormorant", ui-serif, Georgia, "Times New Roman", serif;
+  --font-body: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-espresso);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+}
+
+/* tracked uppercase label — the editorial "eyebrow" voice */
+.label {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+/* Film-grain overlay (fixed, whole viewport) */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-espresso);
+}
+
+/* hide scrollbars on horizontal rails */
+.no-bar {
+  scrollbar-width: none;
+}
+.no-bar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes draw-line {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
