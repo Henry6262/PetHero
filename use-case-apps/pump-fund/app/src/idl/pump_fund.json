@@ -1,0 +1,188 @@
+{
+  "version": "0.1.0",
+  "name": "pump_fund",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        { "name": "state", "isMut": true, "isSigner": false },
+        { "name": "authority", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    },
+    {
+      "name": "createCampaign",
+      "accounts": [
+        { "name": "state", "isMut": true, "isSigner": false },
+        { "name": "campaign", "isMut": true, "isSigner": false },
+        { "name": "vault", "isMut": true, "isSigner": false },
+        { "name": "creator", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "name", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "metadataUri", "type": "string" },
+        { "name": "goal", "type": "u64" },
+        { "name": "durationDays", "type": { "option": "i64" } }
+      ]
+    },
+    {
+      "name": "donate",
+      "accounts": [
+        { "name": "campaign", "isMut": true, "isSigner": false },
+        { "name": "vault", "isMut": true, "isSigner": false },
+        { "name": "donation", "isMut": true, "isSigner": false },
+        { "name": "donor", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "amount", "type": "u64" }
+      ]
+    },
+    {
+      "name": "launchToken",
+      "accounts": [
+        { "name": "state", "isMut": false, "isSigner": false },
+        { "name": "campaign", "isMut": true, "isSigner": false },
+        { "name": "vault", "isMut": true, "isSigner": false },
+        { "name": "creator", "isMut": true, "isSigner": true },
+        { "name": "authority", "isMut": true, "isSigner": false },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": [
+        { "name": "mint", "type": "publicKey" },
+        { "name": "topDonors", "type": { "vec": "publicKey" } }
+      ]
+    },
+    {
+      "name": "claimRefund",
+      "accounts": [
+        { "name": "campaign", "isMut": true, "isSigner": false },
+        { "name": "vault", "isMut": true, "isSigner": false },
+        { "name": "donation", "isMut": true, "isSigner": false },
+        { "name": "donor", "isMut": true, "isSigner": true },
+        { "name": "systemProgram", "isMut": false, "isSigner": false }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ProgramState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "authority", "type": "publicKey" },
+          { "name": "platformFeeBps", "type": "u16" },
+          { "name": "campaignCounter", "type": "u64" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "Campaign",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "creator", "type": "publicKey" },
+          { "name": "campaignId", "type": "u64" },
+          { "name": "name", "type": "string" },
+          { "name": "description", "type": "string" },
+          { "name": "metadataUri", "type": "string" },
+          { "name": "goal", "type": "u64" },
+          { "name": "raised", "type": "u64" },
+          { "name": "deadline", "type": "i64" },
+          { "name": "status", "type": { "defined": "CampaignStatus" } },
+          { "name": "mint", "type": { "option": "publicKey" } },
+          { "name": "bump", "type": "u8" },
+          { "name": "vaultBump", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "Donation",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "donor", "type": "publicKey" },
+          { "name": "campaign", "type": "publicKey" },
+          { "name": "amount", "type": "u64" },
+          { "name": "bump", "type": "u8" }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "CampaignStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          { "name": "Active" },
+          { "name": "Launched" },
+          { "name": "Failed" }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "CampaignCreated",
+      "fields": [
+        { "name": "campaignId", "type": "u64", "index": false },
+        { "name": "creator", "type": "publicKey", "index": false },
+        { "name": "name", "type": "string", "index": false },
+        { "name": "goal", "type": "u64", "index": false },
+        { "name": "deadline", "type": "i64", "index": false }
+      ]
+    },
+    {
+      "name": "DonationReceived",
+      "fields": [
+        { "name": "campaignId", "type": "u64", "index": false },
+        { "name": "donor", "type": "publicKey", "index": false },
+        { "name": "amount", "type": "u64", "index": false },
+        { "name": "totalDonated", "type": "u64", "index": false }
+      ]
+    },
+    {
+      "name": "TokenLaunched",
+      "fields": [
+        { "name": "campaignId", "type": "u64", "index": false },
+        { "name": "mint", "type": "publicKey", "index": false },
+        { "name": "raised", "type": "u64", "index": false },
+        { "name": "platformFee", "type": "u64", "index": false },
+        { "name": "creatorAmount", "type": "u64", "index": false },
+        { "name": "topDonors", "type": { "vec": "publicKey" }, "index": false }
+      ]
+    },
+    {
+      "name": "RefundClaimed",
+      "fields": [
+        { "name": "campaignId", "type": "u64", "index": false },
+        { "name": "donor", "type": "publicKey", "index": false },
+        { "name": "amount", "type": "u64", "index": false }
+      ]
+    }
+  ],
+  "errors": [
+    { "code": 6000, "name": "GoalTooLow", "msg": "Goal must be at least 1 SOL" },
+    { "code": 6001, "name": "InvalidName", "msg": "Invalid campaign name" },
+    { "code": 6002, "name": "InvalidDescription", "msg": "Invalid campaign description" },
+    { "code": 6003, "name": "InvalidMetadataUri", "msg": "Invalid metadata URI" },
+    { "code": 6004, "name": "InvalidDuration", "msg": "Invalid duration: must be between 1 and 90 days" },
+    { "code": 6005, "name": "InvalidAmount", "msg": "Invalid donation amount" },
+    { "code": 6006, "name": "CampaignNotActive", "msg": "Campaign is not active" },
+    { "code": 6007, "name": "CampaignExpired", "msg": "Campaign has expired" },
+    { "code": 6008, "name": "CampaignNotExpired", "msg": "Campaign has not expired yet" },
+    { "code": 6009, "name": "GoalReached", "msg": "Campaign goal was reached — no refunds" },
+    { "code": 6010, "name": "NoRefund", "msg": "No refund available" },
+    { "code": 6011, "name": "Unauthorized", "msg": "Only the campaign creator can perform this action" },
+    { "code": 6012, "name": "TooManyTopDonors", "msg": "Too many top donors specified (max 3)" }
+  ],
+  "metadata": {
+    "address": "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+  }
+}

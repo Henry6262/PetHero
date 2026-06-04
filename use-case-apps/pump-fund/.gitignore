@@ -1,0 +1,41 @@
+# Build outputs
+target/
+**/*.rs.bk
+dist/
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Anchor
+.anchor/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+
+# Test keypairs
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!Cargo.toml
+
+# Logs
+*.log
+
+# preview screenshots
+.preview/
+!src/idl/*.json
+!app/src/idl/*.json
