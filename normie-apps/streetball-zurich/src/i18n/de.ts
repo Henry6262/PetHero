@@ -1,0 +1,151 @@
+import type { Strings } from "./en";
+
+// Swiss High German (de-CH). Mirrors the shape of `en` exactly.
+const de: Strings = {
+  nav: {
+    brackets: "Kategorien",
+    coaching: "Coaching",
+    season: "Saison",
+    faq: "FAQ",
+    cta: "Beim Jam mitmachen",
+  },
+  hero: {
+    tag: "Zürich · Saison 2026",
+    sub: "Fünf gegen nichts. Beton, Kette und die ganze Stadt schaut zu. Gratis Street-Jams in fünf Alterskategorien – und mit unseren Profi-Coaches kommst du aufs nächste Level.",
+    ctaJam: "Beim Jam mitmachen",
+    ctaTrain: "Mit den Profis trainieren",
+    stats: {
+      ballers: "Ballers",
+      courts: "Plätze",
+      brackets: "Kategorien",
+      days: "Tage bis Tip-off",
+    },
+  },
+  brackets: {
+    eyebrow: "Die Kategorien",
+    title: "Finde dein Alter. Finde dein Spiel.",
+    lead: "Fünf Kategorien, U10 bis U18. Jeder Jam ist 3x3, Halbfeld, win-by-twos – das echte Street-Format.",
+    born: "Jahrgang",
+    descU10: "Die ersten Körbe. Spass zuerst, Technik gleich dahinter – verlieb dich ins Spiel.",
+    descU12: "Ballhandling und Herz. Lerne das Feld zu lesen und deine Moves durchzuziehen.",
+    descU14: "Der Sprung. Echte Verteidigung, echtes Spacing, echte Konkurrenz.",
+    descU16: "Varsity-Energie. Tempo, Physis und das nötige Selbstvertrauen.",
+    descU18: "Letzter Halt vor den Grossen. Beweis es auf dem Beton.",
+  },
+  coaching: {
+    eyebrow: "Mit den Profis trainieren",
+    title: "Jams holen dich rein. Coaching macht dich besser.",
+    lead: "Unsere Profi-Coaches trainieren das ganze Jahr, damit jeder Baller zwischen den Jams besser wird. Wähle ein Programm – um den Rest kümmern wir uns.",
+    from: "ab",
+    perMonth: "/ Monat",
+    perCamp: "/ Camp",
+    cta: "Anmelden",
+    programs: {
+      weekly: {
+        name: "Wöchentliche Klassen",
+        blurb: "Gruppentraining pro Saison, gleicher Platz, gleiche Crew, jede Woche – nach Alterskategorie.",
+        bullet1: "60–90 Min. pro Einheit, geleitet von Profis",
+        bullet2: "Technik, Spielverständnis und Kondition für die Jams",
+      },
+      camps: {
+        name: "Ferien-Camps",
+        blurb: "Mehrtägige Intensivkurse in den Schulferien. Grosse Fortschritte, schnell.",
+        bullet1: "Ganze Tage Hoops in den Herbst- & Sommerferien",
+        bullet2: "Gast-Profis, Spiele und ein Abschluss-Jam",
+      },
+    },
+    coachesTitle: "Die Coaches",
+    coaches: {
+      marco: {
+        role: "Cheftrainer",
+        credential: "Ex-NLA-Guard, 10+ Jahre Förderung von Zürcher Junioren.",
+      },
+      amir: {
+        role: "Skills-Coach",
+        credential: "3x3-Spezialist – Ballhandling, Abschluss und Beinarbeit.",
+      },
+      lena: {
+        role: "Förder-Coachin",
+        credential: "Jugend-zertifiziert, leitet unsere U10–U12-Grundlagen.",
+      },
+    },
+  },
+  how: {
+    eyebrow: "So läuft's",
+    title: "Vier Schritte auf den Platz.",
+    steps: {
+      pick: { title: "Kategorie wählen", body: "U10 bis U18 – dein Jahrgang ordnet dich automatisch zu." },
+      register: { title: "Anmelden", body: "Zwei Minuten, gratis für Jams. Coaching ist nur ein Klick entfernt." },
+      show: { title: "Auftauchen", body: "Komm am Jam-Tag auf den Platz. Allein oder mit deiner Crew – beides geht." },
+      ball: { title: "Spielen & besser werden", body: "Lauf dein Spiel, lern von den Profis, komm stärker zurück." },
+    },
+  },
+  schedule: {
+    eyebrow: "Saison",
+    title: "Von Frühling bis Sommer, in der ganzen Stadt.",
+    season: "Frühling – Sommer 2026",
+    seasonNote: "Jam-Daten kommen auf Instagram. Coaching läuft das ganze Jahr.",
+    venuesLabel: "Plätze",
+    note: "Genaue Daten und Plätze werden vor jedem Jam bestätigt – folge uns oder melde dich an für die Info.",
+  },
+  proof: {
+    eyebrow: "Der Beweis",
+    title: "Die Stadt läuft schon mit uns.",
+    stats: {
+      ballers: "Ballers durch unsere Jams",
+      jams: "Durchgeführte Jams",
+      courts: "Plätze in Zürich",
+    },
+    quote: "Im März konnte der Junge nicht links dribbeln. Im Juni stand er im U14-Final.",
+    quoteBy: "Marco, Cheftrainer",
+  },
+  register: {
+    eyebrow: "Auf den Platz",
+    title: "Sichere dir deinen Platz.",
+    body: "Melde dich selbst für einen Jam an oder schreib dich fürs Coaching ein. Wir melden uns mit den Details.",
+    modeLabel: "Ich möchte",
+    modeJam: "Beim Jam mitmachen",
+    modeCoaching: "Mit den Profis trainieren",
+    fields: {
+      name: "Dein Name",
+      birthYear: "Jahrgang",
+      email: "E-Mail",
+      phone: "Telefon (optional)",
+      position: "Position",
+      skill: "Niveau",
+      program: "Programm",
+    },
+    birthYearPlaceholder: "Jahr wählen",
+    bracketHint: "Deine Kategorie",
+    outOfRange: "Dieser Jahrgang liegt ausserhalb unserer U10–U18-Kategorien – schreib uns und wir finden eine Lösung.",
+    positions: { guard: "Guard", forward: "Forward", center: "Center", any: "Wo ich gebraucht werde" },
+    skills: { rookie: "Rookie", baller: "Baller", hooper: "Hooper" },
+    programOptions: { weekly: "Wöchentliche Klassen", camps: "Ferien-Camp" },
+    consent: "Ich bin Elternteil/Erziehungsberechtigte:r – oder habe deren Einverständnis – um diese:n unter 18-jährige:n Spieler:in anzumelden.",
+    submit: "Fix anmelden",
+    sending: "Wird gesendet…",
+    successTitle: "Du bist dabei.",
+    successBody: "Wir haben deine Angaben. Schau in dein Postfach – wir melden uns mit den nächsten Schritten.",
+    error: "Etwas ist schiefgelaufen. Schreib uns direkt und wir regeln das.",
+    privacy: "Wir speichern das Minimum, geben nichts weiter und halten das Schweizer Datenschutzrecht ein.",
+  },
+  faq: {
+    eyebrow: "Fragen",
+    title: "Bevor du die Schuhe schnürst.",
+    items: {
+      cost: { q: "Was kostet das?", a: "Jams sind gratis. Coaching ist kostenpflichtig – wöchentliche Klassen ab CHF 49/Monat, Ferien-Camps ab CHF 120. Zahlung per Twint, bar oder Rechnung." },
+      gear: { q: "Was bringe ich mit?", a: "Hallen- oder Outdoor-Schuhe, eine Trinkflasche und dich selbst. Bälle und Körbe bringen wir." },
+      solo: { q: "Kann ich allein kommen?", a: "Immer. Komm allein und wir teilen dich einem Team zu – das ist die halbe Freude am Street Ball." },
+      rain: { q: "Was, wenn es regnet?", a: "Outdoor-Jams ziehen unter ein Dach oder verschieben sich um eine Woche. Wir benachrichtigen alle Angemeldeten." },
+      coaching: { q: "Muss ich Coaching machen?", a: "Nein – Jams sind gratis und offen. Coaching ist da, wenn du richtig besser werden willst." },
+    },
+  },
+  footer: {
+    tagline: "Gratis Street-Jams. Profi-Coaching. Eine Stadt.",
+    location: "Zürich, Schweiz",
+    rights: "Alle Rechte vorbehalten.",
+    madeIn: "Auf dem Beton in Zürich gebaut.",
+  },
+};
+
+export default de;

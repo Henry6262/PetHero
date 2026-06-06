@@ -1,0 +1,151 @@
+// Note: intentionally NOT `as const` — leaf values widen to `string` so the
+// German dictionary (which differs) is assignable to `Strings`.
+const en = {
+  nav: {
+    brackets: "Brackets",
+    coaching: "Coaching",
+    season: "Season",
+    faq: "FAQ",
+    cta: "Join the jam",
+  },
+  hero: {
+    tag: "Zürich · Season 2026",
+    sub: "Five-on-nothing. Concrete, chains, and the whole city watching. Free street jams across five age brackets — then level up with our pro coaches.",
+    ctaJam: "Join the jam",
+    ctaTrain: "Train with the pros",
+    stats: {
+      ballers: "Ballers",
+      courts: "Courts",
+      brackets: "Brackets",
+      days: "Days to tip-off",
+    },
+  },
+  brackets: {
+    eyebrow: "The brackets",
+    title: "Find your age. Find your run.",
+    lead: "Five brackets, U10 to U18. Every jam is 3x3, half-court, win-by-twos — the real street format.",
+    born: "Born",
+    descU10: "First buckets. Fun first, fundamentals close behind — fall in love with the game.",
+    descU12: "Handles and heart. Learn to read the court and back your moves.",
+    descU14: "The jump. Real defense, real spacing, real competition.",
+    descU16: "Varsity energy. Pace, physicality and the swagger to match.",
+    descU18: "Last stop before grown folks. Prove it on the concrete.",
+  },
+  coaching: {
+    eyebrow: "Train with the pros",
+    title: "Jams pull you in. Coaching makes you better.",
+    lead: "Our professional coaches run year-round training so every baller levels up between jams. Pick a program — we'll handle the rest.",
+    from: "from",
+    perMonth: "/ month",
+    perCamp: "/ camp",
+    cta: "Enroll",
+    programs: {
+      weekly: {
+        name: "Weekly classes",
+        blurb: "Term-based group training, same court, same crew, every week — by age bracket.",
+        bullet1: "60–90 min per session, coached by pros",
+        bullet2: "Skills, IQ and conditioning that carry into the jams",
+      },
+      camps: {
+        name: "Holiday camps",
+        blurb: "Multi-day intensives over the school breaks. Big jumps, fast.",
+        bullet1: "Full days of hoops over autumn & summer breaks",
+        bullet2: "Guest pros, games, and a graduation jam",
+      },
+    },
+    coachesTitle: "The coaches",
+    coaches: {
+      marco: {
+        role: "Head coach",
+        credential: "Ex-NLA guard, 10+ years developing Zürich juniors.",
+      },
+      amir: {
+        role: "Skills coach",
+        credential: "3x3 specialist — handles, finishing and footwork.",
+      },
+      lena: {
+        role: "Development coach",
+        credential: "Youth-certified, leads our U10–U12 fundamentals.",
+      },
+    },
+  },
+  how: {
+    eyebrow: "How it runs",
+    title: "Four steps to the court.",
+    steps: {
+      pick: { title: "Pick your bracket", body: "U10 to U18 — your birth year sorts you automatically." },
+      register: { title: "Register", body: "Two minutes, free for jams. Coaching is one tick away." },
+      show: { title: "Show up", body: "Roll to the court on jam day. Solo or with your crew — both work." },
+      ball: { title: "Ball & level up", body: "Run it, learn from the pros, come back better." },
+    },
+  },
+  schedule: {
+    eyebrow: "Season",
+    title: "Spring to summer, all over the city.",
+    season: "Spring – Summer 2026",
+    seasonNote: "Jam dates drop on Instagram. Coaching runs year-round.",
+    venuesLabel: "Courts",
+    note: "Exact dates and courts confirmed before each jam — follow along or register to get the message.",
+  },
+  proof: {
+    eyebrow: "The proof",
+    title: "The city already runs with us.",
+    stats: {
+      ballers: "Ballers through our jams",
+      jams: "Jams run",
+      courts: "Courts across Zürich",
+    },
+    quote: "Kid couldn't dribble left in March. Made the U14 final in June.",
+    quoteBy: "Marco, head coach",
+  },
+  register: {
+    eyebrow: "Get on the court",
+    title: "Lock in your spot.",
+    body: "Register yourself for a jam, or enroll for coaching. We'll come back to you with the details.",
+    modeLabel: "I want to",
+    modeJam: "Join a jam",
+    modeCoaching: "Train with the pros",
+    fields: {
+      name: "Your name",
+      birthYear: "Birth year",
+      email: "Email",
+      phone: "Phone (optional)",
+      position: "Position",
+      skill: "Level",
+      program: "Program",
+    },
+    birthYearPlaceholder: "Select year",
+    bracketHint: "Your bracket",
+    outOfRange: "That birth year is outside our U10–U18 brackets — message us and we'll sort you out.",
+    positions: { guard: "Guard", forward: "Forward", center: "Center", any: "Wherever I'm needed" },
+    skills: { rookie: "Rookie", baller: "Baller", hooper: "Hooper" },
+    programOptions: { weekly: "Weekly classes", camps: "Holiday camp" },
+    consent: "I'm a parent/guardian — or have guardian consent — to register this under-18 player.",
+    submit: "Lock it in",
+    sending: "Sending…",
+    successTitle: "You're in.",
+    successBody: "We've got your details. Watch your inbox — we'll be in touch with the next steps.",
+    error: "Something went wrong. Message us directly and we'll sort it.",
+    privacy: "We store the minimum, never share it, and honour Swiss data-protection law.",
+  },
+  faq: {
+    eyebrow: "Questions",
+    title: "Before you lace up.",
+    items: {
+      cost: { q: "What does it cost?", a: "Jams are free. Coaching is paid — weekly classes from CHF 49/month, holiday camps from CHF 120. Pay by Twint, cash or invoice." },
+      gear: { q: "What do I bring?", a: "Indoor or outdoor shoes, a water bottle, and yourself. We bring the balls and the buckets." },
+      solo: { q: "Can I come solo?", a: "Always. Roll up alone and we'll put you on a squad — that's half the fun of street ball." },
+      rain: { q: "What if it rains?", a: "Outdoor jams move under cover or shift a week. We message everyone who's registered." },
+      coaching: { q: "Do I have to do coaching?", a: "No — jams are free and open. Coaching is there when you want to get seriously better." },
+    },
+  },
+  footer: {
+    tagline: "Free street jams. Pro coaching. One city.",
+    location: "Zürich, Switzerland",
+    rights: "All rights reserved.",
+    madeIn: "Built on the concrete in Zürich.",
+  },
+};
+
+export default en;
+export type Strings = typeof en;
