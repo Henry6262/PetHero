@@ -6,9 +6,8 @@ import * as THREE from "three";
 const MODEL_URL = "/assets/base_basic_shaded.glb";
 useGLTF.preload(MODEL_URL);
 
-// The model faces away from camera by default — turn it around so the dunk
-// faces the viewer. Tweak to taste.
-const ROTATION_Y = Math.PI;
+// Side profile: player facing right, hoop swung to the left. Tweak to taste.
+const ROTATION_Y = -Math.PI / 2;
 
 /** The dunk, auto-centred + auto-scaled to a fixed size. Static (no motion). */
 function Ball() {
