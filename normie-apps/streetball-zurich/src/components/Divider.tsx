@@ -15,7 +15,7 @@ export function Divider({
   className?: string;
 }) {
   return (
-    <div className={cn("w-full bg-concrete px-6 md:px-10", className)}>
+    <div className={cn("w-full px-6 md:px-10", className)}>
       <div className="mx-auto flex max-w-6xl items-center gap-5 py-9 md:py-12">
         <span className="h-px flex-1 bg-line" />
         {(quarter || kicker) && (

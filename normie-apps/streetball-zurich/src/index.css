@@ -82,6 +82,14 @@ body {
 
 /* ---- Street Court textures ------------------------------------------- */
 
+/* Even full-page court grid — used by the global backdrop. */
+.court-grid {
+  background-image:
+    linear-gradient(to right, rgba(44, 49, 58, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(44, 49, 58, 0.5) 1px, transparent 1px);
+  background-size: 68px 68px;
+}
+
 /* Painted court lines — a faint key/free-throw geometry behind the hero. */
 .court-lines {
   background-image:

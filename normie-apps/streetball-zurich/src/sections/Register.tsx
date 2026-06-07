@@ -58,16 +58,16 @@ export function Register() {
 
   return (
     <Section id="register" tone="ink">
-      <div className="grid gap-12 md:grid-cols-[0.9fr_1.1fr] md:items-start">
-        <div>
+      <div className="mx-auto max-w-2xl">
+        <div className="text-center">
           <Eyebrow>{t("register.eyebrow")}</Eyebrow>
           <h2 className="font-display text-[2.6rem] leading-[0.95] text-chalk md:text-[3.6rem]">
             {t("register.title")}
           </h2>
-          <p className="mt-5 max-w-md text-chalk-dim">{t("register.body")}</p>
+          <p className="mx-auto mt-5 max-w-md text-chalk-dim">{t("register.body")}</p>
         </div>
 
-        <div className="rounded-3xl border border-line bg-ink p-6 md:p-9">
+        <div className="mt-10 rounded-3xl border border-line bg-ink p-6 md:p-9">
           {status === "sent" ? (
             <div className="flex min-h-[24rem] flex-col items-start justify-center">
               <span className="font-display text-4xl text-lime">{t("register.successTitle")}</span>

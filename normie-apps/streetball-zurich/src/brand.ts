@@ -1,5 +1,5 @@
 // Single source of truth for brand identity + channels.
-export const BRAND_NAME = "Züri Street Ball";
+export const BRAND_NAME = "Zurich Street Ball";
 export const BRAND_SHORT = "ZSB";
 export const BRAND_CITY = "Zürich";
 export const SEASON_YEAR = 2026;

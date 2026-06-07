@@ -37,24 +37,27 @@ export function Nav() {
             {BRAND_SHORT.slice(0, 3)}
           </span>
           <span className="hidden font-display text-lg uppercase tracking-wide text-chalk sm:block">
-            Züri Street Ball
+            Zurich Street Ball
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 md:flex">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm tracking-wide text-chalk-dim transition-colors hover:text-chalk"
-            >
-              {l.label}
-            </a>
-          ))}
+        <div className="hidden items-center md:flex">
+          <div className="flex items-center gap-7">
+            {links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-sm tracking-wide text-chalk-dim transition-colors hover:text-chalk"
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+          <span className="mx-6 h-5 w-px bg-line" aria-hidden />
           <LangSwitch lang={lang} onChange={setLang} />
           <a
             href="#register"
-            className="rounded-full bg-lime px-5 py-2 text-sm font-semibold uppercase tracking-[0.1em] text-ink transition-colors hover:bg-lime-soft"
+            className="ml-7 rounded-full bg-lime px-6 py-2.5 text-sm font-semibold uppercase tracking-[0.1em] text-ink transition-colors hover:bg-lime-soft"
           >
             {t("nav.cta")}
           </a>

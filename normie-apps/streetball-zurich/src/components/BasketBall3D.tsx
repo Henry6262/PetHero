@@ -1,17 +1,22 @@
-import { Suspense, useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Suspense, useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import { useReducedMotion } from "@app/lib/useReducedMotion";
 
 const MODEL_URL = "/assets/base_basic_shaded.glb";
 useGLTF.preload(MODEL_URL);
 
 // Side profile: player facing right, hoop swung to the left. Tweak to taste.
 const ROTATION_Y = -Math.PI / 2;
+// Gentle sway: a bit to the left, then back to the right (radians).
+const SWAY = 0.22;
+const SWAY_SPEED = 0.45;
 
-/** The dunk, auto-centred + auto-scaled to a fixed size. Static (no motion). */
-function Ball() {
+/** The dunk, auto-centred + auto-scaled, gently swaying left↔right. */
+function Ball({ reduced }: { reduced: boolean }) {
   const { scene } = useGLTF(MODEL_URL);
+  const ref = useRef<THREE.Group>(null);
 
   // Normalise the model: centre it on the origin and scale its largest
   // dimension to a known size, so framing is independent of the source units.
@@ -25,8 +30,14 @@ function Ball() {
     return { scale: 2.7 / maxDim, center: c };
   }, [scene]);
 
+  useFrame(({ clock }) => {
+    if (!ref.current || reduced) return;
+    // Sway around the base rotation — left, then back to the right.
+    ref.current.rotation.y = ROTATION_Y + Math.sin(clock.getElapsedTime() * SWAY_SPEED) * SWAY;
+  });
+
   return (
-    <group scale={scale} rotation={[0, ROTATION_Y, 0]}>
+    <group ref={ref} rotation={[0, ROTATION_Y, 0]} scale={scale}>
       <group position={[-center.x, -center.y, -center.z]}>
         <primitive object={scene} />
       </group>
@@ -35,13 +46,15 @@ function Ball() {
 }
 
 export function BasketBall3D({ className }: { className?: string }) {
+  const reduced = useReducedMotion();
+
   return (
     <div className={className}>
       <Canvas
         dpr={[1, 2]}
         camera={{ position: [0, 0, 6], fov: 38 }}
         gl={{ antialias: true, alpha: true }}
-        frameloop="demand"
+        frameloop={reduced ? "demand" : "always"}
       >
         {/* Self-contained lighting — no external HDR. */}
         <ambientLight intensity={0.75} />
@@ -49,7 +62,7 @@ export function BasketBall3D({ className }: { className?: string }) {
         <directionalLight position={[4, 6, 5]} intensity={2.4} />
         <directionalLight position={[-5, 2, -4]} intensity={0.8} color="#c6ff2e" />
         <Suspense fallback={null}>
-          <Ball />
+          <Ball reduced={reduced} />
         </Suspense>
       </Canvas>
     </div>

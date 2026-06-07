@@ -1,4 +1,5 @@
 import { Grain } from "@app/components/Grain";
+import { GlobalBackdrop } from "@app/components/GlobalBackdrop";
 import { SmoothScroll } from "@app/components/SmoothScroll";
 import { Divider } from "@app/components/Divider";
 import { useT } from "@app/i18n";
@@ -17,6 +18,7 @@ export function App() {
   const { t } = useT();
   return (
     <>
+      <GlobalBackdrop />
       <Grain />
       <SmoothScroll />
       <Nav />

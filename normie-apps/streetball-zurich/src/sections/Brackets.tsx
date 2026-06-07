@@ -19,18 +19,18 @@ export function Brackets() {
         <p className="mt-5 text-chalk-dim">{t("brackets.lead")}</p>
       </div>
 
-      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {BRACKETS.map((b, i) => (
-          <Reveal key={b.id} delay={i * 0.06}>
-            <SpotlightCard className="h-full">
+          <Reveal key={b.id} delay={i * 0.06} className="h-full">
+            <SpotlightCard className="flex h-full flex-col p-7 md:p-8">
               <div className="flex items-baseline justify-between">
-                <span className="font-display text-4xl text-lime">{b.id}</span>
+                <span className="font-display text-5xl text-lime md:text-6xl">{b.id}</span>
                 <span className="text-xs uppercase tracking-[0.2em] text-chalk-dim">{b.format}</span>
               </div>
-              <p className="mt-1 text-[0.7rem] uppercase tracking-[0.18em] text-chalk-dim">
+              <p className="mt-3 text-[0.78rem] uppercase tracking-[0.16em] text-chalk-dim">
                 {t("brackets.born")} {yy(b.minBorn)}–{yy(b.maxBorn)} · {b.ages}
               </p>
-              <p className="mt-4 text-sm leading-snug text-chalk-dim">
+              <p className="mt-6 text-base leading-relaxed text-chalk-dim">
                 {t(`brackets.desc${b.id}`)}
               </p>
             </SpotlightCard>

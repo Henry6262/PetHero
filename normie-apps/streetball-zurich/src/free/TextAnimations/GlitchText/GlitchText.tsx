@@ -36,7 +36,7 @@ const GlitchText: FC<GlitchTextProps> = ({
   };
 
   const baseClasses =
-    'relative mx-auto inline-block font-display leading-[0.86] select-none text-current';
+    'relative inline-block font-display leading-[0.86] select-none text-current';
 
   const pseudoClasses = !enableOnHover
     ? 'after:content-[attr(data-text)] after:absolute after:top-0 after:left-[8px] after:text-current after:bg-concrete after:overflow-hidden after:[clip-path:inset(0_0_0_0)] after:[text-shadow:var(--after-shadow)] after:animate-glitch-after ' +

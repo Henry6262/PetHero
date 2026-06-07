@@ -7,11 +7,11 @@ export function Footer() {
   const { t, lang, setLang } = useT();
 
   return (
-    <footer className="border-t border-line bg-concrete-2 px-6 py-14 md:px-10">
+    <footer className="border-t border-line bg-concrete-2/40 px-6 py-14 md:px-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-display text-3xl uppercase tracking-wide text-chalk">Züri Street Ball</p>
+            <p className="font-display text-3xl uppercase tracking-wide text-chalk">Zurich Street Ball</p>
             <p className="mt-2 max-w-sm text-chalk-dim">{t("footer.tagline")}</p>
           </div>
           <div className="flex items-center gap-4">

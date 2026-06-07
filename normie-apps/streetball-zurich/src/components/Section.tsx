@@ -19,9 +19,11 @@ export function Section({
   containerClassName,
   children,
 }: SectionProps) {
+  // Transparent so the shared global backdrop shows through every section.
+  // `ink` keeps a faint dark wash for a touch of rhythm between sections.
   const tones: Record<Tone, string> = {
-    concrete: "bg-concrete text-chalk",
-    ink: "bg-concrete-2 text-chalk",
+    concrete: "bg-transparent text-chalk",
+    ink: "bg-concrete-2/40 text-chalk",
   };
   return (
     <section
