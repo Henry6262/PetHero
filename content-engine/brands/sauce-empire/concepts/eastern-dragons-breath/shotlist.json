@@ -1,0 +1,10 @@
+{
+  "concept": "eastern-dragons-breath",
+  "targetSeconds": 25,
+  "shots": [
+    { "id": 1, "seconds": 5, "beat": "hook", "action": "A coil of smoke rises in darkness and forms the silhouette of a dragon, then parts." },
+    { "id": 2, "seconds": 6, "beat": "world", "action": "Misty mountain temple at dusk, red paper lanterns glowing, fog rolling between carved pillars." },
+    { "id": 3, "seconds": 6, "beat": "product", "action": "Macro: glossy red chili-ginger sauce pours over steaming noodles, lantern light reflecting off the glaze." },
+    { "id": 4, "seconds": 6, "beat": "reveal", "action": "The Sauce Empire bottle among red lanterns, warm glow, a wisp of dragon-smoke curling past." }
+  ]
+}

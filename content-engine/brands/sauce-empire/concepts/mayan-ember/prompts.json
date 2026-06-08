@@ -1,0 +1,17 @@
+{
+  "concept": "mayan-ember",
+  "styleSuffix": "cinematic lighting, 35mm film grain, moody color grade, shallow depth of field, high production value, no text",
+  "negative": "extra limbs, distorted shapes, blurry, morphing, watermark, text, logo, subtitles",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "needsRef": false,
+      "prompt": "SLOW MACRO PUSH-IN. A single dried chili pepper reignites from grey ash in total darkness, glowing embers crawling across its wrinkled skin, tiny sparks drifting up. Chiaroscuro firelight, deep black background, ember-orange glow." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 6, "needsRef": false,
+      "prompt": "SLOW DOLLY FORWARD through a torch-lit ancient Maya jungle temple, carved stone glyphs glowing ember-orange, smoke drifting, shafts of warm light, vines on obsidian walls. Volumetric torchlight, deep shadows." },
+    { "id": 3, "type": "i2v", "model": "kling", "seconds": 6, "needsRef": true,
+      "refHint": "Sauce Empire bottle (obsidian glass, flame-orange label) beside grilled corn on a dark stone altar",
+      "prompt": "SLOW MACRO PUSH-IN. Thick lava-red hot sauce pours in ultra slow-motion over glistening grilled corn on a torch-lit stone altar, glossy and molten, steam rising. Chiaroscuro torchlight, flame-orange rim light, rich amber tones." },
+    { "id": 4, "type": "i2v", "model": "veo", "seconds": 6, "needsRef": true,
+      "refHint": "Sauce Empire bottle, obsidian glass, flame-orange label, hero product still",
+      "prompt": "STATIC HERO SHOT, slow flicker. The Sauce Empire bottle stands on a Maya stone altar, torch flames dancing behind it, flame-orange rim light catching the obsidian glass, embers floating. Cinematic, reverent, premium." }
+  ]
+}

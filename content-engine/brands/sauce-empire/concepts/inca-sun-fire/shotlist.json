@@ -1,0 +1,10 @@
+{
+  "concept": "inca-sun-fire",
+  "targetSeconds": 25,
+  "shots": [
+    { "id": 1, "seconds": 5, "beat": "hook", "action": "The sun cracks over a jagged Andean peak; a stone sun-god altar ignites with golden light." },
+    { "id": 2, "seconds": 6, "beat": "world", "action": "Aerial sweep over terraced Inca mountains above the clouds at golden hour, a condor's shadow passing." },
+    { "id": 3, "seconds": 6, "beat": "product", "action": "Macro: molten gold-red sauce poured over a rustic Andean dish on a sunlit stone slab, glistening." },
+    { "id": 4, "seconds": 6, "beat": "reveal", "action": "The Sauce Empire bottle silhouetted against the rising sun on a mountain altar, golden rim light." }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Sauce Empire",
+  "tagline": "Ancient fire, bottled.",
+  "palette": { "obsidian": "#0a0a0a", "flame": "#ff5b1f", "ember": "#c81d11", "gold": "#e7a93b" },
+  "narratorVoice": "deep, mythic, slow, reverent male narrator",
+  "styleBible": "cinematic lighting, 35mm film grain, moody color grade, shallow depth of field, high production value, no text",
+  "negativePrompt": "extra limbs, distorted shapes, blurry, morphing, watermark, text, logo, subtitles",
+  "hashtags": ["#hotsauce", "#spicy", "#foodtok", "#artisan", "#sauceempire"],
+  "accounts": { "tiktok": "@sauceempire", "instagram": "@sauceempire" },
+  "format": { "aspect": "9:16", "width": 1080, "height": 1920, "targetSeconds": 25 }
+}

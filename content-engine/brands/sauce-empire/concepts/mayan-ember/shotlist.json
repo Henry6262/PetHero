@@ -1,0 +1,10 @@
+{
+  "concept": "mayan-ember",
+  "targetSeconds": 25,
+  "shots": [
+    { "id": 1, "seconds": 5, "beat": "hook", "action": "Macro: a single chili pepper reignites from grey ash, embers crawling across its skin in the dark." },
+    { "id": 2, "seconds": 6, "beat": "world", "action": "Slow dolly through a torch-lit Maya jungle temple, carved glyphs glowing ember-orange." },
+    { "id": 3, "seconds": 6, "beat": "product", "action": "Slow macro push-in: thick lava-red hot sauce pours over grilled corn on a stone altar, steam rising." },
+    { "id": 4, "seconds": 6, "beat": "reveal", "action": "The Sauce Empire bottle stands on the altar, flame-orange rim light, torch flames behind it." }
+  ]
+}

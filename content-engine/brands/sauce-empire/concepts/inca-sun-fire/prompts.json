@@ -1,0 +1,17 @@
+{
+  "concept": "inca-sun-fire",
+  "styleSuffix": "cinematic lighting, 35mm film grain, moody color grade, shallow depth of field, high production value, no text",
+  "negative": "extra limbs, distorted shapes, blurry, morphing, watermark, text, logo, subtitles",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "needsRef": false,
+      "prompt": "SLOW CRANE UP. The sun cracks over a jagged Andean peak at dawn, first light striking a carved stone sun-god altar that ignites with golden fire, lens flare. Golden hour, volumetric rays, epic scale." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 6, "needsRef": false,
+      "prompt": "AERIAL DRONE SWEEP over terraced Inca mountains above a sea of clouds at golden hour, the shadow of a condor sweeping across the stone terraces. Warm cinematic light, vast, reverent." },
+    { "id": 3, "type": "i2v", "model": "kling", "seconds": 6, "needsRef": true,
+      "refHint": "Sauce Empire bottle (obsidian glass, flame-orange label) beside a rustic Andean dish on a sunlit stone slab",
+      "prompt": "SLOW MACRO PUSH-IN. Molten gold-red hot sauce pours in ultra slow-motion over a rustic Andean dish on a sunlit stone slab, glossy, glistening, faint steam. Warm golden light, rich amber and ember tones." },
+    { "id": 4, "type": "i2v", "model": "veo", "seconds": 6, "needsRef": true,
+      "refHint": "Sauce Empire bottle, obsidian glass, flame-orange label, hero product still",
+      "prompt": "STATIC HERO SHOT. The Sauce Empire bottle silhouetted on a mountain altar against the rising sun, golden rim light wrapping the obsidian glass, clouds drifting below. Cinematic, epic, premium." }
+  ]
+}

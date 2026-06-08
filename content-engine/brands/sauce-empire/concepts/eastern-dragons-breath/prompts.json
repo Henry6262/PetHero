@@ -1,0 +1,17 @@
+{
+  "concept": "eastern-dragons-breath",
+  "styleSuffix": "cinematic lighting, 35mm film grain, moody color grade, shallow depth of field, high production value, no text",
+  "negative": "extra limbs, distorted shapes, blurry, morphing, watermark, text, logo, subtitles",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "needsRef": false,
+      "prompt": "SLOW PUSH-IN. In darkness, a coil of incense smoke rises and curls into the silhouette of an Eastern dragon, then slowly parts. Single warm rim light, deep black background, volumetric smoke, ember sparks." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 6, "needsRef": false,
+      "prompt": "SLOW DOLLY through a misty mountain temple at dusk, red paper lanterns glowing, fog rolling between carved stone pillars, warm light. Moody, atmospheric, cinematic." },
+    { "id": 3, "type": "i2v", "model": "kling", "seconds": 6, "needsRef": true,
+      "refHint": "Sauce Empire bottle (obsidian glass, flame-orange label) beside a bowl of steaming noodles under red lantern light",
+      "prompt": "SLOW MACRO PUSH-IN. Glossy red chili-ginger hot sauce pours in ultra slow-motion over steaming noodles, lantern light reflecting off the glistening glaze, ginger and chili visible. Warm red-amber tones, shallow depth of field." },
+    { "id": 4, "type": "i2v", "model": "veo", "seconds": 6, "needsRef": true,
+      "refHint": "Sauce Empire bottle, obsidian glass, flame-orange label, hero product still",
+      "prompt": "STATIC HERO SHOT. The Sauce Empire bottle stands among red paper lanterns, warm glow on the obsidian glass, a wisp of dragon-smoke curling past. Cinematic, mystical, premium." }
+  ]
+}
