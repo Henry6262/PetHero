@@ -1,0 +1,12 @@
+node_modules/
+manifest.json
+brands/*/assets/clips/*
+brands/*/assets/vo/*
+brands/*/assets/music/*
+brands/*/assets/refs/*
+brands/*/output/*
+!**/.gitkeep
+*.mp4
+*.srt
+.env
+.env.local
