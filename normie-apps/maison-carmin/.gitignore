@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vercel
+.DS_Store
+
+# Raw Meshy exports — heavy, kept out of the bundle. Only compressed GLBs in
+# public/models/pieces/ ship.
+raw-art/
+_incoming/

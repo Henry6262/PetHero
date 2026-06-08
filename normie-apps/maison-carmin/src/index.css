@@ -1,0 +1,165 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bodoni-moda";
+@import "@fontsource-variable/bodoni-moda/wght-italic.css";
+@import "@fontsource-variable/inter";
+
+@theme {
+  /* surface / obsidian — near-black with a warm ruby undertone */
+  --color-obsidian: #060304;   /* page base */
+  --color-ink: #0d0809;        /* alt section bg / cards */
+  --color-charcoal: #170d0f;   /* raised cards */
+  --color-coal: #1f1416;       /* hover surfaces */
+  --color-line: #2a1a1d;       /* hairlines (dim, warm) */
+  --color-line-2: #3a242a;     /* brighter hairline */
+
+  /* ruby accent */
+  --color-blood: #8a0f1a;      /* deep ruby shadow */
+  --color-ruby: #c2102e;       /* primary accent, CTAs */
+  --color-ruby-lit: #ff2b46;   /* highlight / glow */
+  --color-rose: #ff8a9a;       /* soft tint */
+
+  /* metals + text */
+  --color-gold: #c9a24b;       /* clasps, dividers, secondary accent */
+  --color-gold-soft: #e3c980;  /* gold hover */
+  --color-platinum: #ece8e5;   /* near-white text */
+  --color-silver: #b3a9a6;     /* muted text */
+
+  --font-display: "Bodoni Moda Variable", "Bodoni Moda", "Didot", ui-serif, Georgia, serif;
+  --font-body: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+/* Lenis smooth-scroll required styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--color-obsidian);
+  color: var(--color-platinum);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Bodoni Moda is the fashion-house display face — ultra-high-contrast serif. */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+/* uppercase kicker / eyebrow */
+.label {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+::selection {
+  background: var(--color-ruby);
+  color: var(--color-platinum);
+}
+
+.no-bar {
+  scrollbar-width: none;
+}
+.no-bar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---- Obsidian & Ruby textures --------------------------------------- */
+
+/* Fine couture grid — used by the global backdrop. */
+.fine-grid {
+  background-image:
+    linear-gradient(to right, rgba(58, 36, 42, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(58, 36, 42, 0.4) 1px, transparent 1px);
+  background-size: 76px 76px;
+}
+
+/* Subtle diagonal sheen — like light raking across a vitrine. */
+.vitrine-sheen {
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 9px
+  );
+}
+
+/* Hairline gold rule that fades out toward both ends. */
+.gold-rule {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(201, 162, 75, 0.55),
+    transparent
+  );
+}
+
+/* Film-grain overlay (fixed, whole viewport) — depth + a touch of analog. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---- Keyframes for vendored React Bits (ported to Tailwind v4) -------- */
+
+/* StarBorder — duration is supplied inline via animationDuration. */
+@keyframes star-movement-bottom {
+  0%   { transform: translate(0%, 0%); opacity: 1; }
+  100% { transform: translate(-100%, 0%); opacity: 0; }
+}
+@keyframes star-movement-top {
+  0%   { transform: translate(0%, 0%); opacity: 1; }
+  100% { transform: translate(100%, 0%); opacity: 0; }
+}
+@utility animate-star-movement-bottom {
+  animation: star-movement-bottom linear infinite alternate;
+}
+@utility animate-star-movement-top {
+  animation: star-movement-top linear infinite alternate;
+}
+
+/* Marquee for the assurance strip */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 36s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
