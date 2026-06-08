@@ -6,8 +6,8 @@ import { cn } from "@app/lib/cn";
  */
 export function Divider({ kicker, className }: { kicker?: string; className?: string }) {
   return (
-    <div className={cn("w-full px-6 md:px-10", className)}>
-      <div className="mx-auto flex max-w-6xl items-center gap-5 py-10 md:py-14">
+    <div className={cn("w-full px-6 md:px-[10%]", className)}>
+      <div className="flex w-full items-center gap-5 py-10 md:py-14">
         <span className="h-px flex-1 gold-rule" />
         {kicker && <span className="label whitespace-nowrap text-silver/70">{kicker}</span>}
         <Diamond />

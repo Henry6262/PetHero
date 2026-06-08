@@ -7,8 +7,8 @@ export function Footer() {
   const { t, lang, setLang } = useT();
 
   return (
-    <footer id="atelier" className="border-t border-line bg-ink/50 px-6 py-16 md:px-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10">
+    <footer id="atelier" className="border-t border-line bg-ink/50 px-6 py-16 md:px-[10%]">
+      <div className="flex w-full flex-col gap-10">
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
             <p className="font-display text-3xl tracking-[0.06em] text-platinum">

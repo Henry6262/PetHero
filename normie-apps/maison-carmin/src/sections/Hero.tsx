@@ -3,18 +3,14 @@ import { useT } from "@app/i18n";
 import { cn } from "@app/lib/cn";
 import { useReducedMotion } from "@app/lib/useReducedMotion";
 import { CtaButton } from "@app/components/CtaButton";
-import { PIECES } from "@app/data/pieces";
 import ShinyText from "@/free/TextAnimations/ShinyText/ShinyText";
 import StarBorder from "@/free/Animations/StarBorder/StarBorder";
 import CountUp from "@/free/TextAnimations/CountUp/CountUp";
 
-// The 3D stage pulls in three.js — lazy-load it so first paint stays fast.
-const JewelryStage = lazy(() =>
-  import("@app/components/JewelryStage").then((m) => ({ default: m.JewelryStage }))
+// The 3D cluster pulls in three.js — lazy-load it so first paint stays fast.
+const HeroCluster = lazy(() =>
+  import("@app/components/HeroCluster").then((m) => ({ default: m.HeroCluster }))
 );
-
-// The hero shows the house signature piece, turning slowly on the right.
-const HERO_PIECE = PIECES[0];
 
 export function Hero() {
   const { t } = useT();
@@ -60,18 +56,18 @@ export function Hero() {
           </dl>
         </div>
 
-        {/* RIGHT — the signature piece, turning under a ruby spotlight */}
-        <div className="relative order-1 h-[42vh] min-h-[320px] md:order-2 md:h-[calc(100vh-12rem)]">
-          {/* spotlight: a soft dark pool + ruby light behind the piece, both
+        {/* RIGHT — the three pieces, big, floating + orbiting under a ruby spotlight */}
+        <div className="relative order-1 h-[48vh] min-h-[360px] md:order-2 md:h-[calc(100vh-12rem)]">
+          {/* spotlight: a soft dark pool + ruby light behind the cluster, both
               fading to transparent before the edges (no container box). */}
           <div className="pointer-events-none absolute inset-0">
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(60% 66% at 54% 52%, rgba(6,3,4,0.55), transparent 72%)" }}
+              style={{ background: "radial-gradient(62% 68% at 52% 50%, rgba(6,3,4,0.5), transparent 74%)" }}
             />
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(46% 50% at 56% 50%, rgba(255,43,70,0.22), transparent 64%)" }}
+              style={{ background: "radial-gradient(50% 54% at 54% 48%, rgba(255,43,70,0.22), transparent 66%)" }}
             />
           </div>
           <Suspense
@@ -81,7 +77,7 @@ export function Hero() {
               </div>
             }
           >
-            <JewelryStage piece={HERO_PIECE} reduced={reduced} glow={HERO_PIECE.glow} className="absolute inset-0" />
+            <HeroCluster reduced={reduced} className="absolute inset-0" />
           </Suspense>
         </div>
       </div>

@@ -26,11 +26,12 @@ export function Section({
     ink: "bg-ink/40 text-platinum",
   };
   return (
+    // Non-hero sections sit in 80% of the viewport — 10% margin each side on md+.
     <section
       id={id}
-      className={cn("w-full px-6 py-24 md:px-10 md:py-32", tones[tone], className)}
+      className={cn("w-full px-6 py-24 md:px-[10%] md:py-32", tones[tone], className)}
     >
-      <div className={cn("mx-auto w-full max-w-6xl", containerClassName)}>{children}</div>
+      <div className={cn("w-full", containerClassName)}>{children}</div>
     </section>
   );
 }
