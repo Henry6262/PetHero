@@ -24,25 +24,36 @@ export async function runVideo(o: RunVideoOpts): Promise<string> {
     voPath: o.voPath,
     musicPath: o.musicPath,
   });
-
-  let captionsPath: string | undefined;
-  if (o.caption && o.voPath) {
-    const segs = await transcribe(o.voPath);
-    captionsPath = o.outPath.replace(/\.\w+$/, ".srt");
-    await Bun.write(captionsPath, segmentsToSrt(segs));
-    rec.captionsPath = captionsPath;
-  }
+  // persist the record before expensive steps so state is resumable on crash.
+  saveManifest(o.manifestPath, m);
 
   transition(rec, "generating");
-  await runFfmpeg(
-    buildAssembleArgs({
-      clips: o.clips,
-      voPath: o.voPath,
-      musicPath: o.musicPath,
-      captionsPath,
-      outPath: o.outPath,
-    }),
-  );
+  saveManifest(o.manifestPath, m);
+
+  try {
+    let captionsPath: string | undefined;
+    if (o.caption && o.voPath) {
+      const segs = await transcribe(o.voPath);
+      captionsPath = o.outPath.replace(/\.\w+$/, ".srt");
+      await Bun.write(captionsPath, segmentsToSrt(segs));
+      rec.captionsPath = captionsPath;
+    }
+
+    await runFfmpeg(
+      buildAssembleArgs({
+        clips: o.clips,
+        voPath: o.voPath,
+        musicPath: o.musicPath,
+        captionsPath,
+        outPath: o.outPath,
+      }),
+    );
+  } catch (err) {
+    // leave the record in its `generating` state on disk for resume, then re-throw.
+    saveManifest(o.manifestPath, m);
+    throw err;
+  }
+
   rec.outputPath = o.outPath;
   transition(rec, "assembled");
 

@@ -29,12 +29,20 @@ export function buildAssembleArgs(o: AssembleOpts): string[] {
 
   const filters: string[] = [];
 
-  // 1. normalize each clip to the vertical canvas
+  // 1. normalize each clip to the vertical canvas (per-clip ken-burns zoom, pinned fps)
+  const zoom = o.zoom ?? true;
   o.clips.forEach((_, i) => {
-    filters.push(
+    const base =
       `[${i}:v]scale=${W}:${H}:force_original_aspect_ratio=increase,` +
-        `crop=${W}:${H},setsar=1,fps=${FPS}[v${i}]`,
-    );
+      `crop=${W}:${H},setsar=1,fps=${FPS}`;
+    if (zoom) {
+      filters.push(
+        `${base},zoompan=z='min(zoom+0.0008,1.1)':d=1:` +
+          `x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=${W}x${H}:fps=${FPS}[v${i}]`,
+      );
+    } else {
+      filters.push(`${base}[v${i}]`);
+    }
   });
 
   // 2. concat video streams
@@ -42,22 +50,13 @@ export function buildAssembleArgs(o: AssembleOpts): string[] {
   filters.push(`${vlabels}concat=n=${o.clips.length}:v=1:a=0[vcat]`);
   let vout = "vcat";
 
-  // 3. subtle slow zoom
-  if (o.zoom ?? true) {
-    filters.push(
-      `[${vout}]zoompan=z='min(zoom+0.0005,1.1)':d=1:` +
-        `x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=${W}x${H}[vz]`,
-    );
-    vout = "vz";
-  }
-
-  // 4. burn captions
+  // 3. burn captions
   if (o.captionsPath) {
     filters.push(`[${vout}]subtitles=${o.captionsPath}[vsub]`);
     vout = "vsub";
   }
 
-  // 5. audio: VO (full) + music (ducked), mixed
+  // 4. audio: VO (full) + music (ducked), mixed
   let aout: string | null = null;
   const parts: string[] = [];
   if (voIdx >= 0) { filters.push(`[${voIdx}:a]volume=1[vo]`); parts.push("vo"); }
@@ -70,6 +69,12 @@ export function buildAssembleArgs(o: AssembleOpts): string[] {
     aout = "aout";
   } else if (parts.length === 1) {
     aout = parts[0];
+  }
+
+  // pad audio so it never undercuts the video length (with -shortest, trims to finite video).
+  if (aout) {
+    filters.push(`[${aout}]apad[aout_padded]`);
+    aout = "aout_padded";
   }
 
   args.push("-filter_complex", filters.join(";"));
