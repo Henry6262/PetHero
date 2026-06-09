@@ -1,0 +1,21 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,72,&H00FFFFFF,&H000000FF,&H00282420,&H99000000,-1,0,0,0,100,100,0,0,1,3,1,2,80,80,170,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:02.16,Default,,0,0,0,,bulgarien schenkte der welt
+Dialogue: 0,0:00:02.16,0:00:03.12,Default,,0,0,0,,das joghurt.
+Dialogue: 0,0:00:03.12,0:00:04.81,Default,,0,0,0,,wir stellen es frisch
+Dialogue: 0,0:00:04.81,0:00:05.93,Default,,0,0,0,,in zürich her 
+Dialogue: 0,0:00:05.93,0:00:07.37,Default,,0,0,0,,originale kulturen
+Dialogue: 0,0:00:07.37,0:00:09.05,Default,,0,0,0,,reine schweizer milch
+Dialogue: 0,0:00:09.05,0:00:10.09,Default,,0,0,0,,ohne zusätze.
+Dialogue: 0,0:00:10.09,0:00:10.49,Default,,0,0,0,,krava
+Dialogue: 0,0:00:10.49,0:00:11.93,Default,,0,0,0,,schweizer reinheit
+Dialogue: 0,0:00:11.93,0:00:13.37,Default,,0,0,0,,bulgarische seele.

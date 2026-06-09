@@ -1,0 +1,27 @@
+anchor @ 4.2s, 163KB b64
+i2v shot 2...
+s2: submitted
+s2: processing
+s2: processing
+s2: processing
+s2: processing
+s2: processing
+s2: processing
+s2: processing
+s2: processing
+s2: succeed
+DONE s2
+i2v shot 3...
+s3: submitted
+s3: processing
+s3: processing
+s3: processing
+s3: processing
+s3: processing
+s3: processing
+s3: processing
+s3: processing
+s3: processing
+s3: succeed
+DONE s3
+ALL DONE i2v

@@ -1,0 +1,19 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,72,&H00FFFFFF,&H000000FF,&H00282420,&H99000000,-1,0,0,0,100,100,0,0,1,3,1,2,80,80,170,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:01.75,Default,,0,0,0,,forget the powder.
+Dialogue: 0,0:00:01.75,0:00:03.89,Default,,0,0,0,,this is what bulgarian
+Dialogue: 0,0:00:03.89,0:00:06.13,Default,,0,0,0,,strongmen actually eat.
+Dialogue: 0,0:00:06.13,0:00:07.29,Default,,0,0,0,,thick yogurt
+Dialogue: 0,0:00:07.29,0:00:08.75,Default,,0,0,0,,living cultures
+Dialogue: 0,0:00:08.75,0:00:10.31,Default,,0,0,0,,pure swiss milk.
+Dialogue: 0,0:00:10.31,0:00:10.89,Default,,0,0,0,,krava 
+Dialogue: 0,0:00:10.89,0:00:12.45,Default,,0,0,0,,fuel of legends.

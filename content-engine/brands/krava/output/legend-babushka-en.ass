@@ -1,0 +1,20 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,72,&H00FFFFFF,&H000000FF,&H00282420,&H99000000,-1,0,0,0,100,100,0,0,1,3,1,2,80,80,170,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:01.61,Default,,0,0,0,,for a thousand years
+Dialogue: 0,0:00:01.61,0:00:04.66,Default,,0,0,0,,bulgarian grandmothers kept one secret
+Dialogue: 0,0:00:04.66,0:00:05.54,Default,,0,0,0,,real yogurt
+Dialogue: 0,0:00:05.54,0:00:06.34,Default,,0,0,0,,made slow.
+Dialogue: 0,0:00:06.34,0:00:07.30,Default,,0,0,0,,no shortcuts
+Dialogue: 0,0:00:07.30,0:00:08.43,Default,,0,0,0,,nothing added.
+Dialogue: 0,0:00:08.43,0:00:10.11,Default,,0,0,0,,that secret is krava.
+Dialogue: 0,0:00:10.11,0:00:10.92,Default,,0,0,0,,swiss milk
+Dialogue: 0,0:00:10.92,0:00:12.12,Default,,0,0,0,,bulgarian soul.

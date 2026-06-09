@@ -14,6 +14,7 @@
  * (same shape as produce-krava-doesnt-fall.ts). VO is generated from vo.txt.
  */
 import { existsSync, mkdirSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { buildAssembleArgs } from "../src/lib/assemble";
 import { runFfmpeg } from "../src/lib/ffmpeg";
 import { generateText2Video } from "../src/lib/kling";
@@ -67,6 +68,46 @@ function ensureDir(path: string) {
 
 function escAss(text: string): string {
   return text.replace(/\{/g, "\\{").replace(/\}/g, "\\}");
+}
+
+function audioDuration(path: string): number {
+  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path]);
+  return parseFloat(r.stdout.toString().trim()) || 15;
+}
+
+function toAssTime(sec: number): string {
+  const cs = Math.max(0, Math.round(sec * 100));
+  const h = Math.floor(cs / 360000);
+  const m = Math.floor((cs % 360000) / 6000);
+  const s = Math.floor((cs % 6000) / 100);
+  const c = cs % 100;
+  return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${String(c).padStart(2, "0")}`;
+}
+
+/** Build captions FROM the spoken VO text, chunked + timed to the audio so text == voice. */
+function captionsFromVo(voText: string, dur: number): Caption[] {
+  const parts = voText
+    .replace(/[—–]/g, ",")
+    .split(/(?<=[,.;:!?])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const chunks: string[] = [];
+  for (const part of parts) {
+    const words = part.split(/\s+/);
+    if (words.length <= 5) chunks.push(part);
+    else for (let i = 0; i < words.length; i += 4) chunks.push(words.slice(i, i + 4).join(" "));
+  }
+  const clean = chunks.map((c) => c.replace(/[,;:]+$/, "").toLowerCase());
+  const total = clean.reduce((a, c) => a + c.length, 0) || 1;
+  const caps: Caption[] = [];
+  let acc = 0;
+  for (const c of clean) {
+    const start = (dur * acc) / total;
+    acc += c.length;
+    const end = (dur * acc) / total;
+    caps.push({ start: toAssTime(start), end: toAssTime(end), text: c });
+  }
+  return caps;
 }
 
 function makeAss(captions: Caption[]): string {
@@ -155,7 +196,9 @@ if (ad.clips && ad.clips.length > 0) {
 }
 
 // 3. Captions
-await Bun.write(captionsPath, makeAss(ad.captions));
+const captions =
+  Bun.env.CAPTION_MODE === "vo" ? captionsFromVo(voText, audioDuration(voPath)) : ad.captions;
+await Bun.write(captionsPath, makeAss(captions));
 console.log(`Captions written: ${captionsPath}`);
 
 // 4. Assemble
