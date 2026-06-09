@@ -1,0 +1,19 @@
+{
+  "concept": "thickness-test-en",
+  "language": "en",
+  "platform": "TikTok / IG Reels (organic-first hook)",
+  "funnel": "top-funnel viral / prospecting",
+  "adType": "Thickness Test (slice + spoon stands)",
+  "clips": [
+    "brands/krava/assets/clips/thickness-test-en/s2.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s1.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s2.mp4"
+  ],
+  "voice": { "stability": 0.4, "similarityBoost": 0.9, "style": 0.35 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "THICK ENOUGH\\NTO SLICE." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "THE SPOON\\NSTANDS UP." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "NO THICKENERS.\\NNOTHING ADDED." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "KRAVA. FRESH\\NIN ZÜRICH." }
+  ]
+}

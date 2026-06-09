@@ -1,0 +1,19 @@
+{
+  "concept": "heritage-en",
+  "language": "en",
+  "platform": "Instagram Reels / YouTube Shorts",
+  "funnel": "middle-funnel / brand",
+  "adType": "Heritage / Authenticity",
+  "clips": [
+    "brands/krava/assets/clips/farm-to-fridge-en/s2.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s2.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s3.mp4"
+  ],
+  "voice": { "stability": 0.6, "similarityBoost": 0.9, "style": 0.25 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "BULGARIA GAVE THE\\NWORLD YOGURT." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "AN ANCIENT CRAFT." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "MADE FRESH\\NIN ZÜRICH." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "SWISS PURITY,\\NBULGARIAN SOUL." }
+  ]
+}

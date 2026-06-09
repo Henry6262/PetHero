@@ -1,0 +1,28 @@
+{
+  "concept": "thickness-test-en",
+  "styleSuffix": "extreme macro food cinematography, photorealistic, soft natural side light, clean marble and cream tones, shallow depth of field, ASMR close-up, glossy dense dairy texture, tiny air pockets, no text",
+  "negative": "liquid, milk, pouring, flowing, dripping, runny, watery, sagging, slosh, splash, melting, spoon falling, watermark, subtitles, text, logo, brand label, deformed hands, duplicate fingers, extra fingers, distorted spoon, plastic texture, artificial gloss, low resolution, blurry, motion blur",
+  "shots": [
+    {
+      "id": 1,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "Extreme macro, locked tripod. A clear glass jar is held completely upside down from the very first frame, mouth facing straight down, packed with extremely thick SET white yogurt that behaves exactly like solid panna cotta or cold cream cheese. A silver spoon is embedded in it. The yogurt is completely motionless, dense and solid: it does NOT flow, pour, drip, sag or fall, not a single drop leaves the jar, the surface stays perfectly flat against gravity. Clean white marble counter, soft daylight, photorealistic."
+    },
+    {
+      "id": 2,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "Extreme macro slow motion. A sharp knife slices cleanly down through the surface of extremely thick set white yogurt in a shallow ceramic bowl and lifts out a firm wedge that holds a sharp clean edge like cheesecake. Dense glossy texture, tiny natural air pockets, soft side light, premium dairy close-up."
+    },
+    {
+      "id": 3,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "Extreme macro slow motion. A thick glossy ribbon of white yogurt falls slowly from a raised spoon and folds into a tall standing peak in a ceramic bowl, holding its shape without spreading or melting. Rich velvety dense texture, ASMR food close-up, soft natural window light."
+    }
+  ]
+}

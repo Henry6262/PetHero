@@ -1,0 +1,28 @@
+{
+  "concept": "doesnt-fall",
+  "durationSeconds": 15,
+  "format": "9:16 vertical",
+  "shots": [
+    {
+      "id": 1,
+      "seconds": 5,
+      "type": "t2v",
+      "description": "Spoon Test macro hook: spoon stands upright in thick yogurt.",
+      "onscreenText": "THIS SPOON DOESN'T FALL."
+    },
+    {
+      "id": 2,
+      "seconds": 5,
+      "type": "t2v",
+      "description": "Sensory yogurt folds, honey drizzle, berries, slow motion.",
+      "onscreenText": "4,000 YEARS. NOTHING ADDED."
+    },
+    {
+      "id": 3,
+      "seconds": 5,
+      "type": "t2v",
+      "description": "Premium Zurich breakfast ritual and order CTA.",
+      "onscreenText": "FRESH IN ZURICH. ORDER TODAY."
+    }
+  ]
+}

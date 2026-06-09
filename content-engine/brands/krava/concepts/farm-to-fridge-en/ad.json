@@ -1,0 +1,13 @@
+{
+  "concept": "farm-to-fridge-en",
+  "language": "en",
+  "platform": "TikTok Ads (Switzerland food / health / regional lifestyle)",
+  "funnel": "cold prospecting",
+  "voice": { "stability": 0.5, "similarityBoost": 0.88, "style": 0.25 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "CRAFTED IN ZÜRICH.\\NDELIVERED FRESH." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "FARM TO FRIDGE\\NIN 48 HOURS." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "NATURALLY RICH.\\NNOTHING ARTIFICIAL." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "START WEEKLY DELIVERY.\\NFRESH IN ZÜRICH." }
+  ]
+}

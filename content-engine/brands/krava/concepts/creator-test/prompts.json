@@ -1,0 +1,21 @@
+{
+  "concept": "creator-test",
+  "styleSuffix": "authentic UGC style shot on a phone, natural soft window light, realistic skin texture with pores, photorealistic, candid, vertical 9:16",
+  "negative": "deformed face, asymmetric eyes, crossed eyes, extra fingers, missing fingers, fused fingers, deformed hands, extra hands, plastic skin, waxy skin, uncanny, distorted mouth, distorted teeth, multiple people, duplicate face, watermark, text, logo, blurry, low resolution, oversmoothed",
+  "shots": [
+    {
+      "id": 1,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "A natural attractive young woman in a bright modern Zurich kitchen lifts a spoon of very thick white yogurt from a glass jar and takes a slow bite, then gives a genuine, relaxed satisfied smile toward the camera. Candid phone-selfie UGC energy, soft morning window light, realistic detailed skin, calm authentic expression."
+    },
+    {
+      "id": 2,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "A young woman holds a clear glass jar of extremely thick white yogurt close to the camera and slowly pulls a spoon straight up out of it, the dense yogurt clinging and stretching thickly without dripping, she raises her eyebrows, quietly impressed. Authentic phone-filmed UGC look, natural soft daylight, realistic skin."
+    }
+  ]
+}

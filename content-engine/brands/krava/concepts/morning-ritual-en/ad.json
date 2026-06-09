@@ -1,0 +1,19 @@
+{
+  "concept": "morning-ritual-en",
+  "language": "en",
+  "platform": "TikTok / Instagram Reels",
+  "funnel": "cold prospecting",
+  "adType": "Morning Routine Framing",
+  "clips": [
+    "brands/krava/assets/clips/doesnt-fall/s3.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s2.mp4",
+    "brands/krava/assets/clips/farm-to-fridge-en/s3.mp4"
+  ],
+  "voice": { "stability": 0.45, "similarityBoost": 0.88, "style": 0.3 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "MORNING FUEL." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "THICK.\\NNOTHING ARTIFICIAL." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "SWISS MILK,\\NBULGARIAN SOUL." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "START TOMORROW\\NWITH KRAVA." }
+  ]
+}

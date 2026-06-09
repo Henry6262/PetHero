@@ -1,0 +1,19 @@
+{
+  "concept": "thickness-test-de",
+  "language": "de-CH",
+  "platform": "TikTok / IG Reels (Zürich, organic-first hook)",
+  "funnel": "top-funnel viral / prospecting",
+  "adType": "Thickness Test (slice + spoon stands)",
+  "clips": [
+    "brands/krava/assets/clips/thickness-test-en/s2.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s1.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s2.mp4"
+  ],
+  "voice": { "stability": 0.45, "similarityBoost": 0.88, "style": 0.3 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "DICK GENUG\\NZUM SCHNEIDEN." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "DER LÖFFEL\\NSTEHT." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "OHNE ZUSÄTZE.\\NNUR MILCH & ZEIT." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "KRAVA. FRISCH\\NAUS ZÜRICH." }
+  ]
+}

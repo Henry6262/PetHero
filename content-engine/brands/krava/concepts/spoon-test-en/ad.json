@@ -1,0 +1,14 @@
+{
+  "concept": "spoon-test-en",
+  "language": "en",
+  "platform": "Meta Reels & Instagram Stories",
+  "funnel": "cold prospecting",
+  "reuseClipsFrom": "doesnt-fall",
+  "voice": { "stability": 0.55, "similarityBoost": 0.88, "style": 0.2 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "THE SPOON TEST." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "100% CLEAN.\\NZERO THICKENERS." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "SWISS PURITY,\\NBULGARIAN SOUL." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "FRESH ZÜRICH DELIVERY.\\NTRY YOUR FIRST JAR." }
+  ]
+}

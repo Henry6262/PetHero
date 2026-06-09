@@ -10,3 +10,8 @@ brands/*/output/*
 *.srt
 .env
 .env.local
+
+# --- Krava ad library: GOLDEN deliverables, always keep tracked ---
+!public/krava/**
+!brands/krava/assets/clips/**
+!brands/krava/assets/vo/**

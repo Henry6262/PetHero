@@ -1,0 +1,28 @@
+{
+  "concept": "farm-to-fridge-en",
+  "styleSuffix": "premium commercial food cinematography, photorealistic, natural Swiss morning light, clean cream and stone tones, shallow depth of field, 35mm lens, high-end dairy advertisement, smooth slow motion, no text",
+  "negative": "watermark, subtitles, text, logo, brand label, deformed hands, duplicate fingers, extra fingers, distorted spoon, floating ingredients, plastic texture, artificial gloss, messy kitchen, low resolution, blurry, overexposed, excessive motion blur",
+  "shots": [
+    {
+      "id": 1,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "POV doorstep shot. A cold unbranded glass jar of thick white yogurt sits in a modern grey insulated delivery bag on a sunlit wooden apartment doorstep in Zurich. A hand reaches down and lifts the jar slowly toward camera. Warm morning sunlight, gentle lens flare, upscale clean residential entrance, condensation on the cold glass."
+    },
+    {
+      "id": 2,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "Cinematic tracking shot of pristine Swiss alpine cows grazing on a lush green pasture under misty mountains, then a smooth lateral transition into a clean modern dairy where fresh white milk pours into a polished stainless steel fermentation vat, soft natural light, premium documentary feel."
+    },
+    {
+      "id": 3,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "Overhead top-down flat lay. A grey stone plate holds a generous swirl of ultra-thick white yogurt spread with the back of a spoon into soft ridges. Fresh raspberries settle naturally onto the surface in slow motion, followed by a glistening drizzle of golden honey from a wooden dipper catching bright kitchen light. Clean cookbook aesthetic, no hands, rich dairy texture."
+    }
+  ]
+}

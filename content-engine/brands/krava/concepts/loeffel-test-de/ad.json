@@ -1,0 +1,14 @@
+{
+  "concept": "loeffel-test-de",
+  "language": "de-CH",
+  "platform": "Meta Reels & Instagram Stories (Zürich postcodes)",
+  "funnel": "cold prospecting",
+  "reuseClipsFrom": "doesnt-fall",
+  "voice": { "stability": 0.6, "similarityBoost": 0.85, "style": 0.15 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "DER LÖFFEL-TEST." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "100% NATÜRLICH.\\NOHNE GELATINE." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "SCHWEIZER REINHEIT,\\NBULGARISCHE SEELE." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "FRISCH GELIEFERT IN ZÜRICH.\\NERSTES GLAS TESTEN." }
+  ]
+}

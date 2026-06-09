@@ -1,0 +1,29 @@
+{
+  "concept": "breakfast-muse-en",
+  "character": "a 25-year-old Russian woman, long straight jet-black hair (true deep black), pale fair porcelain skin, striking ice-blue eyes, high cheekbones, elegant Slavic features, natural minimal makeup",
+  "styleSuffix": "premium editorial UGC, photorealistic, natural soft morning window light, realistic detailed skin with pores, cinematic shallow depth of field, vertical 9:16, warm sensual elegant mood, no text",
+  "negative": "brown hair, brunette, dark brown hair, blonde hair, dyed roots, deformed face, asymmetric eyes, crossed eyes, lazy eye, extra fingers, missing fingers, fused fingers, deformed hands, extra hands, plastic skin, waxy skin, uncanny valley, distorted mouth, distorted teeth, multiple people, duplicate face, watermark, text, logo, blurry, low resolution, oversmoothed, heavy makeup",
+  "shots": [
+    {
+      "id": 1,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "CLOSE-UP. A 25-year-old Russian woman with long straight jet-black hair (true deep black), striking ice-blue eyes and pale fair porcelain skin with high cheekbones sits at a sunlit minimalist Zurich breakfast table. She lifts a spoon of thick white yogurt and takes a slow, elegant bite, with a soft natural smile, looking toward the camera. Warm morning window light, white marble and linen, intimate and calm."
+    },
+    {
+      "id": 2,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "EXTREME CLOSE-UP of her face: a 25-year-old Russian woman with long jet-black hair, striking ice-blue eyes, fair clear skin. Her eyes slowly close as she savors a spoonful of thick yogurt, a serene content smile spreading. Intimate soft morning light, shallow focus, delicate and sensual."
+    },
+    {
+      "id": 3,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "CLOSE-UP. A 25-year-old Russian woman with long jet-black hair and ice-blue eyes holds a clear glass jar of thick white yogurt in one hand and a spoon in the other, takes a relaxed elegant spoonful, then looks straight at the camera with a confident, inviting smile. Bright minimalist Zurich kitchen, marble counter, fresh berries, soft morning light."
+    }
+  ]
+}

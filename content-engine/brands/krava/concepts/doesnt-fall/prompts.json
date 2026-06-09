@@ -1,0 +1,28 @@
+{
+  "concept": "doesnt-fall",
+  "styleSuffix": "premium commercial food cinematography, photorealistic, natural Swiss morning light, clean marble and warm cream tones, shallow depth of field, 35mm lens, high-end dairy advertisement, smooth slow motion, no text",
+  "negative": "watermark, subtitles, text, logo, distorted spoon, melting spoon, extra hands, deformed fingers, messy kitchen, low resolution, blurry, artificial plastic texture, overexposed yogurt, product label hallucination",
+  "shots": [
+    {
+      "id": 1,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "SLOW MACRO PUSH-IN. A polished silver spoon stands perfectly upright in an elegant ceramic bowl of extremely thick white Bulgarian yogurt. The spoon does not move or fall. Sunlit Zurich apartment breakfast table, soft cream linen, subtle marble surface, premium minimal styling, appetizing texture, tiny air bubbles in the yogurt surface."
+    },
+    {
+      "id": 2,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "ULTRA SLOW MOTION MACRO. Thick creamy white yogurt folds over itself like silk in a ceramic bowl. A thin golden honey drizzle lands on the surface, then a few blueberries and raspberries drop gently, creating rich glossy ripples. Beautiful food styling, tactile texture, premium breakfast ritual."
+    },
+    {
+      "id": 3,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "CLEAN PREMIUM HERO BREAKFAST SHOT. A beautiful bowl of thick Bulgarian yogurt with honey and berries sits on a bright Zurich kitchen counter beside a simple unbranded glass yogurt jar with a red accent cloth and fresh berries. A hand lifts one perfect spoonful slowly toward camera. Elegant Swiss apartment morning, premium dairy ad, warm natural light."
+    }
+  ]
+}

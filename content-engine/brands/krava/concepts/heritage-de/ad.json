@@ -1,0 +1,19 @@
+{
+  "concept": "heritage-de",
+  "language": "de-CH",
+  "platform": "Instagram Reels / YouTube Shorts (Zürich)",
+  "funnel": "middle-funnel / brand",
+  "adType": "Heritage / Authenticity",
+  "clips": [
+    "brands/krava/assets/clips/farm-to-fridge-en/s2.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s2.mp4",
+    "brands/krava/assets/clips/doesnt-fall/s3.mp4"
+  ],
+  "voice": { "stability": 0.6, "similarityBoost": 0.88, "style": 0.2 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "BULGARIEN ERFAND\\NDAS JOGHURT." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "EIN ALTES HANDWERK." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "FRISCH IN\\NZÜRICH GEMACHT." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "SCHWEIZER REINHEIT,\\NBULGARISCHE SEELE." }
+  ]
+}
