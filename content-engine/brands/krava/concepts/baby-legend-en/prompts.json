@@ -1,0 +1,28 @@
+{
+  "concept": "baby-legend-en",
+  "styleSuffix": "photorealistic, cinematic, warm natural light, high detail, vertical 9:16, no text",
+  "negative": "deformed face, distorted baby face, creepy, uncanny, scary, extra fingers, missing fingers, fused fingers, deformed hands, extra limbs, multiple babies, duplicate face, mutated, horror, watermark, text, logo, blurry, low resolution",
+  "shots": [
+    {
+      "id": 1,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "WIDE SHOT, warm sunlit cozy Zurich kitchen. A young mother sits with her chubby happy baby on her lap and gently offers a spoon of thick white yogurt from a glass jar. The baby smiles and reaches for it. Soft morning window light, wholesome and tender, photorealistic, medium-wide framing."
+    },
+    {
+      "id": 2,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "CLOSE-UP, slightly low angle, of a happy chubby baby in a wooden high chair joyfully eating a spoonful of thick white yogurt, giggling with delight, a little yogurt on its cheek. Warm kitchen light, adorable and funny, photorealistic, shallow depth of field."
+    },
+    {
+      "id": 3,
+      "type": "t2v",
+      "model": "kling",
+      "seconds": 5,
+      "prompt": "EPIC LOW-ANGLE HERO SHOT, comedic and cinematic. A giant powerful muscular Viking baby wearing a tiny fur cape stands triumphantly like a mighty Valhalla god, larger than life, flexing playfully with a proud grin. Dramatic golden light, storm clouds and god rays behind, epic fantasy mood, funny, photorealistic."
+    }
+  ]
+}
