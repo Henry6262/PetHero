@@ -1,0 +1,10 @@
+{
+  "concept": "legend-babushka-en",
+  "styleSuffix": "photorealistic, cinematic, warm candlelit and morning light, rich detail, vertical 9:16, no text",
+  "negative": "deformed face, extra fingers, fused fingers, deformed hands, uncanny, multiple people, duplicate face, mutated, watermark, text, logo, blurry, low resolution",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "WIDE SHOT. A warm elderly Bulgarian grandmother in a traditional embroidered dress and headscarf slowly stirs a clay pot of thick white yogurt in a rustic mountain kitchen, steam rising, warm candlelight and morning glow through a small window. Tender, timeless, photorealistic." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "CLOSE-UP. The weathered hands of an old Bulgarian grandmother lift a wooden spoon of extremely thick white yogurt from a clay pot, then she looks up with a warm knowing smile toward the camera. Soft warm light, deep wrinkles, authentic, photorealistic, shallow depth of field." },
+    { "id": 3, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "MEDIUM SHOT. The Bulgarian grandmother sets a clear glass jar of thick white yogurt down on a worn wooden table beside fresh berries and a honeycomb, and nods proudly. Rustic warm kitchen, golden window light, photorealistic." }
+  ]
+}

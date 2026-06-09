@@ -1,0 +1,14 @@
+{
+  "concept": "legend-babushka-en",
+  "language": "en",
+  "platform": "IG Reels / TikTok (heritage)",
+  "funnel": "mid-funnel / brand",
+  "adType": "Krava Legends — the Babushka (heritage source of the legend)",
+  "voice": { "voiceId": "pNInz6obpgDQGcFmaJgB", "stability": 0.5, "similarityBoost": 0.9, "style": 0.3 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "the babushka secret" },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "1000 years.\\nmade slow." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "nothing added.\\njust milk & time." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "KRAVA — bulgarian soul" }
+  ]
+}

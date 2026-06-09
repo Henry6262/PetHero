@@ -1,0 +1,15 @@
+{
+  "concept": "baby-legend-de",
+  "language": "de-CH",
+  "platform": "TikTok / IG Reels (Zürich, meme / viral)",
+  "funnel": "top-funnel viral",
+  "adType": "Comedy legend — baby + Bulgarian yogurt -> Valhalla god",
+  "reuseClipsFrom": "baby-legend-en",
+  "voice": { "voiceId": "pNInz6obpgDQGcFmaJgB", "stability": 0.4, "similarityBoost": 0.9, "style": 0.45 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "\"nur joghurt\",\\nsagten sie." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "ein löffel\\nbulgarisches krava..." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "...und eine legende\\nist geboren." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "KRAVA — schweizer milch,\\nbulgarische seele." }
+  ]
+}

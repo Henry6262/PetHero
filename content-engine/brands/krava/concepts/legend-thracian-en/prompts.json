@@ -1,0 +1,10 @@
+{
+  "concept": "legend-thracian-en",
+  "styleSuffix": "photorealistic, epic cinematic, misty dawn light, ancient mythic mood, high detail, vertical 9:16, no text",
+  "negative": "deformed face, extra fingers, fused fingers, deformed hands, extra limbs, uncanny, multiple people, duplicate face, mutated, modern objects, watermark, text, logo, blurry, low resolution",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "A rugged ancient Thracian warrior in fur and leather sits by a fire at dawn in misty Balkan mountains, a clay pot of yogurt beside him, breath visible in cold air. Epic, mythic, cinematic, photorealistic." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "CLOSE-UP. The ancient Thracian warrior drinks thick white yogurt from a rough clay bowl, firelight on his weathered face, a drop on his beard, solemn ritual. Warm firelight, photorealistic, shallow depth of field." },
+    { "id": 3, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "EPIC WIDE LOW-ANGLE. The Thracian warrior stands on a mountain peak at golden sunrise holding the clay pot high, sweeping misty Balkan range behind, the birth of a legend. Cinematic epic mythic mood, photorealistic." }
+  ]
+}

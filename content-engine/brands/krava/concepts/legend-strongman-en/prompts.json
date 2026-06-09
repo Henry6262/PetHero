@@ -1,0 +1,10 @@
+{
+  "concept": "legend-strongman-en",
+  "styleSuffix": "photorealistic, cinematic, dramatic gym lighting and golden epic light, high detail, vertical 9:16, no text",
+  "negative": "deformed face, extra fingers, fused fingers, deformed hands, extra limbs, uncanny, multiple people, duplicate face, mutated, watermark, text, logo, blurry, low resolution",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "A huge muscular bearded strongman mid heavy deadlift in a moody gym, veins and intensity, dramatic side lighting, sweat, powerful. Cinematic, photorealistic, low angle." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "CLOSE-UP. The same massive bearded strongman cracks open a clear glass jar of thick white yogurt and eats a big spoonful, nodding with calm satisfied power. Gym background, dramatic light, photorealistic." },
+    { "id": 3, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "EPIC LOW-ANGLE HERO SHOT, slightly comedic. The giant bearded strongman flexes triumphantly, golden god rays behind him, larger than life, proud grin. Cinematic epic mood, photorealistic." }
+  ]
+}

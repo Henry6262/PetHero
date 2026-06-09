@@ -1,0 +1,14 @@
+{
+  "concept": "legend-thracian-en",
+  "language": "en",
+  "platform": "IG Reels / YouTube Shorts (epic heritage)",
+  "funnel": "mid-funnel / brand",
+  "adType": "Krava Legends — the Thracian Origin (mythic birth of yogurt)",
+  "voice": { "voiceId": "pNInz6obpgDQGcFmaJgB", "stability": 0.45, "similarityBoost": 0.9, "style": 0.4 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "thrace. 3000 years ago." },
+    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "the first yogurt\\nis born." },
+    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "the fire still burns." },
+    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "KRAVA — swiss purity,\\nbulgarian soul" }
+  ]
+}
