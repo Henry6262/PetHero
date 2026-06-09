@@ -13,6 +13,7 @@
 | 06 | `06-heritage` | Bulgaria → Zürich story | Reels/Shorts, mid-funnel | solid |
 | 07 | `07-creator-muse` | UGC creator eating breakfast (AI human) | TikTok/IG, cold | ⭐ premium |
 | 08 | `08-baby-legend` | comedy: baby + yogurt -> Valhalla god | TikTok/IG meme | ⭐ viral swing |
+| 09 | `09-legends` | Krava Legends: babushka / strongman / thracian | Reels/TikTok, brand+meme | ⭐ series |
 
 Each folder holds `...-en.mp4` (English) and `...-de.mp4` (Swiss High German).
 
