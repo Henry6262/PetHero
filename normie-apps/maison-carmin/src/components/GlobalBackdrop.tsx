@@ -1,12 +1,26 @@
+import { lazy, Suspense } from "react";
+import { useReducedMotion } from "@app/lib/useReducedMotion";
+
+// The aurora pulls in three.js — lazy-load so it never blocks first paint.
+const AuroraBackdrop = lazy(() =>
+  import("@app/components/AuroraBackdrop").then((m) => ({ default: m.AuroraBackdrop }))
+);
+
 /**
- * One fixed, full-page backdrop shared by every section: a fine couture grid, a
- * diagonal vitrine sheen, ruby light pooling from the top and floor, and an edge
- * vignette for depth. Pure CSS — reduced-motion-safe, cheap, and it does NOT
- * include any 3D (those live in the hero + collection canvases only).
+ * One fixed, full-page backdrop shared by every section: a living ruby/gold
+ * aurora (WebGL) at the base, then a fine couture grid, a diagonal vitrine
+ * sheen, ruby light pooling from the top and floor, and an edge vignette for
+ * depth. The aurora animates + drifts on scroll (slow parallax); the CSS layers
+ * sit on top for texture. Reduced-motion freezes the aurora.
  */
 export function GlobalBackdrop() {
+  const reduced = useReducedMotion();
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-obsidian" aria-hidden>
+      {/* living ruby/gold aurora — the animated, parallaxing base layer */}
+      <Suspense fallback={null}>
+        <AuroraBackdrop reduced={reduced} className="absolute inset-0 opacity-70" />
+      </Suspense>
       {/* couture grid, faded toward the edges */}
       <div
         className="absolute inset-0 fine-grid opacity-40"

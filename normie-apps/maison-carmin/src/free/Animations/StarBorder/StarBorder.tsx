@@ -25,7 +25,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
 
   return (
     <Component
-      className={`relative inline-block overflow-hidden rounded-[2px] ${className}`}
+      className={`relative inline-block overflow-hidden rounded-full ${className}`}
       {...(rest as any)}
       style={{
         padding: `${thickness}px 0`,
@@ -46,7 +46,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
           animationDuration: speed
         }}
       ></div>
-      <div className="relative z-[1] rounded-[1px] bg-ruby px-[26px] py-[15px] text-center text-[13px] font-semibold uppercase tracking-[0.18em] text-platinum">
+      <div className="relative z-[1] rounded-full bg-ruby px-[26px] py-[15px] text-center text-[13px] font-semibold uppercase tracking-[0.18em] text-platinum">
         {children}
       </div>
     </Component>

@@ -42,7 +42,7 @@ export function Hero() {
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <StarBorder as="a" href="#collection">{t("hero.ctaCollection")}</StarBorder>
-            <CtaButton as="a" href="#bespoke" variant="ghost">{t("hero.ctaBespoke")}</CtaButton>
+            <CtaButton as="a" href="#bespoke" variant="glass">{t("hero.ctaBespoke")}</CtaButton>
           </div>
 
           {/* hairline gold separator */}

@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@app/lib/cn";
 
-type Variant = "ruby" | "ghost" | "gold";
+type Variant = "ruby" | "ghost" | "gold" | "glass";
 type Common = { children: React.ReactNode; className?: string; variant?: Variant };
 type AsLink = Common & { as?: "a"; href: string };
 type AsButton = Common & {
@@ -13,21 +13,25 @@ type AsButton = Common & {
 type Props = AsLink | AsButton;
 
 // Editorial CTA. `ruby` = solid ruby fill (primary). `ghost` = gold hairline on
-// transparent (secondary). `gold` = solid gold fill (rare emphasis). Sharp 2px
-// corners to match the couture/technical aesthetic.
+// transparent (secondary). `gold` = solid gold fill (rare emphasis). Fully
+// rounded pill corners for a softer, jewellery-counter feel.
 const base =
-  "group inline-flex items-center gap-3 rounded-[2px] px-7 py-3.5 text-[0.78rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-200 disabled:cursor-default disabled:opacity-60";
+  "group inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-[0.78rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-200 disabled:cursor-default disabled:opacity-60";
 
 const variants: Record<Variant, string> = {
   ruby: "bg-ruby text-platinum hover:bg-ruby-lit",
   ghost: "border border-gold/45 text-gold hover:border-gold hover:bg-gold/10",
   gold: "bg-gold text-obsidian hover:bg-gold-soft",
+  // frosted glass — translucent fill + backdrop blur, hairline white edge
+  glass:
+    "border border-white/15 bg-white/5 text-platinum backdrop-blur-md hover:bg-white/10 hover:border-white/25",
 };
 
 const lineColor: Record<Variant, string> = {
   ruby: "bg-platinum",
   ghost: "bg-gold",
   gold: "bg-obsidian",
+  glass: "bg-platinum",
 };
 
 export function CtaButton(props: Props) {

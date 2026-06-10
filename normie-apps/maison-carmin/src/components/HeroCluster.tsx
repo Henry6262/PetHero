@@ -1,7 +1,17 @@
-import React, { Suspense, useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
+import React, { Suspense, useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, Lightformer, Sparkles, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+
+// Gentle continuous turntable. `speed` is rad/s — kept low so it reads as a
+// slow rotisserie glint rather than a spin.
+function Spin({ speed, children }: { speed: number; children: React.ReactNode }) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((_, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * speed;
+  });
+  return <group ref={ref}>{children}</group>;
+}
 
 const MODELS = [
   "/models/pieces/jewel-01.glb",
@@ -38,14 +48,17 @@ function Normalized({ src, target }: { src: string; target: number }) {
 }
 
 /**
- * The three pieces clustered close together, each floating gently up and down on
- * its own slow bob (no spin, no camera/group rotation).
+ * The three pieces clustered close together. Each floats gently up and down on
+ * its own slow bob AND turns slowly on its own axis (a soft turntable) so the
+ * facets catch the ruby light. Spin is disabled under reduced-motion.
  */
 function Cluster({ reduced }: { reduced: boolean }) {
   return (
     <group>
       {MODELS.map((src, i) => {
         const [x, y, z, target] = LAYOUT[i];
+        // slightly different speed + direction per piece so they don't lock-step
+        const spin = (0.16 + i * 0.04) * (i % 2 === 0 ? 1 : -1);
         return (
           <Float
             key={src}
@@ -55,7 +68,13 @@ function Cluster({ reduced }: { reduced: boolean }) {
             floatIntensity={reduced ? 0 : 1}
             floatingRange={[-0.18, 0.18]}
           >
-            <Normalized src={src} target={target} />
+            {reduced ? (
+              <Normalized src={src} target={target} />
+            ) : (
+              <Spin speed={spin}>
+                <Normalized src={src} target={target} />
+              </Spin>
+            )}
           </Float>
         );
       })}
