@@ -9,11 +9,33 @@
     "brands/krava/assets/clips/farm-to-fridge-en/s3.mp4",
     "brands/krava/assets/clips/doesnt-fall/s1.mp4"
   ],
-  "voice": { "stability": 0.55, "similarityBoost": 0.85, "style": 0.15 },
+  "voice": {
+    "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+    "stability": 0.4,
+    "similarityBoost": 0.85,
+    "style": 0.15,
+    "speed": 0.82
+  },
   "captions": [
-    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "ECHTES JOGHURT\\NLEBT." },
-    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "LEBENDIGE\\NBULGARISCHE KULTUREN." },
-    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "OHNE FÜLLSTOFFE.\\NNUR MILCH & ZEIT." },
-    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "SCHMECK DEN\\NUNTERSCHIED." }
+    {
+      "start": "0:00:00.00",
+      "end": "0:00:03.80",
+      "text": "ECHTES JOGHURT\\NLEBT."
+    },
+    {
+      "start": "0:00:03.80",
+      "end": "0:00:07.80",
+      "text": "LEBENDIGE\\NBULGARISCHE KULTUREN."
+    },
+    {
+      "start": "0:00:07.80",
+      "end": "0:00:11.20",
+      "text": "OHNE FÜLLSTOFFE.\\NNUR MILCH & ZEIT."
+    },
+    {
+      "start": "0:00:11.20",
+      "end": "0:00:15.00",
+      "text": "SCHMECK DEN\\NUNTERSCHIED."
+    }
   ]
 }

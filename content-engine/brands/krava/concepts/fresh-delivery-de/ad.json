@@ -5,11 +5,33 @@
   "funnel": "cold prospecting",
   "adType": "Fresh Delivery + Offer",
   "reuseClipsFrom": "farm-to-fridge-en",
-  "voice": { "stability": 0.5, "similarityBoost": 0.85, "style": 0.2 },
+  "voice": {
+    "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+    "stability": 0.4,
+    "similarityBoost": 0.85,
+    "style": 0.15,
+    "speed": 0.82
+  },
   "captions": [
-    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "NIE MEHR LEER." },
-    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "FRISCH NACH\\NZÜRICH." },
-    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "JEDE WOCHE\\NVOR DIE TÜR." },
-    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "ERSTE LIEFERUNG\\NSICHERN." }
+    {
+      "start": "0:00:00.00",
+      "end": "0:00:03.80",
+      "text": "NIE MEHR LEER."
+    },
+    {
+      "start": "0:00:03.80",
+      "end": "0:00:07.80",
+      "text": "FRISCH NACH\\NZÜRICH."
+    },
+    {
+      "start": "0:00:07.80",
+      "end": "0:00:11.20",
+      "text": "JEDE WOCHE\\NVOR DIE TÜR."
+    },
+    {
+      "start": "0:00:11.20",
+      "end": "0:00:15.00",
+      "text": "ERSTE LIEFERUNG\\NSICHERN."
+    }
   ]
 }

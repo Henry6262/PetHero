@@ -9,11 +9,33 @@
     "brands/krava/assets/clips/doesnt-fall/s2.mp4",
     "brands/krava/assets/clips/doesnt-fall/s3.mp4"
   ],
-  "voice": { "stability": 0.6, "similarityBoost": 0.88, "style": 0.2 },
+  "voice": {
+    "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+    "stability": 0.4,
+    "similarityBoost": 0.85,
+    "style": 0.15,
+    "speed": 0.82
+  },
   "captions": [
-    { "start": "0:00:00.00", "end": "0:00:03.80", "text": "BULGARIEN ERFAND\\NDAS JOGHURT." },
-    { "start": "0:00:03.80", "end": "0:00:07.80", "text": "EIN ALTES HANDWERK." },
-    { "start": "0:00:07.80", "end": "0:00:11.20", "text": "FRISCH IN\\NZÜRICH GEMACHT." },
-    { "start": "0:00:11.20", "end": "0:00:15.00", "text": "SCHWEIZER REINHEIT,\\NBULGARISCHE SEELE." }
+    {
+      "start": "0:00:00.00",
+      "end": "0:00:03.80",
+      "text": "BULGARIEN ERFAND\\NDAS JOGHURT."
+    },
+    {
+      "start": "0:00:03.80",
+      "end": "0:00:07.80",
+      "text": "EIN ALTES HANDWERK."
+    },
+    {
+      "start": "0:00:07.80",
+      "end": "0:00:11.20",
+      "text": "FRISCH IN\\NZÜRICH GEMACHT."
+    },
+    {
+      "start": "0:00:11.20",
+      "end": "0:00:15.00",
+      "text": "SCHWEIZER REINHEIT,\\NBULGARISCHE SEELE."
+    }
   ]
 }

@@ -5,11 +5,33 @@
   "funnel": "top-funnel / prospecting",
   "adType": "Creator UGC — breakfast muse (consistent AI character)",
   "reuseClipsFrom": "breakfast-muse-en",
-  "voice": { "voiceId": "21m00Tcm4TlvDq8ikWAM", "stability": 0.45, "similarityBoost": 0.85, "style": 0.3 },
+  "voice": {
+    "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+    "stability": 0.4,
+    "similarityBoost": 0.85,
+    "style": 0.15,
+    "speed": 0.82
+  },
   "captions": [
-    { "start": "0:00:00.00", "end": "0:00:04.00", "text": "morgen, die man\\ngeniesst" },
-    { "start": "0:00:04.00", "end": "0:00:08.00", "text": "dickes bulgarisches joghurt" },
-    { "start": "0:00:08.00", "end": "0:00:11.50", "text": "reine schweizer milch.\\nohne zusätze." },
-    { "start": "0:00:11.50", "end": "0:00:15.00", "text": "krava — frisch aus zürich" }
+    {
+      "start": "0:00:00.00",
+      "end": "0:00:04.00",
+      "text": "morgen, die man\\ngeniesst"
+    },
+    {
+      "start": "0:00:04.00",
+      "end": "0:00:08.00",
+      "text": "dickes bulgarisches joghurt"
+    },
+    {
+      "start": "0:00:08.00",
+      "end": "0:00:11.50",
+      "text": "reine schweizer milch.\\nohne zusätze."
+    },
+    {
+      "start": "0:00:11.50",
+      "end": "0:00:15.00",
+      "text": "krava — frisch aus zürich"
+    }
   ]
 }
