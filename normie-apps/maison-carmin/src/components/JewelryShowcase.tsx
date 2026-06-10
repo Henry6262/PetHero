@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
+import { useGLTF } from "@react-three/drei";
 import { useReducedMotion } from "@app/lib/useReducedMotion";
 import { useT } from "@app/i18n";
 import { PIECES } from "@app/data/pieces";
 import { JewelryStage } from "@app/components/JewelryStage";
 
 const ADVANCE_MS = 6500; // slow auto-advance
+
+// Warm the GLBs up front so advancing the carousel never pops in a blank stage.
+[...new Set(PIECES.map((p) => p.model).filter(Boolean))].forEach((m) =>
+  useGLTF.preload(m as string)
+);
 
 const CORNERS = [
   "left-0 top-0 border-l border-t",
@@ -134,7 +140,7 @@ export function JewelryShowcase() {
               <button
                 type="button"
                 onClick={() => enquire(piece.id)}
-                className="group/btn inline-flex items-center gap-3 rounded-[2px] bg-ruby px-7 py-3.5 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-platinum transition-colors hover:bg-ruby-lit"
+                className="group/btn inline-flex items-center gap-3 rounded-full bg-ruby px-7 py-3.5 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-platinum transition-colors hover:bg-ruby-lit"
               >
                 {t("collection.enquire")}
                 <span className="h-px w-5 bg-platinum transition-all duration-200 group-hover/btn:w-9" />

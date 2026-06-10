@@ -26,6 +26,7 @@ export const PIECES: Piece[] = [
   {
     id: "carmin-solitaire",
     name: "Carmin Solitaire",
+    model: "/models/pieces/jewel-01.glb",
     kind: "solitaire",
     metal: "Platinum 950",
     stone: "Burmese ruby",
@@ -37,6 +38,7 @@ export const PIECES: Piece[] = [
   {
     id: "braise-band",
     name: "Braise Band",
+    model: "/models/pieces/jewel-02.glb",
     kind: "ring",
     metal: "18k rose gold",
     stone: "Ruby pavé",
@@ -48,6 +50,7 @@ export const PIECES: Piece[] = [
   {
     id: "goutte-pendant",
     name: "Goutte Pendant",
+    model: "/models/pieces/jewel-03.glb",
     kind: "pendant",
     metal: "18k yellow gold",
     stone: "Pear-cut ruby",
@@ -59,6 +62,7 @@ export const PIECES: Piece[] = [
   {
     id: "ardent-studs",
     name: "Ardent Studs",
+    model: "/models/pieces/jewel-02.glb",
     kind: "studs",
     metal: "Platinum 950",
     stone: "Round rubies",
@@ -70,6 +74,7 @@ export const PIECES: Piece[] = [
   {
     id: "sang-cuff",
     name: "Sang Cuff",
+    model: "/models/pieces/jewel-03.glb",
     kind: "cuff",
     metal: "18k gold & blackened silver",
     stone: "Cabochon ruby",

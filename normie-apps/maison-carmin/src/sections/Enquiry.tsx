@@ -55,7 +55,7 @@ export function Enquiry() {
   }
 
   const field =
-    "w-full rounded-[2px] border border-line-2 bg-ink px-4 py-3 text-platinum placeholder-silver/45 outline-none transition-colors focus:border-gold";
+    "w-full rounded-full border border-line-2 bg-ink px-5 py-3 text-platinum placeholder-silver/45 outline-none transition-colors focus:border-gold";
   const label = "mb-1.5 block text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-silver/80";
 
   return (
@@ -69,7 +69,7 @@ export function Enquiry() {
           <p className="mx-auto mt-5 max-w-md text-silver">{t("enquiry.body")}</p>
         </div>
 
-        <div className="mt-10 border border-line bg-charcoal/60 p-6 backdrop-blur-sm md:p-9">
+        <div className="mt-10 rounded-3xl border border-line bg-charcoal/60 p-6 backdrop-blur-sm md:p-9">
           {status === "sent" ? (
             <div className="flex min-h-[22rem] flex-col items-start justify-center">
               <span className="font-display text-5xl italic text-ruby-lit">{t("enquiry.successTitle")}</span>
@@ -90,14 +90,14 @@ export function Enquiry() {
               {/* mode toggle */}
               <div>
                 <span className={label}>{t("enquiry.modeLabel")}</span>
-                <div className="grid grid-cols-2 gap-2 rounded-[2px] border border-line-2 p-1">
+                <div className="grid grid-cols-2 gap-2 rounded-full border border-line-2 p-1">
                   {(["collection", "bespoke"] as Mode[]).map((m) => (
                     <button
                       key={m}
                       type="button"
                       onClick={() => setMode(m)}
                       className={cn(
-                        "rounded-[1px] px-3 py-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.1em] transition-colors",
+                        "rounded-full px-3 py-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.1em] transition-colors",
                         mode === m ? "bg-ruby text-platinum" : "text-silver hover:text-platinum"
                       )}
                     >
@@ -158,7 +158,7 @@ export function Enquiry() {
                   name="message"
                   rows={4}
                   placeholder={t("enquiry.messagePlaceholder")}
-                  className={cn(field, "resize-none")}
+                  className={cn(field, "resize-none rounded-2xl")}
                 />
               </div>
 

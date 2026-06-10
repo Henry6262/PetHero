@@ -23,6 +23,7 @@ export function App() {
       <main>
         <Hero />
         <Marquee />
+        <Divider kicker={t("collection.eyebrow")} />
         <Collection />
         <Divider kicker={t("craft.eyebrow")} />
         <Craft />
