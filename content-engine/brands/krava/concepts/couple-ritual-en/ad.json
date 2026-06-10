@@ -3,8 +3,13 @@
   "language": "en",
   "platform": "IG Reels / TikTok (lifestyle)",
   "funnel": "top-funnel / brand",
-  "adType": "Stronger Together — couple shared breakfast (Scene 1, captions auto-synced to VO)",
-  "voice": { "voiceId": "21m00Tcm4TlvDq8ikWAM", "stability": 0.5, "similarityBoost": 0.85, "style": 0.25 },
+  "adType": "Stronger Together — couple ritual (shared breakfast -> new chapter -> branded jar)",
+  "clips": [
+    "brands/krava/assets/clips/couple-ritual-en/s1.mp4",
+    "brands/krava/assets/clips/couple-ritual-en/s2.mp4",
+    "public/krava/_clips/27-jar-branded-honey.mp4"
+  ],
+  "voice": { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "stability": 0.4, "similarityBoost": 0.85, "style": 0.15, "speed": 0.82 },
   "captions": [
     { "start": "0:00:00.00", "end": "0:00:05.00", "text": "(auto-synced from VO at build)" }
   ]

@@ -16,6 +16,7 @@
 | 09 | `09-legends` | Krava Legends: babushka / strongman / thracian | Reels/TikTok, brand+meme | ⭐ series |
 | 10 | `_clips/27-30` | branded jar hero clips (cow badge + KRAVA) + badge png | brand recall b-roll | ⭐ |
 | 11 | `11-jar-hero` | branded jar hero ad (ASMR, witty, Lily voice) | brand anchor | ⭐ |
+| 12 | `10-couple-ritual` | Stronger Together: couple ritual -> new chapter -> branded jar | IG/TikTok lifestyle | ⭐ new |
 
 Each folder holds `...-en.mp4` (English) and `...-de.mp4` (Swiss High German).
 
