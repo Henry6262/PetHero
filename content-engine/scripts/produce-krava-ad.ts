@@ -38,6 +38,7 @@ interface AdFile {
     stability?: number;
     similarityBoost?: number;
     style?: number;
+    speed?: number;
   };
   captions: Caption[];
 }
@@ -146,6 +147,7 @@ if (!existsSync(voPath)) {
     stability: ad.voice?.stability ?? 0.55,
     similarityBoost: ad.voice?.similarityBoost ?? 0.88,
     style: ad.voice?.style ?? 0.2,
+    speed: ad.voice?.speed,
   });
   await Bun.write(voPath, audio);
   console.log(`Voiceover written: ${voPath}`);

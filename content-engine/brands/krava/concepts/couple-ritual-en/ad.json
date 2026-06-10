@@ -1,0 +1,11 @@
+{
+  "concept": "couple-ritual-en",
+  "language": "en",
+  "platform": "IG Reels / TikTok (lifestyle)",
+  "funnel": "top-funnel / brand",
+  "adType": "Stronger Together — couple shared breakfast (Scene 1, captions auto-synced to VO)",
+  "voice": { "voiceId": "21m00Tcm4TlvDq8ikWAM", "stability": 0.5, "similarityBoost": 0.85, "style": 0.25 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:05.00", "text": "(auto-synced from VO at build)" }
+  ]
+}

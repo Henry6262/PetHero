@@ -1,0 +1,12 @@
+{
+  "concept": "couple-ritual-en",
+  "scene": "Scene 1 — Shared Breakfast (Stronger Together campaign)",
+  "character": "a healthy attractive couple in their early 30s — a fit man with short dark hair and light stubble, and a natural beautiful woman with warm brown hair — both glowing with health, casual elegant, clearly in love",
+  "styleSuffix": "premium editorial UGC, photorealistic, warm natural morning window light, realistic detailed skin, cinematic shallow depth of field, vertical 9:16, warm tender mood, no text",
+  "negative": "deformed face, asymmetric eyes, extra fingers, missing fingers, fused fingers, deformed hands, extra limbs, plastic skin, waxy skin, uncanny, distorted mouth, distorted teeth, more than two people, duplicate face, watermark, text, logo, blurry, low resolution, oversmoothed",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "A healthy attractive couple in their early 30s sit close together at a sunlit modern kitchen table sharing one bowl of thick white yogurt, smiling warmly at each other, relaxed and in love. Medium shot, soft morning window light, marble counter, cozy and tender, photorealistic." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "Close-up: the man playfully lifts a spoonful of thick white yogurt toward the smiling woman, she laughs softly and takes the bite, both glowing and happy. Warm intimate morning light, photorealistic, shallow depth of field." },
+    { "id": 3, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "The healthy couple lean their heads close together, both smiling gently toward the camera, a bowl of thick white yogurt with berries between them, content and healthy. Soft morning light, marble kitchen, photorealistic, tender." }
+  ]
+}

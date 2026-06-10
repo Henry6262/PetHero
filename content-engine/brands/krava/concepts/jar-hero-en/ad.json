@@ -1,0 +1,16 @@
+{
+  "concept": "jar-hero-en",
+  "language": "en",
+  "platform": "IG Reels / TikTok (brand hero)",
+  "funnel": "brand recall",
+  "adType": "Branded jar hero — ASMR, witty (Lily velvety voice, slowed)",
+  "clips": [
+    "public/krava/_clips/27-jar-branded-honey.mp4",
+    "public/krava/_clips/28-jar-branded-granola.mp4",
+    "public/krava/_clips/27-jar-branded-honey.mp4"
+  ],
+  "voice": { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "stability": 0.4, "similarityBoost": 0.85, "style": 0.15, "speed": 0.82 },
+  "captions": [
+    { "start": "0:00:00.00", "end": "0:00:05.00", "text": "(auto-synced from VO at build)" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "concept": "jar-hero-en",
+  "note": "Front-facing LOCKED jar so the real Krava logo can be composited onto the glass. Only the toppings move.",
+  "styleSuffix": "premium commercial food cinematography, photorealistic, soft natural morning light, clean marble, shallow depth of field, vertical 9:16, no text, no label, blank front jar face",
+  "negative": "text, label, logo, brand, writing, watermark, jar rotating, jar moving, camera shake, deformed hands, extra fingers, plastic texture, low resolution, blurry",
+  "shots": [
+    { "id": 1, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "Locked tripod close-up, the camera does not move. A clear clean glass jar filled with thick white yogurt sits perfectly still and centered on a marble counter, the flat front face of the jar squared toward the camera with a clear blank area for a label. On top: fresh raspberries, blueberries and a slow glossy honey drizzle falling onto the yogurt. The jar stays completely still, only the honey and berries move. Soft morning light." },
+    { "id": 2, "type": "t2v", "model": "kling", "seconds": 5, "prompt": "Locked tripod close-up, static camera. A clear glass jar of thick white yogurt stands perfectly still and centered, flat blank front face toward the camera, topped with golden granola and fresh berries. A wooden honey dipper slowly drizzles honey over the top. The jar does not move or rotate. Clean marble, soft daylight, premium." }
+  ]
+}
