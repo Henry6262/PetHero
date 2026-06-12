@@ -22,7 +22,7 @@ export interface KartParams {
 export const DEFAULT_KART: KartParams = {
   accel: 26, brake: 50, maxSpeed: 26, reverseMax: 8,
   drag: 0.45, grip: 9, driftGrip: 2.4,
-  steerRate: 2.1, driftSteerBonus: 1.6, driftMinSpeed: 11,
+  steerRate: 2.1, driftSteerBonus: 1.2, driftMinSpeed: 11,
   chargeTiers: [0.7, 1.4, 2.2], boostTicks: [28, 50, 80],
   boostAccel: 38, boostMaxSpeed: 33,
 }
