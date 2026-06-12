@@ -112,8 +112,56 @@ function applyCommands(s: SimState, commands: DeployCommand[]) {
 
 function castSpell(_s: SimState, _cmd: DeployCommand, _card: CardDef) {} // Task 9
 
+
+function dist(a: { x: number; y: number }, b: { x: number; y: number }): number {
+  return Math.hypot(a.x - b.x, a.y - b.y)
+}
+
+/** Nearest enemy tower that is still standing (lane towers shield the king implicitly by distance). */
+function nearestEnemyTower(s: SimState, u: UnitEntity): Tower | null {
+  let best: Tower | null = null
+  for (const t of s.towers) {
+    if (t.owner === u.owner || t.hp <= 0) continue
+    if (!best || dist(u, t) < dist(u, best) || (dist(u, t) === dist(u, best) && t.id < best.id)) best = t
+  }
+  return best
+}
+
+function crossedRiver(u: UnitEntity): boolean {
+  return u.owner === 0 ? u.y > RIVER_Y : u.y < RIVER_Y
+}
+
+/** Where this unit wants to walk when it has no combat target in range. */
+function moveGoal(s: SimState, u: UnitEntity): { x: number; y: number } {
+  if (u.fleeing) {
+    const king = s.towers.find(t => t.owner === u.owner && t.kind === 'king')!
+    return { x: king.x, y: king.y }
+  }
+  if (!crossedRiver(u)) {
+    const bridgeX = u.x < ARENA_W / 2 ? LANE_LEFT_X : LANE_RIGHT_X
+    if (dist(u, { x: bridgeX, y: RIVER_Y }) > 0.6) return { x: bridgeX, y: RIVER_Y }
+  }
+  const t = nearestEnemyTower(s, u)
+  return t ?? { x: ARENA_W / 2, y: u.owner === 0 ? ARENA_H : 0 }
+}
+
+function moveToward(u: UnitEntity, goal: { x: number; y: number }, speed: number) {
+  const d = dist(u, goal)
+  if (d < 1e-6) return
+  const stepLen = Math.min(speed, d)
+  u.x += ((goal.x - u.x) / d) * stepLen
+  u.y += ((goal.y - u.y) / d) * stepLen
+}
+
+function updateUnits(s: SimState) {
+  for (const u of s.units) {
+    const card = getCard(u.cardId)
+    // Task 7 adds targeting/attack before movement; for now: walk
+    moveToward(u, moveGoal(s, u), card.speed!)
+  }
+}
+
 // ---- placeholders fleshed out by later tasks ----
-function updateUnits(_s: SimState) {}
 function updateTowers(_s: SimState) {}
 function cleanupAndWinCheck(_s: SimState) {}
 
