@@ -1,6 +1,6 @@
 import { KartState, KartInput } from './kart'
 import { Track, pointAtProgress, wrapProgress } from './track'
-import { Vec2, v, sub, add, scale, dot, len, clamp } from './math'
+import { Vec2, v, sub, len, clamp } from './math'
 
 export interface RaceContext {
   track: Track
@@ -42,10 +42,16 @@ export function aiInput(k: KartState, ctx: RaceContext, skill: number = 0.8): Ka
   if (absErr > 0.9) throttle = 0.5
   if (absErr > 1.35) throttle = -0.5 // brake for hairpin
 
-  // drift if turning hard and fast enough; state machine handles release/charge
-  const drift = absErr > 0.8 && speed > k.params.driftMinSpeed
+  // drift if turning hard and fast enough; release when tier-2 charge is reached
+  let drift = absErr > 0.8 && speed > k.params.driftMinSpeed
+  if (k.drift.active && k.drift.charge >= k.params.chargeTiers[1]) {
+    drift = false // release for boost
+  }
 
-  return { throttle, steer, drift }
+  // AI uses items immediately on pickup (simple v1 behaviour)
+  const useItem = Boolean(k.heldItem)
+
+  return { throttle, steer, drift, useItem }
 }
 
 /** Inputs for all AI karts (kart 0 is assumed player). */

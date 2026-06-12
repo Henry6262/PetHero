@@ -8,7 +8,10 @@ export interface KartInput {
   throttle: number // -1..1 (negative = brake/reverse)
   steer: number    // -1..1 (positive = left, math-positive rotation)
   drift: boolean
+  useItem?: boolean // fire held item this tick
 }
+
+export type ItemType = 'pump-rocket' | 'rug-pull' | 'fud-cloud' | 'diamond-shield' | 'candle-boost' | 'liquidation-wave'
 
 export interface KartParams {
   accel: number; brake: number; maxSpeed: number; reverseMax: number
@@ -40,6 +43,10 @@ export interface KartState {
   finished: boolean
   progress: number // loop progress, updated by track constraints
   params: KartParams
+  heldItem?: ItemType
+  shieldTicks: number
+  spinoutTicks: number
+  slowTicks: number
 }
 
 export function createKart(pos: Vec2, heading: number, params: KartParams = DEFAULT_KART): KartState {
@@ -48,10 +55,22 @@ export function createKart(pos: Vec2, heading: number, params: KartParams = DEFA
     drift: { active: false, dir: 1, charge: 0 },
     boostTicks: 0, lap: 1, cpIndex: 0, finished: false, progress: 0,
     params,
+    shieldTicks: 0, spinoutTicks: 0, slowTicks: 0,
   }
 }
 
 export function stepKart(k: KartState, input: KartInput, p: KartParams): void {
+  // decrement effect timers
+  if (k.shieldTicks > 0) k.shieldTicks--
+  if (k.spinoutTicks > 0) {
+    k.spinoutTicks--
+    k.vel = scale(k.vel, Math.max(0, 1 - p.drag * DT * 2))
+    k.heading += (k.spinoutTicks % 2 === 0 ? 1 : -1) * DT * 3
+    return
+  }
+  if (k.slowTicks > 0) k.slowTicks--
+
+  const slowMul = k.slowTicks > 0 ? 0.6 : 1
   const fwd = v(Math.cos(k.heading), Math.sin(k.heading))
   const speedF = dot(k.vel, fwd) // signed forward speed
 
@@ -88,7 +107,7 @@ export function stepKart(k: KartState, input: KartInput, p: KartParams): void {
   const throttle = clamp(input.throttle, -1, 1)
   let a = 0
   if (boosting) a += p.boostAccel
-  if (throttle > 0) a += throttle * p.accel
+  if (throttle > 0) a += throttle * p.accel * slowMul
   else if (throttle < 0) a += throttle * (speedF > 0 ? p.brake : p.accel * 0.5)
   const fwd2 = v(Math.cos(k.heading), Math.sin(k.heading))
   k.vel = add(k.vel, scale(fwd2, a * DT))
@@ -101,7 +120,7 @@ export function stepKart(k: KartState, input: KartInput, p: KartParams): void {
 
   // --- drag + speed caps
   k.vel = scale(k.vel, Math.max(0, 1 - p.drag * DT))
-  const cap = boosting ? p.boostMaxSpeed : p.maxSpeed
+  const cap = (boosting ? p.boostMaxSpeed : p.maxSpeed) * slowMul
   const sp = len(k.vel)
   if (sp > cap) k.vel = scale(k.vel, cap / sp)
   const f2 = dot(k.vel, fwd2)
