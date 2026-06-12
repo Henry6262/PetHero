@@ -58,3 +58,27 @@ export function forwardDelta(from: number, to: number, total: number): number {
   if (d < -total / 2) d += total
   return d
 }
+
+export function wrapProgress(p: number, total: number): number {
+  p = p % total
+  if (p < 0) p += total
+  return p
+}
+
+/** Point on the closed centerline at a given progress (meters). */
+export function pointAtProgress(track: Track, progress: number): Vec2 {
+  progress = wrapProgress(progress, track.total)
+  const n = track.points.length
+  // find segment containing progress
+  for (let i = 0; i < n; i++) {
+    const a = track.points[i]
+    const b = track.points[(i + 1) % n]
+    const start = track.cum[i]
+    const segLen = len(sub(b, a))
+    if (progress >= start && progress <= start + segLen) {
+      const t = segLen === 0 ? 0 : (progress - start) / segLen
+      return add(a, scale(sub(b, a), t))
+    }
+  }
+  return track.points[0]
+}
