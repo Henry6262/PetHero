@@ -64,7 +64,44 @@ const replays: FastifyPluginAsync = async (app) => {
       },
     })
 
-    return { valid: true, replayId: replay.id, finalTime: replay.finalTime }
+    await prisma.ghost.upsert({
+      where: { replayId: replay.id },
+      create: {
+        replayId: replay.id,
+        trackId: parsed.data.trackDef.name,
+        accountId: account.id,
+      },
+      update: {},
+    })
+
+    const existing = await prisma.ladderEntry.findUnique({
+      where: { accountId_trackId: { accountId: account.id, trackId: parsed.data.trackDef.name } },
+    })
+    let mmr = existing?.mmr ?? 1000
+    const isPb = !existing || result.finalTime! < existing.bestTime
+    if (isPb) mmr += 20
+    else mmr += 5
+
+    if (!existing) {
+      await prisma.ladderEntry.create({
+        data: {
+          accountId: account.id,
+          trackId: parsed.data.trackDef.name,
+          bestTime: result.finalTime!,
+          mmr,
+        },
+      })
+    } else {
+      await prisma.ladderEntry.update({
+        where: { accountId_trackId: { accountId: account.id, trackId: parsed.data.trackDef.name } },
+        data: {
+          bestTime: isPb ? result.finalTime! : existing.bestTime,
+          mmr,
+        },
+      })
+    }
+
+    return { valid: true, replayId: replay.id, finalTime: replay.finalTime, mmr }
   })
 }
 
