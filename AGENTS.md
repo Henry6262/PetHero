@@ -47,6 +47,7 @@ obviously on the DevPrint critical path, surface that fact before doing it.
 | G-UI-LIB          | `use-case-apps/G-UI-LIB/`            | Active           | yes             |
 | supermolt-mono    | `use-case-apps/supermolt-mono/`      | Decision pending | yes             |
 | SS-Warzone-FPS    | `web3-games/SS-Warzone-FPS/`         | Paused           | yes             |
+| trench-wars       | `web3-games/trench-wars/`            | Active           | yes             |
 | PumpFund          | `use-case-apps/pump-fund/`           | Active           | yes             |
 
 > All portfolio projects now have `CLAUDE.md` and `README.md`. Build artifacts and `.env` files have been removed from git tracking where needed.
