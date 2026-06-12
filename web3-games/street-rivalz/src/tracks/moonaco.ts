@@ -21,4 +21,5 @@ export const MOONACO: TrackDef = {
     [-90, 70], [-75, 40], [-50, 20], [-25, 8],   // final chicane onto start
   ],
   checkpoints: [0, 6, 13, 20],
+  itemBoxes: [100, 400, 700, 1000, 1300],
 }

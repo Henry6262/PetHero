@@ -5,6 +5,7 @@ export interface TrackDef {
   width: number                   // total road width, meters
   centerline: [number, number][]  // closed CCW loop
   checkpoints: number[]           // ordered indices into centerline; [0] = start/finish
+  itemBoxes?: number[]            // progress positions (meters) for item boxes
 }
 
 export interface Track {
@@ -13,6 +14,7 @@ export interface Track {
   cum: number[]         // cumulative centerline length at each point
   total: number         // total loop length
   cpProgress: number[]  // loop progress (m) of each checkpoint
+  itemBoxProgress: number[] // loop progress (m) of each item box
 }
 
 export function buildTrack(def: TrackDef): Track {
@@ -22,7 +24,11 @@ export function buildTrack(def: TrackDef): Track {
     cum.push(cum[i - 1] + len(sub(points[i], points[i - 1])))
   }
   const total = cum[points.length - 1] + len(sub(points[0], points[points.length - 1]))
-  return { def, points, cum, total, cpProgress: def.checkpoints.map((i) => cum[i]) }
+  return {
+    def, points, cum, total,
+    cpProgress: def.checkpoints.map((i) => cum[i]),
+    itemBoxProgress: (def.itemBoxes ?? []).map((p) => wrapProgress(p, total)),
+  }
 }
 
 export interface TrackSample {

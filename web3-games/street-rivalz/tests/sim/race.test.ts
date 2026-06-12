@@ -84,4 +84,24 @@ describe('createRace / stepRace', () => {
     expect(race.karts[0].progress).toBeGreaterThan(20)
     expect(race.tick).toBe(300)
   })
+
+  it('gives an item when driving over an item box', () => {
+    const track = buildTrack(SQUARE)
+    const race = createRace(track, 1)
+    race.karts[0].pos = v(50, 0)
+    race.karts[0].progress = 50
+    expect(race.karts[0].heldItem).toBeUndefined()
+    stepRace(race, track, [THROTTLE])
+    expect(race.karts[0].heldItem).toBeDefined()
+    expect(race.itemBoxes[0].active).toBe(false)
+  })
+
+  it('fires held item when useItem is true', () => {
+    const track = buildTrack(SQUARE)
+    const race = createRace(track, 1)
+    race.karts[0].heldItem = 'candle-boost'
+    stepRace(race, track, [{ ...THROTTLE, useItem: true }])
+    expect(race.karts[0].heldItem).toBeUndefined()
+    expect(race.karts[0].boostTicks).toBeGreaterThan(0)
+  })
 })

@@ -1,17 +1,28 @@
-import { v, add, sub, scale, dot, norm } from './math'
+import { v, add, sub, scale, dot, norm, mulberry32 } from './math'
 import { Track, sampleTrack, forwardDelta } from './track'
 import {
   KartState, KartInput, KartParams,
   createKart, stepKart, KART_RADIUS, TOTAL_LAPS,
 } from './kart'
 import { rubberBandMultiplier, rankByProgress } from './rubberband'
+import { applyItemUse, resolveItemWorld, rollItem, ItemWorldState } from './items'
 
 export const CP_WINDOW = 6 // meters of progress within which a checkpoint counts
+export const ITEM_BOX_WINDOW = 8 // meters of progress within which an item box is collected
+export const ITEM_BOX_RESPAWN = 300 // ticks (5s)
 
-export interface RaceState {
+export interface ItemBox {
+  progress: number
+  active: boolean
+  respawnTicks: number
+}
+
+export interface RaceState extends ItemWorldState {
   tick: number
   karts: KartState[]
   finished: boolean
+  itemBoxes: ItemBox[]
+  rng: () => number
 }
 
 /** Clamp the kart onto the road and update its loop progress. */
@@ -43,7 +54,7 @@ export function updateCheckpoints(k: KartState, track: Track): void {
 }
 
 /** Spawn karts on a staggered grid just behind the start line, facing segment 0->1. */
-export function createRace(track: Track, numKarts: number): RaceState {
+export function createRace(track: Track, numKarts: number, seed: number = 12345): RaceState {
   const a = track.points[0]
   const b = track.points[1]
   const fwd = norm(sub(b, a))
@@ -56,7 +67,8 @@ export function createRace(track: Track, numKarts: number): RaceState {
     const pos = add(add(a, scale(fwd, back)), scale(side, lateral))
     karts.push(createKart(pos, heading))
   }
-  return { tick: 0, karts, finished: false }
+  const itemBoxes: ItemBox[] = track.itemBoxProgress.map((p) => ({ progress: p, active: true, respawnTicks: 0 }))
+  return { tick: 0, karts, finished: false, itemBoxes, traps: [], clouds: [], rng: mulberry32(seed) }
 }
 
 export function stepRace(
@@ -84,6 +96,31 @@ export function stepRace(
     stepKart(k, inputs[i], p)
     applyTrackConstraints(k, track)
     updateCheckpoints(k, track)
+
+    // item box pickup
+    if (!k.heldItem) {
+      for (const box of race.itemBoxes) {
+        if (!box.active) continue
+        if (Math.abs(forwardDelta(k.progress, box.progress, track.total)) < ITEM_BOX_WINDOW) {
+          box.active = false
+          box.respawnTicks = ITEM_BOX_RESPAWN
+          k.heldItem = rollItem(ranks[i], race.rng)
+          break
+        }
+      }
+    }
+
+    if (inputs[i].useItem && k.heldItem) {
+      applyItemUse(k, k.heldItem, race, race.karts, i)
+      k.heldItem = undefined
+    }
+  }
+  resolveItemWorld(race.karts, race)
+  for (const box of race.itemBoxes) {
+    if (!box.active) {
+      box.respawnTicks--
+      if (box.respawnTicks <= 0) box.active = true
+    }
   }
   race.tick++
   race.finished = race.karts.every((k) => k.finished)

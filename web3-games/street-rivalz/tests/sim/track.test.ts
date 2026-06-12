@@ -8,6 +8,7 @@ export const SQUARE: TrackDef = {
   width: 14,
   centerline: [[0, 0], [100, 0], [100, 100], [0, 100]],
   checkpoints: [0, 1, 2, 3],
+  itemBoxes: [50, 150, 250, 350],
 }
 
 describe('buildTrack', () => {
