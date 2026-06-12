@@ -1,7 +1,7 @@
 import { v, add, sub, scale, dot, norm } from './math'
 import { Track, sampleTrack, forwardDelta } from './track'
 import {
-  KartState, KartInput, KartParams, DEFAULT_KART,
+  KartState, KartInput, KartParams,
   createKart, stepKart, KART_RADIUS, TOTAL_LAPS,
 } from './kart'
 
@@ -62,12 +62,13 @@ export function stepRace(
   race: RaceState,
   track: Track,
   inputs: KartInput[],
-  params: KartParams = DEFAULT_KART,
+  params?: KartParams | KartParams[],
 ): void {
   for (let i = 0; i < race.karts.length; i++) {
     const k = race.karts[i]
     if (k.finished) continue
-    stepKart(k, inputs[i], params)
+    const p = Array.isArray(params) ? params[i] : params
+    stepKart(k, inputs[i], p ?? k.params)
     applyTrackConstraints(k, track)
     updateCheckpoints(k, track)
   }

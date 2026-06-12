@@ -39,13 +39,15 @@ export interface KartState {
   cpIndex: number  // last checkpoint hit (0..n-1)
   finished: boolean
   progress: number // loop progress, updated by track constraints
+  params: KartParams
 }
 
-export function createKart(pos: Vec2, heading: number): KartState {
+export function createKart(pos: Vec2, heading: number, params: KartParams = DEFAULT_KART): KartState {
   return {
     pos, heading, vel: v(0, 0),
     drift: { active: false, dir: 1, charge: 0 },
     boostTicks: 0, lap: 1, cpIndex: 0, finished: false, progress: 0,
+    params,
   }
 }
 
