@@ -9,10 +9,17 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "validate-art": "tsx scripts/validate-glb.ts raw-art",
+    "build-art": "tsx scripts/render-sprites.ts raw-art/units public/assets/units && tsx scripts/render-sprites.ts raw-art/towers public/assets/towers",
+    "build-placeholders": "tsx scripts/build-placeholders.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
+    "@types/three": "^0.184.1",
+    "canvas": "^3.2.3",
+    "three": "^0.184.0",
+    "tsx": "^4.22.4",
     "typescript": "~6.0.2",
     "vite": "^8.0.12",
     "vitest": "^4.1.8"

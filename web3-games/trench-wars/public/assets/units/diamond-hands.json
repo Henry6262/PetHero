@@ -1,0 +1,15 @@
+{
+  "id": "diamond-hands",
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "directions": 8,
+  "anchorX": 0.5,
+  "anchorY": 0.75,
+  "animations": {
+    "walk": {
+      "row": 0,
+      "frames": 4,
+      "speed": 0.25
+    }
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "units": {
+    "bag-holder": {
+      "id": "bag-holder",
+      "path": "/assets/units/bag-holder.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "jeet-horde": {
+      "id": "jeet-horde",
+      "path": "/assets/units/jeet-horde.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "paper-hands": {
+      "id": "paper-hands",
+      "path": "/assets/units/paper-hands.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "mev-bots": {
+      "id": "mev-bots",
+      "path": "/assets/units/mev-bots.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "fud-spirit": {
+      "id": "fud-spirit",
+      "path": "/assets/units/fud-spirit.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "chad-trader": {
+      "id": "chad-trader",
+      "path": "/assets/units/chad-trader.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "diamond-hands": {
+      "id": "diamond-hands",
+      "path": "/assets/units/diamond-hands.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "rug-dev": {
+      "id": "rug-dev",
+      "path": "/assets/units/rug-dev.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "influencer": {
+      "id": "influencer",
+      "path": "/assets/units/influencer.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "sniper-bot": {
+      "id": "sniper-bot",
+      "path": "/assets/units/sniper-bot.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "exit-liquidity": {
+      "id": "exit-liquidity",
+      "path": "/assets/units/exit-liquidity.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "whale": {
+      "id": "whale",
+      "path": "/assets/units/whale.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.75,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    }
+  },
+  "towers": {
+    "lane": {
+      "id": "lane",
+      "path": "/assets/towers/lane.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.85,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    },
+    "king": {
+      "id": "king",
+      "path": "/assets/towers/king.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "directions": 8,
+      "anchorX": 0.5,
+      "anchorY": 0.85,
+      "animations": {
+        "walk": {
+          "row": 0,
+          "frames": 4,
+          "speed": 0.25
+        }
+      }
+    }
+  }
+}
