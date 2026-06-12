@@ -59,7 +59,7 @@ export function stepKart(k: KartState, input: KartInput, p: KartParams): void {
 
   // --- drift state machine (behavior locked by Task 5's tests)
   if (k.drift.active) {
-    if (!input.drift) {
+    if (!input.drift || Math.abs(speedF) < p.driftMinSpeed * 0.6) {
       const t = p.chargeTiers
       if (k.drift.charge >= t[2]) k.boostTicks = p.boostTicks[2]
       else if (k.drift.charge >= t[1]) k.boostTicks = p.boostTicks[1]
@@ -70,7 +70,7 @@ export function stepKart(k: KartState, input: KartInput, p: KartParams): void {
       k.drift.charge += DT
       steer = (steer + k.drift.dir * p.steerRate * 0.5) * p.driftSteerBonus
     }
-  } else if (input.drift && Math.abs(input.steer) > 0.25 && len(k.vel) > p.driftMinSpeed) {
+  } else if (input.drift && Math.abs(input.steer) > 0.25 && speedF > p.driftMinSpeed) {
     k.drift.active = true
     k.drift.dir = input.steer > 0 ? 1 : -1
     k.drift.charge = 0

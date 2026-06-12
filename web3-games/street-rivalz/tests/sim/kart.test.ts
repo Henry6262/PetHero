@@ -95,4 +95,22 @@ describe('drift & boost', () => {
     for (let i = 0; i < 40; i++) stepKart(k, THROTTLE, DEFAULT_KART)
     expect(len(k.vel)).toBeGreaterThan(DEFAULT_KART.maxSpeed + 1)
   })
+
+  it('auto-releases when speed drops too low (no charge-camping at a crawl)', () => {
+    const k = cruise()
+    const driftBrake: KartInput = { throttle: -1, steer: 1, drift: true }
+    stepKart(k, { throttle: 1, steer: 1, drift: true }, DEFAULT_KART)
+    expect(k.drift.active).toBe(true)
+    // brake hard while holding drift: once below driftMinSpeed*0.6 the drift must end
+    for (let i = 0; i < 300 && k.drift.active; i++) stepKart(k, driftBrake, DEFAULT_KART)
+    expect(k.drift.active).toBe(false)
+    expect(len(k.vel)).toBeLessThan(DEFAULT_KART.driftMinSpeed)
+  })
+
+  it('cannot initiate a drift while reversing', () => {
+    const k = createKart(v(0, 0), 0)
+    k.vel = v(-15, 0) // sliding backwards fast: |vel| > driftMinSpeed but forward speed < 0
+    stepKart(k, { throttle: 0, steer: 1, drift: true }, DEFAULT_KART)
+    expect(k.drift.active).toBe(false)
+  })
 })
