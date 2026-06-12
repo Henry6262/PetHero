@@ -4,6 +4,7 @@ import {
   KartState, KartInput, KartParams,
   createKart, stepKart, KART_RADIUS, TOTAL_LAPS,
 } from './kart'
+import { rubberBandMultiplier, rankByProgress } from './rubberband'
 
 export const CP_WINDOW = 6 // meters of progress within which a checkpoint counts
 
@@ -63,12 +64,24 @@ export function stepRace(
   track: Track,
   inputs: KartInput[],
   params?: KartParams | KartParams[],
+  rubberBandPlayerIndex: number = 0,
 ): void {
+  const ranks = rankByProgress(race.karts)
   for (let i = 0; i < race.karts.length; i++) {
     const k = race.karts[i]
     if (k.finished) continue
-    const p = Array.isArray(params) ? params[i] : params
-    stepKart(k, inputs[i], p ?? k.params)
+    let p = Array.isArray(params) ? params[i] : params
+    p = p ?? k.params
+    if (i !== rubberBandPlayerIndex && race.karts.length > 1) {
+      const mul = rubberBandMultiplier(ranks[i], race.karts.length)
+      p = {
+        ...p,
+        accel: p.accel * mul,
+        maxSpeed: p.maxSpeed * mul,
+        boostMaxSpeed: p.boostMaxSpeed * mul,
+      }
+    }
+    stepKart(k, inputs[i], p)
     applyTrackConstraints(k, track)
     updateCheckpoints(k, track)
   }
