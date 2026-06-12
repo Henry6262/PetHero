@@ -1,0 +1,16 @@
+[
+  { "id": "bag-holder",     "name": "Bag Holder",          "cost": 1, "type": "unit", "count": 1, "hp": 220,  "damage": 40,  "range": 0.8, "sightRange": 5.5, "speed": 0.10, "attackSpeed": 10 },
+  { "id": "jeet-horde",     "name": "Jeet Horde",          "cost": 2, "type": "unit", "count": 3, "hp": 90,   "damage": 35,  "range": 0.8, "sightRange": 5.5, "speed": 0.16, "attackSpeed": 9 },
+  { "id": "paper-hands",    "name": "Paper Hands",         "cost": 2, "type": "unit", "count": 1, "hp": 280,  "damage": 60,  "range": 0.8, "sightRange": 5.5, "speed": 0.12, "attackSpeed": 10, "flees": true },
+  { "id": "mev-bots",       "name": "MEV Bot Swarm",       "cost": 3, "type": "unit", "count": 4, "hp": 60,   "damage": 25,  "range": 0.8, "sightRange": 6.5, "speed": 0.20, "attackSpeed": 8,  "targeting": "lowestHp" },
+  { "id": "fud-spirit",     "name": "FUD Spirit",          "cost": 3, "type": "unit", "count": 1, "hp": 150,  "damage": 15,  "range": 4.0, "sightRange": 6.0, "speed": 0.10, "attackSpeed": 12, "aura": { "radius": 3, "speedMult": 0.65 } },
+  { "id": "chad-trader",    "name": "Chad Trader",         "cost": 3, "type": "unit", "count": 1, "hp": 420,  "damage": 90,  "range": 0.8, "sightRange": 5.5, "speed": 0.12, "attackSpeed": 11 },
+  { "id": "diamond-hands",  "name": "Diamond Hands",       "cost": 4, "type": "unit", "count": 1, "hp": 1400, "damage": 120, "range": 0.8, "sightRange": 5.5, "speed": 0.07, "attackSpeed": 13 },
+  { "id": "rug-dev",        "name": "Rug Dev",             "cost": 4, "type": "unit", "count": 1, "hp": 240,  "damage": 320, "range": 0.8, "sightRange": 6.0, "speed": 0.16, "attackSpeed": 14, "stealthRange": 3.5 },
+  { "id": "influencer",     "name": "Influencer",          "cost": 4, "type": "unit", "count": 1, "hp": 350,  "damage": 40,  "range": 4.5, "sightRange": 6.0, "speed": 0.10, "attackSpeed": 12, "aura": { "radius": 3, "damageMult": 1.35 } },
+  { "id": "sniper-bot",     "name": "Sniper Bot",          "cost": 5, "type": "unit", "count": 1, "hp": 180,  "damage": 110, "range": 7.5, "sightRange": 8.5, "speed": 0.09, "attackSpeed": 15 },
+  { "id": "exit-liquidity", "name": "Exit Liquidity Mob",  "cost": 5, "type": "unit", "count": 5, "hp": 110,  "damage": 30,  "range": 0.8, "sightRange": 5.5, "speed": 0.14, "attackSpeed": 9 },
+  { "id": "whale",          "name": "Whale",               "cost": 6, "type": "unit", "count": 1, "hp": 900,  "damage": 200, "range": 5.0, "sightRange": 7.0, "speed": 0.05, "attackSpeed": 20, "splashRadius": 1.5 },
+  { "id": "pump-signal",       "name": "Pump Signal",         "cost": 2, "type": "spell", "effectRadius": 3.0, "buffTicks": 50, "buffSpeedMult": 1.5, "buffDamageMult": 1.25 },
+  { "id": "liquidation-cascade", "name": "Liquidation Cascade", "cost": 4, "type": "spell", "effectRadius": 2.5, "effectDamage": 180 }
+]
