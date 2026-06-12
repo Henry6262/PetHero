@@ -51,3 +51,48 @@ describe('stepKart — grip', () => {
     expect(Math.abs(lat)).toBeLessThan(0.5)
   })
 })
+
+describe('drift & boost', () => {
+  function cruise(): ReturnType<typeof createKart> {
+    const k = createKart(v(0, 0), 0)
+    for (let i = 0; i < 240; i++) stepKart(k, THROTTLE, DEFAULT_KART)
+    return k
+  }
+
+  it('initiates drift only when steering + fast enough', () => {
+    const k = cruise()
+    stepKart(k, { throttle: 1, steer: 1, drift: true }, DEFAULT_KART)
+    expect(k.drift.active).toBe(true)
+    expect(k.drift.dir).toBe(1)
+
+    const slow = createKart(v(0, 0), 0)
+    stepKart(slow, { throttle: 1, steer: 1, drift: true }, DEFAULT_KART)
+    expect(slow.drift.active).toBe(false) // too slow to drift
+  })
+
+  it('charges while held and grants tiered boost on release', () => {
+    const k = cruise()
+    const drifting: KartInput = { throttle: 1, steer: 1, drift: true }
+    // hold ~1.5s -> tier 2 (charge >= 1.4, < 2.2)
+    for (let i = 0; i < 90; i++) stepKart(k, drifting, DEFAULT_KART)
+    expect(k.drift.charge).toBeGreaterThan(DEFAULT_KART.chargeTiers[1])
+    stepKart(k, THROTTLE, DEFAULT_KART) // release
+    expect(k.drift.active).toBe(false)
+    // release tick consumed 1 boost tick already
+    expect(k.boostTicks).toBe(DEFAULT_KART.boostTicks[1] - 1)
+  })
+
+  it('no boost when released before tier 1', () => {
+    const k = cruise()
+    for (let i = 0; i < 20; i++) stepKart(k, { throttle: 1, steer: 1, drift: true }, DEFAULT_KART) // ~0.33s
+    stepKart(k, THROTTLE, DEFAULT_KART)
+    expect(k.boostTicks).toBe(0)
+  })
+
+  it('boost raises speed above normal cap', () => {
+    const k = cruise()
+    for (let i = 0; i < 140; i++) stepKart(k, { throttle: 1, steer: 1, drift: true }, DEFAULT_KART) // tier 3
+    for (let i = 0; i < 40; i++) stepKart(k, THROTTLE, DEFAULT_KART)
+    expect(len(k.vel)).toBeGreaterThan(DEFAULT_KART.maxSpeed + 1)
+  })
+})
