@@ -30,6 +30,13 @@
 - `npm test` — backend API tests (vitest + supertest)
 - `npm run start` — production start with Prisma migrate deploy
 
+### Production (deployed 2026-06-12)
+
+- Client: https://trench-wars-henry6262s-projects.vercel.app — Vercel project `trench-wars`, deploy with `vercel --prod` from this dir; `VITE_API_URL` set in Vercel env.
+- API: https://trench-wars-api-production.up.railway.app — Railway project `trench-wars`, service `trench-wars-api`. Deploy with `railway up --service trench-wars-api --detach` FROM THIS DIRECTORY (monorepo context: server imports ../src/sim at runtime via tsx; root railway.json scopes build/start to server/). DB = sqlite on a Railway volume at /data (Postgres migration is pre-launch hardening). Cross-site cookies require CLIENT_URL to be https (SameSite=None logic in server/src/lib/auth.ts).
+- IMPORTANT: any change to src/sim/ must redeploy BOTH client and server — anti-cheat re-simulates replays and they must match.
+- Verify prod: `npx tsx scripts/prod-check.ts`
+
 ### Deploy (Railway)
 
 1. Add `server/` as a Railway service.

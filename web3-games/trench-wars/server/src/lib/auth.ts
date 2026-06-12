@@ -30,11 +30,14 @@ export function createRequireAuth(prisma: PrismaClient, cookieSecret: string): R
 }
 
 export function setAccountCookie(res: Response, accountId: string, cookieSecret: string) {
+  // client and API live on different origins in production (vercel.app → railway.app),
+  // so the auth cookie must be SameSite=None; Secure to ride along with fetch()
+  const crossSite = (process.env.CLIENT_URL || '').startsWith('https')
   res.cookie('trench_account', accountId, {
     signed: true,
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: crossSite ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 365,
-    secure: process.env.NODE_ENV === 'production',
+    secure: crossSite || process.env.NODE_ENV === 'production',
   })
 }

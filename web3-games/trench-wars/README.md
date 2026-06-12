@@ -1,5 +1,7 @@
 # Trench Wars
 
+**LIVE**: https://trench-wars-henry6262s-projects.vercel.app (client, Vercel) · https://trench-wars-api-production.up.railway.app (API, Railway project `trench-wars`, sqlite on /data volume)
+
 Browser Clash Royale-style lane battler — Traders vs Jeets. Deterministic pure-TS sim + **real 3D battle renderer (Three.js)** with a React UI shell + Express/Prisma backend. Client API base URL defaults to `http://localhost:3001/api`; set `VITE_API_URL` for production builds.
 
 The arena is full 3D: KayKit Medieval Hexagon tiles, towers, and decoration plus Meshy AI animated characters (meshopt-compressed GLBs). The sim stays the single source of truth — the 3D layer only visualizes state.
