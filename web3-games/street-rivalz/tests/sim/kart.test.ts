@@ -102,9 +102,9 @@ describe('drift & boost', () => {
     stepKart(k, { throttle: 1, steer: 1, drift: true }, DEFAULT_KART)
     expect(k.drift.active).toBe(true)
     // brake hard while holding drift: once below driftMinSpeed*0.6 the drift must end
-    for (let i = 0; i < 300 && k.drift.active; i++) stepKart(k, driftBrake, DEFAULT_KART)
+    for (let i = 0; i < 600 && k.drift.active; i++) stepKart(k, driftBrake, DEFAULT_KART)
     expect(k.drift.active).toBe(false)
-    expect(len(k.vel)).toBeLessThan(DEFAULT_KART.driftMinSpeed)
+    expect(len(k.vel)).toBeLessThan(DEFAULT_KART.driftMinSpeed * 0.6 + 0.5)
   })
 
   it('cannot initiate a drift while reversing', () => {

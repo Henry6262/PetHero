@@ -59,7 +59,10 @@ export function stepKart(k: KartState, input: KartInput, p: KartParams): void {
 
   // --- drift state machine (behavior locked by Task 5's tests)
   if (k.drift.active) {
-    if (!input.drift || Math.abs(speedF) < p.driftMinSpeed * 0.6) {
+    // release on button-up, or auto-release when genuinely slow (total speed,
+    // not forward speed — drifting rotates heading away from velocity, which
+    // would collapse forward speed and end every drift instantly)
+    if (!input.drift || len(k.vel) < p.driftMinSpeed * 0.6) {
       const t = p.chargeTiers
       if (k.drift.charge >= t[2]) k.boostTicks = p.boostTicks[2]
       else if (k.drift.charge >= t[1]) k.boostTicks = p.boostTicks[1]
