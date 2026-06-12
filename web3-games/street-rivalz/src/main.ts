@@ -1,44 +1,79 @@
 import { buildTrack } from './sim/track'
 import { MOONACO } from './tracks/moonaco'
-import { createRace, stepRace } from './sim/race'
-import { KartState } from './sim/kart'
 import { createScene } from './render/scene'
-import { buildTrackMeshes } from './render/trackMesh'
+import { buildTrackMeshes, buildItemBoxMeshes } from './render/trackMesh'
 import { buildPlaceholderKart, bindKartVisual, updateKartVisual, KartVisual } from './render/kartVisual'
 import { KeyboardInput } from './game/input'
 import { Hud } from './game/hud'
 import { startLoop, snapshot, Snapshot, updateChaseCamera } from './game/loop'
+import { createQuickRace, stepQuickRace, QuickRace } from './game/quickRace'
+import { rankByProgress } from './sim/rubberband'
+import { CARS } from './data/cars'
 
 const app = document.getElementById('app')!
 const ctx = createScene(app)
 const track = buildTrack(MOONACO)
 ctx.scene.add(buildTrackMeshes(track))
 
-let race = createRace(track, 1)
-const kartVis: KartVisual = bindKartVisual(buildPlaceholderKart(0xe11d48))
-ctx.scene.add(kartVis.group)
+const itemBoxMeshes = buildItemBoxMeshes(track)
+for (const m of itemBoxMeshes) ctx.scene.add(m)
 
 const input = new KeyboardInput()
 const hud = new Hud()
+
+let qr = createQuickRace(track, 6)
+let visuals: KartVisual[] = []
 let lastInput = input.read()
 
-function updateKartVisualSafe(s: Snapshot, k: KartState, dt: number): void {
-  updateKartVisual(kartVis, { x: s.x, y: s.y }, s.heading, k, lastInput, dt)
+function createKartVisuals(qr: QuickRace): KartVisual[] {
+  // remove old visuals
+  for (const vis of visuals) ctx.scene.remove(vis.group)
+  const out: KartVisual[] = []
+  for (let i = 0; i < qr.race.karts.length; i++) {
+    const car = CARS[i % CARS.length]
+    const vis = bindKartVisual(buildPlaceholderKart(car.color))
+    ctx.scene.add(vis.group)
+    out.push(vis)
+  }
+  return out
+}
+
+visuals = createKartVisuals(qr)
+
+function updateAllVisuals(snaps: Snapshot[], dt: number): void {
+  for (let i = 0; i < visuals.length; i++) {
+    const vis = visuals[i]
+    const s = snaps[i]
+    const k = qr.race.karts[i]
+    updateKartVisual(vis, { x: s.x, y: s.y }, s.heading, k, i === 0 ? lastInput : { throttle: 0, steer: 0, drift: false }, dt)
+  }
+}
+
+function updateItemBoxes(): void {
+  for (let i = 0; i < itemBoxMeshes.length; i++) {
+    const box = qr.race.itemBoxes[i]
+    itemBoxMeshes[i].visible = box ? box.active : false
+    if (box && box.active) itemBoxMeshes[i].rotation.y += 0.03
+  }
 }
 
 startLoop(
   () => {
-    if (input.pressed('KeyR')) race = createRace(track, 1)
+    if (input.pressed('KeyR')) {
+      qr = createQuickRace(track, 6)
+      visuals = createKartVisuals(qr)
+    }
     lastInput = input.read()
-    stepRace(race, track, [lastInput])
+    stepQuickRace(qr, lastInput)
   },
-  () => race.karts.map(snapshot),
+  () => qr.race.karts.map(snapshot),
   (snaps, dt) => {
-    const k = race.karts[0]
-    const s = snaps[0]
-    updateKartVisualSafe(s, k, dt)
-    updateChaseCamera(ctx.camera, s, dt)
-    hud.update(k)
+    updateAllVisuals(snaps, dt)
+    updateChaseCamera(ctx.camera, snaps[0], dt)
+    updateItemBoxes()
+    const ranks = rankByProgress(qr.race.karts)
+    const playerPos = ranks[0] + 1
+    hud.update(qr.race.karts[0], playerPos, qr.race.karts.length)
     ctx.renderer.render(ctx.scene, ctx.camera)
   },
 )

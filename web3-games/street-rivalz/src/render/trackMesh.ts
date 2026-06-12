@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Track } from '../sim/track'
+import { Track, pointAtProgress } from '../sim/track'
 import { v, add, sub, scale, norm, Vec2 } from '../sim/math'
 
 /** Sim (x, y) plane maps to three (x, z); y is up. */
@@ -69,4 +69,17 @@ export function buildTrackMeshes(track: Track): THREE.Group {
   g.add(start)
 
   return g
+}
+
+export function buildItemBoxMeshes(track: Track): THREE.Mesh[] {
+  const boxGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2)
+  const boxMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 })
+  const meshes: THREE.Mesh[] = []
+  for (const progress of track.itemBoxProgress) {
+    const p = pointAtProgress(track, progress)
+    const mesh = new THREE.Mesh(boxGeo, boxMat.clone())
+    mesh.position.set(p.x, 1.2, p.y)
+    meshes.push(mesh)
+  }
+  return meshes
 }

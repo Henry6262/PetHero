@@ -23,6 +23,7 @@ export class KeyboardInput {
       throttle: (up ? 1 : 0) + (down ? -1 : 0),
       steer: (leftKey ? 1 : 0) + (rightKey ? -1 : 0),
       drift: this.keys.has('Space'),
+      useItem: this.keys.has('KeyE') || this.keys.has('ShiftLeft'),
     }
   }
 

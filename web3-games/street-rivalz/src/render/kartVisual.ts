@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { KartState, KartInput, DEFAULT_KART } from '../sim/kart'
+import { KartState, KartInput } from '../sim/kart'
 import { len } from '../sim/math'
 
 const WHEEL_RADIUS = 0.35
@@ -36,6 +36,16 @@ export function buildPlaceholderKart(color: number): THREE.Group {
     w.castShadow = true
     g.add(w)
   }
+
+  const shield = new THREE.Mesh(
+    new THREE.SphereGeometry(1.6, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.35 }),
+  )
+  shield.name = 'shield'
+  shield.position.y = 0.8
+  shield.visible = false
+  g.add(shield)
+
   return g
 }
 
@@ -43,6 +53,7 @@ export interface KartVisual {
   group: THREE.Group
   wheels: { FL: THREE.Object3D; FR: THREE.Object3D; RL: THREE.Object3D; RR: THREE.Object3D }
   body: THREE.Object3D
+  shield: THREE.Object3D
   spin: number
 }
 
@@ -55,6 +66,7 @@ export function bindKartVisual(group: THREE.Group): KartVisual {
   return {
     group,
     body: get('body'),
+    shield: get('shield'),
     wheels: { FL: get('wheel_FL'), FR: get('wheel_FR'), RL: get('wheel_RL'), RR: get('wheel_RR') },
     spin: 0,
   }
@@ -87,14 +99,22 @@ export function updateKartVisual(
   vis.wheels.FL.rotation.y = steerYaw
   vis.wheels.FR.rotation.y = steerYaw
 
-  // body drift lean + boost squat
-  const targetLean = state.drift.active ? state.drift.dir * 0.18 : 0
+  // body drift lean + boost squat + spinout rock
+  let targetLean = state.drift.active ? state.drift.dir * 0.18 : 0
+  let targetRoll = 0
+  if (state.spinoutTicks > 0) {
+    targetLean = 0
+    targetRoll = Math.sin(state.spinoutTicks * 0.4) * 0.25
+  }
   vis.body.rotation.z += (targetLean - vis.body.rotation.z) * Math.min(1, dt * 10)
+  vis.body.rotation.x += (targetRoll - vis.body.rotation.x) * Math.min(1, dt * 10)
   const targetSquat = state.boostTicks > 0 ? 0.45 : 0.55
   vis.body.position.y += (targetSquat - vis.body.position.y) * Math.min(1, dt * 10)
+
+  // shield bubble
+  vis.shield.visible = state.shieldTicks > 0
 
   // boost speed cap visual: stretch flame later (Plan 4); color flash for now
   const mat = (vis.body as THREE.Mesh).material as THREE.MeshStandardMaterial
   mat.emissive.setHex(state.boostTicks > 0 ? 0x3366ff : 0x000000)
-  void DEFAULT_KART
 }
