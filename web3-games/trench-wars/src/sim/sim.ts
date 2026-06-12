@@ -4,7 +4,7 @@ import {
   OVERTIME_TICKS, RIVER_Y, SPELL_TOWER_DAMAGE_MULT,
 } from './constants'
 import { getCard } from './cards'
-import type { DeployCommand, MatchResult, PlayerId, SimState, Tower, UnitEntity } from './types'
+import type { CardDef, DeployCommand, MatchResult, PlayerId, SimState, Tower, UnitEntity } from './types'
 
 const TOWER_STATS = {
   lane: { hp: 1400, damage: 90, range: 5.5, attackSpeed: 8 },
@@ -58,8 +58,61 @@ function regenElixir(s: SimState) {
   s.elixir = [Math.min(ELIXIR_MAX, s.elixir[0] + rate), Math.min(ELIXIR_MAX, s.elixir[1] + rate)]
 }
 
-// ---- placeholders fleshed out by later tasks (keep them, they make this file compile) ----
-function applyCommands(_s: SimState, _commands: DeployCommand[]) {}
+export function handOf(s: SimState, p: PlayerId): string[] {
+  return s.decks[p].slice(0, HAND_SIZE)
+}
+
+export function validateDeploy(s: SimState, cmd: DeployCommand): boolean {
+  let card
+  try { card = getCard(cmd.cardId) } catch { return false }
+  if (!handOf(s, cmd.player).includes(cmd.cardId)) return false
+  if (s.elixir[cmd.player] < card.cost) return false
+  if (cmd.x < 0 || cmd.x > ARENA_W || cmd.y < 0 || cmd.y > ARENA_H) return false
+  if (card.type === 'unit') {
+    const onOwnHalf = cmd.player === 0 ? cmd.y < RIVER_Y - 0.5 : cmd.y > RIVER_Y + 0.5
+    if (!onOwnHalf) return false
+  }
+  return true
+}
+
+function applyCommands(s: SimState, commands: DeployCommand[]) {
+  for (const cmd of commands) {
+    if (!validateDeploy(s, cmd)) continue
+    const card = getCard(cmd.cardId)
+    s.elixir[cmd.player] -= card.cost
+    // cycle: remove from hand position, push to back of queue
+    const idx = s.decks[cmd.player].indexOf(cmd.cardId)
+    s.decks[cmd.player].splice(idx, 1)
+    s.decks[cmd.player].push(cmd.cardId)
+
+    if (card.type === 'spell') {
+      castSpell(s, cmd, card) // Task 9
+    } else {
+      for (let i = 0; i < card.count!; i++) {
+        // deterministic ring offsets so multi-unit cards don't stack on one point
+        const angle = (2 * Math.PI * i) / card.count!
+        const r = card.count! > 1 ? 0.7 : 0
+        s.units.push({
+          id: s.nextId++,
+          owner: cmd.player,
+          cardId: card.id,
+          x: Math.min(ARENA_W, Math.max(0, cmd.x + r * Math.cos(angle))),
+          y: Math.min(ARENA_H, Math.max(0, cmd.y + r * Math.sin(angle))),
+          hp: card.hp!,
+          maxHp: card.hp!,
+          cooldown: 0,
+          fleeing: false,
+          revealed: card.stealthRange === undefined,
+          buffUntil: 0,
+        })
+      }
+    }
+  }
+}
+
+function castSpell(_s: SimState, _cmd: DeployCommand, _card: CardDef) {} // Task 9
+
+// ---- placeholders fleshed out by later tasks ----
 function updateUnits(_s: SimState) {}
 function updateTowers(_s: SimState) {}
 function cleanupAndWinCheck(_s: SimState) {}
