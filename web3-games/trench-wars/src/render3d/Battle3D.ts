@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { ARENA_H, ARENA_W, RIVER_Y, LANE_LEFT_X, LANE_RIGHT_X } from '../sim/constants'
+import { getCard } from '../sim/cards'
 import type { SimState, UnitEntity, Tower } from '../sim/types'
 
 /**
@@ -54,6 +55,20 @@ interface UnitView {
 
 interface TowerView {
   group: THREE.Group
+  lastCooldown: number
+}
+
+interface Projectile {
+  mesh: THREE.Mesh
+  from: THREE.Vector3
+  to: THREE.Vector3
+  t: number
+  dur: number
+}
+
+interface DyingUnit {
+  group: THREE.Group
+  t: number
 }
 
 const toWorld = (simX: number, simY: number, out = new THREE.Vector3()) =>
@@ -74,6 +89,12 @@ export class Battle3D {
   private ray = new THREE.Raycaster()
   private groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
   private tmpV = new THREE.Vector3()
+  private projectiles: Projectile[] = []
+  private dying: DyingUnit[] = []
+  private shakeAmp = 0
+  private camBase = new THREE.Vector3()
+  /** Set by the host scene to hear projectile launches (for SFX). */
+  onProjectile?: () => void
   ready = false
 
   constructor() {
@@ -96,6 +117,7 @@ export class Battle3D {
     this.camera = new THREE.PerspectiveCamera(50, ARENA_PX_W / ARENA_PX_H, 1, 200)
     this.camera.position.set(0, 38, 28)
     this.camera.lookAt(0, 0, 1)
+    this.camBase.copy(this.camera.position)
 
     const hemi = new THREE.HemisphereLight(0xbfd6ff, 0x33271a, 1.1)
     this.scene.add(hemi)
@@ -349,6 +371,7 @@ export class Battle3D {
   /** Sync meshes to sim state. Call once per rendered frame. */
   sync(sim: SimState) {
     if (!this.ready) return
+    this.lastSim = sim
     const aliveUnits = new Set<number>()
     for (const u of sim.units) {
       aliveUnits.add(u.id)
@@ -356,11 +379,12 @@ export class Battle3D {
     }
     for (const [id, view] of this.units) {
       if (!aliveUnits.has(id)) {
-        this.scene.remove(view.group)
+        // shrink-and-sink death instead of popping out
+        this.dying.push({ group: view.group, t: 0 })
         this.units.delete(id)
       }
     }
-    for (const t of sim.towers) this.syncTower(t)
+    for (const t of sim.towers) this.syncTower(t, sim)
   }
 
   private syncUnit(u: UnitEntity) {
@@ -376,8 +400,45 @@ export class Battle3D {
       view.attack.reset().play()
       view.walk.crossFadeTo(view.attack, 0.08, false)
       view.moving = false
+      const range = getCard(u.cardId).range ?? 0
+      if (range > 1.5) this.fireAt(u.x, u.y, u.owner, range, 1.4, u.owner === 0 ? 0x6fd4ff : 0xffb04a)
     }
     view.lastCooldown = u.cooldown
+  }
+
+  /** Visual-only projectile toward the nearest enemy in range (mirrors sim targeting closely enough). */
+  private fireAt(x: number, y: number, owner: number, range: number, height: number, color: number) {
+    let best: { x: number; y: number; h: number } | null = null
+    let bestD = range + 0.8
+    const consider = (tx: number, ty: number, h: number) => {
+      const d = Math.hypot(tx - x, ty - y)
+      if (d < bestD) { bestD = d; best = { x: tx, y: ty, h } }
+    }
+    for (const u of this.lastSim?.units ?? []) {
+      if (u.owner !== owner) consider(u.x, u.y, 1.2)
+    }
+    for (const t of this.lastSim?.towers ?? []) {
+      if (t.owner !== owner && t.hp > 0) consider(t.x, t.y, 2.0)
+    }
+    if (!best) return
+    const target = best as { x: number; y: number; h: number }
+    const from = toWorld(x, y); from.y = height
+    const to = toWorld(target.x, target.y); to.y = target.h
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 10, 10),
+      new THREE.MeshBasicMaterial({ color }),
+    )
+    mesh.position.copy(from)
+    this.scene.add(mesh)
+    this.projectiles.push({ mesh, from, to, t: 0, dur: 0.16 + bestD * 0.022 })
+    this.onProjectile?.()
+  }
+
+  private lastSim: SimState | null = null
+
+  /** Camera shake — call on big impacts (tower kills). */
+  shake(amp: number) {
+    this.shakeAmp = Math.max(this.shakeAmp, amp)
   }
 
   private createUnit(u: UnitEntity): UnitView {
@@ -426,12 +487,16 @@ export class Battle3D {
     return view
   }
 
-  private syncTower(t: Tower) {
+  private syncTower(t: Tower, _sim: SimState) {
     let view = this.towers.get(t.id)
     if (t.hp <= 0) {
       if (view) { this.scene.remove(view.group); this.towers.delete(t.id) }
       return
     }
+    if (view && t.cooldown > view.lastCooldown) {
+      this.fireAt(t.x, t.y, t.owner, 8.5, t.kind === 'king' ? 3.2 : 2.6, t.owner === 0 ? 0x6fd4ff : 0xffb04a)
+    }
+    if (view) view.lastCooldown = t.cooldown
     if (!view) {
       const src = this.buildings[`${t.kind}-${t.owner}`]
       const group = src.clone()
@@ -443,7 +508,7 @@ export class Battle3D {
       toWorld(t.x, t.y, group.position)
       group.rotation.y = t.owner === 0 ? 0 : Math.PI
       this.scene.add(group)
-      view = { group }
+      view = { group, lastCooldown: t.cooldown }
       this.towers.set(t.id, view)
     }
   }
@@ -473,6 +538,44 @@ export class Battle3D {
       if (view.moving && dist > 0.01) view.walk.paused = false
       view.mixer.update(dt)
     }
+
+    // projectiles: arc from muzzle to target
+    for (const p of this.projectiles) {
+      p.t += dt / p.dur
+      const k = Math.min(1, p.t)
+      p.mesh.position.lerpVectors(p.from, p.to, k)
+      p.mesh.position.y += Math.sin(k * Math.PI) * 0.7
+    }
+    this.projectiles = this.projectiles.filter((p) => {
+      if (p.t >= 1) { this.scene.remove(p.mesh); return false }
+      return true
+    })
+
+    // dying units: shrink and sink
+    for (const d of this.dying) {
+      d.t += dt / 0.35
+      const k = Math.max(0, 1 - d.t)
+      d.group.scale.setScalar(k)
+      d.group.position.y = -0.4 * (1 - k)
+    }
+    this.dying = this.dying.filter((d) => {
+      if (d.t >= 1) { this.scene.remove(d.group); return false }
+      return true
+    })
+
+    // camera shake decay
+    if (this.shakeAmp > 0.004) {
+      this.camera.position.set(
+        this.camBase.x + (Math.random() - 0.5) * this.shakeAmp,
+        this.camBase.y + (Math.random() - 0.5) * this.shakeAmp * 0.6,
+        this.camBase.z + (Math.random() - 0.5) * this.shakeAmp,
+      )
+      this.shakeAmp *= Math.exp(-dt * 7)
+    } else if (this.shakeAmp !== 0) {
+      this.shakeAmp = 0
+      this.camera.position.copy(this.camBase)
+    }
+
     this.renderer.render(this.scene, this.camera)
   }
 

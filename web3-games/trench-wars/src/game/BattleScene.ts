@@ -47,6 +47,9 @@ export class BattleScene extends Phaser.Scene {
   private dragIndex: number | null = null
   private pending: DeployCommand[] = []
   private over = false
+  private muteText!: Phaser.GameObjects.Text
+  private elixirShown = 0
+  private lastHitSfx = 0
 
   private mode: 'practice' | 'ladder' = 'practice'
   private defenderId?: string
@@ -67,6 +70,16 @@ export class BattleScene extends Phaser.Scene {
     this.load.image('portrait-vanguard', '/assets/3d/portraits/vanguard.png')
     this.load.image('portrait-explorer', '/assets/3d/portraits/explorer.png')
     this.load.image('portrait-crimson', '/assets/3d/portraits/crimson.png')
+    // audio is optional — missing files just emit loaderror and the game stays silent
+    for (const key of ['deploy', 'hit', 'shoot', 'explosion', 'tower-down', 'elixir', 'victory', 'defeat', 'battle-loop']) {
+      this.load.audio(key, `/assets/audio/${key}.mp3`)
+    }
+    this.load.on('loaderror', () => {}) // swallow 404s for optional audio
+  }
+
+  /** Play a sound only if its file actually loaded. */
+  private sfx(key: string, volume = 0.5) {
+    if (this.cache.audio.exists(key)) this.sound.play(key, { volume })
   }
 
   create() {
@@ -117,7 +130,31 @@ export class BattleScene extends Phaser.Scene {
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.onDragMove(p))
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.onDragEnd(p))
     this.vfx = new VfxManager(this, (x, y) => battle3d!.project(x, y, 0.4))
+    battle3d.onProjectile = () => this.sfx('shoot', 0.25)
+
+    // sound toggle — floats top-right over the arena
+    this.sound.mute = window.localStorage.getItem('tw-muted') === '1'
+    this.muteText = this.add.text(GAME_W - 10, 10, this.sound.mute ? 'SOUND OFF' : 'SOUND ON', {
+      fontFamily: BRAND.fonts.body,
+      fontSize: '13px',
+      color: BRAND.colors.textMuted,
+      backgroundColor: hexToCss(BRAND.colors.panel),
+      padding: { x: 8, y: 4 },
+    }).setOrigin(1, 0).setDepth(50)
+    if (this.cache.audio.exists('battle-loop') && !this.sound.get('battle-loop')) {
+      this.sound.play('battle-loop', { loop: true, volume: 0.3 })
+    }
     ;(window as any).__TRENCH_READY__ = true
+  }
+
+  private toggleMute() {
+    this.sound.mute = !this.sound.mute
+    window.localStorage.setItem('tw-muted', this.sound.mute ? '1' : '0')
+    this.muteText.setText(this.sound.mute ? 'SOUND OFF' : 'SOUND ON')
+  }
+
+  private inMuteButton(p: Phaser.Input.Pointer): boolean {
+    return p.x > GAME_W - 110 && p.y < 36
   }
 
   private buildCardSlots() {
@@ -191,6 +228,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private onArenaClick(p: Phaser.Input.Pointer) {
+    if (this.inMuteButton(p)) { this.toggleMute(); return }
     if (this.over) { this.startMatch(); return }
     if (p.y >= ARENA_PX_H) return
     this.deployAt(p.x, p.y)
@@ -240,13 +278,15 @@ export class BattleScene extends Phaser.Scene {
       }
       if (this.sim.result && !this.over) {
         this.over = true
-        if (this.sim.result.winner === 0) this.ladder.recordWin()
-        else if (this.sim.result.winner === 1) this.ladder.recordLoss()
+        if (this.sim.result.winner === 0) { this.ladder.recordWin(); this.sfx('victory', 0.7) }
+        else if (this.sim.result.winner === 1) { this.ladder.recordLoss(); this.sfx('defeat', 0.7) }
         if (this.mode === 'ladder' && this.defenderId) {
           void this.submitReplay()
         }
       }
     }
+    // smooth elixir bar toward the sim value
+    this.elixirShown += (this.sim.elixir[0] - this.elixirShown) * Math.min(1, (delta / 1000) * 10)
     battle3d.sync(this.sim)
     battle3d.render(delta)
     this.vfx.update(delta)
@@ -288,9 +328,11 @@ export class BattleScene extends Phaser.Scene {
     const barW = GAME_W - 70
     const barH = 14
     g.fillStyle(BRAND.colors.panelLight, 1).fillRoundedRect(barX, barY, barW, barH, 7)
-    const pct = Math.max(0, Math.min(1, this.sim.elixir[0] / ELIXIR_MAX))
+    const pct = Math.max(0, Math.min(1, this.elixirShown / ELIXIR_MAX))
     g.fillStyle(BRAND.colors.elixir, 1).fillRoundedRect(barX, barY, barW * pct, barH, 7)
-    g.lineStyle(2, BRAND.colors.elixirDark, 1)
+    const full = this.sim.elixir[0] >= ELIXIR_MAX
+    const pulse = full ? 0.6 + 0.4 * Math.sin(this.time.now / 120) : 1
+    g.lineStyle(full ? 3 : 2, full ? BRAND.colors.primary : BRAND.colors.elixirDark, pulse)
     g.strokeRoundedRect(barX, barY, barW, barH, 7)
     for (let i = 1; i < ELIXIR_MAX; i++) {
       const tx = barX + (barW / ELIXIR_MAX) * i
@@ -442,6 +484,7 @@ export class BattleScene extends Phaser.Scene {
       } else {
         this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 3)
       }
+      if (cmd.player === 0) this.sfx('deploy', 0.5)
     }
 
     const prevUnits = new Map(prev.units.map((u) => [u.id, u]))
@@ -450,11 +493,16 @@ export class BattleScene extends Phaser.Scene {
       const p = prevUnits.get(id)
       if (p && u.hp < p.hp) {
         this.vfx.hit(u.x, u.y, u.owner === 0 ? BRAND.colors.defender : BRAND.colors.attacker)
+        if (this.time.now - this.lastHitSfx > 90) {
+          this.lastHitSfx = this.time.now
+          this.sfx('hit', 0.15)
+        }
       }
     }
     for (const [id, u] of prevUnits) {
       if (!nextUnits.has(id) && u.hp > 0) {
         this.vfx.explosion(u.x, u.y, u.owner === 0 ? BRAND.colors.attacker : BRAND.colors.defender)
+        this.sfx('explosion', 0.3)
       }
     }
 
@@ -466,6 +514,8 @@ export class BattleScene extends Phaser.Scene {
       }
       if (p.hp > 0 && n.hp <= 0) {
         this.vfx.explosion(n.x, n.y, n.owner === 0 ? BRAND.colors.attacker : BRAND.colors.defender)
+        this.sfx('tower-down', 0.8)
+        battle3d?.shake(p.kind === 'king' ? 1.3 : 0.7)
       }
     }
   }

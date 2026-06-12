@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
-    "smoke-3d": "tsx scripts/screenshot-3d.ts"
+    "smoke-3d": "tsx scripts/screenshot-3d.ts",
+    "portraits": "tsx scripts/render-portraits.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

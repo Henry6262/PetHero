@@ -13,7 +13,12 @@
 - `npm test` — vitest sim + game logic suite
 - `npm run e2e` — Playwright boot smoke
 - `npm run build` — typecheck + production build
-- `npm run smoke-3d` — Playwright visual smoke: boots a practice match, deploys units, screenshots to `/tmp/tw3d.png` (needs dev server on 5174 + backend on 3001)
+- `npm run smoke-3d` — Playwright visual smoke: boots a practice match, deploys units, exercises drag-deploy, screenshots to `/tmp/tw3d.png` (needs dev server on 5174 + backend on 3001)
+- `npm run portraits` — re-render transparent card portraits from `public/assets/3d/chars/*-walk.glb` into `public/assets/3d/portraits/`; run after adding a new character
+
+### Audio (optional, drop-in)
+
+`public/assets/audio/*.mp3` — keys: deploy, hit, shoot, explosion, tower-down, elixir, victory, defeat, battle-loop. Missing files are silently skipped; the moment a file exists it plays. Mute toggle persists in localStorage `tw-muted`.
 
 ## Server
 
@@ -59,6 +64,7 @@
   - `src/lib/elo.ts` — K=32 Elo delta
   - `prisma/schema.prisma` — Account, Deck, Match
 - `scripts/screenshot-3d.ts` — Playwright visual smoke for the 3D battle.
+- `scripts/render-portraits.ts` — bakes transparent card portraits from character GLBs (3 canvas readbacks, safe under the GPU limit).
 - `e2e/` — Playwright boot smoke.
 
 ## 3D asset sources (portfolio)
