@@ -35,6 +35,17 @@ async function main() {
 
   await page.screenshot({ path: '/tmp/tw3d.png' })
   console.log('saved /tmp/tw3d.png')
+
+  // drag card 0 onto own half — deploy preview disc should appear
+  const s = rect.height / GAME_H
+  await page.mouse.move(rect.left + 70 * s, rect.top + 1060 * s)
+  await page.mouse.down()
+  await page.mouse.move(rect.left + 200 * s, rect.top + 750 * s, { steps: 8 })
+  await page.waitForTimeout(300)
+  await page.screenshot({ path: '/tmp/tw3d-drag.png' })
+  console.log('saved /tmp/tw3d-drag.png')
+  await page.mouse.up()
+
   await browser.close()
 }
 

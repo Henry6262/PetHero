@@ -2,11 +2,11 @@ import Phaser from 'phaser'
 import { createMatch, step, handOf, validateDeploy } from '../sim/sim'
 import { aiCommands } from '../sim/ai'
 import { getCard, STARTER_DECK } from '../sim/cards'
-import { ARENA_H, ARENA_W, ELIXIR_MAX, MATCH_TICKS, OVERTIME_TICKS, TICK_MS } from '../sim/constants'
+import { ARENA_H, ARENA_W, ELIXIR_MAX, HAND_SIZE, MATCH_TICKS, OVERTIME_TICKS, TICK_MS } from '../sim/constants'
 import { Ladder } from './ladder'
 import { BRAND, hexToCss } from '../render/Brand'
 import { VfxManager } from '../render/VfxManager'
-import { Battle3D } from '../render3d/Battle3D'
+import { Battle3D, CARD_CHAR } from '../render3d/Battle3D'
 import { fingerprint } from '../sim/replay'
 import { submitMatch } from '../api'
 import type { DeployCommand, SimState } from '../sim/types'
@@ -17,17 +17,34 @@ export const ARENA_PX_H = ARENA_H * TILE      // 960
 const HUD_H = 150
 export const GAME_H = ARENA_PX_H + HUD_H      // 1110
 
+const CARD_W = 126
+const CARD_H = 82
+const CARD_Y = ARENA_PX_H + 60
+
 // One 3D renderer for the lifetime of the page — survives scene restarts.
 let battle3d: Battle3D | null = null
+
+interface CardSlot {
+  bg: Phaser.GameObjects.Rectangle
+  portrait: Phaser.GameObjects.Image
+  glyph: Phaser.GameObjects.Text
+  name: Phaser.GameObjects.Text
+  costBg: Phaser.GameObjects.Arc
+  cost: Phaser.GameObjects.Text
+}
 
 export class BattleScene extends Phaser.Scene {
   private sim!: SimState
   private ladder!: Ladder
   private gfx!: Phaser.GameObjects.Graphics
   private hudText!: Phaser.GameObjects.Text
-  private cardTexts: Phaser.GameObjects.Text[] = []
+  private elixirText!: Phaser.GameObjects.Text
+  private nextLabel!: Phaser.GameObjects.Text
+  private nextPortrait!: Phaser.GameObjects.Image
+  private cardSlots: CardSlot[] = []
   private acc = 0
   private selectedCard = 0
+  private dragIndex: number | null = null
   private pending: DeployCommand[] = []
   private over = false
 
@@ -45,6 +62,12 @@ export class BattleScene extends Phaser.Scene {
   private vfx!: VfxManager
 
   constructor() { super('battle') }
+
+  preload() {
+    this.load.image('portrait-vanguard', '/assets/3d/portraits/vanguard.png')
+    this.load.image('portrait-explorer', '/assets/3d/portraits/explorer.png')
+    this.load.image('portrait-crimson', '/assets/3d/portraits/crimson.png')
+  }
 
   create() {
     this.ladder = new Ladder(window.localStorage)
@@ -69,27 +92,71 @@ export class BattleScene extends Phaser.Scene {
       fontSize: '17px',
       color: BRAND.colors.text,
     })
+    this.elixirText = this.add.text(GAME_W - 14, ARENA_PX_H + 35, '', {
+      fontFamily: BRAND.fonts.header,
+      fontSize: '15px',
+      color: hexToCss(BRAND.colors.elixir),
+      fontStyle: '700',
+    }).setOrigin(1, 0)
+    this.nextLabel = this.add.text(GAME_W - 90, ARENA_PX_H + 10, 'NEXT', {
+      fontFamily: BRAND.fonts.body,
+      fontSize: '11px',
+      color: BRAND.colors.textMuted,
+    })
+    this.nextPortrait = this.add.image(GAME_W - 40, ARENA_PX_H + 17, 'portrait-vanguard')
+      .setDisplaySize(26, 26)
     this.loadingText = this.add.text(GAME_W / 2, ARENA_PX_H / 2, 'RAISING THE BATTLEFIELD…', {
       fontFamily: BRAND.fonts.header,
       fontSize: '22px',
       color: BRAND.colors.text,
     }).setOrigin(0.5)
-    for (let i = 0; i < 4; i++) {
-      const t = this.add.text(12 + i * 134, ARENA_PX_H + 66, '', {
-        fontFamily: BRAND.fonts.body,
-        fontSize: '14px',
-        color: BRAND.colors.text,
-        backgroundColor: hexToCss(BRAND.colors.panel),
-        padding: { x: 8, y: 12 },
-        fixedWidth: 124,
-        align: 'center',
-      }).setInteractive()
-      t.on('pointerdown', () => { this.selectedCard = i })
-      this.cardTexts.push(t)
-    }
+
+    this.buildCardSlots()
+
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => this.onArenaClick(p))
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.onDragMove(p))
+    this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.onDragEnd(p))
     this.vfx = new VfxManager(this, (x, y) => battle3d!.project(x, y, 0.4))
     ;(window as any).__TRENCH_READY__ = true
+  }
+
+  private buildCardSlots() {
+    for (let i = 0; i < HAND_SIZE; i++) {
+      const x = 8 + i * (CARD_W + 8) + CARD_W / 2
+      const y = CARD_Y + CARD_H / 2
+      const bg = this.add.rectangle(x, y, CARD_W, CARD_H, BRAND.colors.panelLight)
+        .setStrokeStyle(2, BRAND.colors.panelBorder)
+        .setInteractive()
+      const portrait = this.add.image(x - CARD_W / 2 + 30, y, 'portrait-vanguard')
+        .setDisplaySize(48, 58)
+      const glyph = this.add.text(x - CARD_W / 2 + 30, y, '✦', {
+        fontFamily: BRAND.fonts.header,
+        fontSize: '34px',
+        color: hexToCss(BRAND.colors.elixir),
+      }).setOrigin(0.5).setVisible(false)
+      const name = this.add.text(x + 6, y - 8, '', {
+        fontFamily: BRAND.fonts.body,
+        fontSize: '12px',
+        color: BRAND.colors.text,
+        fontStyle: '700',
+        wordWrap: { width: 62 },
+        align: 'center',
+      }).setOrigin(0.5)
+      const costBg = this.add.circle(x - CARD_W / 2 + 14, y - CARD_H / 2 + 14, 11, BRAND.colors.elixir)
+        .setStrokeStyle(2, BRAND.colors.elixirDark)
+      const cost = this.add.text(costBg.x, costBg.y, '', {
+        fontFamily: BRAND.fonts.header,
+        fontSize: '13px',
+        color: '#ffffff',
+        fontStyle: '900',
+      }).setOrigin(0.5)
+
+      bg.on('pointerdown', () => {
+        this.selectedCard = i
+        this.dragIndex = i
+      })
+      this.cardSlots.push({ bg, portrait, glyph, name, costBg, cost })
+    }
   }
 
   private startMatch() {
@@ -106,11 +173,10 @@ export class BattleScene extends Phaser.Scene {
     }
   }
 
-  private onArenaClick(p: Phaser.Input.Pointer) {
-    if (this.over) { this.startMatch(); return }
-    if (p.y >= ARENA_PX_H || !battle3d?.ready) return
-    const tile = battle3d.screenToSim(p.x, p.y)
-    if (!tile) return
+  private deployAt(px: number, py: number): boolean {
+    if (!battle3d?.ready) return false
+    const tile = battle3d.screenToSim(px, py)
+    if (!tile) return false
     const hand = handOf(this.sim, 0)
     const cmd: DeployCommand = {
       tick: this.sim.tick,
@@ -119,7 +185,36 @@ export class BattleScene extends Phaser.Scene {
       x: tile.x,
       y: tile.y,
     }
-    if (validateDeploy(this.sim, cmd)) this.pending.push(cmd)
+    if (!validateDeploy(this.sim, cmd)) return false
+    this.pending.push(cmd)
+    return true
+  }
+
+  private onArenaClick(p: Phaser.Input.Pointer) {
+    if (this.over) { this.startMatch(); return }
+    if (p.y >= ARENA_PX_H) return
+    this.deployAt(p.x, p.y)
+  }
+
+  private onDragMove(p: Phaser.Input.Pointer) {
+    if (this.dragIndex === null || !battle3d?.ready || this.over) return
+    if (p.y >= ARENA_PX_H) { battle3d.hideDeployPreview(); return }
+    const tile = battle3d.screenToSim(p.x, p.y)
+    if (!tile) { battle3d.hideDeployPreview(); return }
+    const hand = handOf(this.sim, 0)
+    const cmd: DeployCommand = { tick: this.sim.tick, player: 0, cardId: hand[this.dragIndex], x: tile.x, y: tile.y }
+    battle3d.showDeployPreview(tile.x, tile.y, validateDeploy(this.sim, cmd))
+  }
+
+  private onDragEnd(p: Phaser.Input.Pointer) {
+    if (this.dragIndex === null) return
+    const wasDraggedToArena = p.y < ARENA_PX_H
+    if (wasDraggedToArena && !this.over) {
+      this.selectedCard = this.dragIndex
+      this.deployAt(p.x, p.y)
+    }
+    this.dragIndex = null
+    battle3d?.hideDeployPreview()
   }
 
   update(_time: number, delta: number) {
@@ -187,16 +282,22 @@ export class BattleScene extends Phaser.Scene {
     g.lineStyle(2, BRAND.colors.panelBorder, 1)
     g.strokeRoundedRect(0, ARENA_PX_H, GAME_W, HUD_H, 0)
 
-    // elixir bar track
+    // elixir bar: track + fill + 10 segment ticks
     const barX = 12
-    const barY = ARENA_PX_H + 36
-    const barW = GAME_W - 24
-    const barH = 16
-    g.fillStyle(BRAND.colors.panelLight, 1).fillRoundedRect(barX, barY, barW, barH, 8)
+    const barY = ARENA_PX_H + 38
+    const barW = GAME_W - 70
+    const barH = 14
+    g.fillStyle(BRAND.colors.panelLight, 1).fillRoundedRect(barX, barY, barW, barH, 7)
     const pct = Math.max(0, Math.min(1, this.sim.elixir[0] / ELIXIR_MAX))
-    g.fillStyle(BRAND.colors.elixir, 1).fillRoundedRect(barX, barY, barW * pct, barH, 8)
+    g.fillStyle(BRAND.colors.elixir, 1).fillRoundedRect(barX, barY, barW * pct, barH, 7)
     g.lineStyle(2, BRAND.colors.elixirDark, 1)
-    g.strokeRoundedRect(barX, barY, barW, barH, 8)
+    g.strokeRoundedRect(barX, barY, barW, barH, 7)
+    for (let i = 1; i < ELIXIR_MAX; i++) {
+      const tx = barX + (barW / ELIXIR_MAX) * i
+      g.lineStyle(1, BRAND.colors.panel, 0.8)
+      g.lineBetween(tx, barY + 2, tx, barY + barH - 2)
+    }
+    this.elixirText.setText(`${Math.floor(this.sim.elixir[0])}`)
 
     // crowns
     const crowns = this.crownsTaken()
@@ -211,23 +312,46 @@ export class BattleScene extends Phaser.Scene {
     const secs = Math.ceil(remaining / 10)
     const level = this.ladder.currentLevel()
     const timeText = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`
-    this.hudText.setText(
+    this.hudText.setX(78).setText(
       this.over
         ? ''
-        : `${this.mode === 'ladder' ? 'RANKED' : level.name}  •  ${timeText}  •  ELIXIR ${Math.floor(this.sim.elixir[0])}/${ELIXIR_MAX}`,
+        : `${this.mode === 'ladder' ? 'RANKED' : level.name}  •  ${timeText}`,
     )
 
+    // hand
     const hand = handOf(this.sim, 0)
-    hand.forEach((id, i) => {
-      const c = getCard(id)
-      const canAfford = this.sim.elixir[0] >= c.cost
-      const selected = i === this.selectedCard
-      this.cardTexts[i]
-        .setText(`${c.name.toUpperCase()}\n${c.cost} ELIXIR`)
-        .setBackgroundColor(hexToCss(selected ? BRAND.colors.primaryDark : BRAND.colors.panel))
-        .setColor(canAfford ? (selected ? hexToCss(BRAND.colors.bg) : BRAND.colors.text) : BRAND.colors.textDark)
-        .setAlpha(canAfford ? 1 : 0.5)
-    })
+    hand.forEach((id, i) => this.updateCardSlot(i, id))
+
+    // next card from the deck queue
+    const nextId = this.sim.decks[0][HAND_SIZE]
+    if (nextId) {
+      const charName = CARD_CHAR[nextId]
+      this.nextPortrait.setVisible(!!charName)
+      if (charName) this.nextPortrait.setTexture(`portrait-${charName}`).setDisplaySize(26, 26)
+      this.nextLabel.setText(`NEXT: ${getCard(nextId).name.toUpperCase().slice(0, 14)}`).setX(GAME_W - 200)
+    }
+  }
+
+  private updateCardSlot(i: number, cardId: string) {
+    const slot = this.cardSlots[i]
+    const c = getCard(cardId)
+    const canAfford = this.sim.elixir[0] >= c.cost
+    const selected = i === this.selectedCard
+    const charName = CARD_CHAR[cardId]
+
+    slot.bg.setFillStyle(selected ? BRAND.colors.primaryDark : BRAND.colors.panelLight)
+    slot.bg.setStrokeStyle(selected ? 3 : 2, selected ? BRAND.colors.primary : BRAND.colors.panelBorder)
+    if (charName) {
+      slot.portrait.setTexture(`portrait-${charName}`).setDisplaySize(48, 58).setVisible(true)
+      slot.glyph.setVisible(false)
+    } else {
+      slot.portrait.setVisible(false)
+      slot.glyph.setVisible(true)
+    }
+    slot.name.setText(c.name.toUpperCase())
+    slot.cost.setText(`${c.cost}`)
+    const alpha = canAfford ? 1 : 0.45
+    ;[slot.bg, slot.portrait, slot.glyph, slot.name, slot.costBg, slot.cost].forEach((o) => o.setAlpha(alpha))
   }
 
   private drawResultOverlay(g: Phaser.GameObjects.Graphics) {

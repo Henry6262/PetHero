@@ -18,7 +18,7 @@ const ARENA_PX_W = 540
 const ARENA_PX_H = 960
 
 // Which character model plays each unit card.
-const CARD_CHAR: Record<string, CharName> = {
+export const CARD_CHAR: Record<string, CharName> = {
   'bag-holder': 'vanguard',
   'chad-trader': 'vanguard',
   'diamond-hands': 'vanguard',
@@ -33,7 +33,7 @@ const CARD_CHAR: Record<string, CharName> = {
   'rug-dev': 'crimson',
 }
 
-type CharName = 'vanguard' | 'explorer' | 'crimson'
+export type CharName = 'vanguard' | 'explorer' | 'crimson'
 
 interface CharAsset {
   scene: THREE.Group
@@ -93,8 +93,8 @@ export class Battle3D {
     this.scene.background = new THREE.Color(0x0a0e14)
     this.scene.fog = new THREE.Fog(0x0a0e14, 55, 90)
 
-    this.camera = new THREE.PerspectiveCamera(46, ARENA_PX_W / ARENA_PX_H, 1, 200)
-    this.camera.position.set(0, 36, 26)
+    this.camera = new THREE.PerspectiveCamera(50, ARENA_PX_W / ARENA_PX_H, 1, 200)
+    this.camera.position.set(0, 38, 28)
     this.camera.lookAt(0, 0, 1)
 
     const hemi = new THREE.HemisphereLight(0xbfd6ff, 0x33271a, 1.1)
@@ -162,6 +162,7 @@ export class Battle3D {
     })
 
     this.buildArena(grass.scene, water.scene)
+    this.buildLanes()
     this.decorate()
     this.ready = true
   }
@@ -175,6 +176,60 @@ export class Battle3D {
     g.position.y = y
     g.rotation.y = rotY
     this.scene.add(g)
+  }
+
+  /** Worn dirt roads down both lanes, tower to tower across the bridges. */
+  private buildLanes() {
+    const mat = new THREE.MeshLambertMaterial({ color: 0x9a7748, transparent: true, opacity: 0.62 })
+    for (const laneX of [LANE_LEFT_X, LANE_RIGHT_X]) {
+      const road = new THREE.Mesh(new THREE.PlaneGeometry(1.7, ARENA_H - 8), mat)
+      road.rotation.x = -Math.PI / 2
+      toWorld(laneX, ARENA_H / 2, road.position)
+      road.position.y = 0.02
+      road.receiveShadow = true
+      this.scene.add(road)
+
+      // plank texture on the bridge section
+      for (let i = -2; i <= 2; i++) {
+        const plank = new THREE.Mesh(
+          new THREE.BoxGeometry(2.1, 0.06, 0.32),
+          new THREE.MeshLambertMaterial({ color: i % 2 ? 0x8c6b3d : 0x7a5c33 }),
+        )
+        toWorld(laneX, RIVER_Y + i * 0.4, plank.position)
+        plank.position.y = 0.06
+        plank.castShadow = true
+        this.scene.add(plank)
+      }
+    }
+  }
+
+  /** Ghost disc shown while dragging a card over the arena. */
+  private preview?: { group: THREE.Group; disc: THREE.MeshBasicMaterial; ring: THREE.MeshBasicMaterial }
+
+  showDeployPreview(simX: number, simY: number, valid: boolean) {
+    if (!this.preview) {
+      const disc = new THREE.MeshBasicMaterial({ color: 0x44dd66, transparent: true, opacity: 0.3 })
+      const ring = new THREE.MeshBasicMaterial({ color: 0x44dd66, transparent: true, opacity: 0.9 })
+      const group = new THREE.Group()
+      const d = new THREE.Mesh(new THREE.CircleGeometry(1.1, 32), disc)
+      d.rotation.x = -Math.PI / 2
+      d.position.y = 0.05
+      const r = new THREE.Mesh(new THREE.RingGeometry(1.0, 1.14, 32), ring)
+      r.rotation.x = -Math.PI / 2
+      r.position.y = 0.06
+      group.add(d, r)
+      this.scene.add(group)
+      this.preview = { group, disc, ring }
+    }
+    const color = valid ? 0x44dd66 : 0xee4444
+    this.preview.disc.color.setHex(color)
+    this.preview.ring.color.setHex(color)
+    toWorld(simX, simY, this.preview.group.position)
+    this.preview.group.visible = true
+  }
+
+  hideDeployPreview() {
+    if (this.preview) this.preview.group.visible = false
   }
 
   /** Hand-placed battlefield dressing — edges and river only, never the play area. */
