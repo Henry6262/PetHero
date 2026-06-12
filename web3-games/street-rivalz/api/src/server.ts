@@ -1,6 +1,7 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import cookie from '@fastify/cookie'
+import replays from './routes/replays'
 
 const app = fastify({ logger: true })
 
@@ -14,6 +15,7 @@ await app.register(cookie, {
 })
 
 app.get('/health', async () => ({ ok: true }))
+await app.register(replays, { prefix: '/replays' })
 
 const start = async () => {
   try {
