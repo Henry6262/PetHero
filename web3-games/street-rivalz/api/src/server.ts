@@ -4,6 +4,7 @@ import cookie from '@fastify/cookie'
 import replays from './routes/replays'
 import ghosts from './routes/ghosts'
 import ladder from './routes/ladder'
+import grandPrix from './routes/grandprix'
 
 const app = fastify({ logger: true })
 
@@ -20,6 +21,7 @@ app.get('/health', async () => ({ ok: true }))
 await app.register(replays, { prefix: '/replays' })
 await app.register(ghosts, { prefix: '/ghosts' })
 await app.register(ladder, { prefix: '/ladder' })
+await app.register(grandPrix, { prefix: '/grandprix' })
 
 const start = async () => {
   try {
