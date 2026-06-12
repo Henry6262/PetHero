@@ -14,6 +14,22 @@
       }
       #drift-bar { width: 140px; height: 8px; background: #ffffff22; border-radius: 4px; margin-top: 6px; }
       #drift-fill { height: 100%; width: 0%; background: #4ade80; border-radius: 4px; }
+      #garage {
+        position: fixed; inset: 0; display: none;
+        background: rgba(10,10,18,0.92); color: #fff;
+        font-family: ui-monospace, monospace; padding: 24px;
+        overflow-y: auto; user-select: none;
+      }
+      #garage h2 { margin: 0 0 12px; }
+      #garage .section { margin-bottom: 16px; }
+      #garage .items { display: flex; flex-wrap: wrap; gap: 8px; }
+      #garage .item {
+        padding: 8px 12px; background: #ffffff15; border-radius: 6px; cursor: pointer;
+        border: 2px solid transparent;
+      }
+      #garage .item:hover { background: #ffffff25; }
+      #garage .item.equipped { border-color: #4ade80; }
+      #garage button { margin-top: 12px; padding: 8px 16px; background: #4ade80; color: #000; border: none; border-radius: 6px; cursor: pointer; }
     </style>
   </head>
   <body>
@@ -24,6 +40,11 @@
       <div id="lap">LAP 1/3</div>
       <div id="item">-</div>
       <div id="drift-bar"><div id="drift-fill"></div></div>
+    </div>
+    <div id="garage">
+      <h2>GARAGE <span style="font-size:14px;color:#888">(G to close)</span></h2>
+      <div id="garage-content"></div>
+      <button id="garage-save">SAVE LOADOUT</button>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
