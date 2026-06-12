@@ -110,7 +110,25 @@ function applyCommands(s: SimState, commands: DeployCommand[]) {
   }
 }
 
-function castSpell(_s: SimState, _cmd: DeployCommand, _card: CardDef) {} // Task 9
+function castSpell(s: SimState, cmd: DeployCommand, card: CardDef) {
+  const at = { x: cmd.x, y: cmd.y }
+  if (card.effectDamage) {
+    for (const u of s.units) {
+      if (u.owner !== cmd.player && dist(at, u) <= card.effectRadius!) u.hp -= card.effectDamage
+    }
+    for (const t of s.towers) {
+      if (t.owner !== cmd.player && t.hp > 0 && dist(at, t) <= card.effectRadius!) {
+        t.hp -= Math.round(card.effectDamage * SPELL_TOWER_DAMAGE_MULT)
+      }
+    }
+    s.units = s.units.filter(u => u.hp > 0)
+  }
+  if (card.buffTicks) {
+    for (const u of s.units) {
+      if (u.owner === cmd.player && dist(at, u) <= card.effectRadius!) u.buffUntil = s.tick + card.buffTicks
+    }
+  }
+}
 
 
 function dist(a: { x: number; y: number }, b: { x: number; y: number }): number {
@@ -247,8 +265,66 @@ function updateUnits(s: SimState) {
   s.units = s.units.filter(u => u.hp > 0)
 }
 
-// ---- placeholders fleshed out by later tasks ----
-function updateTowers(_s: SimState) {}
-function cleanupAndWinCheck(_s: SimState) {}
+function updateTowers(s: SimState) {
+  for (const t of s.towers) {
+    if (t.hp <= 0 || !t.active) continue
+    if (t.cooldown > 0) { t.cooldown--; continue }
+    const stats = TOWER_STATS[t.kind]
+    let target: UnitEntity | null = null
+    for (const u of s.units) {
+      if (u.owner === t.owner || !u.revealed) continue
+      if (dist(t, u) > stats.range) continue
+      if (!target || dist(t, u) < dist(t, target) || (dist(t, u) === dist(t, target) && u.id < target.id)) target = u
+    }
+    if (target) {
+      target.hp -= stats.damage
+      t.cooldown = stats.attackSpeed
+    }
+  }
+  s.units = s.units.filter(u => u.hp > 0)
+}
+
+function crownsTaken(s: SimState, by: PlayerId): number {
+  return s.towers.filter(t => t.owner !== by && t.hp <= 0).length
+}
+
+function towerDamageDealt(s: SimState, by: PlayerId): number {
+  return s.towers.filter(t => t.owner !== by).reduce((sum, t) => sum + (t.maxHp - Math.max(0, t.hp)), 0)
+}
+
+function cleanupAndWinCheck(s: SimState) {
+  // king wake-up: lane tower down, or king took damage
+  for (const owner of [0, 1] as const) {
+    const k = s.towers.find(t => t.owner === owner && t.kind === 'king')!
+    if (!k.active && (k.hp < k.maxHp || s.towers.some(t => t.owner === owner && t.kind === 'lane' && t.hp <= 0))) {
+      k.active = true
+    }
+  }
+  // instant win: king destroyed
+  for (const owner of [0, 1] as const) {
+    if (s.towers.find(t => t.owner === owner && t.kind === 'king')!.hp <= 0) {
+      s.result = { winner: (1 - owner) as PlayerId, reason: 'king' }
+      return
+    }
+  }
+  // full time
+  if (!s.overtime && s.tick === MATCH_TICKS - 1) {
+    const c0 = crownsTaken(s, 0), c1 = crownsTaken(s, 1)
+    if (c0 !== c1) { s.result = { winner: c0 > c1 ? 0 : 1, reason: 'crowns' }; return }
+    s.overtime = true
+    return
+  }
+  // overtime: first crown wins (checked via crowns diff), else damage tiebreak at the end
+  if (s.overtime) {
+    const c0 = crownsTaken(s, 0), c1 = crownsTaken(s, 1)
+    if (c0 !== c1) { s.result = { winner: c0 > c1 ? 0 : 1, reason: 'crowns' }; return }
+    if (s.tick >= MATCH_TICKS + OVERTIME_TICKS - 1) {
+      const d0 = towerDamageDealt(s, 0), d1 = towerDamageDealt(s, 1)
+      s.result = d0 === d1
+        ? { winner: null, reason: 'draw' }
+        : { winner: d0 > d1 ? 0 : 1, reason: 'tiebreak' }
+    }
+  }
+}
 
 export { TOWER_STATS }
