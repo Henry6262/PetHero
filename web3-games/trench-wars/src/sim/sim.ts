@@ -153,12 +153,98 @@ function moveToward(u: UnitEntity, goal: { x: number; y: number }, speed: number
   u.y += ((goal.y - u.y) / d) * stepLen
 }
 
+/** Damage multiplier from friendly Influencer auras + own pump-signal buff. */
+function damageMult(s: SimState, u: UnitEntity): number {
+  let m = 1
+  for (const ally of s.units) {
+    if (ally.owner !== u.owner || ally.id === u.id) continue
+    const aura = getCard(ally.cardId).aura
+    if (aura?.damageMult && dist(u, ally) <= aura.radius) m *= aura.damageMult
+  }
+  if (u.buffUntil > s.tick) m *= getCard('pump-signal').buffDamageMult!
+  return m
+}
+
+/** Speed multiplier from enemy FUD auras + own pump-signal buff. */
+function speedMult(s: SimState, u: UnitEntity): number {
+  let m = 1
+  for (const enemy of s.units) {
+    if (enemy.owner === u.owner) continue
+    const aura = getCard(enemy.cardId).aura
+    if (aura?.speedMult && dist(u, enemy) <= aura.radius) m *= aura.speedMult
+  }
+  if (u.buffUntil > s.tick) m *= getCard('pump-signal').buffSpeedMult!
+  return m
+}
+
+function acquireTarget(s: SimState, u: UnitEntity): UnitEntity | null {
+  const card = getCard(u.cardId)
+  const candidates = s.units.filter(e => e.owner !== u.owner && e.revealed && dist(u, e) <= card.sightRange!)
+  if (candidates.length === 0) return null
+  if (card.targeting === 'lowestHp') {
+    return candidates.reduce((a, b) => (b.hp < a.hp || (b.hp === a.hp && b.id < a.id)) ? b : a)
+  }
+  return candidates.reduce((a, b) => (dist(u, b) < dist(u, a) || (dist(u, b) === dist(u, a) && b.id < a.id)) ? b : a)
+}
+
+function dealDamage(s: SimState, attacker: UnitEntity, target: UnitEntity, card = getCard(attacker.cardId)) {
+  const dmg = Math.round(card.damage! * damageMult(s, attacker))
+  if (card.splashRadius) {
+    for (const e of s.units) {
+      if (e.owner !== attacker.owner && dist(target, e) <= card.splashRadius) e.hp -= dmg
+    }
+  } else {
+    target.hp -= dmg
+  }
+  attacker.revealed = true // attacking breaks stealth
+}
+
 function updateUnits(s: SimState) {
+  // stealth reveal pass: any enemy (unit or tower) within stealthRange reveals
+  for (const u of s.units) {
+    const sr = getCard(u.cardId).stealthRange
+    if (sr === undefined || u.revealed) continue
+    const enemyClose =
+      s.units.some(e => e.owner !== u.owner && dist(u, e) <= sr) ||
+      s.towers.some(t => t.owner !== u.owner && t.hp > 0 && dist(u, t) <= sr)
+    if (enemyClose) u.revealed = true
+  }
+
   for (const u of s.units) {
     const card = getCard(u.cardId)
-    // Task 7 adds targeting/attack before movement; for now: walk
-    moveToward(u, moveGoal(s, u), card.speed!)
+    if (u.cooldown > 0) u.cooldown--
+
+    // flee check (Paper Hands)
+    if (card.flees && !u.fleeing && u.hp < FLEE_HP_RATIO * u.maxHp) u.fleeing = true
+    if (u.fleeing) {
+      moveToward(u, moveGoal(s, u), card.speed! * speedMult(s, u))
+      continue
+    }
+
+    const target = acquireTarget(s, u)
+    if (target && dist(u, target) <= card.range!) {
+      if (u.cooldown === 0) {
+        dealDamage(s, u, target)
+        u.cooldown = card.attackSpeed!
+      }
+      continue // in combat: hold position
+    }
+    // tower in attack range? (units siege towers when nothing else is around)
+    const tower = nearestEnemyTower(s, u)
+    if (tower && dist(u, tower) <= card.range! + 0.8) {
+      if (u.cooldown === 0) {
+        tower.hp -= Math.round(card.damage! * damageMult(s, u))
+        u.revealed = true
+        u.cooldown = card.attackSpeed!
+      }
+      continue
+    }
+    const goal = target ?? moveGoal(s, u)
+    moveToward(u, goal, card.speed! * speedMult(s, u))
   }
+
+  // remove dead units (insertion order preserved)
+  s.units = s.units.filter(u => u.hp > 0)
 }
 
 // ---- placeholders fleshed out by later tasks ----
