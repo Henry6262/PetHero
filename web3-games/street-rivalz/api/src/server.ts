@@ -6,6 +6,7 @@ import ghosts from './routes/ghosts'
 import ladder from './routes/ladder'
 import grandPrix from './routes/grandprix'
 import garage from './routes/garage'
+import token from './routes/token'
 
 const app = fastify({ logger: true })
 
@@ -24,6 +25,7 @@ await app.register(ghosts, { prefix: '/ghosts' })
 await app.register(ladder, { prefix: '/ladder' })
 await app.register(grandPrix, { prefix: '/grandprix' })
 await app.register(garage, { prefix: '/garage' })
+await app.register(token, { prefix: '/token' })
 
 const start = async () => {
   try {

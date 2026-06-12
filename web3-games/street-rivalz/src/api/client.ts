@@ -2,6 +2,7 @@
 import { TrackDef } from '../sim/track'
 import { KartInput } from '../sim/kart'
 import { Loadout } from '../garage/inventory'
+import { HolderTier } from '../data/token'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
 
@@ -67,4 +68,5 @@ export const api = {
   getMyRank: (trackId: string) => get<{ rank: number; bestTime: number; mmr: number }>(`/ladder/${trackId}/me`),
   getLoadout: () => get<Loadout & { spoiler?: string | null }>('/garage'),
   saveLoadout: (loadout: Loadout) => post<Loadout & { spoiler?: string | null }>('/garage', loadout),
+  getTokenInfo: () => get<{ ticker: string; name: string; network: string; launchUrl: string; tiers: HolderTier[]; prizePool: string }>('/token'),
 }
