@@ -8,7 +8,8 @@ Browser 3D kart racer — crypto meme grand prix. Marquee track: Moonaco. Spec:
 ### Client
 ```bash
 cd web3-games/street-rivalz
-npm run dev   # Quick Race / Time Trial (WASD/arrows, Space drift, E use item, R new race, T Time Trial)
+npm run dev   # Quick Race / Time Trial / Garage
+              # WASD/arrows drive, Space drift, E use item, R new race, T Time Trial, G Garage
 npm test
 npm run build
 ```
@@ -21,7 +22,7 @@ npm test
 npm run build
 ```
 
-Copy `api/.env.example` to `api/.env` and `.env.local.example` to `.env.local`.
+Copy `api/.env.example` → `api/.env` and `.env.local.example` → `.env.local`.
 
 ## Architecture
 
@@ -32,7 +33,8 @@ Copy `api/.env.example` to `api/.env` and `.env.local.example` to `.env.local`.
   Karts bind by node name: `body`, `wheel_FL/FR/RL/RR` (detached-wheels GLB
   convention — placeholder and real Meshy GLBs use the same binding).
 - `src/game/` — fixed-timestep loop w/ render interpolation, input, HUD, Quick Race, Time Trial.
-- `src/data/` — car roster + item definitions.
+- `src/garage/` — inventory, GLB validator/loader, garage UI.
+- `src/data/` — cars, items, garage cosmetics, token metadata.
 - `src/tracks/` — track definitions (centerline + width + checkpoints + item box placements).
 - `src/api/` — fetch client for backend.
 - `api/` — Fastify + Prisma backend. Verifies replays server-side before accepting ladder/GP times.
@@ -42,4 +44,4 @@ Copy `api/.env.example` to `api/.env` and `.env.local.example` to `.env.local`.
 1. Drivable core ✅
 2. AI racers + items + Quick Race flow ✅
 3. Backend: accounts, ghosts, ladder, Grand Prix, replay verification ✅
-4. Garage, GLB validator/loader, token/holder layer
+4. Garage, GLB validator/loader, token/holder layer ✅
