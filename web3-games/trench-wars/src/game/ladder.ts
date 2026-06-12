@@ -4,7 +4,11 @@ const KEY = 'trench-wars-ladder-level'
 
 /** Storage injected so tests run in Node; browser passes window.localStorage. */
 export class Ladder {
-  constructor(private storage: Storage) {}
+  private storage: Storage
+
+  constructor(storage: Storage) {
+    this.storage = storage
+  }
 
   levelIndex(): number {
     const raw = this.storage.getItem(KEY)

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { createMatch, step } from '../../src/sim/sim'
-import { STARTER_DECK, getCard } from '../../src/sim/cards'
+import { STARTER_DECK } from '../../src/sim/cards'
 import { RIVER_Y, LANE_LEFT_X } from '../../src/sim/constants'
 
 const decks: [string[], string[]] = [[...STARTER_DECK], [...STARTER_DECK]]

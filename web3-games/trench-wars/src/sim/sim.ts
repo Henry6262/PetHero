@@ -4,7 +4,7 @@ import {
   OVERTIME_TICKS, RIVER_Y, SPELL_TOWER_DAMAGE_MULT,
 } from './constants'
 import { getCard } from './cards'
-import type { CardDef, DeployCommand, MatchResult, PlayerId, SimState, Tower, UnitEntity } from './types'
+import type { CardDef, DeployCommand, PlayerId, SimState, Tower, UnitEntity } from './types'
 
 const TOWER_STATS = {
   lane: { hp: 1400, damage: 90, range: 5.5, attackSpeed: 8 },
