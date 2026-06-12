@@ -24,10 +24,10 @@ const garage: FastifyPluginAsync = async (app) => {
     }
 
     return account.loadout ?? {
-      body: 'paper-scooter',
+      body: 'toyota-supra',
       wheels: 'stock',
       spoiler: null,
-      paint: 16432661,
+      paint: 16737792,
       trail: 'default',
     }
   })

@@ -47,16 +47,22 @@ Design pillars (Henry's brief):
 
 ## 4. Theme & launch content (Crypto Meme Grand Prix)
 
-### Car roster (bodies = meme archetypes, light MK-style stat flavor — all earnable, no pay-to-win)
+### Car roster (real-world supercar karts — all earnable, no pay-to-win)
+
+Crypto-meme theme lives in the items, tracks, and Grand Prix; the cars are the recognizable street flex. Every body keeps light MK-style stat flavor.
 
 | Body | Archetype | Stat flavor |
 |---|---|---|
-| Whale Limo | Heavy | Top speed, slow accel, hard to shove |
-| Jeet Tuk-Tuk | Light | Fast accel, fragile, bounces off everything |
-| Diamond Hands Monster Truck | Tank | Knocks others aside, mid speed |
-| Rug Dev Getaway Car | Drift | Best drift/handling, slippery |
-| MEV Bot F1 | Glass cannon | Highest speed, worst collision recovery |
-| Paper Hands Scooter | Starter/comedy | Balanced-bad, free default |
+| Toyota Supra MK4 | Balanced/drift | Great accel + drift, mid top speed |
+| BMW M4 | Handling | High grip, precise corners |
+| Audi R8 | All-rounder | No weaknesses, no extremes |
+| Chevrolet Camaro | Brawler | Strong accel, heavy, shoves rivals |
+| Dodge Challenger Hellcat | Top-speed king | Highest top speed, slowest cornering |
+| Nissan GT-R R35 | Launch demon | Best accel + boost, decent grip |
+
+Default starter: **Toyota Supra MK4**.
+
+*Note: brand/model names are used for v1/pump.fun indie launch. Commercial scale may require licensing, stylized names, or manufacturer partnerships.*
 
 ### Items (the meme weapons / catch-up mechanic)
 

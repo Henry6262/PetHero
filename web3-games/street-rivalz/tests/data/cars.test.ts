@@ -16,12 +16,13 @@ describe('car data', () => {
     }
   })
 
-  it('default car is the Paper Hands Scooter', () => {
-    expect(DEFAULT_CAR.id).toBe('paper-scooter')
+  it('default car is the Toyota Supra MK4', () => {
+    expect(DEFAULT_CAR.id).toBe('toyota-supra')
   })
 
   it('carById finds cars and throws on unknown', () => {
-    expect(carById('mev-bot').name).toBe('MEV Bot F1')
+    expect(carById('bmw-m4').name).toBe('BMW M4')
+    expect(carById('dodge-challenger').name).toBe('Dodge Challenger Hellcat')
     expect(() => carById('not-a-car')).toThrow()
   })
 })

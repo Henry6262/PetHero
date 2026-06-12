@@ -16,9 +16,9 @@ export interface Loadout {
 }
 
 export const DEFAULT_LOADOUT: Loadout = {
-  body: 'paper-scooter',
+  body: 'toyota-supra',
   wheels: 'stock',
-  paint: 0xfacc15,
+  paint: 0xff6600,
   trail: 'default',
 }
 
@@ -44,12 +44,12 @@ export const TRAILS: CosmeticItem[] = [
 ]
 
 export const PAINTS: { id: string; name: string; color: number }[] = [
-  { id: 'paper-yellow', name: 'Paper Yellow', color: 0xfacc15 },
-  { id: 'whale-blue', name: 'Whale Blue', color: 0x3b82f6 },
-  { id: 'jeet-orange', name: 'Jeet Orange', color: 0xf97316 },
-  { id: 'diamond-green', name: 'Diamond Green', color: 0x22c55e },
-  { id: 'rug-purple', name: 'Rug Purple', color: 0xa855f7 },
-  { id: 'mev-red', name: 'MEV Red', color: 0xef4444 },
+  { id: 'supra-orange', name: 'Supra Orange', color: 0xff6600 },
+  { id: 'm4-blue', name: 'M4 Blue', color: 0x4a90e2 },
+  { id: 'r8-silver', name: 'R8 Silver', color: 0xc0c0c0 },
+  { id: 'camaro-yellow', name: 'Camaro Yellow', color: 0xfacc15 },
+  { id: 'hellcat-black', name: 'Hellcat Black', color: 0x111111 },
+  { id: 'gtr-gray', name: 'GT-R Gray', color: 0x4a4a4a },
 ]
 
 export function bodyItem(id: string): CosmeticItem | undefined {

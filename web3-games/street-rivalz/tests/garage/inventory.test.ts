@@ -11,8 +11,8 @@ describe('garage inventory', () => {
   })
 
   it('normalizes an incomplete loadout', () => {
-    const normalized = normalizeLoadout({ body: 'paper-scooter' })
-    expect(normalized.body).toBe('paper-scooter')
+    const normalized = normalizeLoadout({ body: 'toyota-supra' })
+    expect(normalized.body).toBe('toyota-supra')
     expect(normalized.wheels).toBeDefined()
     expect(normalized.paint).toBeDefined()
   })

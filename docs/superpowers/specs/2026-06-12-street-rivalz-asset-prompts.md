@@ -28,23 +28,23 @@ Rules:
 
 ## Car body prompts
 
-### 1. Paper Hands Scooter
-> A tiny, goofy three-wheeled scooter kart. Yellow body, oversized front wheel, tiny rear wheels, handlebars, a little paper-hand emblem on the side. Stylized low-poly game asset, cartoonish, 3 meters long, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. Crypto meme racing theme.
+### 1. Toyota Supra MK4 (starter / balanced drift)
+> A stylized low-poly Toyota Supra MK4 as a kart body, orange paint, iconic rear spoiler, compact sports-car proportions. 2.8 meters long, game-ready, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. No rigging.
 
-### 2. Whale Limo
-> A stretched black limousine kart with blinged-out chrome rims, tiny windows, whale-tail spoiler, luxurious low-rider stance. Stylized low-poly game asset, 3 meters long, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. Crypto meme racing theme.
+### 2. BMW M4 (handling / grip)
+> A stylized low-poly BMW M4 as a kart body, Yas Marina Blue metallic paint, kidney grille, wide stance, sport coupe silhouette. 2.8 meters long, game-ready, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. No rigging.
 
-### 3. Jeet Tuk-Tuk
-> A rickety auto-rickshaw tuk-tuk kart, orange and blue paint, tin roof, exposed engine, oversized front wheel, two small rear wheels. Stylized low-poly game asset, cartoonish, 3 meters long, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. Crypto meme racing theme.
+### 3. Audi R8 (all-rounder)
+> A stylized low-poly Audi R8 as a kart body, V10 side blades, silver/iron gray paint, mid-engine supercar proportions. 2.8 meters long, game-ready, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. No rigging.
 
-### 4. Diamond Hands Monster Truck
-> A chunky monster truck kart with huge off-road tires, diamond-textured green body, knobby treads, raised suspension, diamond-hands logo on the hood. Stylized low-poly game asset, 3 meters long, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. Crypto meme racing theme.
+### 4. Chevrolet Camaro (brawler)
+> A stylized low-poly Chevrolet Camaro as a kart body, yellow with black racing stripes, muscular front fascia, wide rear. 2.9 meters long, game-ready, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. No rigging.
 
-### 5. Rug Dev Getaway Car
-> A sleek purple sports car with a shifty hacker vibe, tinted windows, neon underglow strips, getaway-door lines, slippery aerodynamic body. Stylized low-poly game asset, 3 meters long, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. Crypto meme racing theme.
+### 5. Dodge Challenger Hellcat (top-speed king)
+> A stylized low-poly Dodge Challenger SRT Hellcat as a kart body, matte black with red accents, widebody kit, hood scoop, aggressive American muscle look. 3 meters long, game-ready, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. No rigging.
 
-### 6. MEV Bot F1
-> A red Formula 1 style open-wheel racing kart, exposed front wing, slick tires, glass cockpit, aggressive aerodynamics, bot-face livery. Stylized low-poly game asset, 3 meters long, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. Crypto meme racing theme.
+### 6. Nissan GT-R R35 (launch demon)
+> A stylized low-poly Nissan GT-R R35 as a kart body, gunmetal gray, quad round taillights, sharp angular supercar shape. 2.8 meters long, game-ready, detached wheels named wheel_FL, wheel_FR, wheel_RL, wheel_RR, body node at ground center, forward +Z. No rigging.
 
 ---
 
