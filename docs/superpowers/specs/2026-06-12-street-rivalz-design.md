@@ -1,9 +1,9 @@
-# Moonaco Grand Prix — Design Spec
+# StreetRivalz — Design Spec
 
 **Date:** 2026-06-12
 **Status:** Approved by Henry (brainstorm 2026-06-12)
-**Location:** `web3-games/moonaco-gp/` (monorepo folder; standalone repo later, like other web3-games)
-**Working title:** Moonaco Grand Prix (Monaco × moon; marquee track is the "Moonaco" street circuit). Ticker TBD at launch.
+**Location:** `web3-games/street-rivalz/` (monorepo folder; standalone repo later, like other web3-games)
+**Name:** StreetRivalz (chosen by Henry 2026-06-12; "Need for Trench" considered and rejected). The marquee track keeps the "Moonaco" name (Monaco × moon street circuit). Ticker TBD at launch — $RIVALZ is the working candidate.
 
 ## 1. Concept
 
