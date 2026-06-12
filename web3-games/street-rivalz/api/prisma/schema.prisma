@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  anonId    String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  replays   Replay[]
+  ladders   LadderEntry[]
+  gpEntries GrandPrixEntry[]
+}
+
+model Replay {
+  id         String   @id @default(uuid())
+  accountId  String
+  trackId    String
+  carId      String
+  seed       Int
+  inputsJson String
+  finalTime  Float
+  verified   Boolean
+  createdAt  DateTime @default(now())
+  account    Account  @relation(fields: [accountId], references: [id])
+  ghostOf    Ghost?
+}
+
+model Ghost {
+  id        String   @id @default(uuid())
+  replayId  String   @unique
+  trackId   String
+  accountId String
+  mmr       Int      @default(1000)
+  createdAt DateTime @default(now())
+  replay    Replay   @relation(fields: [replayId], references: [id])
+}
+
+model LadderEntry {
+  id        String   @id @default(uuid())
+  accountId String
+  trackId   String
+  bestTime  Float
+  mmr       Int      @default(1000)
+  updatedAt DateTime @updatedAt
+  account   Account  @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, trackId])
+}
+
+model GrandPrix {
+  id        String   @id @default(uuid())
+  trackId   String
+  startsAt  DateTime
+  endsAt    DateTime
+  prizePool String   @default("0")
+  state     String   @default("qualifying")
+  createdAt DateTime @default(now())
+  entries   GrandPrixEntry[]
+}
+
+model GrandPrixEntry {
+  id             String    @id @default(uuid())
+  gpId           String
+  accountId      String
+  qualifyingTime Float?
+  finalTime      Float?
+  rank           Int?
+  createdAt      DateTime  @default(now())
+  account        Account   @relation(fields: [accountId], references: [id])
+  gp             GrandPrix @relation(fields: [gpId], references: [id])
+
+  @@unique([gpId, accountId])
+}
