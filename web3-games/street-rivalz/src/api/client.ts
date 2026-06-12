@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import { TrackDef } from '../sim/track'
 import { KartInput } from '../sim/kart'
+import { Loadout } from '../garage/inventory'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001'
 
@@ -64,4 +65,6 @@ export const api = {
     get<Ghost[]>(`/ghosts/${trackId}?count=${count}&nearMmr=${nearMmr}`),
   getLadder: (trackId: string, limit = 20) => get<LadderRow[]>(`/ladder/${trackId}?limit=${limit}`),
   getMyRank: (trackId: string) => get<{ rank: number; bestTime: number; mmr: number }>(`/ladder/${trackId}/me`),
+  getLoadout: () => get<Loadout & { spoiler?: string | null }>('/garage'),
+  saveLoadout: (loadout: Loadout) => post<Loadout & { spoiler?: string | null }>('/garage', loadout),
 }

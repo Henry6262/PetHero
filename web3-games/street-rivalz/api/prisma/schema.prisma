@@ -14,6 +14,18 @@ model Account {
   replays   Replay[]
   ladders   LadderEntry[]
   gpEntries GrandPrixEntry[]
+  loadout   Loadout?
+}
+
+model Loadout {
+  id        String   @id @default(uuid())
+  accountId String   @unique
+  body      String   @default("paper-scooter")
+  wheels    String   @default("stock")
+  spoiler   String?
+  paint     Int      @default(16432661)
+  trail     String   @default("default")
+  account   Account  @relation(fields: [accountId], references: [id])
 }
 
 model Replay {

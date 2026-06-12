@@ -5,6 +5,7 @@ import replays from './routes/replays'
 import ghosts from './routes/ghosts'
 import ladder from './routes/ladder'
 import grandPrix from './routes/grandprix'
+import garage from './routes/garage'
 
 const app = fastify({ logger: true })
 
@@ -22,6 +23,7 @@ await app.register(replays, { prefix: '/replays' })
 await app.register(ghosts, { prefix: '/ghosts' })
 await app.register(ladder, { prefix: '/ladder' })
 await app.register(grandPrix, { prefix: '/grandprix' })
+await app.register(garage, { prefix: '/garage' })
 
 const start = async () => {
   try {
