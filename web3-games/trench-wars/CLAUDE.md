@@ -1,15 +1,15 @@
 # Trench Wars — Agent Notes
 
-> Browser Clash Royale-style lane battler — Traders vs Jeets. Deterministic fixed-tick sim + **real 3D battle renderer (Three.js)** with a transparent Phaser 4 HUD overlay + Express/Prisma backend.
+> Browser Clash Royale-style lane battler — Traders vs Jeets. Deterministic fixed-tick sim + **real 3D battle renderer (Three.js)** + **React UI shell** (menu, deck builder, battle HUD) + Express/Prisma backend. No Phaser.
 >
-> The battle arena is full 3D: KayKit Medieval Hexagon tiles/towers/decoration (`public/assets/3d/kaykit/`) + Meshy AI animated characters (`public/assets/3d/chars/`, meshopt-compressed GLBs ~500KB each). `src/render3d/Battle3D.ts` owns a WebGL canvas underneath the transparent Phaser canvas; Phaser draws HUD, hp bars, and VFX projected through the 3D camera. The 2D spritesheet pipeline was removed in the 3D pivot.
+> The battle arena is full 3D: KayKit Medieval Hexagon tiles/towers/decoration (`public/assets/3d/kaykit/`) + Meshy AI animated characters (`public/assets/3d/chars/`, meshopt-compressed GLBs ~500KB each). `src/render3d/Battle3D.ts` owns the WebGL canvas inside a React-managed stage; hp bars + particle VFX draw on a 2D overlay canvas; cards/elixir/result are React DOM. Fonts self-hosted via @fontsource.
 > Spec: `docs/superpowers/specs/2026-06-12-trench-wars-design.md`
 > Plan 1: `docs/superpowers/plans/2026-06-12-trench-wars-v1-core.md`
 > Plan 3: `docs/superpowers/plans/2026-06-12-trench-wars-plan-3-backend.md`
 
 ## Client
 
-- `npm run dev` — play locally vs AI ladder (click card → click own half to deploy)
+- `npm run dev` — play locally vs AI ladder (drag a card onto your half, or tap card + tap arena)
 - `npm test` — vitest sim + game logic suite
 - `npm run e2e` — Playwright boot smoke
 - `npm run build` — typecheck + production build
@@ -39,21 +39,26 @@
 
 ## Architecture
 
-- `src/sim/` — pure TS, NO Phaser/Three/Express imports. Deterministic at 10 ticks/sec.
+- `src/sim/` — pure TS, NO React/Three/Express imports. Deterministic at 10 ticks/sec.
   - `rng.ts` — pure seeded RNG `[value, nextState]`
   - `constants.ts`, `types.ts`, `cards.json`, `cards.ts` — roster + config
   - `sim.ts` — `createMatch`, `validateDeploy`, `step` (deploy → elixir → auras → units → towers → win)
   - `replay.ts` — `runReplay` + `fingerprint` (anti-cheat foundation)
   - `ai.ts` — deterministic AI policy + 5-level ladder configs
 - `src/render3d/` — Three.js battle renderer.
-  - `Battle3D.ts` — WebGL canvas under Phaser; instanced hex arena + river + bridges, hand-placed decoration (`decorate()`), blue/red KayKit towers, Meshy character units with walk/attack animation (meshopt GLBs), ground raycast for deploys (`screenToSim`), camera projection for the HUD overlay (`project`). Card→character mapping in `CARD_CHAR`.
-- `src/render/` — Phaser-side presentation.
-  - `Brand.ts` — colors, fonts, hex/CSS helpers (single source of truth for UI)
-  - `VfxManager.ts` — particles + spell rings for deploy, hits, deaths (positions projected through the 3D camera)
-- `src/game/` — Phaser scenes, HUD, input, ladder persistence, server API wiring.
-  - `MenuScene.ts` — Solana wallet connect, guest login, Elo display, Practice / Ladder Match / Deck Builder buttons
-  - `BattleScene.ts` — transparent HUD overlay: runs the sim loop, drives `Battle3D`, draws cards/elixir/hp bars/VFX, forwards input as `DeployCommand`s, submits ladder replays
-  - `DeckBuilderScene.ts` — pick 8 cards from the roster and save to the server
+  - `Battle3D.ts` — WebGL canvas inside the React stage; instanced hex arena + river + bridges, hand-placed decoration (`decorate()`), blue/red KayKit towers, Meshy character units with walk/attack animation (meshopt GLBs), ground raycast for deploys (`screenToSim`), camera projection for the HUD overlay (`project`). Card→character mapping in `CARD_CHAR`.
+- `src/render/` — presentation helpers.
+  - `Brand.ts` — color/copy tokens (CSS source of truth is `src/ui/theme.css`)
+  - `Vfx2D.ts` — particles + spell rings on the 2D overlay canvas
+  - `AudioBus.ts` — optional drop-in HTMLAudio SFX/music bus
+- `src/ui/` — React shell (Vite + @vitejs/plugin-react).
+  - `App.tsx` — screen state machine (menu | deck | battle), account state
+  - `Menu.tsx` — guest/wallet login, Elo display, mode buttons (data-testids: guest, practice, deck)
+  - `DeckBuilder.tsx` — card grid w/ portraits, 8-card deck, server save
+  - `Battle.tsx` — battle screen: stage div (3D canvas + 2D overlay + result modal) + HUD (hand, elixir, next, mute)
+  - `CardTile.tsx`, `theme.css` — shared card component + design tokens
+- `src/game/` — engine-agnostic game drivers.
+  - `BattleController.ts` — rAF sim loop, drives Battle3D + Vfx2D + AudioBus, drag/click deploys, replay submit, emits BattleSnapshot to React
   - `ladder.ts` — localStorage-injected AI ladder progression
 - `src/api.ts` — typed fetch client for the backend.
 - `src/wallet.ts` — minimal Phantom/Solana provider wrapper.
@@ -75,8 +80,8 @@
 
 ## Golden rules
 
-1. Never import Phaser or DOM APIs into `src/sim/`. Grep check: `grep -ri "phaser" src/sim/` must be empty.
-2. Never import Express/Prisma into `src/sim/`, `src/render/`, or `src/render3d/`.
+1. Never import React/Three/DOM APIs into `src/sim/`. Grep check: `grep -riE "react|three" src/sim/` must be empty.
+2. Never import Express/Prisma into client code. React components never touch the sim directly — only via `BattleController`.
 3. All game rules live in sim; renderers only visualize state.
 4. Card stats live in `src/sim/cards.json` — balance changes need no code.
 5. Replays must be byte-deterministic; `runReplay(seed, decks, commands)` reproduces the same state.

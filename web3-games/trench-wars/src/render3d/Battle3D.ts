@@ -99,10 +99,11 @@ export class Battle3D {
 
   constructor() {
     this.canvas = document.createElement('canvas')
-    this.canvas.style.position = 'fixed'
-    this.canvas.style.zIndex = '0'
+    this.canvas.style.position = 'absolute'
+    this.canvas.style.inset = '0'
+    this.canvas.style.width = '100%'
+    this.canvas.style.height = '100%'
     this.canvas.style.pointerEvents = 'none'
-    document.body.appendChild(this.canvas)
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true })
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -358,14 +359,13 @@ export class Battle3D {
     return found
   }
 
-  /** Position the 3D canvas to exactly underlay the arena portion of the (scaled) Phaser canvas. */
-  syncLayout(phaserCanvas: HTMLCanvasElement, gameH: number) {
-    const rect = phaserCanvas.getBoundingClientRect()
-    const arenaFrac = ARENA_PX_H / gameH
-    this.canvas.style.left = `${rect.left}px`
-    this.canvas.style.top = `${rect.top}px`
-    this.canvas.style.width = `${rect.width}px`
-    this.canvas.style.height = `${rect.height * arenaFrac}px`
+  /** Mount the 3D canvas into a positioned container (it fills it). */
+  attach(container: HTMLElement) {
+    container.appendChild(this.canvas)
+  }
+
+  detach() {
+    this.canvas.remove()
   }
 
   /** Sync meshes to sim state. Call once per rendered frame. */
@@ -594,10 +594,6 @@ export class Battle3D {
     v.y = height
     v.project(this.camera)
     return { x: ((v.x + 1) / 2) * ARENA_PX_W, y: ((1 - v.y) / 2) * ARENA_PX_H }
-  }
-
-  setVisible(visible: boolean) {
-    this.canvas.style.display = visible ? 'block' : 'none'
   }
 
   dispose() {

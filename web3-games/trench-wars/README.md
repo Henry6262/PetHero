@@ -1,6 +1,6 @@
 # Trench Wars
 
-Browser Clash Royale-style lane battler — Traders vs Jeets. Deterministic pure-TS sim + **real 3D battle renderer (Three.js)** with a transparent Phaser 4 HUD overlay + Express/Prisma backend. Client API base URL defaults to `http://localhost:3001/api`; set `VITE_API_URL` for production builds.
+Browser Clash Royale-style lane battler — Traders vs Jeets. Deterministic pure-TS sim + **real 3D battle renderer (Three.js)** with a React UI shell + Express/Prisma backend. Client API base URL defaults to `http://localhost:3001/api`; set `VITE_API_URL` for production builds.
 
 The arena is full 3D: KayKit Medieval Hexagon tiles, towers, and decoration plus Meshy AI animated characters (meshopt-compressed GLBs). The sim stays the single source of truth — the 3D layer only visualizes state.
 
@@ -36,5 +36,5 @@ Features: deterministic sim, 3D battle arena, AI ladder, ranked async PvP with s
 
 Spec: `docs/superpowers/specs/2026-06-12-trench-wars-design.md` (monorepo root).
 Status: Plan 1 ✅, Plan 3 ✅ (backend, async PvP, replay verification, Railway config), 3D pivot ✅.
-All game rules live in `src/sim/` (no Phaser/Three/Express imports there — enforced by review); balance lives in `src/sim/cards.json`.
-3D rendering lives in `src/render3d/Battle3D.ts`; Phaser HUD/VFX in `src/render/` + `src/game/`.
+All game rules live in `src/sim/` (no React/Three/Express imports there — enforced by review); balance lives in `src/sim/cards.json`.
+3D rendering lives in `src/render3d/Battle3D.ts`; React UI in `src/ui/`; battle driver in `src/game/BattleController.ts`.

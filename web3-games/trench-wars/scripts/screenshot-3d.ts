@@ -1,52 +1,61 @@
 import { chromium } from '@playwright/test'
 
-const GAME_W = 540
-const GAME_H = 1110
-
+/**
+ * Visual smoke for the React + 3D build.
+ * Captures: menu (desktop + mobile), battle, drag-deploy preview, deck builder.
+ * Needs dev server on 5174 + backend on 3001.
+ */
 async function main() {
   const browser = await chromium.launch({ args: ['--use-gl=angle'] })
-  const page = await browser.newPage({ viewport: { width: 620, height: 1240 } })
-  page.on('console', (m) => console.log('PAGE:', m.text().slice(0, 160)))
+
+  // mobile-sized run (the primary target)
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } })
   page.on('pageerror', (e) => console.log('ERROR:', e.message))
   await page.goto('http://localhost:5174/')
-  await page.waitForTimeout(2500)
+  await page.waitForTimeout(1200)
+  await page.screenshot({ path: '/tmp/tw-menu-mobile.png' })
 
-  const rect = await page.evaluate(() => {
-    const c = document.querySelector('#app canvas') as HTMLCanvasElement
-    const r = c.getBoundingClientRect()
-    return { left: r.left, top: r.top, width: r.width, height: r.height }
-  })
-  const click = async (gx: number, gy: number) => {
-    const s = rect.height / GAME_H
-    await page.mouse.click(rect.left + gx * s, rect.top + gy * s)
-  }
+  await page.click('[data-testid=guest]')
+  await page.waitForSelector('[data-testid=practice]', { timeout: 8000 })
+  await page.screenshot({ path: '/tmp/tw-menu-authed.png' })
 
-  await click(GAME_W / 2, 410) // PLAY AS GUEST
-  await page.waitForTimeout(1500)
-  await click(GAME_W / 2, 340) // PRACTICE VS AI
+  await page.click('[data-testid=practice]')
   await page.waitForFunction(() => (window as any).__TRENCH_READY__, undefined, { timeout: 15000 })
-  await page.waitForTimeout(6000) // let 3D assets load + first units deploy
+  await page.waitForTimeout(6500)
 
-  // deploy a couple of units so the screenshot shows characters
-  await click(GAME_W * 0.25, 700)
+  // deploy two units via stage clicks (own half)
+  const stage = (await page.locator('.stage').boundingBox())!
+  await page.mouse.click(stage.x + stage.width * 0.3, stage.y + stage.height * 0.72)
   await page.waitForTimeout(400)
-  await click(GAME_W * 0.75, 700)
+  await page.mouse.click(stage.x + stage.width * 0.7, stage.y + stage.height * 0.72)
   await page.waitForTimeout(4000)
-
   await page.screenshot({ path: '/tmp/tw3d.png' })
   console.log('saved /tmp/tw3d.png')
 
-  // drag card 0 onto own half — deploy preview disc should appear
-  const s = rect.height / GAME_H
-  await page.mouse.move(rect.left + 70 * s, rect.top + 1060 * s)
+  // drag first card onto the arena — preview disc should appear
+  const card = (await page.locator('.hand .card-tile').first().boundingBox())!
+  await page.mouse.move(card.x + card.width / 2, card.y + card.height / 2)
   await page.mouse.down()
-  await page.mouse.move(rect.left + 200 * s, rect.top + 750 * s, { steps: 8 })
+  await page.mouse.move(stage.x + stage.width * 0.35, stage.y + stage.height * 0.68, { steps: 8 })
   await page.waitForTimeout(300)
   await page.screenshot({ path: '/tmp/tw3d-drag.png' })
   console.log('saved /tmp/tw3d-drag.png')
   await page.mouse.up()
+  await page.close()
 
+  // desktop menu + deck builder
+  const desktop = await browser.newPage({ viewport: { width: 1280, height: 800 } })
+  await desktop.goto('http://localhost:5174/')
+  await desktop.waitForTimeout(1200)
+  await desktop.screenshot({ path: '/tmp/tw-menu-desktop.png' })
+  const authed = await desktop.locator('[data-testid=deck]').count()
+  if (authed) {
+    await desktop.click('[data-testid=deck]')
+    await desktop.waitForTimeout(800)
+    await desktop.screenshot({ path: '/tmp/tw-deck.png' })
+  }
   await browser.close()
+  console.log('done')
 }
 
 main().catch((e) => { console.error(e); process.exit(1) })
