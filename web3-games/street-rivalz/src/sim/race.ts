@@ -1,4 +1,4 @@
-import { Vec2, v, add, sub, scale, dot, norm, len } from './math'
+import { v, add, sub, scale, dot, norm } from './math'
 import { Track, sampleTrack, forwardDelta } from './track'
 import {
   KartState, KartInput, KartParams, DEFAULT_KART,
