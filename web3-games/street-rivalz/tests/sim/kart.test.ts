@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { createKart, stepKart, DEFAULT_KART, DT, KartInput } from '../../src/sim/kart'
-import { v, len, dot } from '../../src/sim/math'
+import { createKart, stepKart, DEFAULT_KART, KartInput } from '../../src/sim/kart'
+import { v, len } from '../../src/sim/math'
 
 const THROTTLE: KartInput = { throttle: 1, steer: 0, drift: false }
 const NEUTRAL: KartInput = { throttle: 0, steer: 0, drift: false }
