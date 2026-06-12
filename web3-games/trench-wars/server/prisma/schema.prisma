@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  wallet    String?  @unique
+  elo       Int      @default(1000)
+  wins      Int      @default(0)
+  losses    Int      @default(0)
+  decks     Deck[]
+  matchesAsAttacker Match[] @relation("Attacker")
+  matchesAsDefender Match[] @relation("Defender")
+}
+
+model Deck {
+  id        String   @id @default(cuid())
+  accountId String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name      String   @default("Starter")
+  cards     String   // JSON array of 8 card ids
+  updatedAt DateTime @updatedAt
+
+  @@unique([accountId, name])
+}
+
+model Match {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  attackerId        String
+  defenderId        String
+  attacker          Account  @relation("Attacker", fields: [attackerId], references: [id])
+  defender          Account  @relation("Defender", fields: [defenderId], references: [id])
+  replaySeed        Int
+  replayCommands    Json
+  winner            Int      // 0 = attacker, 1 = defender, -1 = draw
+  attackerEloChange Int
+  defenderEloChange Int
+  verified          Boolean  @default(true)
+  replayHash        String?
+}

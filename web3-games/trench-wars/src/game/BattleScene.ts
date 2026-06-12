@@ -2,11 +2,14 @@ import Phaser from 'phaser'
 import { createMatch, step, handOf, validateDeploy } from '../sim/sim'
 import { aiCommands } from '../sim/ai'
 import { getCard, STARTER_DECK } from '../sim/cards'
-import { ARENA_H, ARENA_W, ELIXIR_MAX, MATCH_TICKS, OVERTIME_TICKS, RIVER_Y, TICK_MS } from '../sim/constants'
+import { ARENA_H, ARENA_W, ELIXIR_MAX, MATCH_TICKS, OVERTIME_TICKS, TICK_MS } from '../sim/constants'
 import { Ladder } from './ladder'
-import { type AssetManifest, type SpriteSheetDef } from '../render/AssetManifest'
-import { createSpritePool, loadManifestIntoScene, updateUnitSprite, updateTowerSprite } from '../render/SpriteRenderer'
-import type { DeployCommand, SimState, UnitEntity, Tower } from '../sim/types'
+import { BRAND, hexToCss } from '../render/Brand'
+import { VfxManager } from '../render/VfxManager'
+import { Battle3D } from '../render3d/Battle3D'
+import { fingerprint } from '../sim/replay'
+import { submitMatch } from '../api'
+import type { DeployCommand, SimState } from '../sim/types'
 
 const TILE = 30
 export const GAME_W = ARENA_W * TILE          // 540
@@ -14,192 +17,332 @@ export const ARENA_PX_H = ARENA_H * TILE      // 960
 const HUD_H = 150
 export const GAME_H = ARENA_PX_H + HUD_H      // 1110
 
-// sim y grows upward for player 0; screen y grows downward
-const sx = (x: number) => x * TILE
-const sy = (y: number) => ARENA_PX_H - y * TILE
+// One 3D renderer for the lifetime of the page — survives scene restarts.
+let battle3d: Battle3D | null = null
 
 export class BattleScene extends Phaser.Scene {
   private sim!: SimState
   private ladder!: Ladder
-  private manifest: AssetManifest | null = null
   private gfx!: Phaser.GameObjects.Graphics
   private hudText!: Phaser.GameObjects.Text
   private cardTexts: Phaser.GameObjects.Text[] = []
-  private unitSprites = createSpritePool()
-  private towerSprites = createSpritePool()
   private acc = 0
   private selectedCard = 0
   private pending: DeployCommand[] = []
   private over = false
 
-  constructor() { super('battle') }
+  private mode: 'practice' | 'ladder' = 'practice'
+  private defenderId?: string
+  private attackerDeck: string[] = [...STARTER_DECK]
+  private defenderDeck: string[] = [...STARTER_DECK]
+  private replayCommands: DeployCommand[] = []
+  private matchSeed = 0
+  private submitting = false
+  private resultTitle?: Phaser.GameObjects.Text
+  private resultReason?: Phaser.GameObjects.Text
+  private resultHint?: Phaser.GameObjects.Text
+  private loadingText?: Phaser.GameObjects.Text
+  private vfx!: VfxManager
 
-  preload() {
-    this.load.json('manifest', '/assets/manifest.json')
-  }
+  constructor() { super('battle') }
 
   create() {
     this.ladder = new Ladder(window.localStorage)
+    this.mode = (this.data.get('mode') as 'practice' | 'ladder' | undefined) || 'practice'
+    this.defenderId = this.data.get('defenderId') as string | undefined
+    const incomingDefender = this.data.get('defenderDeck') as string[] | undefined
+    this.defenderDeck = incomingDefender ? [...incomingDefender] : [...STARTER_DECK]
+
+    if (!battle3d) {
+      battle3d = new Battle3D()
+      void battle3d.load()
+    }
+    battle3d.setVisible(true)
+    this.game.canvas.style.position = 'relative'
+    this.game.canvas.style.zIndex = '1'
+    this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => battle3d?.setVisible(false))
+
     this.startMatch()
     this.gfx = this.add.graphics()
-    this.hudText = this.add.text(8, ARENA_PX_H + 6, '', { fontFamily: 'monospace', fontSize: '15px', color: '#e6f0ff' })
+    this.hudText = this.add.text(8, ARENA_PX_H + 8, '', {
+      fontFamily: BRAND.fonts.body,
+      fontSize: '17px',
+      color: BRAND.colors.text,
+    })
+    this.loadingText = this.add.text(GAME_W / 2, ARENA_PX_H / 2, 'RAISING THE BATTLEFIELD…', {
+      fontFamily: BRAND.fonts.header,
+      fontSize: '22px',
+      color: BRAND.colors.text,
+    }).setOrigin(0.5)
     for (let i = 0; i < 4; i++) {
-      const t = this.add.text(10 + i * 132, ARENA_PX_H + 64, '', {
-        fontFamily: 'monospace', fontSize: '13px', color: '#ffffff',
-        backgroundColor: '#1c2740', padding: { x: 8, y: 14 }, fixedWidth: 122, align: 'center',
+      const t = this.add.text(12 + i * 134, ARENA_PX_H + 66, '', {
+        fontFamily: BRAND.fonts.body,
+        fontSize: '14px',
+        color: BRAND.colors.text,
+        backgroundColor: hexToCss(BRAND.colors.panel),
+        padding: { x: 8, y: 12 },
+        fixedWidth: 124,
+        align: 'center',
       }).setInteractive()
       t.on('pointerdown', () => { this.selectedCard = i })
       this.cardTexts.push(t)
     }
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => this.onArenaClick(p))
+    this.vfx = new VfxManager(this, (x, y) => battle3d!.project(x, y, 0.4))
     ;(window as any).__TRENCH_READY__ = true
   }
 
   private startMatch() {
-    this.sim = createMatch(Date.now() >>> 0, [[...STARTER_DECK], [...STARTER_DECK]])
+    this.matchSeed = Date.now() >>> 0
+    this.attackerDeck = [...STARTER_DECK]
+    this.sim = createMatch(this.matchSeed, [[...this.attackerDeck], [...this.defenderDeck]])
+    this.replayCommands = []
     this.acc = 0
     this.pending = []
     this.over = false
-
-    // Load manifest + spritesheets once on first boot
-    if (!this.manifest) {
-      this.manifest = this.cache.json.get('manifest') as AssetManifest
-      if (this.manifest) loadManifestIntoScene(this, this.manifest)
-      this.load.start()
+    this.submitting = false
+    if (this.resultTitle && this.resultReason && this.resultHint) {
+      ;[this.resultTitle, this.resultReason, this.resultHint].forEach((t) => t.setVisible(false))
     }
   }
 
   private onArenaClick(p: Phaser.Input.Pointer) {
     if (this.over) { this.startMatch(); return }
-    if (p.y >= ARENA_PX_H) return
+    if (p.y >= ARENA_PX_H || !battle3d?.ready) return
+    const tile = battle3d.screenToSim(p.x, p.y)
+    if (!tile) return
     const hand = handOf(this.sim, 0)
     const cmd: DeployCommand = {
       tick: this.sim.tick,
       player: 0,
       cardId: hand[this.selectedCard],
-      x: p.x / TILE,
-      y: (ARENA_PX_H - p.y) / TILE,
+      x: tile.x,
+      y: tile.y,
     }
     if (validateDeploy(this.sim, cmd)) this.pending.push(cmd)
   }
 
   update(_time: number, delta: number) {
+    if (!battle3d) return
+    battle3d.syncLayout(this.game.canvas, GAME_H)
+    if (!battle3d.ready) {
+      this.draw()
+      return
+    }
+    this.loadingText?.setVisible(false)
+
     if (!this.over) {
       this.acc += delta
       while (this.acc >= TICK_MS && !this.sim.result) {
         const cmds = [...this.pending, ...aiCommands(this.sim, 1, this.ladder.currentLevel())]
         this.pending = []
         for (const c of cmds) c.tick = this.sim.tick
+        this.replayCommands.push(...cmds)
+        const prev = this.sim
         this.sim = step(this.sim, cmds)
+        this.detectVfx(prev, this.sim, cmds)
         this.acc -= TICK_MS
       }
       if (this.sim.result && !this.over) {
         this.over = true
         if (this.sim.result.winner === 0) this.ladder.recordWin()
         else if (this.sim.result.winner === 1) this.ladder.recordLoss()
+        if (this.mode === 'ladder' && this.defenderId) {
+          void this.submitReplay()
+        }
       }
     }
+    battle3d.sync(this.sim)
+    battle3d.render(delta)
+    this.vfx.update(delta)
     this.draw()
   }
 
   private draw() {
     const g = this.gfx
     g.clear()
-    // arena halves + river + bridges
-    g.fillStyle(0x12351f).fillRect(0, sy(RIVER_Y), GAME_W, ARENA_PX_H - sy(RIVER_Y))
-    g.fillStyle(0x351212).fillRect(0, 0, GAME_W, sy(RIVER_Y))
-    g.fillStyle(0x1b4965).fillRect(0, sy(RIVER_Y) - 9, GAME_W, 18)
-    g.fillStyle(0x6b4f2a)
-    g.fillRect(sx(4.5) - 27, sy(RIVER_Y) - 9, 54, 18)
-    g.fillRect(sx(13.5) - 27, sy(RIVER_Y) - 9, 54, 18)
 
-    const unitDef = (u: UnitEntity): SpriteSheetDef | null => this.manifest?.units[u.cardId] ?? null
-    const towerDef = (t: Tower): SpriteSheetDef | null => this.manifest?.towers[t.kind] ?? null
-
-    // towers
-    for (const t of this.sim.towers) {
-      if (t.hp <= 0) continue
-      const def = towerDef(t)
-      if (def) {
-        let sprite = this.towerSprites.get(t.id)
-        if (!sprite || sprite.texture.key !== def.id) {
-          this.towerSprites.remove(t.id)
-          sprite = this.add.sprite(0, 0, def.id)
-          this.towerSprites.set(t.id, sprite)
-        }
-        updateTowerSprite(sprite, t, def, sx, sy)
-      } else {
-        this.drawTowerFallback(g, t)
+    if (battle3d?.ready) {
+      // health bars projected over the 3D scene
+      for (const t of this.sim.towers) {
+        if (t.hp <= 0) continue
+        const p = battle3d.project(t.x, t.y, t.kind === 'king' ? 4.4 : 3.4)
+        this.drawHpBar(g, p.x - 22, p.y, 44, 7, t.hp, t.maxHp, t.owner === 0)
       }
-      this.drawHpBar(g, sx(t.x), sy(t.y) - 28, 40, 6, t.hp, t.maxHp)
+      for (const u of this.sim.units) {
+        if (!u.revealed && u.owner === 1) continue
+        const p = battle3d.project(u.x, u.y, 3.1)
+        this.drawHpBar(g, p.x - 10, p.y, 20, 5, u.hp, u.maxHp, u.owner === 0)
+      }
     }
 
-    // units
-    const seen = new Set<number>()
-    for (const u of this.sim.units) {
-      seen.add(u.id)
-      const def = unitDef(u)
-      if (def) {
-        let sprite = this.unitSprites.get(u.id)
-        if (!sprite || sprite.texture.key !== def.id) {
-          this.unitSprites.remove(u.id)
-          sprite = this.add.sprite(0, 0, def.id)
-          this.unitSprites.set(u.id, sprite)
-        }
-        updateUnitSprite(sprite, u, def, this.sim.tick, sx, sy)
-      } else {
-        this.drawUnitFallback(g, u)
-      }
-      this.drawHpBar(g, sx(u.x) - 10, sy(u.y) - 16, 20, 4, u.hp, u.maxHp)
-    }
-    // remove stale sprites
-    for (const id of this.collectStaleIds(this.unitSprites, seen)) this.unitSprites.remove(id)
+    this.vfx.draw()
+    this.drawHud(g)
+    if (this.over) this.drawResultOverlay(g)
+  }
 
-    // HUD background + elixir bar
-    g.fillStyle(0x0a0e14).fillRect(0, ARENA_PX_H, GAME_W, HUD_H)
-    g.fillStyle(0x232c44).fillRect(8, ARENA_PX_H + 34, GAME_W - 16, 16)
-    g.fillStyle(0xb44dff).fillRect(8, ARENA_PX_H + 34, (GAME_W - 16) * (this.sim.elixir[0] / ELIXIR_MAX), 16)
+  private drawHud(g: Phaser.GameObjects.Graphics) {
+    // HUD panel
+    g.fillStyle(BRAND.colors.panel, 1).fillRoundedRect(0, ARENA_PX_H, GAME_W, HUD_H, 0)
+    g.lineStyle(2, BRAND.colors.panelBorder, 1)
+    g.strokeRoundedRect(0, ARENA_PX_H, GAME_W, HUD_H, 0)
+
+    // elixir bar track
+    const barX = 12
+    const barY = ARENA_PX_H + 36
+    const barW = GAME_W - 24
+    const barH = 16
+    g.fillStyle(BRAND.colors.panelLight, 1).fillRoundedRect(barX, barY, barW, barH, 8)
+    const pct = Math.max(0, Math.min(1, this.sim.elixir[0] / ELIXIR_MAX))
+    g.fillStyle(BRAND.colors.elixir, 1).fillRoundedRect(barX, barY, barW * pct, barH, 8)
+    g.lineStyle(2, BRAND.colors.elixirDark, 1)
+    g.strokeRoundedRect(barX, barY, barW, barH, 8)
+
+    // crowns
+    const crowns = this.crownsTaken()
+    const crownY = ARENA_PX_H + 10
+    for (let i = 0; i < 3; i++) {
+      const filled = i < crowns
+      g.fillStyle(filled ? BRAND.colors.primary : BRAND.colors.panelBorder, 1)
+      this.drawCrown(g, 14 + i * 20, crownY, 8)
+    }
 
     const remaining = Math.max(0, (this.sim.overtime ? MATCH_TICKS + OVERTIME_TICKS : MATCH_TICKS) - this.sim.tick)
     const secs = Math.ceil(remaining / 10)
     const level = this.ladder.currentLevel()
+    const timeText = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`
     this.hudText.setText(
       this.over
-        ? `${this.sim.result!.winner === 0 ? 'VICTORY' : this.sim.result!.winner === 1 ? 'DEFEAT' : 'DRAW'} (${this.sim.result!.reason}) — click to play again`
-        : `vs ${level.name}${this.sim.overtime ? '  OVERTIME' : ''}  ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}  elixir ${Math.floor(this.sim.elixir[0])}`
+        ? ''
+        : `${this.mode === 'ladder' ? 'RANKED' : level.name}  •  ${timeText}  •  ELIXIR ${Math.floor(this.sim.elixir[0])}/${ELIXIR_MAX}`,
     )
+
     const hand = handOf(this.sim, 0)
     hand.forEach((id, i) => {
       const c = getCard(id)
+      const canAfford = this.sim.elixir[0] >= c.cost
+      const selected = i === this.selectedCard
       this.cardTexts[i]
-        .setText(`${c.name}\n${c.cost} elixir`)
-        .setBackgroundColor(i === this.selectedCard ? '#3e57a0' : '#1c2740')
-        .setAlpha(this.sim.elixir[0] >= c.cost ? 1 : 0.45)
+        .setText(`${c.name.toUpperCase()}\n${c.cost} ELIXIR`)
+        .setBackgroundColor(hexToCss(selected ? BRAND.colors.primaryDark : BRAND.colors.panel))
+        .setColor(canAfford ? (selected ? hexToCss(BRAND.colors.bg) : BRAND.colors.text) : BRAND.colors.textDark)
+        .setAlpha(canAfford ? 1 : 0.5)
     })
   }
 
-  private collectStaleIds(pool: ReturnType<typeof createSpritePool>, keep: Set<number>): number[] {
-    const stale: number[] = []
-    for (const [id] of pool.entries()) {
-      if (!keep.has(id)) stale.push(id)
+  private drawResultOverlay(g: Phaser.GameObjects.Graphics) {
+    g.fillStyle(BRAND.colors.bg, 0.82).fillRect(0, 0, GAME_W, ARENA_PX_H)
+
+    const panelW = 360
+    const panelH = 180
+    const x = (GAME_W - panelW) / 2
+    const y = (ARENA_PX_H - panelH) / 2
+
+    g.fillStyle(BRAND.colors.panel, 0.95).fillRoundedRect(x, y, panelW, panelH, 16)
+    g.lineStyle(3, BRAND.colors.primary, 1)
+    g.strokeRoundedRect(x, y, panelW, panelH, 16)
+
+    const isWin = this.sim.result!.winner === 0
+    const isLoss = this.sim.result!.winner === 1
+    const title = isWin ? 'VICTORY' : isLoss ? 'DEFEAT' : 'DRAW'
+    const color = isWin ? BRAND.colors.attacker : isLoss ? BRAND.colors.defender : BRAND.colors.primary
+
+    if (!this.resultTitle) {
+      this.resultTitle = this.add.text(GAME_W / 2, y + 48, title, {
+        fontFamily: BRAND.fonts.header,
+        fontSize: '42px',
+        color: hexToCss(color),
+        fontStyle: '900',
+      }).setOrigin(0.5)
+      this.resultReason = this.add.text(GAME_W / 2, y + 96, '', {
+        fontFamily: BRAND.fonts.body,
+        fontSize: '20px',
+        color: BRAND.colors.text,
+      }).setOrigin(0.5)
+      this.resultHint = this.add.text(GAME_W / 2, y + 138, 'click arena to play again', {
+        fontFamily: BRAND.fonts.body,
+        fontSize: '15px',
+        color: BRAND.colors.textMuted,
+      }).setOrigin(0.5)
     }
-    return stale
+    this.resultTitle!.setText(title).setColor(hexToCss(color))
+    this.resultReason!.setText(`by ${this.sim.result!.reason.toUpperCase()}`)
+    ;[this.resultTitle!, this.resultReason!, this.resultHint!].forEach((t) => t.setVisible(true))
   }
 
-  private drawTowerFallback(g: Phaser.GameObjects.Graphics, t: Tower) {
-    const size = t.kind === 'king' ? 54 : 42
-    g.fillStyle(t.owner === 0 ? 0x2bff88 : 0xff4d5e, t.active ? 1 : 0.45)
-    g.fillRect(sx(t.x) - size / 2, sy(t.y) - size / 2, size, size)
+  private crownsTaken(): number {
+    return this.sim.towers.filter((t) => t.owner === 1 && t.hp <= 0).length
   }
 
-  private drawUnitFallback(g: Phaser.GameObjects.Graphics, u: UnitEntity) {
-    const r = 7 + Math.min(9, u.maxHp / 160)
-    g.fillStyle(u.owner === 0 ? 0x2bff88 : 0xff4d5e, u.revealed ? 1 : 0.35)
-    g.fillCircle(sx(u.x), sy(u.y), r)
+  private drawCrown(g: Phaser.GameObjects.Graphics, cx: number, cy: number, r: number) {
+    g.beginPath()
+    g.moveTo(cx - r, cy + r)
+    g.lineTo(cx - r, cy - r / 2)
+    g.lineTo(cx - r / 2, cy)
+    g.lineTo(cx, cy - r)
+    g.lineTo(cx + r / 2, cy)
+    g.lineTo(cx + r, cy - r / 2)
+    g.lineTo(cx + r, cy + r)
+    g.closePath()
+    g.fillPath()
   }
 
-  private drawHpBar(g: Phaser.GameObjects.Graphics, x: number, y: number, w: number, h: number, hp: number, maxHp: number) {
-    g.fillStyle(0x000000, 0.6).fillRect(x, y, w, h)
-    g.fillStyle(0xffe14d).fillRect(x, y, w * (hp / maxHp), h)
+  private async submitReplay() {
+    if (this.submitting || !this.defenderId) return
+    this.submitting = true
+    try {
+      const result = await submitMatch({
+        seed: this.matchSeed,
+        attackerDeck: this.attackerDeck,
+        defenderId: this.defenderId,
+        commands: this.replayCommands,
+        claimedWinner: this.sim.result?.winner ?? null,
+        fingerprint: fingerprint(this.sim),
+      })
+      console.log('[trench] replay submitted', result)
+    } catch (err) {
+      console.error('[trench] replay submit failed', err)
+    }
+  }
+
+  private drawHpBar(g: Phaser.GameObjects.Graphics, x: number, y: number, w: number, h: number, hp: number, maxHp: number, friendly: boolean) {
+    g.fillStyle(BRAND.colors.bg, 0.65).fillRect(x, y, w, h)
+    g.fillStyle(friendly ? 0x3aa0ff : 0xff4a4a, 1).fillRect(x, y, w * (hp / maxHp), h)
+  }
+
+  private detectVfx(prev: SimState, next: SimState, cmds: DeployCommand[]) {
+    for (const cmd of cmds) {
+      const card = getCard(cmd.cardId)
+      if (card.type === 'unit') {
+        this.vfx.deploy(cmd.x, cmd.y)
+      } else {
+        this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 3)
+      }
+    }
+
+    const prevUnits = new Map(prev.units.map((u) => [u.id, u]))
+    const nextUnits = new Map(next.units.map((u) => [u.id, u]))
+    for (const [id, u] of nextUnits) {
+      const p = prevUnits.get(id)
+      if (p && u.hp < p.hp) {
+        this.vfx.hit(u.x, u.y, u.owner === 0 ? BRAND.colors.defender : BRAND.colors.attacker)
+      }
+    }
+    for (const [id, u] of prevUnits) {
+      if (!nextUnits.has(id) && u.hp > 0) {
+        this.vfx.explosion(u.x, u.y, u.owner === 0 ? BRAND.colors.attacker : BRAND.colors.defender)
+      }
+    }
+
+    for (let i = 0; i < prev.towers.length; i++) {
+      const p = prev.towers[i]
+      const n = next.towers[i]
+      if (n.hp < p.hp) {
+        this.vfx.hit(n.x, n.y, n.owner === 0 ? BRAND.colors.defender : BRAND.colors.attacker)
+      }
+      if (p.hp > 0 && n.hp <= 0) {
+        this.vfx.explosion(n.x, n.y, n.owner === 0 ? BRAND.colors.attacker : BRAND.colors.defender)
+      }
+    }
   }
 }
