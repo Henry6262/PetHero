@@ -18,23 +18,23 @@ import type { SimState, UnitEntity, Tower } from '../sim/types'
 const ARENA_PX_W = 540
 const ARENA_PX_H = 960
 
-// Which character model plays each unit card.
+// Which character model plays each unit card. Seven distinct rigs spread across the roster.
 export const CARD_CHAR: Record<string, CharName> = {
-  'bag-holder': 'vanguard',
-  'chad-trader': 'vanguard',
-  'diamond-hands': 'vanguard',
-  'paper-hands': 'vanguard',
-  'whale': 'vanguard',
-  'jeet-horde': 'explorer',
-  'mev-bots': 'explorer',
-  'exit-liquidity': 'explorer',
-  'sniper-bot': 'explorer',
-  'fud-spirit': 'crimson',
-  'influencer': 'crimson',
-  'rug-dev': 'crimson',
+  'jeet-horde': 'pepe',         // pepe "STOP BEING POOR" — the quintessential jeet swarm
+  'exit-liquidity': 'pepe',     // rekt retail mob
+  'bag-holder': 'bluemob',      // sad-sack holder
+  'paper-hands': 'bluemob',     // panicky, flees
+  'chad-trader': 'degen',       // degen in black + shades, the gigachad
+  'rug-dev': 'degen',           // anonymous hoodie dev
+  'diamond-hands': 'phoenix',   // huge fiery tank
+  'whale': 'phoenix',           // the boss
+  'mev-bots': 'vanguard',       // techy armored swarm
+  'sniper-bot': 'vanguard',     // military marksman
+  'fud-spirit': 'crimson',      // dark, spooky caster
+  'influencer': 'explorer',     // flashy youth
 }
 
-export type CharName = 'vanguard' | 'explorer' | 'crimson'
+export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix'
 
 interface CharAsset {
   scene: THREE.Group
@@ -134,6 +134,7 @@ export class Battle3D {
   async load(): Promise<void> {
     this.loader.setMeshoptDecoder(MeshoptDecoder)
     const glb = (url: string) => this.loader.loadAsync(url)
+    const charNames: CharName[] = ['vanguard', 'explorer', 'crimson', 'pepe', 'bluemob', 'degen', 'phoenix']
     const [grass, water, towerBlue, towerRed, castleBlue, castleRed, ...charGlbs] = await Promise.all([
       glb('/assets/3d/kaykit/hex_grass.gltf'),
       glb('/assets/3d/kaykit/hex_water.gltf'),
@@ -141,12 +142,7 @@ export class Battle3D {
       glb('/assets/3d/kaykit/building_tower_A_red.gltf'),
       glb('/assets/3d/kaykit/building_castle_blue.gltf'),
       glb('/assets/3d/kaykit/building_castle_red.gltf'),
-      glb('/assets/3d/chars/vanguard-walk.glb'),
-      glb('/assets/3d/chars/vanguard-throw.glb'),
-      glb('/assets/3d/chars/explorer-walk.glb'),
-      glb('/assets/3d/chars/explorer-throw.glb'),
-      glb('/assets/3d/chars/crimson-walk.glb'),
-      glb('/assets/3d/chars/crimson-throw.glb'),
+      ...charNames.flatMap((n) => [glb(`/assets/3d/chars/${n}-walk.glb`), glb(`/assets/3d/chars/${n}-attack.glb`)]),
     ])
 
     this.buildings = {
@@ -157,17 +153,16 @@ export class Battle3D {
       g.traverse((o) => { if ((o as THREE.Mesh).isMesh) { o.castShadow = true; o.receiveShadow = true } })
     }
 
-    const names: CharName[] = ['vanguard', 'explorer', 'crimson']
-    names.forEach((name, i) => {
+    charNames.forEach((name, i) => {
       const walkGlb = charGlbs[i * 2]
-      const throwGlb = charGlbs[i * 2 + 1]
+      const attackGlb = charGlbs[i * 2 + 1]
       const scene = walkGlb.scene
       scene.traverse((o) => { if ((o as THREE.Mesh).isMesh) { o.castShadow = true; (o as THREE.Mesh).frustumCulled = false } })
       const box = new THREE.Box3().setFromObject(scene)
       this.chars[name] = {
         scene,
         walkClip: walkGlb.animations[0],
-        attackClip: throwGlb.animations[0],
+        attackClip: attackGlb.animations[0],
         height: box.max.y - box.min.y || 1,
       }
     })
