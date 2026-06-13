@@ -15,7 +15,7 @@ import type { SimState, UnitEntity, Tower } from '../sim/types'
  * world coords: x = simX - ARENA_W/2, z = RIVER_Y - simY (player 0 at +z).
  */
 
-const ARENA_PX_W = 540
+const ARENA_PX_W = 680
 const ARENA_PX_H = 960
 
 // Which character model plays each unit card. Seven distinct rigs spread across the roster.
@@ -130,8 +130,8 @@ export class Battle3D {
     this.scene.background = new THREE.Color(0x0a0e14)
     this.scene.fog = new THREE.Fog(0x0a0e14, 55, 90)
 
-    this.camera = new THREE.PerspectiveCamera(50, ARENA_PX_W / ARENA_PX_H, 1, 200)
-    this.camera.position.set(0, 38, 28)
+    this.camera = new THREE.PerspectiveCamera(46, ARENA_PX_W / ARENA_PX_H, 1, 200)
+    this.camera.position.set(0, 32, 24)
     this.camera.lookAt(0, 0, 1)
     this.camBase.copy(this.camera.position)
 
@@ -273,39 +273,38 @@ export class Battle3D {
     this.place('mountain_B_grass_trees', -2.4, -2.5, 1.2)
     this.place('mountain_B_grass_trees', 20.4, -2.8, 4.0)
 
-    // forest belts hugging both flanks, inside the visible frame
+    // forest belts hugging the very edges, outside the lanes (lanes are at ~2.8 / 15.2)
     const forest: [string, number][] = [
-      ['trees_A_large', 3], ['trees_B_medium', 7.5], ['trees_A_large', 12],
-      ['trees_B_medium', 20], ['trees_A_large', 24.5], ['trees_B_medium', 29],
+      ['trees_A_large', 6], ['trees_B_medium', 10], ['trees_A_large', 14],
+      ['trees_B_medium', 18], ['trees_A_large', 22], ['trees_B_medium', 26],
     ]
     for (const [name, y] of forest) {
-      this.place(name, 0.9, y, y * 1.7, 1.1)
-      this.place(name, 17.1, y + 1.6, y * 2.3, 1.1)
+      this.place(name, 0.5, y, y * 1.7, 1.1)
+      this.place(name, 17.5, y + 1.6, y * 2.3, 1.1)
     }
 
-    // single trees + rocks scattered along the edges, clear of both lanes
-    this.place('tree_single_A', 1.6, 5.2, 0.7, 1.2)
-    this.place('tree_single_B', 16.4, 9.8, 2.2, 1.2)
-    this.place('tree_single_B', 1.5, 26.5, 4.1, 1.2)
-    this.place('tree_single_A', 16.5, 22.4, 1.0, 1.2)
-    this.place('rock_single_A', 2.2, 13.8, 0.3)
-    this.place('rock_single_C', 15.8, 18.4, 2.8)
-    this.place('rock_single_C', 1.3, 18.2, 1.4)
-    this.place('rock_single_A', 16.7, 13.6, 5.2)
-    this.place('hill_single_A', 9, 33.4, 3.3)
+    // trees + rocks in the wide centre grass, kept off the king (x=9) and lanes
+    this.place('tree_single_A', 6.0, 9.5, 0.7, 1.2)
+    this.place('tree_single_B', 12.0, 11.5, 2.2, 1.2)
+    this.place('tree_single_B', 6.2, 22.5, 4.1, 1.2)
+    this.place('tree_single_A', 11.8, 20.5, 1.0, 1.2)
+    this.place('rock_single_A', 7.0, 13.6, 0.3)
+    this.place('rock_single_C', 11.5, 18.4, 2.8)
+    this.place('rock_single_C', 0.8, 22.0, 1.4)
+    this.place('rock_single_A', 17.2, 12.0, 5.2)
 
-    // river life between the bridges
-    this.place('waterlily_A', 2.0, RIVER_Y, 0.5, 1, -0.1)
-    this.place('waterplant_A', 7.2, RIVER_Y + 0.2, 1.8, 1, -0.1)
+    // river life in the open water between the two bridges (centre band)
+    this.place('waterlily_A', 5.5, RIVER_Y, 0.5, 1, -0.1)
+    this.place('waterplant_A', 7.6, RIVER_Y + 0.2, 1.8, 1, -0.1)
     this.place('waterlily_A', 9.0, RIVER_Y - 0.2, 3.1, 1, -0.1)
-    this.place('waterplant_A', 10.8, RIVER_Y + 0.1, 4.4, 1, -0.1)
-    this.place('waterlily_A', 16.0, RIVER_Y, 2.0, 1, -0.1)
+    this.place('waterplant_A', 10.4, RIVER_Y + 0.1, 4.4, 1, -0.1)
+    this.place('waterlily_A', 12.5, RIVER_Y, 2.0, 1, -0.1)
 
-    // team flags flanking the lane towers
-    this.place('flag_blue', LANE_LEFT_X - 1.8, 5.5)
-    this.place('flag_blue', LANE_RIGHT_X + 1.8, 5.5)
-    this.place('flag_red', LANE_LEFT_X - 1.8, ARENA_H - 5.5)
-    this.place('flag_red', LANE_RIGHT_X + 1.8, ARENA_H - 5.5)
+    // team flags flanking the lane towers (outer side, toward the borders)
+    this.place('flag_blue', LANE_LEFT_X - 1.4, 4.6)
+    this.place('flag_blue', LANE_RIGHT_X + 1.4, 4.6)
+    this.place('flag_red', LANE_LEFT_X - 1.4, ARENA_H - 4.6)
+    this.place('flag_red', LANE_RIGHT_X + 1.4, ARENA_H - 4.6)
   }
 
   private buildArena(grassTile: THREE.Group, waterTile: THREE.Group) {

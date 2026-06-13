@@ -20,8 +20,8 @@ export function createMatch(seed: number, decks: [string[], string[]]): SimState
   const towers: Tower[] = []
   for (const owner of [0, 1] as const) {
     // player 0 = bottom (small y), player 1 = top, mirrored
-    const laneY = owner === 0 ? 5 : ARENA_H - 5
-    const kingY = owner === 0 ? 1.8 : ARENA_H - 1.8
+    const laneY = owner === 0 ? 3.2 : ARENA_H - 3.2
+    const kingY = owner === 0 ? 1.0 : ARENA_H - 1.0
     for (const x of [LANE_LEFT_X, LANE_RIGHT_X]) {
       towers.push({ id: nextId++, owner, kind: 'lane', x, y: laneY, hp: TOWER_STATS.lane.hp, maxHp: TOWER_STATS.lane.hp, active: true, cooldown: 0 })
     }
