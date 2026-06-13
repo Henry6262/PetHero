@@ -5,6 +5,8 @@ import type { DeployCommand, PlayerId, SimState } from './types'
 
 export { createMatch, step } // re-export for test convenience
 
+const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y)
+
 export interface AiLevel {
   name: string
   thinkEvery: number  // ticks between decisions (reaction speed)
@@ -22,14 +24,30 @@ export const AI_LEVELS: AiLevel[] = [
 export function aiCommands(s: SimState, player: PlayerId, level: AiLevel): DeployCommand[] {
   if (s.tick === 0 || s.tick % level.thinkEvery !== 0 || s.result) return []
   const hand = handOf(s, player)
-  const affordableUnits = hand
-    .map(getCard)
+  const cards = hand.map(getCard)
+  const affordableUnits = cards
     .filter(c => c.type === 'unit' && c.cost <= s.elixir[player])
     .sort((a, b) => a.cost - b.cost || a.id.localeCompare(b.id))
-  if (affordableUnits.length === 0) return []
 
   const ownHalf = (y: number) => (player === 0 ? y < RIVER_Y : y > RIVER_Y)
   const threats = s.units.filter(u => u.owner !== player && ownHalf(u.y))
+
+  // Value play: drop a damage spell on a tight cluster of enemy units (≥3) it can hit.
+  const damageSpell = cards
+    .filter(c => c.type === 'spell' && c.effectDamage && c.cost <= s.elixir[player])
+    .sort((a, b) => b.effectDamage! - a.effectDamage!)[0]
+  if (damageSpell) {
+    const enemies = s.units.filter(u => u.owner !== player)
+    for (const e of enemies) {
+      const hitCount = enemies.filter(o => dist(o, e) <= damageSpell.effectRadius!).length
+      if (hitCount >= 3) {
+        const spellCmd = { tick: s.tick, player, cardId: damageSpell.id, x: e.x, y: e.y }
+        if (validateDeploy(s, spellCmd)) return [spellCmd]
+      }
+    }
+  }
+
+  if (affordableUnits.length === 0) return []
 
   let cmd: DeployCommand | null = null
   if (threats.length > 0) {

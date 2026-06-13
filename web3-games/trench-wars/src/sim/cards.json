@@ -11,6 +11,12 @@
   { "id": "sniper-bot",     "name": "Sniper Bot",          "cost": 5, "type": "unit", "count": 1, "hp": 180,  "damage": 110, "range": 7.5, "sightRange": 8.5, "speed": 0.09, "attackSpeed": 15 },
   { "id": "exit-liquidity", "name": "Exit Liquidity Mob",  "cost": 5, "type": "unit", "count": 5, "hp": 110,  "damage": 30,  "range": 0.8, "sightRange": 5.5, "speed": 0.14, "attackSpeed": 9 },
   { "id": "whale",          "name": "Whale",               "cost": 6, "type": "unit", "count": 1, "hp": 900,  "damage": 200, "range": 5.0, "sightRange": 7.0, "speed": 0.05, "attackSpeed": 20, "splashRadius": 1.5 },
+  { "id": "scalper",        "name": "Scalper",             "cost": 1, "type": "unit", "count": 1, "hp": 130,  "damage": 70,  "range": 0.8, "sightRange": 5.5, "speed": 0.22, "attackSpeed": 7 },
+  { "id": "discord-raid",   "name": "Discord Raid",        "cost": 3, "type": "unit", "count": 5, "hp": 70,   "damage": 28,  "range": 0.8, "sightRange": 5.5, "speed": 0.18, "attackSpeed": 8 },
+  { "id": "moon-boy",       "name": "Moon Boy",            "cost": 4, "type": "unit", "count": 1, "hp": 780,  "damage": 160, "range": 0.8, "sightRange": 5.5, "speed": 0.18, "attackSpeed": 11, "targetsTowers": true },
+  { "id": "trading-bot",    "name": "Trading Bot",         "cost": 3, "type": "unit", "count": 1, "hp": 420,  "damage": 70,  "range": 5.0, "sightRange": 6.0, "speed": 0.01, "attackSpeed": 9, "building": true, "lifespan": 280 },
   { "id": "pump-signal",       "name": "Pump Signal",         "cost": 2, "type": "spell", "effectRadius": 3.0, "buffTicks": 50, "buffSpeedMult": 1.5, "buffDamageMult": 1.25 },
-  { "id": "liquidation-cascade", "name": "Liquidation Cascade", "cost": 4, "type": "spell", "effectRadius": 2.5, "effectDamage": 180 }
+  { "id": "liquidation-cascade", "name": "Liquidation Cascade", "cost": 4, "type": "spell", "effectRadius": 2.5, "effectDamage": 180 },
+  { "id": "gas-war",        "name": "Gas War",             "cost": 2, "type": "spell", "effectRadius": 2.0, "effectDamage": 90 },
+  { "id": "copium",         "name": "Copium",              "cost": 3, "type": "spell", "effectRadius": 3.0, "effectHeal": 300 }
 ]

@@ -162,6 +162,7 @@ button { font-family: inherit; cursor: pointer; }
 .card-tile.in-deck { border-color: var(--primary); box-shadow: 0 0 14px rgba(245, 230, 0, 0.18); }
 .card-tile img { height: 64px; }
 .card-tile .spell-glyph { height: 64px; display: grid; place-items: center; font-size: 38px; color: var(--elixir); }
+.card-tile .spell-glyph.building-glyph { color: var(--border-light); }
 .card-tile .nm {
   font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
   text-align: center; line-height: 1.15; min-height: 28px;
@@ -180,6 +181,16 @@ button { font-family: inherit; cursor: pointer; }
 }
 .deck-count { font-family: var(--font-header); color: var(--muted); letter-spacing: 1px; }
 .deck-count b { color: var(--primary); }
+.unlock-hint { color: var(--elixir); font-family: var(--font-body); }
+.tile-wrap { position: relative; }
+.tile-wrap.locked .card-tile { filter: grayscale(1) brightness(0.5); cursor: not-allowed; }
+.lock-badge {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-family: var(--font-header); font-size: 13px; font-weight: 900;
+  color: var(--text); pointer-events: none;
+  text-shadow: 0 1px 4px #000;
+}
 
 /* ---------- battle ---------- */
 

@@ -128,6 +128,13 @@ function castSpell(s: SimState, cmd: DeployCommand, card: CardDef) {
       if (u.owner === cmd.player && dist(at, u) <= card.effectRadius!) u.buffUntil = s.tick + card.buffTicks
     }
   }
+  if (card.effectHeal) {
+    for (const u of s.units) {
+      if (u.owner === cmd.player && dist(at, u) <= card.effectRadius!) {
+        u.hp = Math.min(u.maxHp, u.hp + card.effectHeal)
+      }
+    }
+  }
 }
 
 
@@ -197,6 +204,7 @@ function speedMult(s: SimState, u: UnitEntity): number {
 
 function acquireTarget(s: SimState, u: UnitEntity): UnitEntity | null {
   const card = getCard(u.cardId)
+  if (card.targetsTowers) return null // Moon Boy ignores units, beelines for towers
   const candidates = s.units.filter(e => e.owner !== u.owner && e.revealed && dist(u, e) <= card.sightRange!)
   if (candidates.length === 0) return null
   if (card.targeting === 'lowestHp') {
@@ -231,6 +239,17 @@ function updateUnits(s: SimState) {
   for (const u of s.units) {
     const card = getCard(u.cardId)
     if (u.cooldown > 0) u.cooldown--
+
+    // buildings decay over their lifespan and never move; they only attack in range
+    if (card.building) {
+      u.hp -= u.maxHp / card.lifespan!
+      const target = acquireTarget(s, u)
+      if (target && dist(u, target) <= card.range! && u.cooldown === 0) {
+        dealDamage(s, u, target)
+        u.cooldown = card.attackSpeed!
+      }
+      continue
+    }
 
     // flee check (Paper Hands)
     if (card.flees && !u.fleeing && u.hp < FLEE_HP_RATIO * u.maxHp) u.fleeing = true

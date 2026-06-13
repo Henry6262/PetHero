@@ -11,6 +11,7 @@ interface Props {
 export function CardTile({ cardId, className = '', onPointerDown, onClick }: Props) {
   const card = getCard(cardId)
   const charName = CARD_CHAR[cardId]
+  const glyph = card.building ? '◳' : '✦'
   return (
     <button
       className={`card-tile ${className}`}
@@ -22,7 +23,7 @@ export function CardTile({ cardId, className = '', onPointerDown, onClick }: Pro
       {charName ? (
         <img src={`/assets/3d/portraits/${charName}.png`} alt={card.name} draggable={false} />
       ) : (
-        <span className="spell-glyph">✦</span>
+        <span className={`spell-glyph ${card.building ? 'building-glyph' : ''}`}>{glyph}</span>
       )}
       <span className="nm">{card.name.toUpperCase()}</span>
     </button>

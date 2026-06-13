@@ -51,7 +51,10 @@
   - `constants.ts`, `types.ts`, `cards.json`, `cards.ts` — roster + config
   - `sim.ts` — `createMatch`, `validateDeploy`, `step` (deploy → elixir → auras → units → towers → win)
   - `replay.ts` — `runReplay` + `fingerprint` (anti-cheat foundation)
-  - `ai.ts` — deterministic AI policy + 5-level ladder configs
+  - `ai.ts` — deterministic AI policy + 5-level ladder configs; casts damage spells on enemy clusters (≥3)
+  - 20 cards / 6 mechanics: swarms, ranged, splash, stealth (rug-dev), flee (paper-hands), auras (influencer/fud),
+    `targetsTowers` win-condition (moon-boy), `building` stationary decaying structure (trading-bot),
+    spell types: damage (liquidation/gas-war), buff (pump-signal), `effectHeal` (copium)
 - `src/render3d/` — Three.js battle renderer.
   - `Battle3D.ts` — WebGL canvas inside the React stage; instanced hex arena + river + bridges, hand-placed decoration (`decorate()`), blue/red KayKit towers, Meshy character units with walk/attack animation (meshopt GLBs), ground raycast for deploys (`screenToSim`), camera projection for the HUD overlay (`project`). Card→character mapping in `CARD_CHAR`.
 - `src/render/` — presentation helpers.
@@ -65,6 +68,7 @@
   - `Battle.tsx` — battle screen: stage div (3D canvas + 2D overlay + result modal) + HUD (hand, elixir, next, mute)
   - `CardTile.tsx`, `theme.css` — shared card component + design tokens
 - `src/game/` — engine-agnostic game drivers.
+  - `unlocks.ts` — client-side card progression: base set + win-gated tiers (3/7/12 wins). UX gate only, never affects sim/anti-cheat.
   - `BattleController.ts` — rAF sim loop, drives Battle3D + Vfx2D + AudioBus, drag/click deploys, replay submit, emits BattleSnapshot to React
   - `ladder.ts` — localStorage-injected AI ladder progression
 - `src/api.ts` — typed fetch client for the backend.

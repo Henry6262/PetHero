@@ -12,15 +12,33 @@ interface Ring {
   life: number; maxLife: number; color: number
 }
 
+interface FloatText {
+  x: number; y: number; text: string; color: number
+  life: number; maxLife: number; size: number
+}
+
 /** Particle + spell-ring effects drawn on the 2D overlay canvas in sim coords. */
 export class Vfx2D {
   private particles: Particle[] = []
   private rings: Ring[] = []
+  private texts: FloatText[] = []
 
   private project: ProjectFn
 
   constructor(project: ProjectFn) {
     this.project = project
+  }
+
+  /** Floating combat number that rises and fades. height lifts it above the unit. */
+  damageNumber(x: number, y: number, amount: number, color: number, big = false) {
+    this.texts.push({
+      x, y, text: `-${amount}`, color,
+      life: 0, maxLife: big ? 900 : 650, size: big ? 22 : 15,
+    })
+  }
+
+  healNumber(x: number, y: number, amount: number) {
+    this.texts.push({ x, y, text: `+${amount}`, color: 0x2bff88, life: 0, maxLife: 800, size: 17 })
   }
 
   deploy(x: number, y: number) {
@@ -70,6 +88,9 @@ export class Vfx2D {
       r.radius = 2 + (r.maxRadius - 2) * (r.life / r.maxLife)
     }
     this.rings = this.rings.filter((r) => r.life < r.maxLife)
+
+    for (const t of this.texts) t.life += delta
+    this.texts = this.texts.filter((t) => t.life < t.maxLife)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -92,6 +113,21 @@ export class Vfx2D {
       ctx.beginPath()
       ctx.arc(c.x, c.y, Math.abs(edge.x - c.x), 0, Math.PI * 2)
       ctx.stroke()
+    }
+
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    for (const ft of this.texts) {
+      const t = ft.life / ft.maxLife
+      const p = this.project(ft.x, ft.y)
+      const rise = 26 * t
+      ctx.globalAlpha = Math.min(1, (1 - t) * 1.6)
+      ctx.font = `900 ${ft.size}px Orbitron, sans-serif`
+      ctx.lineWidth = 3
+      ctx.strokeStyle = 'rgba(0,0,0,0.85)'
+      ctx.strokeText(ft.text, p.x, p.y - 18 - rise)
+      ctx.fillStyle = hexToCss(ft.color)
+      ctx.fillText(ft.text, p.x, p.y - 18 - rise)
     }
     ctx.globalAlpha = 1
   }

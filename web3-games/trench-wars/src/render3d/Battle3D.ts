@@ -32,6 +32,10 @@ export const CARD_CHAR: Record<string, CharName> = {
   'sniper-bot': 'vanguard',     // military marksman
   'fud-spirit': 'crimson',      // dark, spooky caster
   'influencer': 'explorer',     // flashy youth
+  'scalper': 'explorer',        // cheap fast cycle
+  'discord-raid': 'pepe',       // cheap swarm
+  'moon-boy': 'degen',          // win-condition charger
+  // trading-bot is a building → rendered as a structure, no character
 }
 
 export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix'
@@ -45,12 +49,13 @@ interface CharAsset {
 
 interface UnitView {
   group: THREE.Group
-  mixer: THREE.AnimationMixer
-  walk: THREE.AnimationAction
-  attack: THREE.AnimationAction
+  mixer?: THREE.AnimationMixer
+  walk?: THREE.AnimationAction
+  attack?: THREE.AnimationAction
   target: THREE.Vector3
   lastCooldown: number
   moving: boolean
+  isBuilding?: boolean
 }
 
 interface TowerView {
@@ -69,6 +74,15 @@ interface Projectile {
 interface DyingUnit {
   group: THREE.Group
   t: number
+}
+
+interface Meteor {
+  mesh: THREE.Mesh
+  ring: THREE.Mesh
+  x: number
+  z: number
+  t: number
+  landed: boolean
 }
 
 const toWorld = (simX: number, simY: number, out = new THREE.Vector3()) =>
@@ -91,6 +105,7 @@ export class Battle3D {
   private tmpV = new THREE.Vector3()
   private projectiles: Projectile[] = []
   private dying: DyingUnit[] = []
+  private meteors: Meteor[] = []
   private shakeAmp = 0
   private camBase = new THREE.Vector3()
   /** Set by the host scene to hear projectile launches (for SFX). */
@@ -392,11 +407,13 @@ export class Battle3D {
 
     // attack fired this tick → cooldown jumped up
     if (u.cooldown > view.lastCooldown) {
-      view.attack.reset().play()
-      view.walk.crossFadeTo(view.attack, 0.08, false)
-      view.moving = false
+      if (view.attack && view.walk) {
+        view.attack.reset().play()
+        view.walk.crossFadeTo(view.attack, 0.08, false)
+        view.moving = false
+      }
       const range = getCard(u.cardId).range ?? 0
-      if (range > 1.5) this.fireAt(u.x, u.y, u.owner, range, 1.4, u.owner === 0 ? 0x6fd4ff : 0xffb04a)
+      if (range > 1.5) this.fireAt(u.x, u.y, u.owner, range, view.isBuilding ? 2.0 : 1.4, u.owner === 0 ? 0x6fd4ff : 0xffb04a)
     }
     view.lastCooldown = u.cooldown
   }
@@ -436,7 +453,28 @@ export class Battle3D {
     this.shakeAmp = Math.max(this.shakeAmp, amp)
   }
 
+  /** Liquidation Cascade meteor: a fiery ball drops from the sky and erupts a shockwave. */
+  meteor(simX: number, simY: number) {
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.7, 14, 14),
+      new THREE.MeshBasicMaterial({ color: 0xff5a2a }),
+    )
+    const pos = toWorld(simX, simY)
+    mesh.position.set(pos.x, 22, pos.z)
+    this.scene.add(mesh)
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.2, 0.6, 32),
+      new THREE.MeshBasicMaterial({ color: 0xffb24a, transparent: true, opacity: 0.9, side: THREE.DoubleSide }),
+    )
+    ring.rotation.x = -Math.PI / 2
+    ring.position.set(pos.x, 0.1, pos.z)
+    ring.visible = false
+    this.scene.add(ring)
+    this.meteors.push({ mesh, ring, x: pos.x, z: pos.z, t: 0, landed: false })
+  }
+
   private createUnit(u: UnitEntity): UnitView {
+    if (getCard(u.cardId).building) return this.createBuilding(u)
     const charName = CARD_CHAR[u.cardId] ?? 'explorer'
     const asset = this.chars[charName]!
     const model = cloneSkeleton(asset.scene)
@@ -474,10 +512,57 @@ export class Battle3D {
       moving: true,
     }
     mixer.addEventListener('finished', () => {
-      view.attack.stop()
-      view.walk.reset().play()
-      view.walk.paused = !view.moving
+      view.attack!.stop()
+      view.walk!.reset().play()
+      view.walk!.paused = !view.moving
     })
+    this.units.set(u.id, view)
+    return view
+  }
+
+  /** Buildings (Trading Bot) render as a small KayKit structure, no character rig. */
+  private createBuilding(u: UnitEntity): UnitView {
+    const src = this.buildings[`lane-${u.owner}`]
+    const model = src.clone()
+    const box = new THREE.Box3().setFromObject(model)
+    const size = box.getSize(new THREE.Vector3())
+    model.scale.setScalar(2.4 / Math.max(size.x, size.z))
+
+    const group = new THREE.Group()
+    group.add(model)
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.7, 0.9, 24),
+      new THREE.MeshBasicMaterial({ color: u.owner === 0 ? 0x3aa0ff : 0xff4a4a, transparent: true, opacity: 0.85 }),
+    )
+    ring.rotation.x = -Math.PI / 2
+    ring.position.y = 0.03
+    group.add(ring)
+
+    // faint range telegraph so players read the bot's defensive coverage
+    const range = getCard(u.cardId).range ?? 0
+    if (range > 1.5) {
+      const rangeRing = new THREE.Mesh(
+        new THREE.RingGeometry(range - 0.12, range, 48),
+        new THREE.MeshBasicMaterial({
+          color: u.owner === 0 ? 0x3aa0ff : 0xff4a4a,
+          transparent: true, opacity: 0.22, side: THREE.DoubleSide,
+        }),
+      )
+      rangeRing.rotation.x = -Math.PI / 2
+      rangeRing.position.y = 0.04
+      group.add(rangeRing)
+    }
+
+    toWorld(u.x, u.y, group.position)
+    this.scene.add(group)
+
+    const view: UnitView = {
+      group,
+      target: group.position.clone(),
+      lastCooldown: u.cooldown,
+      moving: false,
+      isBuilding: true,
+    }
     this.units.set(u.id, view)
     return view
   }
@@ -513,6 +598,8 @@ export class Battle3D {
     if (!this.ready) return
     const dt = deltaMs / 1000
     for (const view of this.units.values()) {
+      if (view.isBuilding || !view.mixer || !view.walk || !view.attack) continue
+      const walk = view.walk, attack = view.attack
       const d = this.tmpV.subVectors(view.target, view.group.position)
       const dist = d.length()
       if (dist > 0.01) {
@@ -523,14 +610,14 @@ export class Battle3D {
         while (diff < -Math.PI) diff += Math.PI * 2
         view.group.rotation.y += diff * Math.min(1, dt * 10)
         view.group.position.addScaledVector(d, Math.min(1, dt * 9))
-        if (!view.moving && !view.attack.isRunning()) {
+        if (!view.moving && !attack.isRunning()) {
           view.moving = true
-          view.attack.crossFadeTo(view.walk.reset().play(), 0.12, false)
+          attack.crossFadeTo(walk.reset().play(), 0.12, false)
         }
-      } else if (view.moving && !view.attack.isRunning()) {
-        view.walk.paused = true
+      } else if (view.moving && !attack.isRunning()) {
+        walk.paused = true
       }
-      if (view.moving && dist > 0.01) view.walk.paused = false
+      if (view.moving && dist > 0.01) walk.paused = false
       view.mixer.update(dt)
     }
 
@@ -555,6 +642,28 @@ export class Battle3D {
     }
     this.dying = this.dying.filter((d) => {
       if (d.t >= 1) { this.scene.remove(d.group); return false }
+      return true
+    })
+
+    // meteors: fall, then erupt a shockwave ring
+    for (const m of this.meteors) {
+      m.t += dt
+      if (!m.landed) {
+        m.mesh.position.y = Math.max(0.4, 22 - m.t * 70)
+        if (m.mesh.position.y <= 0.5) {
+          m.landed = true
+          m.t = 0
+          this.scene.remove(m.mesh)
+          m.ring.visible = true
+        }
+      } else {
+        const k = Math.min(1, m.t / 0.5)
+        m.ring.scale.setScalar(1 + k * 9)
+        ;(m.ring.material as THREE.MeshBasicMaterial).opacity = 0.9 * (1 - k)
+      }
+    }
+    this.meteors = this.meteors.filter((m) => {
+      if (m.landed && m.t >= 0.5) { this.scene.remove(m.ring); return false }
       return true
     })
 

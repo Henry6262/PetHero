@@ -46,3 +46,20 @@ describe('full AI-vs-AI match (integration)', () => {
     }
   })
 })
+
+describe('aiCommands spell usage', () => {
+  it('casts a damage spell on a tight cluster of 3+ enemy units', () => {
+    const s = createMatch(1, [[...STARTER_DECK], [...STARTER_DECK]])
+    s.elixir[1] = 10
+    // hand the AI a damage spell up front
+    s.decks[1][0] = 'liquidation-cascade'
+    // cluster of 3 enemy (player 0) units on the AI's half
+    for (let i = 0; i < 3; i++) {
+      s.units.push({ id: s.nextId++, owner: 0, cardId: 'jeet-horde', x: 9 + i * 0.3, y: 22, hp: 90, maxHp: 90, cooldown: 0, fleeing: false, revealed: true, buffUntil: 0 })
+    }
+    s.tick = AI_LEVELS[2].thinkEvery
+    const cmds = aiCommands(s, 1, AI_LEVELS[2])
+    expect(cmds.length).toBe(1)
+    expect(cmds[0].cardId).toBe('liquidation-cascade')
+  })
+})

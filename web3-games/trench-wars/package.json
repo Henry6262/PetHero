@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "smoke-3d": "tsx scripts/screenshot-3d.ts",
-    "portraits": "tsx scripts/render-portraits.ts"
+    "portraits": "tsx scripts/render-portraits.ts",
+    "balance": "tsx scripts/balance-check.ts"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.4.0",

@@ -20,9 +20,13 @@ export interface CardDef {
   flees?: boolean           // Paper Hands: flees below FLEE_HP_RATIO
   stealthRange?: number     // Rug Dev: hidden until an enemy is this close
   aura?: AuraDef            // Influencer (ally damageMult) / FUD Spirit (enemy speedMult)
+  targetsTowers?: boolean   // Moon Boy: ignores enemy units, charges towers (win condition)
+  building?: boolean        // Trading Bot: stationary defensive structure
+  lifespan?: number         // building only: ticks until it decays to 0 hp
   // spell fields
   effectRadius?: number
   effectDamage?: number
+  effectHeal?: number       // Copium: heals friendly units in radius
   buffTicks?: number
   buffSpeedMult?: number
   buffDamageMult?: number

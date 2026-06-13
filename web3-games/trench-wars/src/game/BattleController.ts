@@ -250,8 +250,24 @@ export class BattleController {
   private detectVfx(prev: SimState, next: SimState, cmds: DeployCommand[]) {
     for (const cmd of cmds) {
       const card = getCard(cmd.cardId)
-      if (card.type === 'unit') this.vfx.deploy(cmd.x, cmd.y)
-      else this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 3)
+      if (card.type === 'unit') {
+        this.vfx.deploy(cmd.x, cmd.y)
+      } else {
+        // spell-specific visuals
+        if (card.id === 'liquidation-cascade') {
+          battle3d?.meteor(cmd.x, cmd.y)
+          this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 3, BRAND.colors.defender)
+          battle3d?.shake(0.8)
+          audio!.play('explosion', 0.5)
+        } else if (card.id === 'gas-war') {
+          this.vfx.explosion(cmd.x, cmd.y, 0x6fae3d)
+          this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 2, 0x8fd44d)
+        } else if (card.effectHeal) {
+          this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 3, BRAND.colors.attacker)
+        } else {
+          this.vfx.spellRing(cmd.x, cmd.y, card.effectRadius || 3)
+        }
+      }
       if (cmd.player === 0) audio!.play('deploy', 0.5)
     }
 
@@ -259,10 +275,17 @@ export class BattleController {
     const nextUnits = new Map(next.units.map((u) => [u.id, u]))
     for (const [id, u] of nextUnits) {
       const p = prevUnits.get(id)
-      if (p && u.hp < p.hp) {
+      if (!p) continue
+      const delta = Math.round(p.hp - u.hp)
+      const isBuilding = !!getCard(u.cardId).building
+      if (u.hp < p.hp && delta >= 8) {
         this.vfx.hit(u.x, u.y, u.owner === 0 ? BRAND.colors.defender : BRAND.colors.attacker)
+        // friendly took damage = red; enemy took damage = yellow
+        this.vfx.damageNumber(u.x, u.y, delta, u.owner === 0 ? 0xff5a6a : 0xffd23f, delta >= 120)
         const now = performance.now()
         if (now - this.lastHitSfx > 90) { this.lastHitSfx = now; audio!.play('hit', 0.15) }
+      } else if (u.hp > p.hp && !isBuilding) {
+        this.vfx.healNumber(u.x, u.y, Math.round(u.hp - p.hp))
       }
     }
     for (const [id, u] of prevUnits) {
@@ -275,7 +298,11 @@ export class BattleController {
     for (let i = 0; i < prev.towers.length; i++) {
       const p = prev.towers[i]
       const n = next.towers[i]
-      if (n.hp < p.hp) this.vfx.hit(n.x, n.y, n.owner === 0 ? BRAND.colors.defender : BRAND.colors.attacker)
+      const delta = Math.round(p.hp - n.hp)
+      if (n.hp < p.hp) {
+        this.vfx.hit(n.x, n.y, n.owner === 0 ? BRAND.colors.defender : BRAND.colors.attacker)
+        if (delta >= 8) this.vfx.damageNumber(n.x, n.y, delta, n.owner === 0 ? 0xff5a6a : 0xffd23f, true)
+      }
       if (p.hp > 0 && n.hp <= 0) {
         this.vfx.explosion(n.x, n.y, n.owner === 0 ? BRAND.colors.attacker : BRAND.colors.defender)
         audio!.play('tower-down', 0.8)
