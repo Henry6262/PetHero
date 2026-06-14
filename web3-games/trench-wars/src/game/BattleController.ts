@@ -11,7 +11,7 @@ import { fingerprint } from '../sim/replay'
 import { submitMatch } from '../api'
 import type { DeployCommand, SimState, MatchResult } from '../sim/types'
 
-export const ARENA_W_PX = 680
+export const ARENA_W_PX = 782
 export const ARENA_H_PX = 960
 
 export interface BattleSnapshot {

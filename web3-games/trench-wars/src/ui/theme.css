@@ -203,14 +203,14 @@ button { font-family: inherit; cursor: pointer; }
   padding: 0;
 }
 .battle-frame {
-  width: min(100vw, calc((100dvh - 150px) * 0.7083));
+  width: min(100vw, calc((100dvh - 150px) * 0.8146));
   display: flex;
   flex-direction: column;
 }
 .stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 17 / 24;
+  aspect-ratio: 391 / 480;
   overflow: hidden;
   border-radius: 0 0 0 0;
   touch-action: none;

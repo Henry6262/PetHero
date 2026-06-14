@@ -15,7 +15,7 @@ import type { SimState, UnitEntity, Tower } from '../sim/types'
  * world coords: x = simX - ARENA_W/2, z = RIVER_Y - simY (player 0 at +z).
  */
 
-const ARENA_PX_W = 680
+const ARENA_PX_W = 782
 const ARENA_PX_H = 960
 
 // Which character model plays each unit card. Seven distinct rigs spread across the roster.
@@ -130,8 +130,8 @@ export class Battle3D {
     this.scene.background = new THREE.Color(0x0a0e14)
     this.scene.fog = new THREE.Fog(0x0a0e14, 55, 90)
 
-    this.camera = new THREE.PerspectiveCamera(46, ARENA_PX_W / ARENA_PX_H, 1, 200)
-    this.camera.position.set(0, 32, 24)
+    this.camera = new THREE.PerspectiveCamera(44, ARENA_PX_W / ARENA_PX_H, 1, 200)
+    this.camera.position.set(0, 29, 22)
     this.camera.lookAt(0, 0, 1)
     this.camBase.copy(this.camera.position)
 
