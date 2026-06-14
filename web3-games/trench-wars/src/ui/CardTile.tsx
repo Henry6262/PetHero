@@ -1,5 +1,4 @@
-import { getCard } from '../sim/cards'
-import { CARD_CHAR } from '../render3d/Battle3D'
+import { TrenchCard } from './TrenchCard'
 
 interface Props {
   cardId: string
@@ -9,23 +8,17 @@ interface Props {
 }
 
 export function CardTile({ cardId, className = '', onPointerDown, onClick }: Props) {
-  const card = getCard(cardId)
-  const charName = CARD_CHAR[cardId]
-  const glyph = card.building ? '◳' : '✦'
+  const state = className.includes('in-deck') ? 'in-deck'
+    : className.includes('selected') ? 'selected' : undefined
   return (
-    <button
-      className={`card-tile ${className}`}
-      onPointerDown={onPointerDown}
+    <TrenchCard
+      cardId={cardId}
+      size="sm"
+      state={state}
+      showRibbon={false}
+      className={className}
       onClick={onClick}
-      data-card={cardId}
-    >
-      <span className="cost-chip">{card.cost}</span>
-      {charName ? (
-        <img src={`/assets/3d/portraits/${charName}.png`} alt={card.name} draggable={false} />
-      ) : (
-        <span className={`spell-glyph ${card.building ? 'building-glyph' : ''}`}>{glyph}</span>
-      )}
-      <span className="nm">{card.name.toUpperCase()}</span>
-    </button>
+      onPointerDown={onPointerDown}
+    />
   )
 }
