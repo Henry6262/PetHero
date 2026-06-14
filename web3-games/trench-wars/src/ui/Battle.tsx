@@ -4,6 +4,7 @@ import type { BattleSnapshot } from '../game/BattleController'
 import { getCard } from '../sim/cards'
 import { CARD_CHAR } from '../render3d/Battle3D'
 import { CardTile } from './CardTile'
+import { Icon } from './Icon'
 import { TutorialGuide } from './TutorialGuide'
 import type { Screen } from './Screen'
 
@@ -71,7 +72,7 @@ export function Battle({ screen, go, tutorial }: Props) {
             <div className="top-bar">
               <div className="crowns">
                 {[0, 1, 2].map((i) => (
-                  <span key={i} className={i < (snap?.crowns ?? 0) ? 'won' : ''}>♛</span>
+                  <span key={i} className={i < (snap?.crowns ?? 0) ? 'won' : ''}><Icon name="crown" size={15} /></span>
                 ))}
               </div>
               <div className="match-label">
@@ -133,7 +134,7 @@ export function Battle({ screen, go, tutorial }: Props) {
                 NEXT
                 {CARD_CHAR[snap.next]
                   ? <img src={`/assets/3d/portraits/${CARD_CHAR[snap.next]}.png`} alt="" />
-                  : <span>✦</span>}
+                  : <Icon name="spell" size={20} />}
                 {getCard(snap.next).name.toUpperCase().slice(0, 12)}
               </div>
             )}

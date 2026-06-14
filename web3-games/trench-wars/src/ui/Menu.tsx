@@ -3,7 +3,8 @@ import { createAccount, getMe, getOpponent, connectWallet, getDecks } from '../a
 import type { Account, Deck } from '../api'
 import { connectWallet as connectSolana, isWalletAvailable } from '../wallet'
 import { DECK_SIZE } from '../sim/constants'
-import { CARD_CHAR } from '../render3d/Battle3D'
+import { Icon } from './Icon'
+import { TrenchCard } from './TrenchCard'
 import type { Screen } from './Screen'
 
 interface Props {
@@ -104,16 +105,16 @@ export function Menu({ account, setAccount, go }: Props) {
         {activeTab === 'battle' && (
           <>
             <button className="cr-battle-btn" onClick={startLadder} data-testid="battle">
-              <span className="cr-battle-icon">⚔</span>
+              <span className="cr-battle-icon"><Icon name="battle" size={42} /></span>
               <span>BATTLE</span>
             </button>
 
             <div className="cr-secondary-actions">
               <button className="cr-sec-btn" onClick={startPractice} data-testid="practice">
-                <span>🎯</span> PRACTICE VS AI
+                <Icon name="practice" size={16} /> PRACTICE VS AI
               </button>
               <button className="cr-sec-btn" onClick={openDeck} data-testid="deck">
-                <span>🎴</span> DECK BUILDER
+                <Icon name="deck" size={16} /> DECK BUILDER
               </button>
             </div>
 
@@ -122,16 +123,7 @@ export function Menu({ account, setAccount, go }: Props) {
                 <div className="cr-deck-label">CURRENT SQUAD</div>
                 <div className="cr-deck-cards">
                   {(deck.cards.length ? deck.cards : Array.from({ length: DECK_SIZE }, () => '')).map((id, i) =>
-                    id ? (
-                      <img
-                        key={i}
-                        src={`/assets/3d/portraits/${CARD_CHAR[id] ?? 'explorer'}.png`}
-                        alt=""
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/assets/3d/portraits/explorer.png' }}
-                      />
-                    ) : (
-                      <div key={i} className="cr-deck-empty" />
-                    )
+                    id ? <TrenchCard key={i} cardId={id} size="sm" showRibbon={false} /> : <div key={i} className="cr-deck-empty" />
                   )}
                 </div>
               </div>
@@ -178,17 +170,17 @@ export function Menu({ account, setAccount, go }: Props) {
       {/* Bottom nav */}
       <nav className="cr-bottom-nav">
         {([
-          { id: 'battle', label: 'BATTLE', icon: '⚔' },
-          { id: 'deck', label: 'DECK', icon: '🎴' },
-          { id: 'loot', label: 'LOOT', icon: '🎁' },
-          { id: 'leaderboard', label: 'LADDER', icon: '🏆' },
+          { id: 'battle', label: 'BATTLE', icon: 'battle' },
+          { id: 'deck', label: 'DECK', icon: 'deck' },
+          { id: 'loot', label: 'LOOT', icon: 'loot' },
+          { id: 'leaderboard', label: 'LADDER', icon: 'ladder' },
         ] as { id: Tab; label: string; icon: string }[]).map((t) => (
           <button
             key={t.id}
             className={`cr-nav-tab ${activeTab === t.id ? 'active' : ''}`}
             onClick={() => setActiveTab(t.id)}
           >
-            <span className="cr-nav-icon">{t.icon}</span>
+            <span className="cr-nav-icon"><Icon name={t.icon} size={22} /></span>
             <span className="cr-nav-label">{t.label}</span>
           </button>
         ))}

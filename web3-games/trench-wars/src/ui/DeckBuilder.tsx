@@ -5,6 +5,7 @@ import { getDecks, createDeck, updateDeck } from '../api'
 import { Ladder } from '../game/ladder'
 import { unlockedCards, unlockWins, nextUnlock } from '../game/unlocks'
 import { CardTile } from './CardTile'
+import { Icon } from './Icon'
 import type { Screen } from './Screen'
 
 interface Props {
@@ -33,7 +34,7 @@ export function DeckBuilder({ go }: Props) {
 
   const toggle = (id: string) => {
     if (!unlocked.has(id)) {
-      setStatus(`🔒 ${getCardName(id)} unlocks at ${unlockWins(id)} wins (you have ${wins})`)
+      setStatus(`${getCardName(id)} unlocks at ${unlockWins(id)} wins (you have ${wins})`)
       return
     }
     setStatus('')
@@ -54,7 +55,7 @@ export function DeckBuilder({ go }: Props) {
         const res = await createDeck('main', deck)
         setDeckId(res.deck.id)
       }
-      setStatus('deck saved ✓')
+      setStatus('deck saved')
     } catch (err) {
       setStatus(`save failed: ${err instanceof Error ? err.message : 'unknown'}`)
     }
@@ -84,7 +85,7 @@ export function DeckBuilder({ go }: Props) {
                 className={deck.includes(c.id) ? 'in-deck' : ''}
                 onClick={() => toggle(c.id)}
               />
-              {locked && <div className="lock-badge">🔒 {unlockWins(c.id)}W</div>}
+              {locked && <div className="lock-badge"><Icon name="lock" size={13} /> {unlockWins(c.id)}W</div>}
             </div>
           )
         })}
