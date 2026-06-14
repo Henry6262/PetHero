@@ -6,6 +6,7 @@ import { DECK_SIZE } from '../sim/constants'
 import { CARD_CHAR } from '../render3d/Battle3D'
 import { Battle } from './Battle'
 import { TutorialGuide } from './TutorialGuide'
+import { PackOpen } from './PackOpen'
 import type { Screen } from './Screen'
 
 export type OnboardingStep = 'welcome' | 'identity' | 'lootbox' | 'deck' | 'levelup' | 'battle' | 'complete'
@@ -73,8 +74,7 @@ export function Onboarding({ onComplete, setAccount }: Props) {
 
   const openLootbox = () => {
     setLoot([...FIRST_PACK])
-    // Auto-advance to deck after the reveal animation finishes.
-    setTimeout(() => setStep('deck'), 1600)
+    setStep('deck')
   }
 
   const saveDeck = async () => {
@@ -206,50 +206,18 @@ export function Onboarding({ onComplete, setAccount }: Props) {
   }
 }
 
-function OnboardingLootbox({ loot, onOpen }: { loot: string[]; onOpen: () => void }) {
-  const [opening, setOpening] = useState(false)
-  const opened = loot.length > 0
-
-  const handleOpen = () => {
-    if (opened) return
-    setOpening(true)
-    onOpen()
-  }
-
+function OnboardingLootbox({ loot: _loot, onOpen }: { loot: string[]; onOpen: () => void }) {
+  // loot is the fixed FIRST_PACK; reveal it through the cinematic PackOpen.
   return (
     <div className="screen onboarding-lootbox">
       <h2>Commander starter pack</h2>
       <p className="subtitle">Every commander needs troops. Open your first pack.</p>
-      <div className="lootbox-stage">
-        <div className={`lootbox-pack ${opening ? 'shaking' : ''} ${opened ? 'opened' : ''}`} onClick={handleOpen}>
-          🎁
-        </div>
-        {!opened && <div className="lootbox-label">TAP TO OPEN</div>}
-        {opened && (
-          <div className="lootbox-rewards">
-            {loot.map((id) => (
-              <LootReward key={id} cardId={id} />
-            ))}
-          </div>
-        )}
-      </div>
+      <PackOpen cardIds={FIRST_PACK} onDone={onOpen} />
       <TutorialGuide
-        steps={[{ text: 'Tap the pack to reveal your first squad cards. These are your starting troops.' }]}
+        steps={[{ text: 'Tap the chest to reveal your squad cards one by one. These are your starting troops.' }]}
         onComplete={() => {}}
         startVisible
       />
-    </div>
-  )
-}
-
-function LootReward({ cardId }: { cardId: string }) {
-  const card = useMemo(() => CARDS.find((c) => c.id === cardId)!, [cardId])
-  const portrait = CARD_CHAR[cardId] ?? 'explorer'
-  return (
-    <div className="loot-reward">
-      <img src={`/assets/3d/portraits/${portrait}.png`} alt={card.name} />
-      <span className="rarity">{card.cost} ELIXIR</span>
-      <span className="name">{card.name.toUpperCase()}</span>
     </div>
   )
 }
