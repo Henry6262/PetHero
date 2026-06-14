@@ -162,7 +162,12 @@ const SplitText: React.FC<SplitTextProps> = ({
       willChange: 'transform, opacity'
     };
     const classes = `split-parent overflow-hidden inline-block whitespace-normal ${className}`;
-    const Tag = (tag || 'p') as React.ElementType;
+    // Cast through a concrete component type: with @react-three/fiber's JSX
+    // augmentation in the type graph, a bare `React.ElementType` collapses the
+    // dynamic tag's props to `never`, so type the element explicitly here.
+    const Tag = (tag || 'p') as unknown as React.FC<
+      React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }
+    >;
 
     return (
       <Tag ref={ref} style={style} className={classes}>

@@ -2,10 +2,12 @@ import { Suspense, lazy } from 'react'
 import SplitText from '../reactbits/SplitText'
 import CountUp from '../reactbits/CountUp'
 import StarBorder from '../reactbits/StarBorder'
-import { BattlefieldDiorama } from '../three/BattlefieldDiorama'
-
 // DarkVeil pulls in `ogl` + a WebGL canvas — lazy-load so it never blocks first paint.
 const DarkVeil = lazy(() => import('../reactbits/DarkVeil'))
+// The R3F battlefield diorama pulls in three + drei — lazy-load so WebGL never blocks first paint.
+const BattlefieldDiorama = lazy(() =>
+  import('../three/BattlefieldDiorama').then((m) => ({ default: m.BattlefieldDiorama })),
+)
 
 type Stat = { value: number; suffix?: string; label: string }
 
@@ -195,7 +197,9 @@ export function Hero({ onPlay }: { onPlay: () => void }) {
 
         {/* RIGHT */}
         <div>
-          <BattlefieldDiorama />
+          <Suspense fallback={<div style={{ width: '100%', aspectRatio: '1/1' }} />}>
+            <BattlefieldDiorama />
+          </Suspense>
         </div>
       </div>
     </section>
