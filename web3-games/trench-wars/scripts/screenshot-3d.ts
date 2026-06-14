@@ -11,6 +11,8 @@ async function main() {
   // mobile-sized run (the primary target)
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } })
   page.on('pageerror', (e) => console.log('ERROR:', e.message))
+  // skip the marketing landing / onboarding gate so the app boots straight to the menu
+  await page.addInitScript(() => { try { localStorage.setItem('trench-royale-onboarding-complete', '1') } catch {} })
   await page.goto('http://localhost:5174/')
   await page.waitForTimeout(1200)
   await page.screenshot({ path: '/tmp/tw-menu-mobile.png' })
@@ -33,7 +35,7 @@ async function main() {
   console.log('saved /tmp/tw3d.png')
 
   // drag first card onto the arena — preview disc should appear
-  const card = (await page.locator('.hand .card-tile').first().boundingBox())!
+  const card = (await page.locator('.hand .tcard').first().boundingBox())!
   await page.mouse.move(card.x + card.width / 2, card.y + card.height / 2)
   await page.mouse.down()
   await page.mouse.move(stage.x + stage.width * 0.35, stage.y + stage.height * 0.68, { steps: 8 })
@@ -45,6 +47,7 @@ async function main() {
 
   // desktop menu + deck builder
   const desktop = await browser.newPage({ viewport: { width: 1280, height: 800 } })
+  await desktop.addInitScript(() => { try { localStorage.setItem('trench-royale-onboarding-complete', '1') } catch {} })
   await desktop.goto('http://localhost:5174/')
   await desktop.waitForTimeout(1200)
   await desktop.screenshot({ path: '/tmp/tw-menu-desktop.png' })
