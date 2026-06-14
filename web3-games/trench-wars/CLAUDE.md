@@ -1,4 +1,4 @@
-# Trench Wars — Agent Notes
+# Trench Royale — Agent Notes
 
 > Browser Clash Royale-style lane battler — Traders vs Jeets. Deterministic fixed-tick sim + **real 3D battle renderer (Three.js)** + **React UI shell** (menu, deck builder, battle HUD) + Express/Prisma backend. No Phaser.
 >

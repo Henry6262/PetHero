@@ -15,7 +15,7 @@ async function main() {
   const app = createApp({ prisma, cookieSecret: COOKIE_SECRET, clientUrl: CLIENT_URL })
 
   app.listen(PORT, () => {
-    console.log(`Trench Wars server listening on http://localhost:${PORT}`)
+    console.log(`Trench Royale server listening on http://localhost:${PORT}`)
   })
 }
 

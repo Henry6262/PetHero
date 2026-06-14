@@ -1,6 +1,6 @@
-/** Shared brand tokens for Trench Wars UI. Keep this the single source of truth for colors, fonts, and copy. */
+/** Shared brand tokens for Trench Royale UI. Keep this the single source of truth for colors, fonts, and copy. */
 export const BRAND = {
-  name: 'TRENCH WARS',
+  name: 'TRENCH ROYALE',
   tagline: 'Traders vs Jeets',
   fonts: {
     header: '"Orbitron", sans-serif',

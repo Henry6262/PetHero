@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test'
 
 /** E2E smoke against the production deployment: guest login → practice match → 3D loads. */
+// TODO: rename Vercel/Railway project (ops)
 const PROD_URL = process.env.PROD_URL || 'https://trench-wars-henry6262s-projects.vercel.app'
 
 async function main() {

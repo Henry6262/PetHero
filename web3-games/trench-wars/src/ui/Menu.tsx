@@ -60,7 +60,7 @@ export function Menu({ account, setAccount, go }: Props) {
       <svg className="logo-mark" viewBox="0 0 64 40">
         <path d="M4 36 L32 4 L60 36 L46 36 L32 20 L18 36 Z" fill="#f5e600" />
       </svg>
-      <h1>TRENCH WARS</h1>
+      <h1>TRENCH ROYALE</h1>
       <div className="tagline">Traders vs Jeets</div>
 
       <div className="heroes">

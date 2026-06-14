@@ -1,4 +1,4 @@
-# Trench Wars
+# Trench Royale
 
 **LIVE**: https://trench-wars-henry6262s-projects.vercel.app (client, Vercel) · https://trench-wars-api-production.up.railway.app (API, Railway project `trench-wars`, sqlite on /data volume)
 
