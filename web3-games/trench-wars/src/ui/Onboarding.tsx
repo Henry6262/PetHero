@@ -313,7 +313,7 @@ function OnboardingLevelUp({
             <div className="lu-ring" />
             <TrenchCard cardId={hero.id} size="lg" level={2} showRibbon />
           </div>
-          <div className="lu-bars">
+          <div className="lu-bars" key={hero.id}>
             <div className="lu-bar">HP<div className="track"><div className="fill hp" style={{ width: punch ? '90%' : '70%' }} /></div>
               <span className="lu-float">+{Math.round((hero.hp ?? 100) * 0.1)}</span></div>
             <div className="lu-bar">DMG<div className="track"><div className="fill dmg" style={{ width: punch ? '85%' : '65%' }} /></div>
