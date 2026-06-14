@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Icon } from './Icon'
 import { createAccount, connectWallet, createDeck, type Account } from '../api'
 import { connectWallet as connectSolana, isWalletAvailable } from '../wallet'
 import { CARDS, STARTER_DECK, getCard } from '../sim/cards'
@@ -121,19 +122,19 @@ export function Onboarding({ onComplete, setAccount }: Props) {
           <p className="subtitle">Pick how you want to play. You can connect a wallet later.</p>
           <div className="identity-cards">
             <button className="id-card" onClick={handleGuest} data-testid="onboarding-guest">
-              <div className="id-icon">👤</div>
+              <div className="id-icon"><Icon name="guest" size={42} /></div>
               <h3>Play as Guest</h3>
               <p>Instant access. Local ladder and practice.</p>
             </button>
             {isWalletAvailable() ? (
               <button className="id-card" onClick={handleWallet} data-testid="onboarding-wallet">
-                <div className="id-icon">👛</div>
+                <div className="id-icon"><Icon name="wallet" size={42} /></div>
                 <h3>Connect Wallet</h3>
                 <p>Ranked ladder and $ROYALE rewards.</p>
               </button>
             ) : (
               <div className="id-card disabled">
-                <div className="id-icon">👛</div>
+                <div className="id-icon"><Icon name="wallet" size={42} /></div>
                 <h3>Connect Wallet</h3>
                 <p>Install Phantom to enable ranked rewards.</p>
               </div>
