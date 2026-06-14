@@ -10,9 +10,17 @@ const BASE = process.env.BASE_URL ?? 'http://localhost:5174'
 
 async function main() {
   const browser = await chromium.launch({ args: ['--use-gl=angle'] })
-  const page = await browser.newPage({ viewport: { width: 430, height: 900 } })
+  const context = await browser.newContext({ viewport: { width: 430, height: 900 } })
+  // Always start on the marketing landing (not straight to menu) so we can walk onboarding.
+  await context.addInitScript(() => {
+    try { localStorage.removeItem('trench-royale-onboarding-complete') } catch {}
+  })
+  const page = await context.newPage()
   page.on('pageerror', (e) => console.log('ERROR:', e.message))
   await page.goto(BASE)
+
+  // landing -> onboarding: click the hero CTA
+  await page.getByText('BUILD YOUR DECK').first().click({ timeout: 15000 })
   await page.waitForFunction(() => (window as any).__TRENCH_READY__ === true, undefined, { timeout: 15000 })
 
   // welcome -> identity -> guest
@@ -30,12 +38,19 @@ async function main() {
   }
   await page.getByText('CONTINUE').click().catch(() => {})
 
-  // deck: pick 8, deploy
+  // deck: the squad starts pre-filled with STARTER_DECK (8), so DEPLOY is already enabled.
   await page.waitForSelector('.onboarding-deck .tcard', { timeout: 10000 })
+  await page.waitForTimeout(300)
   await page.screenshot({ path: '/tmp/tw-deck.png' })
-  const cards = await page.locator('.onboarding-deck .tcard').all()
-  for (const c of cards.slice(0, 8)) await c.click().catch(() => {})
-  await page.getByText('DEPLOY SQUAD').click().catch(() => {})
+  // dismiss any tutorial bubble that overlays the deploy button
+  await page.getByText('GOT IT').click({ timeout: 1500 }).catch(() => {})
+  const deploy = page.getByText('DEPLOY SQUAD')
+  if (await deploy.isDisabled().catch(() => true)) {
+    const cards = await page.locator('.onboarding-deck .tcard').all()
+    for (const c of cards) { await c.click().catch(() => {}); if (!(await deploy.isDisabled().catch(() => true))) break }
+  }
+  await deploy.scrollIntoViewIfNeeded().catch(() => {})
+  await deploy.click({ force: true }).catch(() => {})
 
   // level-up
   await page.waitForSelector('.levelup-pool .tcard', { timeout: 10000 })
