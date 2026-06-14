@@ -1,0 +1,23 @@
+/* ---------- lootbox step ---------- */
+
+.onboarding-lootbox {
+  justify-content: center;
+  gap: 28px;
+  padding: 32px 20px;
+  text-align: center;
+}
+
+/* ---------- level up step ---------- */
+
+.onboarding-levelup {
+  padding: 32px 20px;
+  gap: 18px;
+}
+
+.levelup-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 720px;
+}

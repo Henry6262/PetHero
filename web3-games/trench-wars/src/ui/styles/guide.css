@@ -1,0 +1,115 @@
+/* ---------- tutorial guide (Vanguard) ---------- */
+
+.tutorial-guide {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none;
+  animation: guide-popin 0.35s ease;
+}
+@keyframes guide-popin {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tutorial-guide-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+.tutorial-guide-avatar img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 20px rgba(245, 230, 0, 0.35);
+  background: var(--panel);
+  object-fit: cover;
+}
+.guide-name {
+  font-family: var(--font-header);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+
+.tutorial-bubble {
+  position: relative;
+  min-width: 260px;
+  max-width: 340px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border: 2px solid var(--primary);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+.tutorial-bubble::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.tutorial-bubble.pos-top::after {
+  bottom: -12px;
+  left: 28px;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid var(--primary);
+}
+.tutorial-bubble.pos-left::after {
+  right: -12px;
+  top: 28px;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid var(--primary);
+}
+.tutorial-bubble.pos-bottom::after {
+  top: -12px;
+  left: 28px;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid var(--primary);
+}
+
+.tutorial-bubble-text {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.tutorial-bubble-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tutorial-step-count {
+  font-family: var(--font-header);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.tutorial-next-btn {
+  padding: 8px 16px;
+  font-family: var(--font-header);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #1a1500;
+  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+.tutorial-next-btn:hover { filter: brightness(1.1); }

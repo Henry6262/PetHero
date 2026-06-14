@@ -1,0 +1,53 @@
+/* ---------- menu ---------- */
+
+.menu {
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 20px;
+  text-align: center;
+}
+.menu .logo-mark {
+  width: 64px; height: 40px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 0 14px rgba(245, 230, 0, 0.5));
+}
+.menu h1 {
+  font-family: var(--font-header);
+  font-size: clamp(34px, 8vw, 56px);
+  font-weight: 900;
+  color: var(--primary);
+  text-shadow: 0 0 28px rgba(245, 230, 0, 0.45);
+  letter-spacing: 3px;
+}
+.menu .tagline {
+  color: var(--muted);
+  font-size: 17px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.menu .heroes {
+  display: flex;
+  gap: 0;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 6px 0 10px;
+}
+.menu .heroes img {
+  height: clamp(130px, 24vw, 210px);
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6));
+}
+.menu .heroes img:nth-child(1) { transform: translateX(22px) scaleX(-1); }
+.menu .heroes img:nth-child(3) { transform: translateX(-22px); }
+.menu .heroes img:nth-child(2) { z-index: 1; height: clamp(150px, 27vw, 240px); }
+.menu .account {
+  font-family: var(--font-header);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 8px 18px;
+}
+.menu .account b { color: var(--primary); }

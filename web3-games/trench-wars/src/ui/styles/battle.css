@@ -1,0 +1,164 @@
+/* ---------- battle ---------- */
+
+.battle-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.battle-frame {
+  width: min(100vw, calc((100dvh - 150px) * 0.8146));
+  display: flex;
+  flex-direction: column;
+}
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 391 / 480;
+  overflow: hidden;
+  border-radius: 0 0 0 0;
+  touch-action: none;
+}
+.stage canvas.overlay {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.stage .loading {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-family: var(--font-header);
+  letter-spacing: 2px;
+  color: var(--muted);
+  background: var(--bg);
+}
+.stage .top-bar {
+  position: absolute;
+  top: 8px; left: 10px; right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+.stage .match-label {
+  font-family: var(--font-header);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--text);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+.stage .crowns { display: flex; gap: 4px; }
+.stage .crowns span { color: var(--border); font-size: 15px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+.stage .crowns span.won { color: var(--primary); }
+.mute-btn {
+  pointer-events: auto;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--muted);
+  background: rgba(20, 27, 45, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+.result-overlay {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(10, 14, 20, 0.82);
+}
+.result-panel {
+  text-align: center;
+  background: var(--panel);
+  border: 3px solid var(--primary);
+  border-radius: 18px;
+  padding: 34px 60px;
+}
+.result-panel h2 {
+  font-family: var(--font-header);
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.result-panel h2.win { color: var(--green); }
+.result-panel h2.loss { color: var(--red); }
+.result-panel .reason { color: var(--text); font-size: 18px; margin: 10px 0 4px; }
+.result-panel .hint { color: var(--muted); font-size: 14px; }
+
+/* HUD */
+.hud {
+  width: 100%;
+  background: linear-gradient(180deg, var(--panel), #0e1422);
+  border-top: 2px solid var(--border);
+  padding: 10px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hud .elixir-row { display: flex; align-items: center; gap: 8px; }
+.elixir-bar {
+  flex: 1;
+  position: relative;
+  height: 16px;
+  background: var(--panel-light);
+  border: 2px solid var(--elixir-dark);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.elixir-bar.full { border-color: var(--primary); animation: pulse 0.7s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 12px rgba(245, 230, 0, 0.5); } }
+.elixir-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--elixir-dark), var(--elixir));
+  transition: width 0.18s linear;
+}
+.elixir-ticks { position: absolute; inset: 0; display: flex; }
+.elixir-ticks i { flex: 1; border-right: 1px solid rgba(10, 14, 20, 0.5); }
+.elixir-ticks i:last-child { border-right: none; }
+.elixir-num {
+  font-family: var(--font-header);
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--elixir);
+  min-width: 24px;
+  text-align: center;
+}
+.next-hint { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; letter-spacing: 1px; }
+.next-hint img { height: 26px; }
+
+.hand { display: flex; gap: 8px; }
+.hand .tcard { user-select: none; -webkit-user-select: none; }
+.hand .tcard img { pointer-events: none; }
+
+@media (max-width: 560px) {
+  .battle-frame { width: 100vw; }
+  .result-panel { padding: 26px 36px; }
+}
+
+/* ---------- tutorial hint ---------- */
+
+.tutorial-hint {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(90%, 420px);
+  padding: 12px 18px;
+  background: rgba(10, 14, 20, 0.92);
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 0 24px rgba(245, 230, 0, 0.2);
+  animation: tut-fadein 0.4s ease;
+}
+@keyframes tut-fadein {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

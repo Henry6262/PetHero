@@ -1,0 +1,26 @@
+/* ---------- deck builder ---------- */
+
+.deck-screen { padding: 24px 16px 40px; gap: 18px; }
+.deck-screen h2 {
+  font-family: var(--font-header);
+  letter-spacing: 2px;
+  color: var(--primary);
+}
+.deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 720px;
+}
+.deck-count { font-family: var(--font-header); color: var(--muted); letter-spacing: 1px; }
+.deck-count b { color: var(--primary); }
+.unlock-hint { color: var(--elixir); font-family: var(--font-body); }
+.tile-wrap { position: relative; }
+.lock-badge {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-family: var(--font-header); font-size: 13px; font-weight: 900;
+  color: var(--text); pointer-events: none;
+  text-shadow: 0 1px 4px #000;
+}
