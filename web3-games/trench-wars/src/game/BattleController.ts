@@ -26,6 +26,7 @@ export interface BattleSnapshot {
   mode: 'practice' | 'ladder'
   result: MatchResult | null
   muted: boolean
+  hasDeployed: boolean
 }
 
 export interface BattleOptions {
@@ -57,6 +58,7 @@ export class BattleController {
   private defenderDeck: string[]
   private submitting = false
   private lastHitSfx = 0
+  private hasDeployed = false
   selected = 0
   private dragIndex: number | null = null
   private disposed = false
@@ -114,6 +116,7 @@ export class BattleController {
     const cmd: DeployCommand = { tick: this.sim.tick, player: 0, cardId: hand[this.selected], x: tile.x, y: tile.y }
     if (!validateDeploy(this.sim, cmd)) return false
     this.pending.push(cmd)
+    this.hasDeployed = true
     return true
   }
 
@@ -239,6 +242,7 @@ export class BattleController {
       mode: this.opts.mode,
       result: this.sim.result,
       muted: audio!.muted,
+      hasDeployed: this.hasDeployed,
     }
     const json = JSON.stringify(s)
     if (json !== this.lastSnapshotJson) {

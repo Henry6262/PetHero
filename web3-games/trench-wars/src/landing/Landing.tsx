@@ -1,9 +1,9 @@
 import { Hero } from './sections/Hero'
 
-export function Landing({ onPlay }: { onPlay: () => void }) {
+export function Landing({ onBuildDeck }: { onBuildDeck: () => void }) {
   return (
     <div className="tr-landing">
-      <Hero onPlay={onPlay} />
+      <Hero onBuildDeck={onBuildDeck} />
     </div>
   )
 }

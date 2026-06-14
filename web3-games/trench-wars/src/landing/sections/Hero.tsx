@@ -17,7 +17,7 @@ const STATS: Stat[] = [
   { value: 50, suffix: '%', label: 'Burn rate' },
 ]
 
-export function Hero({ onPlay }: { onPlay: () => void }) {
+export function Hero({ onBuildDeck }: { onBuildDeck: () => void }) {
   return (
     <section
       style={{
@@ -129,7 +129,7 @@ export function Hero({ onPlay }: { onPlay: () => void }) {
               as="button"
               color="var(--color-gold)"
               speed="5s"
-              onClick={onPlay}
+              onClick={onBuildDeck}
               style={{ cursor: 'pointer' }}
             >
               <span

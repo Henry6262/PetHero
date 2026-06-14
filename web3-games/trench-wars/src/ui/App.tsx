@@ -1,23 +1,44 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu } from './Menu'
 import { DeckBuilder } from './DeckBuilder'
 import { Battle } from './Battle'
 import { Landing } from '../landing/Landing'
+import { Onboarding } from './Onboarding'
+import type { Screen } from './Screen'
 import type { Account } from '../api'
 
-export type Screen =
-  | { name: 'landing' }
-  | { name: 'menu' }
-  | { name: 'deck' }
-  | { name: 'battle'; mode: 'practice' | 'ladder'; defenderId?: string; defenderDeck?: string[] }
+const ONBOARDING_KEY = 'trench-royale-onboarding-complete'
+
+function isOnboardingComplete(): boolean {
+  try {
+    return localStorage.getItem(ONBOARDING_KEY) === '1'
+  } catch {
+    return false
+  }
+}
 
 export function App() {
-  const [screen, setScreen] = useState<Screen>({ name: 'landing' })
+  const initialScreen: Screen = { name: isOnboardingComplete() ? 'menu' : 'landing' }
+  const [screen, setScreen] = useState<Screen>(initialScreen)
   const [account, setAccount] = useState<Account | null>(null)
+
+  // Re-evaluate the onboarding flag whenever we return to landing (edge case: reset).
+  useEffect(() => {
+    if (screen.name === 'landing') {
+      setScreen(isOnboardingComplete() ? { name: 'menu' } : { name: 'landing' })
+    }
+  }, [screen.name])
+
+  const finishOnboarding = () => {
+    try { localStorage.setItem(ONBOARDING_KEY, '1') } catch {}
+    setScreen({ name: 'menu' })
+  }
 
   switch (screen.name) {
     case 'landing':
-      return <Landing onPlay={() => setScreen({ name: 'menu' })} />
+      return <Landing onBuildDeck={() => setScreen({ name: 'onboarding' })} />
+    case 'onboarding':
+      return <Onboarding onComplete={finishOnboarding} go={setScreen} setAccount={setAccount} />
     case 'menu':
       return <Menu account={account} setAccount={setAccount} go={setScreen} />
     case 'deck':

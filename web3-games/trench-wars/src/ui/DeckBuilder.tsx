@@ -5,7 +5,7 @@ import { getDecks, createDeck, updateDeck } from '../api'
 import { Ladder } from '../game/ladder'
 import { unlockedCards, unlockWins, nextUnlock } from '../game/unlocks'
 import { CardTile } from './CardTile'
-import type { Screen } from './App'
+import type { Screen } from './Screen'
 
 interface Props {
   go: (s: Screen) => void

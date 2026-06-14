@@ -4,18 +4,33 @@ import type { BattleSnapshot } from '../game/BattleController'
 import { getCard } from '../sim/cards'
 import { CARD_CHAR } from '../render3d/Battle3D'
 import { CardTile } from './CardTile'
-import type { Screen } from './App'
+import type { Screen } from './Screen'
 
 interface Props {
   screen: Extract<Screen, { name: 'battle' }>
   go: (s: Screen) => void
+  tutorial?: boolean
 }
 
-export function Battle({ screen, go }: Props) {
+export function Battle({ screen, go, tutorial }: Props) {
   const stageRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
   const ctrlRef = useRef<BattleController | null>(null)
   const [snap, setSnap] = useState<BattleSnapshot | null>(null)
+  const [tutorialHint, setTutorialHint] = useState<string | null>(
+    tutorial ? 'Drag a card from your hand onto your side of the trench.' : null,
+  )
+
+  useEffect(() => {
+    if (!tutorial) return
+    if (!snap) return
+    // Once the player has deployed at least one card, advance the hint.
+    if (snap.hasDeployed && tutorialHint?.includes('Drag')) {
+      setTutorialHint('Destroy both enemy towers before the timer ends.')
+      const t = setTimeout(() => setTutorialHint(null), 6000)
+      return () => clearTimeout(t)
+    }
+  }, [snap, tutorial, tutorialHint])
 
   useEffect(() => {
     const ctrl = new BattleController({
@@ -64,6 +79,12 @@ export function Battle({ screen, go }: Props) {
               >
                 {snap.muted ? 'SOUND OFF' : 'SOUND ON'}
               </button>
+            </div>
+          )}
+
+          {tutorialHint && snap?.ready && !result && (
+            <div className="tutorial-hint">
+              <span>{tutorialHint}</span>
             </div>
           )}
 
