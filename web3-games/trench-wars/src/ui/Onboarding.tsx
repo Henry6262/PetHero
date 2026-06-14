@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createAccount, connectWallet, createDeck, type Account } from '../api'
 import { connectWallet as connectSolana, isWalletAvailable } from '../wallet'
-import { CARDS, STARTER_DECK } from '../sim/cards'
+import { CARDS, STARTER_DECK, getCard } from '../sim/cards'
 import { DECK_SIZE } from '../sim/constants'
-import { CARD_CHAR } from '../render3d/Battle3D'
 import { Battle } from './Battle'
 import { TutorialGuide } from './TutorialGuide'
+import { TrenchCard } from './TrenchCard'
 import { PackOpen } from './PackOpen'
 import type { Screen } from './Screen'
 
@@ -256,23 +256,13 @@ function OnboardingDeck({
 
       <div className="deck-grid">
         {lootCards.map((c) => (
-          <div
+          <TrenchCard
             key={c.id}
-            className={`tile-wrap ${deck.includes(c.id) ? '' : 'dimmed'}`}
+            cardId={c.id}
+            size="md"
+            state={deck.includes(c.id) ? 'in-deck' : 'dimmed'}
             onClick={() => toggle(c.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className={`card-tile ${deck.includes(c.id) ? 'in-deck' : ''}`}>
-              <span className="cost-chip">{c.cost}</span>
-              {CARD_CHAR[c.id] ? (
-                <img src={`/assets/3d/portraits/${CARD_CHAR[c.id]}.png`} alt={c.name} draggable={false} />
-              ) : (
-                <span className="spell-glyph">✦</span>
-              )}
-              <span className="nm">{c.name.toUpperCase()}</span>
-            </div>
-            {!deck.includes(c.id) && <div className="add-badge">+</div>}
-          </div>
+          />
         ))}
       </div>
 
@@ -303,32 +293,45 @@ function OnboardingLevelUp({
   status: string
 }) {
   const deckCards = useMemo(() => CARDS.filter((c) => deck.includes(c.id)), [deck])
+  const [punch, setPunch] = useState(false)
+  const hero = leveledCard ? getCard(leveledCard) : null
+
+  const pick = (id: string) => {
+    setLeveledCard(id)
+    setPunch(false)
+    requestAnimationFrame(() => setPunch(true))
+  }
 
   return (
     <div className="screen onboarding-levelup">
       <h2>Level up a card</h2>
       <p className="subtitle">Pick one card to boost. Higher level means more HP and damage.</p>
 
+      {hero && (
+        <div className={`levelup-hero ${punch ? 'punch' : ''}`}>
+          <div className="lu-card" style={{ position: 'relative' }}>
+            <div className="lu-ring" />
+            <TrenchCard cardId={hero.id} size="lg" level={2} showRibbon />
+          </div>
+          <div className="lu-bars">
+            <div className="lu-bar">HP<div className="track"><div className="fill hp" style={{ width: punch ? '90%' : '70%' }} /></div>
+              <span className="lu-float">+{Math.round((hero.hp ?? 100) * 0.1)}</span></div>
+            <div className="lu-bar">DMG<div className="track"><div className="fill dmg" style={{ width: punch ? '85%' : '65%' }} /></div>
+              <span className="lu-float">+{Math.round((hero.damage ?? 20) * 0.1)}</span></div>
+          </div>
+        </div>
+      )}
+
       <div className="levelup-pool">
-        {deckCards.map((c) => {
-          const isLeveled = leveledCard === c.id
-          return (
-            <div
-              key={c.id}
-              className={`levelup-card ${isLeveled ? 'selected leveled' : ''}`}
-              onClick={() => setLeveledCard(c.id)}
-            >
-              <div className="lv-badge">{isLeveled ? 2 : 1}</div>
-              <img src={`/assets/3d/portraits/${CARD_CHAR[c.id] ?? 'explorer'}.png`} alt={c.name} />
-              <span className="name">{c.name.toUpperCase()}</span>
-              {isLeveled && (
-                <span className="stat-bump">
-                  +{Math.round((c.hp ?? 100) * 0.1)} HP · +{Math.round((c.damage ?? 20) * 0.1)} DMG
-                </span>
-              )}
-            </div>
-          )
-        })}
+        {deckCards.map((c) => (
+          <TrenchCard
+            key={c.id}
+            cardId={c.id}
+            size="sm"
+            state={leveledCard === c.id ? 'selected' : undefined}
+            onClick={() => pick(c.id)}
+          />
+        ))}
       </div>
 
       <div className="status">{status}</div>

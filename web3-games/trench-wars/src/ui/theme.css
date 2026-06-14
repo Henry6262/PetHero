@@ -1227,3 +1227,22 @@ button { font-family: inherit; cursor: pointer; }
 .pack-summary { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 560px; }
 .pack-cta { font-family: var(--font-header); letter-spacing: 2px; color: var(--primary); font-size: 14px; animation: pulse-soft 1.2s ease-in-out infinite; }
 @keyframes pulse-soft { 50% { opacity: 0.55; } }
+
+/* ---------- level up ---------- */
+.levelup-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.levelup-hero.punch .lu-card { animation: lu-punch 0.5s cubic-bezier(0.2,1.4,0.4,1); }
+@keyframes lu-punch { 0%{transform:scale(1)} 40%{transform:scale(1.18)} 100%{transform:scale(1.06)} }
+.lu-ring {
+  position: absolute; inset: 0; margin: auto; width: 120%; height: 120%;
+  border: 3px solid var(--primary); border-radius: 18px; opacity: 0; pointer-events: none;
+}
+.levelup-hero.punch .lu-ring { animation: lu-ring 0.6s ease-out; }
+@keyframes lu-ring { 0%{opacity:0.9; transform:scale(0.7)} 100%{opacity:0; transform:scale(1.4)} }
+.lu-bars { width: min(280px, 80vw); display: flex; flex-direction: column; gap: 10px; }
+.lu-bar { display: flex; align-items: center; gap: 8px; font-family: var(--font-header); font-size: 12px; color: var(--muted); }
+.lu-bar .track { flex: 1; height: 12px; background: var(--panel-light); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); }
+.lu-bar .fill { height: 100%; width: 0; transition: width 0.7s cubic-bezier(0.2,0.9,0.3,1); }
+.lu-bar .fill.hp { background: linear-gradient(90deg, var(--green), #7dffb8); }
+.lu-bar .fill.dmg { background: linear-gradient(90deg, var(--red), #ff9aa6); }
+.lu-float { color: var(--green); font-family: var(--font-header); font-weight: 800; animation: lu-float 0.9s ease-out; }
+@keyframes lu-float { from { opacity: 0; transform: translateY(8px); } 30% { opacity: 1; } to { opacity: 0; transform: translateY(-18px); } }
