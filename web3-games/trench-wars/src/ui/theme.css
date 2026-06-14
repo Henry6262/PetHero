@@ -1182,3 +1182,8 @@ button { font-family: inherit; cursor: pointer; }
 @keyframes leg-sheen { to { background-position: 200% 0; } }
 
 .icon { display: inline-block; vertical-align: middle; }
+
+/* ---------- TrenchCard compat: hand + locked tiles ---------- */
+.tcard.broke { opacity: 0.45; }
+.hand .tcard { flex: 1; width: auto; }
+.tile-wrap.locked .tcard { filter: grayscale(1) brightness(0.5); cursor: not-allowed; }

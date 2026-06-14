@@ -21,11 +21,10 @@ function roleIcon(card: ReturnType<typeof getCard>): string {
   if (card.role === 'spell') {
     // Spells use flat effect fields (no discriminator object) — pick the sub-icon
     // from whichever effect the card carries. Order: heal > buff > slow > damage.
-    const c = card as any
-    if (c.effectHeal != null) return 'spell-heal'
-    if (c.buffTicks != null) return 'spell-buff'
-    if (c.slowTicks != null) return 'spell-slow'
-    if (c.effectDamage != null) return 'spell-damage'
+    if (card.effectHeal != null) return 'spell-heal'
+    if (card.buffTicks != null) return 'spell-buff'
+    if (card.slowTicks != null) return 'spell-slow'
+    if (card.effectDamage != null) return 'spell-damage'
     return 'spell'
   }
   return card.role ?? 'spell' // tank/brawler/mage/assassin/support/swarm/ranged/building
@@ -59,7 +58,12 @@ export function TrenchCard({
       )}
       <span className="tcard-art">
         {charName ? (
-          <img src={`/assets/3d/portraits/${charName}.png`} alt={card.name} draggable={false} />
+          <img
+            src={`/assets/3d/portraits/${charName}.png`}
+            alt={card.name}
+            draggable={false}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/assets/3d/portraits/explorer.png' }}
+          />
         ) : (
           <Icon name={icon} className="spell-icon" size={size === 'sm' ? 40 : 64} />
         )}
