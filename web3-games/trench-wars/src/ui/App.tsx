@@ -2,18 +2,22 @@ import { useState } from 'react'
 import { Menu } from './Menu'
 import { DeckBuilder } from './DeckBuilder'
 import { Battle } from './Battle'
+import { Landing } from '../landing/Landing'
 import type { Account } from '../api'
 
 export type Screen =
+  | { name: 'landing' }
   | { name: 'menu' }
   | { name: 'deck' }
   | { name: 'battle'; mode: 'practice' | 'ladder'; defenderId?: string; defenderDeck?: string[] }
 
 export function App() {
-  const [screen, setScreen] = useState<Screen>({ name: 'menu' })
+  const [screen, setScreen] = useState<Screen>({ name: 'landing' })
   const [account, setAccount] = useState<Account | null>(null)
 
   switch (screen.name) {
+    case 'landing':
+      return <Landing onPlay={() => setScreen({ name: 'menu' })} />
     case 'menu':
       return <Menu account={account} setAccount={setAccount} go={setScreen} />
     case 'deck':

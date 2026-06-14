@@ -5,5 +5,6 @@ import '@fontsource/orbitron/900.css'
 import '@fontsource/rajdhani/500.css'
 import '@fontsource/rajdhani/700.css'
 import './ui/theme.css'
+import './landing/landing.css'
 
 createRoot(document.getElementById('app')!).render(<App />)

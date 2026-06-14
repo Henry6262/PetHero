@@ -1,0 +1,25 @@
+/* Tailwind v4 — utilities + theme only, NO preflight (protects game's theme.css) */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+  --color-obsidian: #07090d;
+  --color-panel: #0f1219;
+  --color-gold: #d4a13c;
+  --color-gold-dark: #9c7528;
+  --color-ember: #ff6a2b;
+  --color-trader: #2bff88;
+  --color-jeet: #ff4d5e;
+  --color-platinum: #ece8e5;
+  --color-muted: #9aa3b2;
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Rajdhani', sans-serif;
+}
+
+/* Landing-scoped base (gated under .tr-landing so it never touches the game) */
+.tr-landing { background: var(--color-obsidian); color: var(--color-platinum); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+.tr-landing * { box-sizing: border-box; }
+.tr-landing h1, .tr-landing h2, .tr-landing h3 { font-family: var(--font-display); margin: 0; }
+
+@media (prefers-reduced-motion: reduce) { .tr-landing * { animation: none !important; transition: none !important; } }
