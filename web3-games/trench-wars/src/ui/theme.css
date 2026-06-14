@@ -145,45 +145,10 @@ button { font-family: inherit; cursor: pointer; }
   width: 100%;
   max-width: 720px;
 }
-.card-tile {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 10px 6px 8px;
-  background: linear-gradient(180deg, var(--panel-light), var(--panel));
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  color: var(--text);
-  transition: all 0.12s ease;
-}
-.card-tile:hover { border-color: var(--border-light); transform: translateY(-2px); }
-.card-tile.in-deck { border-color: var(--primary); box-shadow: 0 0 14px rgba(245, 230, 0, 0.18); }
-.card-tile img { height: 64px; }
-.card-tile .spell-glyph { height: 64px; display: grid; place-items: center; font-size: 38px; color: var(--elixir); }
-.card-tile .spell-glyph.building-glyph { color: var(--border-light); }
-.card-tile .nm {
-  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
-  text-align: center; line-height: 1.15; min-height: 28px;
-}
-.cost-chip {
-  position: absolute;
-  top: 6px; left: 6px;
-  width: 24px; height: 24px;
-  display: grid; place-items: center;
-  font-family: var(--font-header);
-  font-size: 13px; font-weight: 900;
-  color: #fff;
-  background: radial-gradient(circle at 35% 30%, var(--elixir), var(--elixir-dark));
-  border: 1.5px solid var(--elixir-dark);
-  border-radius: 50%;
-}
 .deck-count { font-family: var(--font-header); color: var(--muted); letter-spacing: 1px; }
 .deck-count b { color: var(--primary); }
 .unlock-hint { color: var(--elixir); font-family: var(--font-body); }
 .tile-wrap { position: relative; }
-.tile-wrap.locked .card-tile { filter: grayscale(1) brightness(0.5); cursor: not-allowed; }
 .lock-badge {
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -324,15 +289,8 @@ button { font-family: inherit; cursor: pointer; }
 .next-hint img { height: 26px; }
 
 .hand { display: flex; gap: 8px; }
-.hand .card-tile { flex: 1; padding: 8px 4px 6px; user-select: none; -webkit-user-select: none; }
-.hand .card-tile img { height: 56px; pointer-events: none; }
-.hand .card-tile .spell-glyph { height: 56px; font-size: 32px; }
-.hand .card-tile.selected {
-  border-color: var(--primary);
-  background: linear-gradient(180deg, #3a3300, var(--panel));
-  box-shadow: 0 0 16px rgba(245, 230, 0, 0.3);
-}
-.hand .card-tile.broke { opacity: 0.45; }
+.hand .tcard { user-select: none; -webkit-user-select: none; }
+.hand .tcard img { pointer-events: none; }
 
 @media (max-width: 560px) {
   .battle-frame { width: 100vw; }
