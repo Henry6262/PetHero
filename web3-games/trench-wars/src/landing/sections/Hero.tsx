@@ -140,26 +140,9 @@ export function Hero({ onPlay }: { onPlay: () => void }) {
                   color: 'var(--color-gold)',
                 }}
               >
-                PLAY NOW
+                BUILD YOUR DECK
               </span>
             </StarBorder>
-
-            <button
-              onClick={onPlay}
-              style={{
-                background: 'transparent',
-                border: '1px solid var(--color-gold)',
-                color: 'var(--color-platinum)',
-                borderRadius: 12,
-                padding: '12px 24px',
-                fontFamily: 'var(--font-display)',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                cursor: 'pointer',
-              }}
-            >
-              Connect Wallet
-            </button>
           </div>
 
           {/* Stat strip */}
