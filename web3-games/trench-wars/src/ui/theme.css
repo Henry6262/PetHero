@@ -763,3 +763,333 @@ button { font-family: inherit; cursor: pointer; }
     height: 38px;
   }
 }
+
+/* ---------- tutorial guide (Vanguard) ---------- */
+
+.tutorial-guide {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none;
+  animation: guide-popin 0.35s ease;
+}
+@keyframes guide-popin {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tutorial-guide-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+.tutorial-guide-avatar img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 20px rgba(245, 230, 0, 0.35);
+  background: var(--panel);
+  object-fit: cover;
+}
+.guide-name {
+  font-family: var(--font-header);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+
+.tutorial-bubble {
+  position: relative;
+  min-width: 260px;
+  max-width: 340px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border: 2px solid var(--primary);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+.tutorial-bubble::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.tutorial-bubble.pos-top::after {
+  bottom: -12px;
+  left: 28px;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid var(--primary);
+}
+.tutorial-bubble.pos-left::after {
+  right: -12px;
+  top: 28px;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid var(--primary);
+}
+.tutorial-bubble.pos-bottom::after {
+  top: -12px;
+  left: 28px;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid var(--primary);
+}
+
+.tutorial-bubble-text {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.tutorial-bubble-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tutorial-step-count {
+  font-family: var(--font-header);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.tutorial-next-btn {
+  padding: 8px 16px;
+  font-family: var(--font-header);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #1a1500;
+  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+.tutorial-next-btn:hover { filter: brightness(1.1); }
+
+/* ---------- lootbox step ---------- */
+
+.onboarding-lootbox {
+  justify-content: center;
+  gap: 28px;
+  padding: 32px 20px;
+  text-align: center;
+}
+
+.lootbox-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.lootbox-pack {
+  width: 180px;
+  height: 220px;
+  display: grid;
+  place-items: center;
+  font-size: 90px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #3a2a00, #1a1200);
+  border: 4px solid var(--primary);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(245, 230, 0, 0.25);
+  transition: transform 0.15s ease;
+  user-select: none;
+}
+.lootbox-pack:hover { transform: scale(1.04); }
+.lootbox-pack.shaking { animation: loot-shake 0.6s ease-in-out; }
+@keyframes loot-shake {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(8deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(5deg); }
+}
+.lootbox-pack.opened {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.lootbox-label {
+  font-family: var(--font-header);
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--primary);
+}
+
+.lootbox-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  min-height: 140px;
+}
+
+.loot-reward {
+  width: 96px;
+  padding: 10px 6px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(20px) rotateY(90deg);
+  animation: reward-reveal 0.5s ease forwards;
+}
+.loot-reward:nth-child(1) { animation-delay: 0.1s; }
+.loot-reward:nth-child(2) { animation-delay: 0.22s; }
+.loot-reward:nth-child(3) { animation-delay: 0.34s; }
+.loot-reward:nth-child(4) { animation-delay: 0.46s; }
+.loot-reward:nth-child(5) { animation-delay: 0.58s; }
+.loot-reward:nth-child(6) { animation-delay: 0.70s; }
+@keyframes reward-reveal {
+  to { opacity: 1; transform: translateY(0) rotateY(0); }
+}
+.loot-reward img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+.loot-reward .rarity {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+.loot-reward .name {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1;
+  min-height: 24px;
+}
+
+/* ---------- level up step ---------- */
+
+.onboarding-levelup {
+  padding: 32px 20px;
+  gap: 18px;
+}
+
+.levelup-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 720px;
+}
+
+.levelup-card {
+  position: relative;
+  width: 110px;
+  padding: 10px 6px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.levelup-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+}
+.levelup-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(245, 230, 0, 0.25);
+}
+.levelup-card .lv-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-header);
+  font-size: 11px;
+  font-weight: 900;
+  color: #1a1500;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+.levelup-card img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+.levelup-card .name {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1;
+}
+.levelup-card .stat-bump {
+  font-size: 11px;
+  color: var(--green);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+}
+.levelup-card.leveled .stat-bump {
+  opacity: 1;
+  transform: translateY(0);
+}
+.levelup-card.leveled .lv-badge {
+  animation: lv-pop 0.4s ease;
+}
+@keyframes lv-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* deck selection helpers for onboarding */
+.tile-wrap.dimmed .card-tile {
+  opacity: 0.42;
+  filter: grayscale(0.7);
+  border-color: var(--border);
+  box-shadow: none;
+}
+.tile-wrap.dimmed .card-tile:hover {
+  opacity: 0.75;
+  filter: grayscale(0.3);
+}
+.add-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-header);
+  font-size: 16px;
+  font-weight: 900;
+  color: #1a1500;
+  background: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+}

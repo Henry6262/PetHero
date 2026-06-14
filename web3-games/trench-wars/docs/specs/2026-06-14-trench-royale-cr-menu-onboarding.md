@@ -1,24 +1,12 @@
-# Trench Royale — Clash Royale-Style Menu + Onboarding Design
+:
 
 **Date:** 2026-06-14
-**Status:** Approved (pivot from full landing build-out)
+**Status:** Approved
 **Repo:** `web3-games/trench-wars`
 
 ## Summary
 
-Pause the remaining landing-page sections (Roster / How It Works / Mechanics / Token Economy) and focus on the in-game shell: a **Clash Royale-style main menu** plus a **short first-time onboarding** that starts from the landing "BUILD YOUR DECK" CTA.
-
-The landing Hero/DarkVeil/diorama stay as-is. The single CTA now enters onboarding instead of dropping straight into the legacy menu.
-
-## Research takeaways (Clash Royale UX)
-
-- **Bottom navigation** is always visible; tabs map to the game's core loops (Battle · Cards/Deck · Shop · Events/Social).
-- **Primary action is yellow/gold, big, and centered** on the main screen — the "BATTLE" button is the star.
-- **One-hand interface**: all key tap targets live in the lower 50% of the screen.
-- **Shallow UI depth**: most panels are popups/modals, rarely fullscreen; previous screen stays visible behind.
-- **Onboarding throws you straight into the arena**: first seconds are a real battle with light guidance, not a slideshow.
-- **Tooltips** appear contextually; players can ignore/skip them.
-- **First matches are vs AI** until the player is ready for PvP.
+Clash Royale-style in-game shell for Trench Royale. The landing Hero/DarkVeil/diorama stay as-is. The single "BUILD YOUR DECK" CTA starts a character-guided onboarding that ends in a CR-style main menu.
 
 ## New user flow
 
@@ -26,10 +14,13 @@ The landing Hero/DarkVeil/diorama stay as-is. The single CTA now enters onboardi
 Landing ("BUILD YOUR DECK")
         ↓
 Onboarding
-   Step 1  Welcome splash  →  "Enter the Trench"
-   Step 2  Identity        →  Play as Guest  /  Connect Wallet
-   Step 3  Build Deck      →  pick 8 starter cards
-   Step 4  First Battle    →  practice vs AI with hint overlay
+   Step 1  Welcome splash       →  Vanguard guide introduces the trench
+   Step 2  Identity             →  Play as Guest / Connect Wallet
+   Step 3  First Lootbox        →  open a starter pack, reveal cards
+   Step 4  Build Deck           →  pick 8 cards from the loot you just opened
+   Step 5  Level Up Character   →  pick one card, bump its level (+hp/+damage)
+   Step 6  First Battle         →  practice vs AI with Vanguard hints
+   Step 7  Complete             →  enter the CR main menu
         ↓
 Main Menu (CR-style)
         ↓
@@ -38,86 +29,91 @@ Deck / Practice / Ladder / Battle
 
 Returning players (who have completed onboarding) skip the onboarding and land directly in the Main Menu.
 
+## Vanguard tutorial guide
+
+A friendly commander character (Vanguard portrait) follows the player through onboarding with speech bubbles:
+- Appears bottom-left by default
+- Speech bubble with gold border, dark panel
+- Step counter + "Next" / "Got it" button
+- Disappears when the step is done
+- Can be reused in battle for contextual hints
+
+## Step 1 — Welcome splash
+- Dark background, animated logo, "Traders vs Jeets"
+- Vanguard appears: "Welcome to the trench, commander."
+- Big gold button: **"ENTER THE TRENCH"**
+
+## Step 2 — Choose identity
+- Two cards: Play as Guest / Connect Wallet
+- Vanguard: "Choose how you want to fight. Guest is instant; wallet unlocks ranked rewards."
+
+## Step 3 — First Lootbox
+- A starter pack sits center screen
+- Vanguard: "Every commander needs troops. Open your first pack."
+- Click the pack → shake animation → cards flip out one by one
+- Pack contains 6 starter cards (deterministic first pack)
+- Cards revealed with cost and portrait
+
+## Step 4 — Build your deck
+- Show only the cards from the lootbox
+- Vanguard: "Pick 8 cards for your squad. Tap to add or remove."
+- Must pick exactly 8 to continue
+- **DEPLOY SQUAD** button
+
+## Step 5 — Level up a character
+- Show the 8 cards in your deck
+- Vanguard: "Pick one card to level up. Higher level means more HP and damage."
+- Click a card → shows level bump animation (+1), stat numbers increase
+- **CONTINUE** button
+
+## Step 6 — First battle
+- Launch practice match
+- Vanguard hints in corner:
+  - "Drag a card from your hand onto your side."
+  - "Destroy both towers before time runs out."
+  - "Elixir refills automatically — spend it wisely."
+- After battle → complete step
+
+## Step 7 — Complete
+- Vanguard: "You’re ready for ranked warfare."
+- **TO THE TRENCH** button → main menu
+
 ## Main Menu layout (Clash Royale inspired)
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  [AVATAR] Guest#ABC1           ELO 1000  ⚡ 0W  │  ← top bar
+│  [AVATAR] Name          ELO 1000  ⚡ 0W          │
 ├─────────────────────────────────────────────────┤
 │                                                 │
-│           [  ⚔ BATTLE  ]                        │  ← big gold CTA
+│           [  ⚔ BATTLE  ]                        │
 │                                                 │
-│      [PRACTICE VS AI]    [DECK BUILDER]         │  ← secondary actions
+│      [PRACTICE VS AI]    [DECK BUILDER]         │
 │                                                 │
 │      ┌─────────────────┐                        │
-│      │  CURRENT DECK   │                        │  ← deck preview strip
+│      │  CURRENT SQUAD  │                        │
 │      │  8 card faces   │                        │
 │      └─────────────────┘                        │
 │                                                 │
 ├─────────────────────────────────────────────────┤
-│  ⚔ Battle   🎴 Deck   🎁 Loot   🏆 Ladder       │  ← bottom tabs
+│  ⚔ Battle   🎴 Deck   🎁 Loot   🏆 Ladder       │
 └─────────────────────────────────────────────────┘
 ```
 
-- **Top bar**: avatar + display name, ELO, win count. Gold/platinum palette.
-- **Center stage**: the big gold **BATTLE** button starts a ladder match when logged in; if no account, it routes to onboarding step 2.
-- **Secondary row**: Practice vs AI, Deck Builder.
-- **Deck preview**: shows the 8 currently selected cards; tapping opens Deck Builder.
-- **Bottom tabs**: Battle (main), Deck, Loot (shop/lootbox teaser — ties to $ROYALE economy), Ladder (leaderboard / match history placeholder).
-
-## Onboarding steps
-
-### Step 1 — Welcome splash
-- Fullscreen dark background with animated logo + "Traders vs Jeets" tagline.
-- One big gold button: **"ENTER THE TRENCH"**.
-- Subtle hint: "First battle in under 60 seconds."
-
-### Step 2 — Choose identity
-- Two cards:
-  - **Play as Guest** — instant, local ladder, no rewards.
-  - **Connect Wallet** — ranked ladder, $ROYALE rewards, requires Phantom.
-- Existing `createAccount()` / `connectWallet()` APIs reused.
-
-### Step 3 — Build your deck
-- Reuse the existing `DeckBuilder` but in "onboarding mode":
-  - Simpler header: "Pick your 8-card squad".
-  - Locked cards hidden or visually de-emphasized (starters only).
-  - Big "DEPLOY" button (save deck) enabled only at 8 cards.
-  - On save, mark onboarding complete and proceed to first battle.
-
-### Step 4 — First battle
-- Launch a practice match (`mode: 'practice'`).
-- Show lightweight tutorial hints on first deploy:
-  - "Drag a card onto your side of the trench".
-  - "Destroy both enemy towers before the timer ends".
-  - "Elixir refills automatically — spend it wisely".
-- After the battle, show a result screen with **"TO THE TRENCH"** button → Main Menu.
-
 ## Technical architecture
 
-- New screen state in `App.tsx`: `'onboarding'`.
-- `Landing` CTA `onPlay` now routes to `onboarding` (not `menu`).
-- `Onboarding` component owns the step machine; it creates the guest/wallet account and saves the first deck.
-- `Menu` is redesigned; it receives `account`/`setAccount`/`go` as today.
-- Onboarding completion is stored in `localStorage` key `trench-royale-onboarding-complete`.
-- On app boot: if onboarding complete AND account exists → `menu`; else → `landing`.
+- `Onboarding` state machine with steps: `welcome | identity | lootbox | deck | levelup | battle | complete`
+- `TutorialGuide` component drives Vanguard speech bubbles
+- Lootbox cards are deterministic first-pack for onboarding
+- Level-up is visual-only for onboarding (client state), not persisted to server
+- Deck is saved via existing `createDeck` API
+- Onboarding completion stored in `localStorage` key `trench-royale-onboarding-complete`
 
 ## Files to change
 
 | File | Change |
 | --- | --- |
-| `src/ui/App.tsx` | add `'onboarding'` screen; boot logic checks completion flag |
-| `src/landing/Landing.tsx` | pass `onBuildDeck` prop; CTA routes to onboarding |
-| `src/landing/sections/Hero.tsx` | rename `onPlay` → `onBuildDeck` for clarity |
-| `src/ui/Onboarding.tsx` | new multi-step onboarding component |
-| `src/ui/Menu.tsx` | CR-style main menu redesign |
-| `src/ui/theme.css` | new menu + onboarding styles |
-| `e2e/landing.spec.ts` | click "BUILD YOUR DECK"; expect onboarding |
-| `e2e/smoke.spec.ts` | click through onboarding or assert menu after skip |
-
-## Out of scope
-
-- Real lootbox/shop implementation (Loot tab is a teaser).
-- Real ladder leaderboard (placeholder).
-- Changes to sim, cards, or battle renderer.
-- Changes to the landing Hero/diorama.
+| `src/ui/Onboarding.tsx` | rewrite with lootbox, deck, levelup steps |
+| `src/ui/TutorialGuide.tsx` | new Vanguard guide component |
+| `src/ui/theme.css` | lootbox + levelup + guide styles |
+| `src/ui/Battle.tsx` | use TutorialGuide for in-battle hints |
+| `e2e/smoke.spec.ts` | update flow |

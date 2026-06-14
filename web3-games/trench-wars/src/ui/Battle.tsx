@@ -4,6 +4,7 @@ import type { BattleSnapshot } from '../game/BattleController'
 import { getCard } from '../sim/cards'
 import { CARD_CHAR } from '../render3d/Battle3D'
 import { CardTile } from './CardTile'
+import { TutorialGuide } from './TutorialGuide'
 import type { Screen } from './Screen'
 
 interface Props {
@@ -12,25 +13,28 @@ interface Props {
   tutorial?: boolean
 }
 
+const TUTORIAL_STEPS = [
+  { text: 'Drag a card from your hand onto your side of the trench.' },
+  { text: 'Destroy both enemy towers before the timer runs out.' },
+  { text: 'Elixir refills automatically — spend it wisely.' },
+]
+
 export function Battle({ screen, go, tutorial }: Props) {
   const stageRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
   const ctrlRef = useRef<BattleController | null>(null)
   const [snap, setSnap] = useState<BattleSnapshot | null>(null)
-  const [tutorialHint, setTutorialHint] = useState<string | null>(
-    tutorial ? 'Drag a card from your hand onto your side of the trench.' : null,
-  )
+  const [tutorialStep, setTutorialStep] = useState(0)
 
   useEffect(() => {
     if (!tutorial) return
     if (!snap) return
-    // Once the player has deployed at least one card, advance the hint.
-    if (snap.hasDeployed && tutorialHint?.includes('Drag')) {
-      setTutorialHint('Destroy both enemy towers before the timer ends.')
-      const t = setTimeout(() => setTutorialHint(null), 6000)
+    if (tutorialStep === 0 && snap.hasDeployed) {
+      setTutorialStep(1)
+      const t = setTimeout(() => setTutorialStep(2), 5000)
       return () => clearTimeout(t)
     }
-  }, [snap, tutorial, tutorialHint])
+  }, [snap, tutorial, tutorialStep])
 
   useEffect(() => {
     const ctrl = new BattleController({
@@ -50,6 +54,7 @@ export function Battle({ screen, go, tutorial }: Props) {
   const result = snap?.result ?? null
   const isWin = result?.winner === 0
   const isLoss = result?.winner === 1
+  const showGuide = tutorial && snap?.ready && !result && tutorialStep < TUTORIAL_STEPS.length
 
   return (
     <div className="battle-screen">
@@ -82,10 +87,12 @@ export function Battle({ screen, go, tutorial }: Props) {
             </div>
           )}
 
-          {tutorialHint && snap?.ready && !result && (
-            <div className="tutorial-hint">
-              <span>{tutorialHint}</span>
-            </div>
+          {showGuide && (
+            <TutorialGuide
+              steps={TUTORIAL_STEPS.slice(tutorialStep)}
+              onComplete={() => setTutorialStep(TUTORIAL_STEPS.length)}
+              startVisible
+            />
           )}
 
           {result && (
