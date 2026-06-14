@@ -150,10 +150,7 @@ export function Onboarding({ onComplete, setAccount }: Props) {
 
     case 'lootbox':
       return (
-        <OnboardingLootbox
-          loot={loot}
-          onOpen={openLootbox}
-        />
+        <OnboardingLootbox onOpen={openLootbox} />
       )
 
     case 'deck':
@@ -206,8 +203,8 @@ export function Onboarding({ onComplete, setAccount }: Props) {
   }
 }
 
-function OnboardingLootbox({ loot: _loot, onOpen }: { loot: string[]; onOpen: () => void }) {
-  // loot is the fixed FIRST_PACK; reveal it through the cinematic PackOpen.
+function OnboardingLootbox({ onOpen }: { onOpen: () => void }) {
+  // The first pack is the fixed FIRST_PACK; reveal it through the cinematic PackOpen.
   return (
     <div className="screen onboarding-lootbox">
       <h2>Commander starter pack</h2>
