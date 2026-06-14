@@ -22,4 +22,12 @@
 .tr-landing * { box-sizing: border-box; }
 .tr-landing h1, .tr-landing h2, .tr-landing h3 { font-family: var(--font-display); margin: 0; }
 
+@media (max-width: 860px) { .tr-hero-grid { grid-template-columns: 1fr !important; } }
+
+/* StarBorder keyframes (React Bits expects these in the Tailwind config; define them here). */
+.tr-landing .animate-star-movement-bottom { animation: tr-star-movement-bottom linear infinite alternate; }
+.tr-landing .animate-star-movement-top { animation: tr-star-movement-top linear infinite alternate; }
+@keyframes tr-star-movement-bottom { 0% { transform: translate(0%, 0%); opacity: 1; } 100% { transform: translate(-100%, 0%); opacity: 0; } }
+@keyframes tr-star-movement-top { 0% { transform: translate(0%, 0%); opacity: 1; } 100% { transform: translate(100%, 0%); opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) { .tr-landing * { animation: none !important; transition: none !important; } }
