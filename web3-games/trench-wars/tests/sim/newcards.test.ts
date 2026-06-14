@@ -9,7 +9,7 @@ function place(s: SimState, cardId: string, owner: PlayerId, x: number, y: numbe
     id: s.nextId++, owner, cardId, x, y,
     hp: hp ?? card.hp!, maxHp: card.hp!,
     cooldown: 0, fleeing: false,
-    revealed: card.stealthRange === undefined, buffUntil: 0,
+    revealed: card.stealthRange === undefined, buffUntil: 0, slowUntil: 0, hasAttacked: false,
   }
   s.units.push(u)
   return u
@@ -71,10 +71,11 @@ describe('gas-war (cheap damage spell)', () => {
   it('damages enemy units in radius', () => {
     let s = fresh()
     s.decks[0][0] = 'gas-war'
-    place(s, 'jeet-horde', 1, 9, 20)
+    place(s, 'discord-raid', 1, 9, 20)
+    place(s, 'discord-raid', 1, 9.3, 20)
     s.elixir[0] = 10
     s = step(s, [{ tick: 0, player: 0, cardId: 'gas-war', x: 9, y: 20 }])
-    expect(s.units.filter(u => u.owner === 1).length).toBe(0) // 90 dmg kills 90hp jeets
+    expect(s.units.filter(u => u.owner === 1).length).toBe(0) // 90 dmg kills 70hp discord units
   })
 })
 

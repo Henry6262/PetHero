@@ -1,7 +1,7 @@
 import {
   ARENA_H, ARENA_W, DECK_SIZE, DOUBLE_ELIXIR_TICK, ELIXIR_MAX, ELIXIR_PER_TICK,
   ELIXIR_START, FLEE_HP_RATIO, HAND_SIZE, LANE_LEFT_X, LANE_RIGHT_X, MATCH_TICKS,
-  OVERTIME_TICKS, RIVER_Y, SPELL_TOWER_DAMAGE_MULT,
+  OVERTIME_TICKS, RIVER_Y, SLOW_MULT, SPELL_TOWER_DAMAGE_MULT,
 } from './constants'
 import { getCard } from './cards'
 import type { CardDef, DeployCommand, PlayerId, SimState, Tower, UnitEntity } from './types'
@@ -104,6 +104,8 @@ function applyCommands(s: SimState, commands: DeployCommand[]) {
           fleeing: false,
           revealed: card.stealthRange === undefined,
           buffUntil: 0,
+          slowUntil: 0,
+          hasAttacked: false,
         })
       }
     }
@@ -190,7 +192,7 @@ function damageMult(s: SimState, u: UnitEntity): number {
   return m
 }
 
-/** Speed multiplier from enemy FUD auras + own pump-signal buff. */
+/** Speed multiplier from enemy FUD auras + own pump-signal buff + mage-slow. */
 function speedMult(s: SimState, u: UnitEntity): number {
   let m = 1
   for (const enemy of s.units) {
@@ -199,30 +201,72 @@ function speedMult(s: SimState, u: UnitEntity): number {
     if (aura?.speedMult && dist(u, enemy) <= aura.radius) m *= aura.speedMult
   }
   if (u.buffUntil > s.tick) m *= getCard('pump-signal').buffSpeedMult!
+  if (u.slowUntil > s.tick) m *= SLOW_MULT
   return m
 }
 
 function acquireTarget(s: SimState, u: UnitEntity): UnitEntity | null {
   const card = getCard(u.cardId)
   if (card.targetsTowers) return null // Moon Boy ignores units, beelines for towers
-  const candidates = s.units.filter(e => e.owner !== u.owner && e.revealed && dist(u, e) <= card.sightRange!)
+  const isMelee = card.range! < 2
+  let candidates = s.units.filter(e => {
+    if (e.owner === u.owner || !e.revealed || dist(u, e) > card.sightRange!) return false
+    if (getCard(e.cardId).flying && isMelee) return false // melee can't reach flyers
+    return true
+  })
   if (candidates.length === 0) return null
+  // taunt: a melee unit is pulled to the nearest enemy tank taunting it
+  if (isMelee) {
+    const taunters = candidates.filter(e => {
+      const t = getCard(e.cardId).taunt
+      return t !== undefined && dist(u, e) <= t
+    })
+    if (taunters.length > 0) candidates = taunters
+  }
   if (card.targeting === 'lowestHp') {
     return candidates.reduce((a, b) => (b.hp < a.hp || (b.hp === a.hp && b.id < a.id)) ? b : a)
   }
   return candidates.reduce((a, b) => (dist(u, b) < dist(u, a) || (dist(u, b) === dist(u, a) && b.id < a.id)) ? b : a)
 }
 
+/** Apply one hit's worth of damage to a single victim, honoring its armor; returns hp actually removed. */
+function applyHit(victim: UnitEntity, rawDmg: number): number {
+  const armor = getCard(victim.cardId).armor ?? 0
+  const dealt = Math.max(1, rawDmg - armor)
+  victim.hp -= dealt
+  return dealt
+}
+
 function dealDamage(s: SimState, attacker: UnitEntity, target: UnitEntity, card = getCard(attacker.cardId)) {
-  const dmg = Math.round(card.damage! * damageMult(s, attacker))
+  let dmg = card.damage! * damageMult(s, attacker)
+  // assassin: first strike crits
+  if (card.critFirst && !attacker.hasAttacked) dmg *= card.critFirst
+  dmg = Math.round(dmg)
+  attacker.hasAttacked = true
+
+  let totalDealt = 0
   if (card.splashRadius) {
     for (const e of s.units) {
-      if (e.owner !== attacker.owner && dist(target, e) <= card.splashRadius) e.hp -= dmg
+      if (e.owner !== attacker.owner && dist(target, e) <= card.splashRadius) {
+        totalDealt += applyHit(e, dmg)
+        if (card.slowTicks) e.slowUntil = s.tick + card.slowTicks
+      }
     }
   } else {
-    target.hp -= dmg
+    totalDealt = applyHit(target, dmg)
+    if (card.slowTicks) target.slowUntil = s.tick + card.slowTicks
   }
+
+  // brawler lifesteal
+  if (card.lifesteal) attacker.hp = Math.min(attacker.maxHp, attacker.hp + Math.round(totalDealt * card.lifesteal))
   attacker.revealed = true // attacking breaks stealth
+}
+
+/** Attack cooldown after a hit, shortened by rage as the brawler loses hp. */
+function attackCooldown(u: UnitEntity, card = getCard(u.cardId)): number {
+  let cd = card.attackSpeed!
+  if (card.rage) cd = Math.round(cd * (1 - card.rage * (1 - u.hp / u.maxHp)))
+  return Math.max(1, cd)
 }
 
 function updateUnits(s: SimState) {
@@ -237,6 +281,7 @@ function updateUnits(s: SimState) {
   }
 
   for (const u of s.units) {
+    if (u.hp <= 0) continue // killed earlier this tick — can't act (no lifesteal from the grave)
     const card = getCard(u.cardId)
     if (u.cooldown > 0) u.cooldown--
 
@@ -246,7 +291,7 @@ function updateUnits(s: SimState) {
       const target = acquireTarget(s, u)
       if (target && dist(u, target) <= card.range! && u.cooldown === 0) {
         dealDamage(s, u, target)
-        u.cooldown = card.attackSpeed!
+        u.cooldown = attackCooldown(u, card)
       }
       continue
     }
@@ -262,7 +307,7 @@ function updateUnits(s: SimState) {
     if (target && dist(u, target) <= card.range!) {
       if (u.cooldown === 0) {
         dealDamage(s, u, target)
-        u.cooldown = card.attackSpeed!
+        u.cooldown = attackCooldown(u, card)
       }
       continue // in combat: hold position
     }
@@ -272,7 +317,7 @@ function updateUnits(s: SimState) {
       if (u.cooldown === 0) {
         tower.hp -= Math.round(card.damage! * damageMult(s, u))
         u.revealed = true
-        u.cooldown = card.attackSpeed!
+        u.cooldown = attackCooldown(u, card)
       }
       continue
     }
@@ -296,7 +341,7 @@ function updateTowers(s: SimState) {
       if (!target || dist(t, u) < dist(t, target) || (dist(t, u) === dist(t, target) && u.id < target.id)) target = u
     }
     if (target) {
-      target.hp -= stats.damage
+      applyHit(target, stats.damage) // armor reduces tower damage too
       t.cooldown = stats.attackSpeed
     }
   }

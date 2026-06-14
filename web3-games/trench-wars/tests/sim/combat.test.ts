@@ -10,7 +10,7 @@ function place(s: SimState, cardId: string, owner: PlayerId, x: number, y: numbe
     id: s.nextId++, owner, cardId, x, y,
     hp: hpOverride ?? card.hp!, maxHp: card.hp!,
     cooldown: 0, fleeing: false,
-    revealed: card.stealthRange === undefined, buffUntil: 0,
+    revealed: card.stealthRange === undefined, buffUntil: 0, slowUntil: 0, hasAttacked: false,
   }
   s.units.push(u)
   return u
@@ -24,7 +24,7 @@ describe('combat', () => {
   it('adjacent enemies fight; attacker respects attackSpeed cooldown', () => {
     let s = fresh()
     place(s, 'chad-trader', 0, 9, 15)
-    place(s, 'bag-holder', 1, 9.5, 15)
+    place(s, 'exit-liquidity', 1, 9.5, 15) // 115hp, no armor/taunt/lifesteal — clean target
     const hpBefore = s.units[1].hp
     s = step(s, [])
     expect(s.units[1].hp).toBe(hpBefore - getCard('chad-trader').damage!)
@@ -42,12 +42,12 @@ describe('combat', () => {
   it('lowestHp targeting picks the weakest enemy in attack range, not the closest', () => {
     let s = fresh()
     place(s, 'mev-bots', 0, 9, 15)
-    place(s, 'bag-holder', 1, 9.5, 15)                    // closest (0.5), full hp
+    place(s, 'jeet-horde', 1, 9.5, 15)                    // closest (0.5), full hp, no taunt
     const weak = place(s, 'chad-trader', 1, 9.6, 15, 20)  // slightly farther (0.6), nearly dead
     s = step(s, [])
-    // mev damage 25 kills the weak unit; nearest-targeting would have hit bag-holder instead
+    // mev damage 25 kills the weak unit; nearest-targeting would have hit the jeet instead
     expect(s.units.find(u => u.id === weak.id)).toBeUndefined()
-    expect(s.units.find(u => u.cardId === 'bag-holder' && u.owner === 1)!.hp).toBe(getCard('bag-holder').hp)
+    expect(s.units.find(u => u.cardId === 'jeet-horde' && u.owner === 1)!.hp).toBe(getCard('jeet-horde').hp)
   })
   it('Paper Hands flees below 30% hp and stops fighting', () => {
     let s = fresh()
@@ -79,9 +79,12 @@ describe('combat', () => {
     const hpBefore = s.units[2].hp
     s = step(s, [])
     const dealt = hpBefore - s.units.find(u => u.cardId === 'diamond-hands')!.hp
-    // chad hits for round(90 * 1.35) = 122 (aura-boosted); influencer itself also attacks
-    // (range 4.5 > its own 3.0 aura radius, self-buff excluded) for unboosted 40 -> 162 total
-    expect(dealt).toBe(Math.round(getCard('chad-trader').damage! * 1.35) + getCard('influencer').damage!)
+    // both hits land on diamond-hands, whose armor (10) reduces each:
+    // chad aura-boosted round(95*1.35)=128 -> 118; influencer unboosted 35 -> 25; total 143
+    const armor = getCard('diamond-hands').armor!
+    const chadHit = Math.round(getCard('chad-trader').damage! * 1.35) - armor
+    const inflHit = getCard('influencer').damage! - armor
+    expect(dealt).toBe(chadHit + inflHit)
 
     let s2 = fresh()
     place(s2, 'fud-spirit', 0, 9, 15)

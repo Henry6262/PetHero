@@ -52,9 +52,11 @@
   - `sim.ts` — `createMatch`, `validateDeploy`, `step` (deploy → elixir → auras → units → towers → win)
   - `replay.ts` — `runReplay` + `fingerprint` (anti-cheat foundation)
   - `ai.ts` — deterministic AI policy + 5-level ladder configs; casts damage spells on enemy clusters (≥3)
-  - 20 cards / 6 mechanics: swarms, ranged, splash, stealth (rug-dev), flee (paper-hands), auras (influencer/fud),
-    `targetsTowers` win-condition (moon-boy), `building` stationary decaying structure (trading-bot),
-    spell types: damage (liquidation/gas-war), buff (pump-signal), `effectHeal` (copium)
+  - 20 cards, each with a `role` (tank/brawler/mage/assassin/support/swarm/ranged/building/spell) driving size + stats
+  - Roles & passives (synergy mechanics): `armor` (flat dmg reduction), `taunt` (pulls enemy melee), `lifesteal`,
+    `rage` (faster attacks at low hp), `slowTicks` (mage slow, SLOW_MULT), `critFirst` (assassin first-strike), `flying`
+    (only ranged+towers can hit). Plus: stealth, flee, auras, splash, `targetsTowers`, `building`, spell heal/damage/buff.
+  - Dead units can't act (hp<=0 skipped in updateUnits) — no lifesteal-from-the-grave.
 - `src/render3d/` — Three.js battle renderer.
   - `Battle3D.ts` — WebGL canvas inside the React stage; instanced hex arena + river + bridges, hand-placed decoration (`decorate()`), blue/red KayKit towers, Meshy character units with walk/attack animation (meshopt GLBs), ground raycast for deploys (`screenToSim`), camera projection for the HUD overlay (`project`). Card→character mapping in `CARD_CHAR`.
 - `src/render/` — presentation helpers.

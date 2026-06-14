@@ -107,6 +107,7 @@ export class Battle3D {
   private dying: DyingUnit[] = []
   private meteors: Meteor[] = []
   private shakeAmp = 0
+  private clock = 0
   private camBase = new THREE.Vector3()
   /** Set by the host scene to hear projectile launches (for SFX). */
   onProjectile?: () => void
@@ -473,11 +474,16 @@ export class Battle3D {
   }
 
   private createUnit(u: UnitEntity): UnitView {
-    if (getCard(u.cardId).building) return this.createBuilding(u)
+    const card = getCard(u.cardId)
+    if (card.building) return this.createBuilding(u)
     const charName = CARD_CHAR[u.cardId] ?? 'explorer'
     const asset = this.chars[charName]!
     const model = cloneSkeleton(asset.scene)
-    const targetH = 2.1 + Math.min(1.5, u.maxHp / 900)
+    // size reads the role: tanks/bosses loom, swarms are small, plus a touch of hp scaling
+    const base: Record<string, number> = {
+      tank: 3.2, brawler: 2.7, mage: 2.7, support: 2.6, ranged: 2.5, assassin: 2.3, swarm: 1.9,
+    }
+    const targetH = (base[card.role ?? 'brawler'] ?? 2.6) + Math.min(0.8, u.maxHp / 2600)
     const s = targetH / asset.height
     model.scale.setScalar(s)
 
@@ -596,11 +602,15 @@ export class Battle3D {
   render(deltaMs: number) {
     if (!this.ready) return
     const dt = deltaMs / 1000
+    this.clock += dt
     for (const view of this.units.values()) {
       if (view.isBuilding || !view.mixer || !view.walk || !view.attack) continue
       const walk = view.walk, attack = view.attack
+      const model = view.group.children[0]
       const d = this.tmpV.subVectors(view.target, view.group.position)
       const dist = d.length()
+      // idle bob: gentle breathing when standing still so nobody looks frozen
+      if (model) model.position.y = (!view.moving && dist <= 0.01) ? Math.sin(this.clock * 3 + view.group.id) * 0.06 : 0
       if (dist > 0.01) {
         // face movement direction, smoothly
         const desired = Math.atan2(d.x, d.z)

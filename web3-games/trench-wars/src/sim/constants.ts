@@ -15,3 +15,4 @@ export const HAND_SIZE = 4
 export const DECK_SIZE = 8
 export const FLEE_HP_RATIO = 0.3
 export const SPELL_TOWER_DAMAGE_MULT = 0.5
+export const SLOW_MULT = 0.5   // mage-slow: halves movement + attack speed while active
