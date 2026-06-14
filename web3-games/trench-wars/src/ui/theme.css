@@ -1093,3 +1093,92 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: 50%;
   pointer-events: none;
 }
+
+/* ---------- rarity palette ---------- */
+:root {
+  --r-common: #6f86b8;
+  --r-rare: #e8932e;
+  --r-epic: #b14dff;
+  --r-legendary: #f5c842;
+  --r-common-glow: rgba(111, 134, 184, 0.45);
+  --r-rare-glow: rgba(232, 147, 46, 0.5);
+  --r-epic-glow: rgba(177, 77, 255, 0.55);
+  --r-legendary-glow: rgba(245, 200, 66, 0.6);
+}
+
+/* ---------- TrenchCard ---------- */
+.tcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--panel-light), var(--panel));
+  border: 2.5px solid var(--rarity, var(--border));
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 6px 16px rgba(0,0,0,0.35),
+    0 0 18px var(--rarity-glow, transparent);
+  overflow: hidden;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  color: var(--text);
+  cursor: pointer;
+}
+.tcard:hover { transform: translateY(-3px); }
+.tcard.is-selected, .tcard.is-in-deck { box-shadow: 0 0 0 2px var(--primary), 0 0 22px rgba(245,230,0,0.4); }
+.tcard.is-locked { filter: grayscale(1) brightness(0.45); cursor: not-allowed; }
+.tcard.is-dimmed { opacity: 0.45; filter: grayscale(0.6); }
+
+.tcard-ribbon {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 4px 6px;
+  background: var(--rarity, var(--border));
+  color: #0a0e14;
+  font-family: var(--font-header); font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.tcard-ribbon .icon { fill: #0a0e14; }
+
+.tcard-art {
+  position: relative;
+  width: 100%;
+  display: grid; place-items: center;
+  background: radial-gradient(ellipse at 50% 35%, rgba(255,255,255,0.06), transparent 70%);
+}
+.tcard-art img { width: 80%; height: 80%; object-fit: contain; }
+.tcard-art .spell-icon { fill: var(--rarity, var(--elixir)); }
+
+.tcard-gem {
+  position: absolute; top: 6px; left: 6px; z-index: 2;
+  width: 26px; height: 26px; display: grid; place-items: center;
+  font-family: var(--font-header); font-weight: 900; color: #fff; font-size: 13px;
+  background: radial-gradient(circle at 35% 30%, var(--elixir), var(--elixir-dark));
+  border: 1.5px solid var(--elixir-dark); border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+.tcard-name {
+  width: 100%; text-align: center; padding: 4px 4px 6px;
+  font-family: var(--font-header); font-weight: 700; line-height: 1.1;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.35));
+}
+.tcard-lvl {
+  position: absolute; top: 6px; right: 6px; z-index: 2;
+  min-width: 22px; height: 22px; padding: 0 5px; display: grid; place-items: center;
+  font-family: var(--font-header); font-weight: 900; font-size: 11px; color: #1a1500;
+  background: var(--primary); border: 2px solid var(--bg); border-radius: 11px;
+}
+
+/* size variants (art height drives the card) */
+.tcard.size-sm { width: 84px; }
+.tcard.size-sm .tcard-art { height: 72px; } .tcard.size-sm .tcard-ribbon { font-size: 8px; } .tcard.size-sm .tcard-name { font-size: 10px; }
+.tcard.size-md { width: 128px; }
+.tcard.size-md .tcard-art { height: 112px; } .tcard.size-md .tcard-ribbon { font-size: 10px; } .tcard.size-md .tcard-name { font-size: 12px; }
+.tcard.size-lg { width: 192px; }
+.tcard.size-lg .tcard-art { height: 184px; } .tcard.size-lg .tcard-ribbon { font-size: 12px; } .tcard.size-lg .tcard-name { font-size: 15px; }
+.tcard.size-xl { width: 248px; }
+.tcard.size-xl .tcard-art { height: 240px; } .tcard.size-xl .tcard-ribbon { font-size: 13px; } .tcard.size-xl .tcard-name { font-size: 17px; }
+
+.tcard.r-legendary .tcard-ribbon { animation: leg-sheen 2.4s linear infinite; background-size: 200% 100%;
+  background-image: linear-gradient(100deg, #f5c842 0%, #fff3c4 50%, #f5c842 100%); }
+@keyframes leg-sheen { to { background-position: 200% 0; } }
+
+.icon { display: inline-block; vertical-align: middle; }
