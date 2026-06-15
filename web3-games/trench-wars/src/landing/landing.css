@@ -18,16 +18,198 @@
 }
 
 /* Landing-scoped base (gated under .tr-landing so it never touches the game) */
-.tr-landing { background: var(--color-obsidian); color: var(--color-platinum); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+.tr-landing { background: var(--color-obsidian); color: var(--color-platinum); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: clip; width: 100%; max-width: 100%; }
+
+/* Lenis smooth-scroll drives the landing — hide the native scrollbar so it doesn't
+   show as a strip on the right edge. Scoped to html.lenis (only while the landing's
+   Lenis instance is active; the class is removed when it unmounts), so the game's
+   scrollbar is untouched. */
+html.lenis { scrollbar-width: none; }
+html.lenis::-webkit-scrollbar { width: 0; height: 0; display: none; }
 .tr-landing * { box-sizing: border-box; }
 .tr-landing h1, .tr-landing h2, .tr-landing h3 { font-family: var(--font-display); margin: 0; }
 
-@media (max-width: 860px) { .tr-hero-grid { grid-template-columns: 1fr !important; } }
+/* Full-bleed battlefield — fade left/right/bottom edges into the dark trench bg */
+.tr-hero-stage-fb {
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%),
+    linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%),
+    linear-gradient(180deg, #000 0%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+}
 
-/* StarBorder keyframes (React Bits expects these in the Tailwind config; define them here). */
-.tr-landing .animate-star-movement-bottom { animation: tr-star-movement-bottom linear infinite alternate; }
-.tr-landing .animate-star-movement-top { animation: tr-star-movement-top linear infinite alternate; }
-@keyframes tr-star-movement-bottom { 0% { transform: translate(0%, 0%); opacity: 1; } 100% { transform: translate(-100%, 0%); opacity: 0; } }
-@keyframes tr-star-movement-top { 0% { transform: translate(0%, 0%); opacity: 1; } 100% { transform: translate(100%, 0%); opacity: 0; } }
+.tr-hero-stage {
+  height: clamp(360px, 50vw, 640px);
+  border-radius: 24px;
+  border: 1px solid rgba(212, 161, 60, 0.22);
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(212, 161, 60, 0.08), transparent 60%),
+    rgba(10, 14, 20, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+.tr-hero-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 24px;
+  pointer-events: none;
+  box-shadow: inset 0 0 70px rgba(7, 9, 13, 0.65);
+}
+.tr-hero-stage-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 24px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 35%, transparent 70%, rgba(0, 0, 0, 0.25) 100%);
+}
+.tr-hero-stage-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: 24px;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 45%, rgba(7, 9, 13, 0.55) 100%);
+}
+
+@media (max-width: 860px) {
+  .tr-hero-stage { height: clamp(320px, 58vw, 480px); border-radius: 18px; }
+  .tr-hero-stage::before, .tr-hero-stage-shine, .tr-hero-stage-vignette { border-radius: 18px; }
+}
+
+/* ---------- Hero background — trench battlefield atmosphere ---------- */
+.tr-hero-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(212, 161, 60, 0.08), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 80% 70%, rgba(255, 77, 94, 0.06), transparent 50%),
+    linear-gradient(180deg, #07090d 0%, #0a0e14 50%, #07090d 100%);
+}
+
+.tr-hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(42, 58, 94, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 58, 94, 0.18) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 75%);
+  opacity: 0.6;
+}
+
+.tr-hero-bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+  animation: tr-glow-drift 14s ease-in-out infinite alternate;
+}
+.tr-hero-bg-glow-gold {
+  width: 45vw;
+  height: 45vw;
+  max-width: 620px;
+  max-height: 620px;
+  top: -10%;
+  left: -5%;
+  background: radial-gradient(circle, rgba(212, 161, 60, 0.45), transparent 70%);
+  animation-delay: 0s;
+}
+.tr-hero-bg-glow-ember {
+  width: 35vw;
+  height: 35vw;
+  max-width: 480px;
+  max-height: 480px;
+  bottom: -5%;
+  right: 5%;
+  background: radial-gradient(circle, rgba(255, 77, 94, 0.3), transparent 70%);
+  animation-delay: -7s;
+}
+
+.tr-hero-bg-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 0%, rgba(7, 9, 13, 0.75) 100%);
+  pointer-events: none;
+}
+
+@keyframes tr-glow-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(4%, 6%) scale(1.08); }
+}
+
+@keyframes tr-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
+/* ---------- Landing CTA button overrides ---------- */
+.tr-landing .btn.primary.big {
+  min-width: 260px;
+  padding: 20px 32px;
+  font-size: 17px;
+  letter-spacing: 2px;
+  border-radius: 14px;
+  border: 2px solid var(--primary-dark);
+  box-shadow:
+    0 6px 0 var(--primary-dark),
+    0 12px 32px rgba(245, 230, 0, 0.25);
+  transition: all 0.08s ease;
+}
+.tr-landing .btn.primary.big:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 var(--primary-dark),
+    0 16px 40px rgba(245, 230, 0, 0.35);
+}
+.tr-landing .btn.primary.big:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 var(--primary-dark),
+    0 6px 20px rgba(245, 230, 0, 0.25);
+}
+
+@media (max-width: 560px) {
+  .tr-landing .btn.primary.big {
+    min-width: 100%;
+    width: 100%;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) { .tr-landing * { animation: none !important; transition: none !important; } }
+
+/* ---------- Landing section rhythm & responsive ---------- */
+.tr-landing section { position: relative; }
+
+@media (max-width: 960px) {
+  .tr-bento { grid-template-columns: repeat(2, 1fr) !important; }
+  .tr-bento-cell { grid-column: span 1 !important; }
+}
+
+@media (max-width: 720px) {
+  .tr-nav-links a { display: none; }
+  .tr-steps-grid { grid-template-columns: 1fr !important; }
+  .tr-bento { grid-template-columns: 1fr !important; }
+  .tr-bento-cell { grid-column: span 1 !important; }
+  .tr-flow { justify-content: center !important; }
+  .tr-flow > span { width: 100%; justify-content: center; }
+  .tr-burn-row { justify-content: center !important; text-align: center; }
+  .tr-roster-card { width: 300px !important; }
+}
+
+@media (max-width: 480px) {
+  .tr-landing section:not(.tr-hero) { padding-left: 16px !important; padding-right: 16px !important; }
+  .tr-landing section:not(.tr-hero) > div { padding-left: 16px !important; padding-right: 16px !important; }
+  .tr-roster-card { width: 260px !important; }
+}
+
+/* Roster carousel track */
+.tr-roster-track::-webkit-scrollbar { display: none; }
+.tr-roster-card { scroll-snap-align: start; }

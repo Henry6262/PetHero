@@ -22,11 +22,13 @@ export interface BattleSnapshot {
   selected: number
   timeText: string
   crowns: number
+  enemyCrowns: number
   levelName: string
   mode: 'practice' | 'ladder'
   result: MatchResult | null
   muted: boolean
   hasDeployed: boolean
+  towers: { x: number; y: number; hp: number; maxHp: number; owner: number; kind: string }[]
 }
 
 export interface BattleOptions {
@@ -238,11 +240,15 @@ export class BattleController {
       selected: this.selected,
       timeText: `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`,
       crowns: this.sim.towers.filter((t) => t.owner === 1 && t.hp <= 0).length,
+      enemyCrowns: this.sim.towers.filter((t) => t.owner === 0 && t.hp <= 0).length,
       levelName: this.ladder.currentLevel().name,
       mode: this.opts.mode,
       result: this.sim.result,
       muted: audio!.muted,
       hasDeployed: this.hasDeployed,
+      towers: this.sim.towers
+        .filter((t) => t.hp > 0)
+        .map((t) => ({ x: t.x, y: t.y, hp: t.hp, maxHp: t.maxHp, owner: t.owner, kind: t.kind })),
     }
     const json = JSON.stringify(s)
     if (json !== this.lastSnapshotJson) {

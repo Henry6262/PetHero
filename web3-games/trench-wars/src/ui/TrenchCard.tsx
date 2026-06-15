@@ -11,6 +11,8 @@ interface Props {
   size?: CardSize
   state?: CardState
   level?: number
+  progress?: { current: number; max: number }
+  showProgress?: boolean
   className?: string
   showRibbon?: boolean
   onClick?: () => void
@@ -31,16 +33,21 @@ function roleIcon(card: ReturnType<typeof getCard>): string {
 }
 
 export function TrenchCard({
-  cardId, size = 'md', state, level, className = '', showRibbon = true, onClick, onPointerDown,
+  cardId, size = 'md', state, level, progress, showProgress, className = '', showRibbon = true, onClick, onPointerDown,
 }: Props) {
   const card = getCard(cardId)
   const rarity = rarityOf(cardId)
   const charName = CARD_CHAR[cardId]
   const icon = roleIcon(card)
   const stateClass = state ? `is-${state}` : ''
+  const isSpell = card.type === 'spell'
+  const progressPct = progress && progress.max > 0
+    ? Math.min(100, Math.max(0, (progress.current / progress.max) * 100))
+    : 0
+  const showProgressBar = showProgress && progress && progress.max > 0
   return (
     <button
-      className={`tcard size-${size} r-${rarity} ${stateClass} ${className}`}
+      className={`tcard size-${size} r-${rarity} ${isSpell ? 'is-spell' : ''} ${stateClass} ${className}`}
       data-card={cardId}
       onClick={onClick}
       onPointerDown={onPointerDown}
@@ -69,6 +76,11 @@ export function TrenchCard({
         )}
       </span>
       <span className="tcard-name">{card.name.toUpperCase()}</span>
+      {showProgressBar && (
+        <span className="tcard-progress">
+          <i style={{ width: `${progressPct}%` }} />
+        </span>
+      )}
     </button>
   )
 }

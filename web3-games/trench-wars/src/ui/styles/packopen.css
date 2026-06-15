@@ -1,21 +1,115 @@
 /* ---------- PackOpen ---------- */
-.packopen { display: flex; flex-direction: column; align-items: center; gap: 22px; }
-.chest {
-  position: relative; width: 200px; height: 170px; cursor: pointer;
-  filter: drop-shadow(0 12px 30px rgba(245,230,0,0.25));
-  transition: transform 0.15s ease;
-  display: grid; place-items: center;
+.packopen {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 20px;
 }
-.chest:hover { transform: scale(1.04); }
-.chest.charging { animation: chest-shake 0.5s ease-in-out infinite; }
-@keyframes chest-shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-4deg)} 75%{transform:rotate(4deg)} }
-.chest-glow {
-  position: absolute; inset: -30% 10% 30% 10%; border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,230,0,0.5), transparent 65%);
-  opacity: 0; transition: opacity 0.3s ease;
+
+.pack-crate-stage {
+  position: relative;
+  width: min(320px, 70vw);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
-.chest.charging .chest-glow { opacity: 1; animation: glow-pulse 0.5s ease-in-out infinite; }
-@keyframes glow-pulse { 50% { transform: scale(1.15); } }
+.pack-crate-stage canvas {
+  filter: drop-shadow(0 16px 40px rgba(245,230,0,0.25));
+}
+.pack-crate-hit {
+  padding: 14px 28px;
+  font-family: var(--font-header);
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #0a0e14;
+  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+  border: 2px solid #7a6a00;
+  border-radius: 99px;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    0 8px 0 #7a6a00,
+    0 16px 32px rgba(245,230,0,0.35);
+  transition: all 0.08s ease;
+}
+.pack-crate-hit:active {
+  transform: translateY(6px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    0 2px 0 #7a6a00,
+    0 6px 16px rgba(245,230,0,0.35);
+}
+.pack-crate-fallback {
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-header);
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  border: 2px dashed var(--border);
+  border-radius: 18px;
+}
+
+.crate-placeholder {
+  width: 220px;
+  height: 220px;
+  display: grid;
+  place-items: center;
+  perspective: 600px;
+}
+.crate-box {
+  position: relative;
+  width: 160px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 14px 30px color-mix(in srgb, var(--crate-glow) 35%, transparent));
+}
+.crate-lid {
+  width: 170px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--crate-glow) 70%, #fff), color-mix(in srgb, var(--crate-glow) 40%, #000));
+  border: 3px solid color-mix(in srgb, var(--crate-glow) 90%, #000);
+  border-radius: 10px 10px 4px 4px;
+  transform-origin: 50% 100%;
+  transition: transform 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.25);
+}
+.crate-lid .icon { fill: rgba(0,0,0,0.5); }
+.crate-body {
+  width: 160px;
+  height: 108px;
+  display: grid;
+  place-items: center;
+  margin-top: -2px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--crate-glow) 30%, #2a1e00), color-mix(in srgb, var(--crate-glow) 10%, #0a0e14));
+  border: 3px solid color-mix(in srgb, var(--crate-glow) 70%, #000);
+  border-radius: 4px 4px 12px 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.crate-body .icon { fill: color-mix(in srgb, var(--crate-glow) 60%, #fff); filter: drop-shadow(0 0 10px var(--crate-glow)); }
+.crate-box.open { animation: crate-shake 0.5s ease-in-out; }
+.crate-box.open .crate-lid { transform: translateY(-55px) rotateX(-35deg); }
+@keyframes crate-shake {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
+}
 
 .pack-rays {
   position: fixed; inset: 0; z-index: 40; pointer-events: none;
@@ -29,14 +123,37 @@
 .pack-flash.fire { animation: flash 0.35s ease-out; }
 @keyframes flash { 0%{opacity:0} 20%{opacity:0.85} 100%{opacity:0} }
 
-.pack-reveal { display: grid; place-items: center; gap: 12px; min-height: 320px; cursor: pointer; }
-.pack-card-flip { perspective: 1000px; }
-.pack-card-flip > * { animation: card-flip 0.55s cubic-bezier(0.2,0.9,0.3,1.2); transform-style: preserve-3d; }
-@keyframes card-flip { from { transform: rotateY(90deg) scale(0.8); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } }
-.pack-progress { font-family: var(--font-header); letter-spacing: 1px; color: var(--muted); font-size: 12px; }
-.pack-summary { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 560px; }
-.pack-cta { font-family: var(--font-header); letter-spacing: 2px; color: var(--primary); font-size: 14px; animation: pulse-soft 1.2s ease-in-out infinite; }
-@keyframes pulse-soft { 50% { opacity: 0.55; } }
+.pack-reveal {
+  position: relative;
+  z-index: 42;
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  cursor: pointer;
+  padding: 20px;
+}
+.pack-card-flip { perspective: 1200px; }
+.pack-card-flip > * { animation: card-flip 0.65s cubic-bezier(0.2,0.9,0.3,1.2); transform-style: preserve-3d; }
+@keyframes card-flip { from { transform: rotateY(90deg) scale(0.75); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } }
+.pack-progress { font-family: var(--font-header); letter-spacing: 1px; color: var(--muted); font-size: 13px; }
+.pack-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  max-width: 720px;
+}
+.pack-continue {
+  max-width: 260px;
+  padding: 16px 32px;
+  font-size: 16px;
+}
+
+@media (max-width: 560px) {
+  .pack-crate-stage { width: min(280px, 72vw); }
+  .pack-reveal .tcard.size-xl { width: 220px; }
+  .pack-reveal .tcard.size-xl .tcard-art { height: 210px; }
+}
 
 /* ---------- level up ---------- */
 .levelup-hero { display: flex; flex-direction: column; align-items: center; gap: 16px; }

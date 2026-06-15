@@ -47,19 +47,33 @@ function Model({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   scale = 1,
+  tint,
 }: {
   url: string
   position?: [number, number, number]
   rotation?: [number, number, number]
   scale?: number
+  tint?: THREE.Color
 }) {
   const scene = useClonedScene(url)
+  if (tint) {
+    scene.traverse((o) => {
+      const m = o as THREE.Mesh
+      if (m.isMesh && (m.material as THREE.MeshStandardMaterial)?.color) {
+        const mat = m.material as THREE.MeshStandardMaterial
+        mat.color.lerp(tint, 0.55)
+      }
+    })
+  }
   return (
     <primitive object={scene} position={position} rotation={rotation} scale={scale} />
   )
 }
 
 /** A 3x3 hex-tile platform. KayKit hexes are flat-top; offset alternate columns. */
+const TINT_HEX = new THREE.Color('#252f42')
+const TINT_TOWER = new THREE.Color('#c9d4e8')
+
 function HexPlatform() {
   const tiles = useMemo(() => {
     const out: [number, number][] = []
@@ -76,7 +90,7 @@ function HexPlatform() {
   return (
     <group>
       {tiles.map(([x, z], i) => (
-        <Model key={i} url={HEX_GRASS} position={[x, 0, z]} />
+        <Model key={i} url={HEX_GRASS} position={[x, 0, z]} tint={TINT_HEX} />
       ))}
     </group>
   )
@@ -93,10 +107,10 @@ function Diorama() {
       <Float speed={1.4} rotationIntensity={0.15} floatIntensity={0.6} floatingRange={[-0.04, 0.06]}>
         <HexPlatform />
         {/* Blue tower (near corner) + red tower (far corner) */}
-        <Model url={TOWER_BLUE} position={[-0.86, 0.2, 1.0]} />
-        <Model url={TOWER_RED} position={[0.86, 0.2, -1.0]} rotation={[0, Math.PI, 0]} />
+        <Model url={TOWER_BLUE} position={[-0.86, 0.2, 1.0]} tint={TINT_TOWER} />
+        <Model url={TOWER_RED} position={[0.86, 0.2, -1.0]} rotation={[0, Math.PI, 0]} tint={TINT_TOWER} />
         {/* Castle anchoring the centre-back */}
-        <Model url={CASTLE} position={[0, 0.2, -0.2]} />
+        <Model url={CASTLE} position={[0, 0.2, -0.2]} tint={TINT_TOWER} />
       </Float>
     </group>
   )
@@ -111,12 +125,18 @@ export function BattlefieldDiorama() {
         camera={{ position: [3, 3.2, 3.4], fov: 38 }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.55} color="#bcd0ff" />
+        <ambientLight intensity={0.45} color="#8fa8d8" />
+        <directionalLight
+          position={[-3, 5, 4]}
+          intensity={1.2}
+          color="#b8c8e8"
+          castShadow
+        />
         <spotLight
-          position={[4, 6, 3]}
-          angle={0.5}
-          penumbra={0.8}
-          intensity={45}
+          position={[3.5, 5.5, 2.5]}
+          angle={0.55}
+          penumbra={0.85}
+          intensity={28}
           color="#d4a13c"
           castShadow
         />

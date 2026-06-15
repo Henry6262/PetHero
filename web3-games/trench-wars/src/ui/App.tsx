@@ -36,7 +36,7 @@ export function App() {
 
   switch (screen.name) {
     case 'landing':
-      return <Landing onBuildDeck={() => setScreen({ name: 'onboarding' })} />
+      return <Landing onEnter={() => setScreen({ name: 'onboarding' })} />
     case 'onboarding':
       return <Onboarding onComplete={finishOnboarding} go={setScreen} setAccount={setAccount} />
     case 'menu':

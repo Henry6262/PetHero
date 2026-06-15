@@ -72,6 +72,26 @@ describe('mage slow', () => {
   })
 })
 
+describe('flying', () => {
+  it('a melee unit cannot hit a flyer, but a ranged unit can', () => {
+    let s = fresh()
+    const melee = place(s, 'chad-trader', 0, 9, 15)   // range 0.8 (melee)
+    const flyer = place(s, 'airdrop', 1, 9.4, 15)      // flying
+    s = step(s, [])
+    // flyer untouched by the adjacent melee attacker
+    expect(s.units.find(u => u.id === flyer.id)!.hp).toBe(flyer.maxHp)
+    void melee
+
+    let s2 = fresh()
+    place(s2, 'sniper-bot', 0, 9, 12)                  // range 8 (ranged)
+    const flyer2 = place(s2, 'airdrop', 1, 9, 15)
+    const before = flyer2.hp
+    s2 = step(s2, [])
+    // ranged shot it down (sniper crit can one-shot it, so it may already be dead)
+    expect(s2.units.find(u => u.id === flyer2.id)?.hp ?? 0).toBeLessThan(before)
+  })
+})
+
 describe('assassin critFirst', () => {
   it('first strike is multiplied, later strikes are not', () => {
     let s = fresh()

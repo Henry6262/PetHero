@@ -18,5 +18,15 @@
   { "id": "pump-signal",       "name": "Pump Signal",         "cost": 2, "type": "spell", "role": "spell", "effectRadius": 3.0, "buffTicks": 50, "buffSpeedMult": 1.5, "buffDamageMult": 1.25 },
   { "id": "liquidation-cascade", "name": "Liquidation Cascade", "cost": 4, "type": "spell", "role": "spell", "effectRadius": 2.5, "effectDamage": 180 },
   { "id": "gas-war",        "name": "Gas War",             "cost": 2, "type": "spell", "role": "spell", "effectRadius": 2.0, "effectDamage": 90 },
-  { "id": "copium",         "name": "Copium",              "cost": 3, "type": "spell", "role": "spell", "effectRadius": 3.0, "effectHeal": 300 }
+  { "id": "copium",         "name": "Copium",              "cost": 3, "type": "spell", "role": "spell", "effectRadius": 3.0, "effectHeal": 300 },
+  { "id": "airdrop",        "name": "Airdrop Drone",       "cost": 4, "type": "unit", "role": "ranged",   "count": 1, "hp": 150,  "damage": 80,  "range": 5.0, "sightRange": 6.5, "speed": 0.16, "attackSpeed": 12, "flying": true, "critFirst": 1.4 },
+  { "id": "fomo-jet",       "name": "FOMO Jet",            "cost": 5, "type": "unit", "role": "mage",     "count": 1, "hp": 240,  "damage": 90,  "range": 5.0, "sightRange": 6.5, "speed": 0.13, "attackSpeed": 16, "flying": true, "splashRadius": 1.4, "slowTicks": 18 },
+  { "id": "gigachad",       "name": "Gigachad",            "cost": 5, "type": "unit", "role": "brawler",  "count": 1, "hp": 950,  "damage": 175, "range": 0.8, "sightRange": 5.5, "speed": 0.13, "attackSpeed": 12, "lifesteal": 0.35, "rage": 0.5 },
+  { "id": "sailor-cat",     "name": "Sailor Cat",          "cost": 4, "type": "unit", "role": "support",  "count": 1, "hp": 620,  "damage": 50,  "range": 3.5, "sightRange": 6.0, "speed": 0.10, "attackSpeed": 12, "armor": 4, "aura": { "radius": 3.2, "damageMult": 1.3 } },
+  { "id": "fomo-mob",       "name": "FOMO Mob",            "cost": 2, "type": "unit", "role": "swarm",    "count": 4, "hp": 62,   "damage": 24,  "range": 0.8, "sightRange": 5.5, "speed": 0.22, "attackSpeed": 8 },
+  { "id": "shadow-dev",     "name": "Shadow Dev",          "cost": 4, "type": "unit", "role": "assassin", "count": 1, "hp": 170,  "damage": 280, "range": 0.8, "sightRange": 6.0, "speed": 0.17, "attackSpeed": 14, "stealthRange": 3.2, "critFirst": 2.2 },
+  { "id": "degen-titan",    "name": "Degen Titan",         "cost": 7, "type": "unit", "role": "tank",     "count": 1, "hp": 3000, "damage": 130, "range": 0.8, "sightRange": 5.5, "speed": 0.06, "attackSpeed": 13, "armor": 14, "taunt": 3.5 },
+  { "id": "mev-overlord",   "name": "MEV Overlord",        "cost": 5, "type": "unit", "role": "mage",     "count": 1, "hp": 300,  "damage": 110, "range": 5.5, "sightRange": 7.0, "speed": 0.08, "attackSpeed": 18, "splashRadius": 1.5, "slowTicks": 20 },
+  { "id": "based-brawlers", "name": "Based Brawlers",      "cost": 3, "type": "unit", "role": "brawler",  "count": 3, "hp": 135,  "damage": 45,  "range": 0.8, "sightRange": 5.5, "speed": 0.16, "attackSpeed": 10, "lifesteal": 0.15 },
+  { "id": "liquidity-freeze", "name": "Liquidity Freeze",  "cost": 3, "type": "spell", "role": "spell", "effectRadius": 3.0, "slowTicks": 60 }
 ]

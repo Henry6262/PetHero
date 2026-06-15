@@ -36,9 +36,18 @@ export const CARD_CHAR: Record<string, CharName> = {
   'discord-raid': 'pepe',       // cheap swarm
   'moon-boy': 'degen',          // win-condition charger
   // trading-bot is a building → rendered as a structure, no character
+  'airdrop': 'phoenix',         // fiery flyer
+  'fomo-jet': 'crimson',        // flying splash mage
+  'gigachad': 'degen',          // big bruiser
+  'sailor-cat': 'gake',         // tanky support cat
+  'fomo-mob': 'pepe',           // fast swarm
+  'shadow-dev': 'explorer',     // stealth assassin
+  'degen-titan': 'vanguard',    // massive tank
+  'mev-overlord': 'crimson',    // splash mage
+  'based-brawlers': 'degen',    // lifesteal swarm
 }
 
-export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix'
+export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix' | 'gake'
 
 interface CharAsset {
   scene: THREE.Group
@@ -56,6 +65,7 @@ interface UnitView {
   lastCooldown: number
   moving: boolean
   isBuilding?: boolean
+  flyHeight?: number
 }
 
 interface TowerView {
@@ -150,7 +160,7 @@ export class Battle3D {
   async load(): Promise<void> {
     this.loader.setMeshoptDecoder(MeshoptDecoder)
     const glb = (url: string) => this.loader.loadAsync(url)
-    const charNames: CharName[] = ['vanguard', 'explorer', 'crimson', 'pepe', 'bluemob', 'degen', 'phoenix']
+    const charNames: CharName[] = ['vanguard', 'explorer', 'crimson', 'pepe', 'bluemob', 'degen', 'phoenix', 'gake']
     const [grass, water, towerBlue, towerRed, castleBlue, castleRed, ...charGlbs] = await Promise.all([
       glb('/assets/3d/kaykit/hex_grass.gltf'),
       glb('/assets/3d/kaykit/hex_water.gltf'),
@@ -515,6 +525,7 @@ export class Battle3D {
       target: group.position.clone(),
       lastCooldown: u.cooldown,
       moving: true,
+      flyHeight: card.flying ? 2.4 : undefined,
     }
     mixer.addEventListener('finished', () => {
       view.attack!.stop()
@@ -609,8 +620,12 @@ export class Battle3D {
       const model = view.group.children[0]
       const d = this.tmpV.subVectors(view.target, view.group.position)
       const dist = d.length()
-      // idle bob: gentle breathing when standing still so nobody looks frozen
-      if (model) model.position.y = (!view.moving && dist <= 0.01) ? Math.sin(this.clock * 3 + view.group.id) * 0.06 : 0
+      // flyers hover; everyone gets a gentle idle bob when standing still so nobody looks frozen
+      if (model) {
+        const fly = view.flyHeight ?? 0
+        const bob = (view.flyHeight || (!view.moving && dist <= 0.01)) ? Math.sin(this.clock * 3 + view.group.id) * (view.flyHeight ? 0.15 : 0.06) : 0
+        model.position.y = fly + bob
+      }
       if (dist > 0.01) {
         // face movement direction, smoothly
         const desired = Math.atan2(d.x, d.z)

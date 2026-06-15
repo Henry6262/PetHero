@@ -12,7 +12,7 @@ export function validateCards(cards: CardDef[]): CardDef[] {
       if (c.building && !(c.lifespan! > 0)) throw new Error(`card ${c.id}: building needs lifespan`)
     } else if (c.type === 'spell') {
       if (!(c.effectRadius! > 0)) throw new Error(`card ${c.id}: missing effectRadius`)
-      if (!c.effectDamage && !c.buffTicks && !c.effectHeal) throw new Error(`card ${c.id}: spell does nothing`)
+      if (!c.effectDamage && !c.buffTicks && !c.effectHeal && !c.slowTicks) throw new Error(`card ${c.id}: spell does nothing`)
     } else {
       throw new Error(`card ${c.id}: unknown type`)
     }

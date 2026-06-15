@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CARDS, STARTER_DECK } from '../sim/cards'
+import { CARDS, STARTER_DECK, getCard } from '../sim/cards'
 import { DECK_SIZE } from '../sim/constants'
 import { getDecks, createDeck, updateDeck } from '../api'
 import { Ladder } from '../game/ladder'
 import { unlockedCards, unlockWins, nextUnlock } from '../game/unlocks'
-import { CardTile } from './CardTile'
+import { TrenchCard } from './TrenchCard'
 import { Icon } from './Icon'
 import type { Screen } from './Screen'
 
@@ -32,17 +32,27 @@ export function DeckBuilder({ go }: Props) {
       .catch(() => setStatus('could not load saved deck — sign in on the menu first'))
   }, [])
 
-  const toggle = (id: string) => {
+  const avgElixir = useMemo(() => {
+    if (deck.length === 0) return 0
+    const sum = deck.reduce((acc, id) => acc + getCard(id).cost, 0)
+    return +(sum / deck.length).toFixed(1)
+  }, [deck])
+
+  const addCard = (id: string) => {
     if (!unlocked.has(id)) {
       setStatus(`${getCardName(id)} unlocks at ${unlockWins(id)} wins (you have ${wins})`)
       return
     }
     setStatus('')
     setDeck((d) => {
-      if (d.includes(id)) return d.filter((c) => c !== id)
-      if (d.length >= DECK_SIZE) return d
+      if (d.includes(id) || d.length >= DECK_SIZE) return d
       return [...d, id]
     })
+  }
+
+  const removeCard = (id: string) => {
+    setStatus('')
+    setDeck((d) => d.filter((c) => c !== id))
   }
 
   const save = async () => {
@@ -61,38 +71,90 @@ export function DeckBuilder({ go }: Props) {
     }
   }
 
-  // unlocked cards first, then locked (sorted by unlock requirement)
-  const sorted = [...CARDS].sort((a, b) => {
+  // collection: unlocked first, then locked, sorted by unlock req then cost
+  const sorted = useMemo(() => [...CARDS].sort((a, b) => {
     const ua = unlocked.has(a.id) ? 0 : 1
     const ub = unlocked.has(b.id) ? 0 : 1
     return ua - ub || unlockWins(a.id) - unlockWins(b.id) || a.cost - b.cost
-  })
+  }), [unlocked])
+
+  const emptySlots = Math.max(0, DECK_SIZE - deck.length)
 
   return (
     <div className="screen deck-screen">
-      <h2>DECK BUILDER</h2>
-      <div className="deck-count">
-        <b>{deck.length}</b> / {DECK_SIZE} cards
-        {next && <span className="unlock-hint"> · {next.remaining} win{next.remaining > 1 ? 's' : ''} to next unlock</span>}
+      <div className="deck-header">
+        <button className="deck-back" onClick={() => go({ name: 'menu' })}>
+          <Icon name="back" size={18} />
+        </button>
+        <h2>DECK BUILDER</h2>
+        <button className="deck-save" onClick={save}>SAVE</button>
       </div>
-      <div className="deck-grid">
-        {sorted.map((c) => {
-          const locked = !unlocked.has(c.id)
-          return (
-            <div key={c.id} className={`tile-wrap ${locked ? 'locked' : ''}`}>
-              <CardTile
-                cardId={c.id}
-                className={deck.includes(c.id) ? 'in-deck' : ''}
-                onClick={() => toggle(c.id)}
-              />
-              {locked && <div className="lock-badge"><Icon name="lock" size={13} /> {unlockWins(c.id)}W</div>}
-            </div>
-          )
-        })}
+
+      <div className="deck-meta">
+        <div className="deck-avg">
+          <Icon name="elixir" size={16} color="#b44dff" />
+          <span>{avgElixir.toFixed(1)}</span>
+        </div>
+        <div className="deck-count">
+          <b>{deck.length}</b> / {DECK_SIZE}
+        </div>
+        {next && (
+          <div className="unlock-hint">
+            {next.remaining} win{next.remaining > 1 ? 's' : ''} to unlock
+          </div>
+        )}
       </div>
+
+      {/* Squad bar */}
+      <div className="deck-squad">
+        <div className="deck-squad-label">SQUAD</div>
+        <div className="deck-squad-slots">
+          {deck.map((id) => (
+            <TrenchCard
+              key={id}
+              cardId={id}
+              size="sm"
+              state="selected"
+              showRibbon={false}
+              onClick={() => removeCard(id)}
+            />
+          ))}
+          {Array.from({ length: emptySlots }).map((_, i) => (
+            <div key={`empty-${i}`} className="deck-slot-empty" />
+          ))}
+        </div>
+      </div>
+
+      {/* Collection */}
+      <div className="deck-collection">
+        <div className="deck-collection-label">COLLECTION</div>
+        <div className="deck-grid">
+          {sorted.map((c) => {
+            const locked = !unlocked.has(c.id)
+            const inDeck = deck.includes(c.id)
+            return (
+              <div key={c.id} className={`tile-wrap ${locked ? 'locked' : ''} ${inDeck ? 'in-deck' : ''}`}>
+                <TrenchCard
+                  cardId={c.id}
+                  size="sm"
+                  state={inDeck ? 'in-deck' : locked ? 'locked' : undefined}
+                  progress={locked ? { current: wins, max: unlockWins(c.id) } : undefined}
+                  showProgress={locked}
+                  showRibbon={false}
+                  onClick={() => addCard(c.id)}
+                />
+                {locked && (
+                  <div className="lock-badge">
+                    <Icon name="lock" size={13} /> {unlockWins(c.id) - wins}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
       <div className="status">{status}</div>
-      <button className="btn primary" onClick={save}>SAVE DECK</button>
-      <button className="btn" onClick={() => go({ name: 'menu' })}>BACK</button>
     </div>
   )
 }

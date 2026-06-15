@@ -11,7 +11,7 @@ Generate character models + animations so every unit card in `src/sim/cards.json
 ## Style guide
 
 - **Low-poly, cartoony, mobile-optimized** — match existing Meshy characters
-- **Readable silhouettes** — identify the card by shape at a glance
+- **Readable silhouettes** — identify the card by a glance
 - **Exaggerated proportions** — big heads, chunky weapons, clear poses
 - **Two factions:**
   - **Traders** — blue/cool tones, tech/heroic, clean
@@ -85,15 +85,38 @@ These can be unique models OR reskins of P0/P1 characters with different colors/
 | based-brawlers | Based Brawlers | swarm | melee brawl | 3 medium brawlers, reskin chad-trader/degen |
 | moon-boy | Moon Boy | brawler | melee charge | chad-trader with rocket backpack, charges forward |
 | airdrop | Airdrop Drone | ranged | supply drop | flying drone with package, unique model |
-| fomo-jet | FOMO Jet | mage | missile | flying jet with missile pods, unique or reskin airdrop |
+| fomo-jet | FOMO Jet | mage | missile | flying jet with missile pods, unique or reskin airddrop |
+
+### P3 — Legendary parody bosses
+
+Four high-cost, high-impact Legendary cards. These are parodies of public figures / memes, not direct likenesses. Each has a **“trademark” attack animation** and should feel arena-dominating. Generating one legendary should consume roughly the same art budget as two normal characters.
+
+| Card ID | Parody of | In-game name | Role | Attack | Prompt |
+| --- | --- | --- | --- | --- | --- |
+| **rocket-king** | Elon Musk | Rocket King | tank | **Falcon slam** — calls down a stylized rocket that crashes fists-first into the ground for AOE | low-poly exaggerated billionaire in black flight suit, slick hair, holding a tiny steel rocket like a club, confident smirk, rocket exhaust aura, cartoon 3D mobile game character, T-pose, walk and attack animations, blue-grey and steel tones |
+| **gold-godfather** | Donald Trump | Gold Godfather | brawler | **Deal slam** — swings a giant golden handshake / contract hammer | low-poly exaggerated tycoon in oversized navy suit, bright red tie, golden hair, holds a giant golden gavel stamped with a dollar sign, cartoon 3D mobile game character, T-pose, walk and attack animations, gold and navy tones |
+| **doge-dad** | Kabosu / Doge meme spirit | Doge Dad | support | **Much wow** — throws Doge coins that buff allies with golden aura | low-poly wise Shiba Inu spirit wearing a golden halo and meme sunglasses, floating lotus/coin platform, holds a glowing Doge coin staff, cartoon 3D mobile game character, T-pose, walk and attack animations, warm gold and orange tones |
+| **chain-emperor** | SBF / FTX fall | Chain Emperor | mage | **Rugpull vortex** — summons a dark chain vortex that pulls enemies in | low-poly fallen crypto emperor in a frayed suit crown, glowing red handcuff chains, sinister grin, dark aura, floating, cartoon 3D mobile game character, T-pose, walk and attack animations, deep red and black tones |
+
+#### Legendary design rules
+
+1. **Parody distance:** Use archetype exaggeration, not portraits or names. Avoid real names, logos, or trademarks.
+2. **Faction split:**
+   - Traders: Rocket King (blue/steel), Doge Dad (gold/blue support)
+   - Jeets: Gold Godfather (gold/red), Chain Emperor (red/black)
+3. **Scale:** Legendaries should be ~1.5× the size of a normal tank.
+4. **Attack clarity:** The legendary attack must have a wind-up, impact, and short recovery so players can read it on a small screen.
+5. **Effects:** Embed a small token prop (rocket, gavel, coin, chain) into the rig; full spell VFX will be added in-engine.
+6. **Portraits:** Show the character mid-attack with faction-colored background.
 
 ## Notes per card
 
 - **Jeet Horde / Discord Raid / Exit Liquidity / FOMO Mob** — all swarms. Keep individual figure simple (~1k tris each). The game spawns `count` copies.
-- **Whale / MEV Overlord** — floating mage units. No leg walk cycle needed; bobbing idle + cast attack.
+- **Whale / MEV Overlord / Doge Dad / Chain Emperor** — floating mage/support units. No leg walk cycle needed; bobbing idle + cast attack.
 - **Sniper Bot / Airdrop / FOMO Jet** — need clear projectile spawn point (muzzle).
-- **Diamond Hands / Degen Titan** — big tanks. Make them noticeably larger than chad-trader.
-- **Influencer** — support aura should be visible; attack can be a beam from the phone.
+- **Diamond Hands / Degen Titan / Rocket King / Gold Godfather** — big tanks/brawlers. Make them noticeably larger than chad-trader.
+- **Influencer / Doge Dad** — support aura should be visible; attack can be a beam or thrown buff item.
+- **Legendaries** — each needs a clear silhouette prop so it reads at 64×64 portrait size.
 
 ## Delivery checklist
 

@@ -16,29 +16,64 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 14px;
-  background: linear-gradient(180deg, var(--panel-light), var(--panel));
-  border: 2.5px solid var(--rarity, var(--border));
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 6px 16px rgba(0,0,0,0.35),
-    0 0 18px var(--rarity-glow, transparent);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0) 40%),
+    linear-gradient(180deg, var(--panel-light), var(--panel));
+  border: 3px solid var(--rarity, var(--border));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -2px 0 rgba(0,0,0,0.35),
+    0 0 0 1px rgba(0,0,0,0.5),
+    0 8px 22px rgba(0,0,0,0.45),
+    0 0 20px var(--rarity-glow, transparent);
   overflow: hidden;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
   color: var(--text);
   cursor: pointer;
 }
-.tcard:hover { transform: translateY(-3px); }
-.tcard.is-selected, .tcard.is-in-deck { box-shadow: 0 0 0 2px var(--primary), 0 0 22px rgba(245,230,0,0.4); }
-.tcard.is-locked { filter: grayscale(1) brightness(0.45); cursor: not-allowed; }
-.tcard.is-dimmed { opacity: 0.45; filter: grayscale(0.6); }
+.tcard::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 11px;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.35);
+  z-index: 3;
+}
+.tcard:hover { transform: translateY(-4px) scale(1.02); }
+.tcard.is-selected, .tcard.is-in-deck {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -2px 0 rgba(0,0,0,0.35),
+    0 0 0 2px var(--primary),
+    0 0 28px rgba(245,230,0,0.5);
+}
+.tcard.is-locked {
+  filter: grayscale(0.85) brightness(0.55);
+  cursor: not-allowed;
+}
+.tcard.is-locked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10,14,20,0.35);
+  z-index: 4;
+  border-radius: 13px;
+}
+.tcard.is-dimmed { opacity: 0.5; filter: grayscale(0.7); }
 
 .tcard-ribbon {
   width: 100%;
   display: flex; align-items: center; justify-content: center; gap: 5px;
   padding: 4px 6px;
-  background: var(--rarity, var(--border));
+  background: linear-gradient(180deg, var(--rarity), rgba(0,0,0,0.25));
   color: #0a0e14;
-  font-family: var(--font-header); font-weight: 800;
+  font-family: var(--font-header); font-weight: 900;
   letter-spacing: 1px; text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(0,0,0,0.25);
 }
 .tcard-ribbon .icon { fill: #0a0e14; }
 
@@ -46,48 +81,86 @@
   position: relative;
   width: 100%;
   display: grid; place-items: center;
-  background: radial-gradient(ellipse at 50% 35%, rgba(255,255,255,0.06), transparent 70%);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.08), transparent 65%),
+    linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.35));
 }
-.tcard-art img { width: 80%; height: 80%; object-fit: contain; }
-.tcard-art .spell-icon { fill: var(--rarity, var(--elixir)); }
+.tcard-art img { width: 86%; height: 86%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+.tcard-art .spell-icon { fill: var(--rarity, var(--elixir)); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
 
 .tcard-gem {
-  position: absolute; top: 6px; left: 6px; z-index: 2;
-  width: 26px; height: 26px; display: grid; place-items: center;
+  position: absolute; top: 5px; left: 5px; z-index: 5;
+  width: 28px; height: 28px; display: grid; place-items: center;
   font-family: var(--font-header); font-weight: 900; color: #fff; font-size: 13px;
-  background: radial-gradient(circle at 35% 30%, var(--elixir), var(--elixir-dark));
-  border: 1.5px solid var(--elixir-dark); border-radius: 50%;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  background:
+    radial-gradient(circle at 35% 30%, #d46aff, var(--elixir-dark)),
+    linear-gradient(180deg, var(--elixir), var(--elixir-dark));
+  border: 2px solid #4a1a6e; border-radius: 50%;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.35),
+    0 2px 5px rgba(0,0,0,0.6);
 }
 .tcard-name {
-  width: 100%; text-align: center; padding: 4px 4px 6px;
-  font-family: var(--font-header); font-weight: 700; line-height: 1.1;
-  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.35));
+  width: 100%; text-align: center; padding: 5px 4px 6px;
+  font-family: var(--font-header); font-weight: 800; line-height: 1.1;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.45));
 }
 .tcard-lvl {
-  position: absolute; top: 6px; right: 6px; z-index: 2;
-  min-width: 22px; height: 22px; padding: 0 5px; display: grid; place-items: center;
+  position: absolute; top: 5px; right: 5px; z-index: 5;
+  min-width: 24px; height: 24px; padding: 0 5px; display: grid; place-items: center;
   font-family: var(--font-header); font-weight: 900; font-size: 11px; color: #1a1500;
-  background: var(--primary); border: 2px solid var(--bg); border-radius: 11px;
+  background: linear-gradient(180deg, #fff176, var(--primary));
+  border: 2px solid #7a6a00; border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+/* collection / level progress bar */
+.tcard-progress {
+  position: absolute;
+  bottom: 0; left: 0; right: 0; z-index: 5;
+  height: 5px;
+  background: rgba(0,0,0,0.45);
+  border-radius: 0 0 13px 13px;
+  overflow: hidden;
+}
+.tcard-progress > i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--elixir-dark), var(--elixir));
+  transition: width 0.25s ease;
+}
+
+/* spell cards get a custom arcane backing */
+.tcard.is-spell .tcard-art {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(180,77,255,0.18), transparent 70%),
+    repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.03) 0deg 10deg, transparent 10deg 20deg),
+    linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
 }
 
 /* size variants (art height drives the card) */
-.tcard.size-sm { width: 84px; }
-.tcard.size-sm .tcard-art { height: 72px; } .tcard.size-sm .tcard-ribbon { font-size: 8px; } .tcard.size-sm .tcard-name { font-size: 10px; }
-.tcard.size-md { width: 128px; }
-.tcard.size-md .tcard-art { height: 112px; } .tcard.size-md .tcard-ribbon { font-size: 10px; } .tcard.size-md .tcard-name { font-size: 12px; }
-.tcard.size-lg { width: 192px; }
-.tcard.size-lg .tcard-art { height: 184px; } .tcard.size-lg .tcard-ribbon { font-size: 12px; } .tcard.size-lg .tcard-name { font-size: 15px; }
-.tcard.size-xl { width: 248px; }
-.tcard.size-xl .tcard-art { height: 240px; } .tcard.size-xl .tcard-ribbon { font-size: 13px; } .tcard.size-xl .tcard-name { font-size: 17px; }
+.tcard.size-sm { width: 88px; }
+.tcard.size-sm .tcard-art { height: 76px; } .tcard.size-sm .tcard-ribbon { font-size: 8px; } .tcard.size-sm .tcard-name { font-size: 10px; }
+.tcard.size-md { width: 132px; }
+.tcard.size-md .tcard-art { height: 116px; } .tcard.size-md .tcard-ribbon { font-size: 10px; } .tcard.size-md .tcard-name { font-size: 12px; }
+.tcard.size-lg { width: 196px; }
+.tcard.size-lg .tcard-art { height: 188px; } .tcard.size-lg .tcard-ribbon { font-size: 12px; } .tcard.size-lg .tcard-name { font-size: 15px; }
+.tcard.size-xl { width: 252px; }
+.tcard.size-xl .tcard-art { height: 244px; } .tcard.size-xl .tcard-ribbon { font-size: 13px; } .tcard.size-xl .tcard-name { font-size: 17px; }
 
-.tcard.r-legendary .tcard-ribbon { animation: leg-sheen 2.4s linear infinite; background-size: 200% 100%;
-  background-image: linear-gradient(100deg, #f5c842 0%, #fff3c4 50%, #f5c842 100%); }
+.tcard.r-legendary .tcard-ribbon {
+  animation: leg-sheen 2.4s linear infinite;
+  background-size: 200% 100%;
+  background-image: linear-gradient(100deg, #f5c842 0%, #fff3c4 50%, #f5c842 100%);
+}
+.tcard.r-legendary { animation: leg-float 3.2s ease-in-out infinite; }
 @keyframes leg-sheen { to { background-position: 200% 0; } }
+@keyframes leg-float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-3px); } }
 
 .icon { display: inline-block; vertical-align: middle; }
 
 /* ---------- TrenchCard compat: hand + locked tiles ---------- */
 .tcard.broke { opacity: 0.45; }
 .hand .tcard { flex: 1; width: auto; }
-.tile-wrap.locked .tcard { filter: grayscale(1) brightness(0.5); cursor: not-allowed; }
+.tile-wrap.locked .tcard { filter: grayscale(0.85) brightness(0.55); cursor: not-allowed; }
+.tile-wrap.locked .tcard::after { background: rgba(10,14,20,0.35); }

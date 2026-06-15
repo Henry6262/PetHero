@@ -3,11 +3,22 @@ import { TrenchCard } from './TrenchCard'
 import { rarityOf, rarityColor } from './rarity'
 import { CARD_CHAR } from '../render3d/Battle3D'
 import ChromaCard from './reactbits/ChromaCard'
-import { Icon } from './Icon'
+import Crate3D from './Crate3D'
+import { chestForTier, type ChestTier } from './crates'
+
+const CARD_W = 300
+const CARD_H = 400
 
 type Phase = 'idle' | 'charging' | 'revealing' | 'summary'
 
-export function PackOpen({ cardIds, onDone }: { cardIds: string[]; onDone: () => void }) {
+interface Props {
+  cardIds: string[]
+  onDone: () => void
+  tier?: ChestTier
+}
+
+export function PackOpen({ cardIds, onDone, tier = 'rug' }: Props) {
+  const chest = chestForTier(tier)
   const [phase, setPhase] = useState<Phase>('idle')
   const [index, setIndex] = useState(0)
   const [rays, setRays] = useState(false)
@@ -21,7 +32,7 @@ export function PackOpen({ cardIds, onDone }: { cardIds: string[]; onDone: () =>
   const open = () => {
     if (phase !== 'idle') return
     setPhase('charging')
-    setTimeout(() => { fireBurst(); setPhase('revealing') }, 700)
+    setTimeout(() => { fireBurst(); setPhase('revealing') }, 900)
   }
 
   const next = () => {
@@ -35,35 +46,30 @@ export function PackOpen({ cardIds, onDone }: { cardIds: string[]; onDone: () =>
   const current = cardIds[index]
   const rayColor = current ? rarityColor(rarityOf(current)) : '#fff'
   const portrait = current ? (CARD_CHAR[current] ?? 'explorer') : 'explorer'
+  const rayColorHex = `${rayColor}55`
 
   return (
     <div className="packopen">
-      <div className={`pack-rays ${rays ? 'show' : ''}`} style={{ ['--ray' as any]: `${rayColor}55` }} />
+      <div className={`pack-rays ${rays ? 'show' : ''}`} style={{ ['--ray' as any]: rayColorHex }} />
       <div className={`pack-flash ${flash ? 'fire' : ''}`} />
 
-      {phase === 'idle' && (
-        <>
-          <div className="chest" onClick={open}>
-            <div className="chest-glow" />
-            <Icon name="loot" size={200} color="var(--primary)" />
-          </div>
-          <div className="pack-cta">TAP TO OPEN</div>
-        </>
-      )}
-
-      {phase === 'charging' && (
-        <div className="chest charging">
-          <div className="chest-glow" />
-          <Icon name="loot" size={200} color="var(--primary)" />
+      {phase !== 'revealing' && phase !== 'summary' && (
+        <div className="pack-crate-stage">
+          <Crate3D src={chest.url} size={320} open={phase === 'charging'} glow={chest.glow} />
+          {phase === 'idle' && (
+            <button className="pack-crate-hit" onClick={open}>
+              OPEN {chest.name.toUpperCase()}
+            </button>
+          )}
         </div>
       )}
 
       {phase === 'revealing' && current && (
         <div className="pack-reveal" onClick={next}>
           <div className="pack-card-flip" key={current}>
-            <div style={{ position: 'relative', width: 200, height: 252 }}>
-              <ChromaCard width={200} height={252} imageSrc={`/assets/3d/portraits/${portrait}.png`} imageAspectRatio={1} opacity={0.85}>
-                <TrenchCard cardId={current} size="lg" showRibbon />
+            <div style={{ position: 'relative', width: CARD_W, height: CARD_H }}>
+              <ChromaCard width={CARD_W} height={CARD_H} imageSrc={`/assets/3d/portraits/${portrait}.png`} imageAspectRatio={1} opacity={0.85}>
+                <TrenchCard cardId={current} size="xl" showRibbon />
               </ChromaCard>
             </div>
           </div>
@@ -74,9 +80,9 @@ export function PackOpen({ cardIds, onDone }: { cardIds: string[]; onDone: () =>
       {phase === 'summary' && (
         <>
           <div className="pack-summary">
-            {cardIds.map((id, i) => <TrenchCard key={`${id}-${i}`} cardId={id} size="sm" />)}
+            {cardIds.map((id, i) => <TrenchCard key={`${id}-${i}`} cardId={id} size="md" />)}
           </div>
-          <button className="btn primary" onClick={onDone}>CONTINUE</button>
+          <button className="btn primary pack-continue" onClick={onDone}>CONTINUE</button>
         </>
       )}
     </div>

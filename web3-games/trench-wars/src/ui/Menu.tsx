@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense, lazy } from 'react'
 import { createAccount, getMe, getOpponent, connectWallet, getDecks } from '../api'
 import type { Account, Deck } from '../api'
 import { connectWallet as connectSolana, isWalletAvailable } from '../wallet'
 import { DECK_SIZE } from '../sim/constants'
 import { Icon } from './Icon'
 import { TrenchCard } from './TrenchCard'
+import { Shop } from './Shop'
 import type { Screen } from './Screen'
 
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
 }
 
 type Tab = 'battle' | 'deck' | 'loot' | 'leaderboard'
+
+const MenuDiorama = lazy(() => import('./MenuDiorama').then((m) => ({ default: m.MenuDiorama })))
 
 export function Menu({ account, setAccount, go }: Props) {
   const [status, setStatus] = useState('')
@@ -77,37 +80,77 @@ export function Menu({ account, setAccount, go }: Props) {
   const startPractice = () => go({ name: 'battle', mode: 'practice' })
   const openDeck = () => go({ name: 'deck' })
 
+  const displayName = account ? (account.wallet ?? account.id).slice(0, 8).toUpperCase() : 'COMMANDER'
+  const shortName = account ? (account.wallet ?? account.id).slice(0, 2).toUpperCase() : '??'
+
   return (
     <div className="screen cr-menu">
-      {/* Top bar */}
+      {/* Resource header */}
       <header className="cr-topbar">
         <div className="cr-profile">
-          <div className="cr-avatar">{account ? (account.wallet ?? account.id).slice(0, 2).toUpperCase() : '??'}</div>
+          <div className="cr-avatar">{shortName}</div>
           <div className="cr-name">
-            <div>{account ? (account.wallet ?? account.id).slice(0, 8).toUpperCase() : 'COMMANDER'}</div>
+            <div>{displayName}</div>
             <small>{account ? 'ONLINE' : 'GUEST'}</small>
           </div>
         </div>
-        <div className="cr-stats">
-          <div className="cr-stat">
-            <span className="cr-stat-value">{account?.elo ?? 1000}</span>
-            <span className="cr-stat-label">ELO</span>
+        <div className="cr-resources">
+          <div className="cr-resource" title="Trophies">
+            <Icon name="ladder" size={16} color="#f5c842" />
+            <span>{account?.elo ?? 1000}</span>
           </div>
-          <div className="cr-stat">
-            <span className="cr-stat-value">{account?.wins ?? 0}</span>
-            <span className="cr-stat-label">WINS</span>
+          <div className="cr-resource" title="Wins">
+            <Icon name="crown" size={16} color="#2bff88" />
+            <span>{account?.wins ?? 0}</span>
+          </div>
+          <div className="cr-resource cr-resource-gold" title="Gold">
+            <Icon name="loot" size={16} color="#f5c842" />
+            <span>0</span>
+          </div>
+          <div className="cr-resource cr-resource-token" title="$ROYALE">
+            <Icon name="elixir" size={16} color="#b44dff" />
+            <span>0</span>
           </div>
         </div>
       </header>
+
+      {/* Season pass progress */}
+      <div className="cr-pass-bar">
+        <div className="cr-pass-info">
+          <Icon name="loot" size={14} />
+          <span>SEASON PASS · LVL 1</span>
+        </div>
+        <div className="cr-pass-track">
+          <div className="cr-pass-fill" style={{ width: '12%' }} />
+        </div>
+        <div className="cr-pass-claim">
+          <button className="cr-pass-btn">CLAIM</button>
+        </div>
+      </div>
 
       {/* Main stage */}
       <main className="cr-stage">
         {activeTab === 'battle' && (
           <>
+            <div className="cr-diorama-wrap">
+              <Suspense fallback={<div className="cr-diorama-fallback">RAISING THE TRENCH…</div>}>
+                <MenuDiorama />
+              </Suspense>
+            </div>
+
             <button className="cr-battle-btn" onClick={startLadder} data-testid="battle">
-              <span className="cr-battle-icon"><Icon name="battle" size={42} /></span>
+              <span className="cr-battle-icon"><Icon name="battle" size={48} /></span>
               <span>BATTLE</span>
             </button>
+
+            <div className="cr-daily-banner">
+              <div className="cr-daily-icon"><Icon name="loot" size={22} /></div>
+              <div className="cr-daily-body">
+                <div className="cr-daily-title">DAILY BONUS</div>
+                <div className="cr-daily-sub">Win 2 matches for a free pack</div>
+              </div>
+              <div className="cr-daily-progress">0/2</div>
+            </div>
 
             <div className="cr-secondary-actions">
               <button className="cr-sec-btn" onClick={startPractice} data-testid="practice">
@@ -148,13 +191,7 @@ export function Menu({ account, setAccount, go }: Props) {
           </div>
         )}
 
-        {activeTab === 'loot' && (
-          <div className="cr-tab-panel">
-            <h3>LOOT</h3>
-            <p>Spend $ROYALE on card packs and lootboxes.</p>
-            <div className="cr-coming-soon">Coming soon</div>
-          </div>
-        )}
+        {activeTab === 'loot' && <Shop />}
 
         {activeTab === 'leaderboard' && (
           <div className="cr-tab-panel">

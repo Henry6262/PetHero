@@ -1,189 +1,87 @@
 import { Suspense, lazy } from 'react'
-import SplitText from '../reactbits/SplitText'
-import CountUp from '../reactbits/CountUp'
-import StarBorder from '../reactbits/StarBorder'
-// DarkVeil pulls in `ogl` + a WebGL canvas — lazy-load so it never blocks first paint.
-const DarkVeil = lazy(() => import('../reactbits/DarkVeil'))
-// The R3F battlefield diorama pulls in three + drei — lazy-load so WebGL never blocks first paint.
-const BattlefieldDiorama = lazy(() =>
-  import('../three/BattlefieldDiorama').then((m) => ({ default: m.BattlefieldDiorama })),
+import SideRays from '../reactbits/SideRays'
+
+// The R3F battle preview pulls in three + drei — lazy-load so WebGL never blocks first paint.
+const BattlePreview = lazy(() =>
+  import('../three/BattlePreview').then((m) => ({ default: m.BattlePreview })),
 )
 
-type Stat = { value: number; suffix?: string; label: string }
-
-const STATS: Stat[] = [
-  { value: 7, label: 'Commanders' },
-  { value: 12, label: 'Cards' },
-  { value: 50, suffix: '%', label: 'Burn rate' },
-]
-
-export function Hero({ onBuildDeck }: { onBuildDeck: () => void }) {
+export function Hero() {
   return (
     <section
+      className="tr-hero"
       style={{
         position: 'relative',
         minHeight: '100vh',
         width: '100%',
         overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '88px 0 40px',
       }}
     >
-      {/* Background layer */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }} aria-hidden>
-        <Suspense fallback={null}>
-          {/* Tuned dark with a gold/amber tint via hueShift; slow drift + faint warp. */}
-          <DarkVeil
-            hueShift={28}
-            speed={0.35}
-            warpAmount={0.18}
-            noiseIntensity={0.02}
-            scanlineIntensity={0.08}
-            scanlineFrequency={2}
-            resolutionScale={1}
-          />
-        </Suspense>
-        {/* Radial vignette so the left column stays readable over the shader. */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(ellipse at 30% 50%, rgba(7,9,13,0) 0%, rgba(7,9,13,0.85) 70%)',
-            pointerEvents: 'none',
-          }}
+      {/* Background layer — dark trench atmosphere. */}
+      <div className="tr-hero-bg" style={{ position: 'absolute', inset: 0, zIndex: 0 }} aria-hidden>
+        <div className="tr-hero-bg-grid" />
+        <div className="tr-hero-bg-glow tr-hero-bg-glow-gold" />
+        <div className="tr-hero-bg-glow tr-hero-bg-glow-ember" />
+        <div className="tr-hero-bg-vignette" />
+      </div>
+
+      {/* Side rays — dramatic top-right light, behind content. */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }} aria-hidden>
+        <SideRays
+          origin="top-right"
+          rayColor1="#f5c842"
+          rayColor2="#ff7a2f"
+          opacity={0.55}
+          intensity={1.6}
+          speed={1.2}
+          spread={2.2}
+          falloff={1.7}
+          blend={0.7}
         />
       </div>
 
-      {/* Content layer */}
+      {/* Full-bleed battlefield — the hero IS the game preview. Edges fade into the dark. */}
       <div
-        className="tr-hero-grid"
+        className="tr-hero-stage-fb"
         style={{
           position: 'relative',
           zIndex: 1,
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '120px 32px 64px',
-          display: 'grid',
-          gridTemplateColumns: '1.1fr 1fr',
-          gap: 48,
-          alignItems: 'center',
+          width: '100%',
+          height: 'clamp(460px, 82vh, 980px)',
         }}
       >
-        {/* LEFT */}
-        <div>
-          <div
-            style={{
-              color: 'var(--color-gold)',
-              fontFamily: 'var(--font-display)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.28em',
-              fontSize: 13,
-              fontWeight: 700,
-              marginBottom: 20,
-            }}
-          >
-            Traders vs Jeets
-          </div>
+        <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>
+          <BattlePreview />
+        </Suspense>
+      </div>
 
-          <h1
-            aria-label="TRENCH ROYALE"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(48px, 8vw, 92px)',
-              fontWeight: 900,
-              lineHeight: 0.95,
-              margin: 0,
-              color: 'var(--color-platinum)',
-            }}
-          >
-            <SplitText text="TRENCH" tag="span" textAlign="left" />
-            <br />
-            <span style={{ color: 'var(--color-gold)' }}>
-              <SplitText text="ROYALE" tag="span" textAlign="left" />
-            </span>
-          </h1>
-
-          <p
-            style={{
-              color: 'var(--color-muted)',
-              fontSize: 'clamp(15px, 1.6vw, 19px)',
-              lineHeight: 1.5,
-              maxWidth: 480,
-              margin: '24px 0 0',
-            }}
-          >
-            Real-time lane warfare on Solana. Stack your deck, storm the trench,
-            burn $ROYALE.
-          </p>
-
-          {/* CTAs */}
-          <div
-            style={{
-              display: 'flex',
-              gap: 16,
-              flexWrap: 'wrap',
-              marginTop: 32,
-              alignItems: 'center',
-            }}
-          >
-            <StarBorder
-              as="button"
-              color="var(--color-gold)"
-              speed="5s"
-              onClick={onBuildDeck}
-              style={{ cursor: 'pointer' }}
-            >
-              <span
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 800,
-                  letterSpacing: '0.12em',
-                  color: 'var(--color-gold)',
-                }}
-              >
-                BUILD YOUR DECK
-              </span>
-            </StarBorder>
-          </div>
-
-          {/* Stat strip */}
-          <div style={{ display: 'flex', gap: 36, marginTop: 40, flexWrap: 'wrap' }}>
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(28px, 3vw, 40px)',
-                    fontWeight: 900,
-                    color: 'var(--color-gold)',
-                    lineHeight: 1,
-                  }}
-                >
-                  <CountUp to={s.value} duration={1.6} />
-                  {s.suffix ?? ''}
-                </div>
-                <div
-                  style={{
-                    color: 'var(--color-muted)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.18em',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    marginTop: 8,
-                  }}
-                >
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT */}
-        <div>
-          <Suspense fallback={<div style={{ width: '100%', aspectRatio: '1/1' }} />}>
-            <BattlefieldDiorama />
-          </Suspense>
-        </div>
+      {/* Scroll hint */}
+      <div
+        className="tr-hero-scroll"
+        style={{
+          position: 'absolute',
+          bottom: 22,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 6,
+          color: 'var(--color-muted)',
+          fontSize: 11,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          opacity: 0.7,
+        }}
+      >
+        <span>Scroll</span>
+        <span style={{ fontSize: 18, animation: 'tr-bounce 1.6s infinite' }}>↓</span>
       </div>
     </section>
   )

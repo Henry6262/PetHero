@@ -137,6 +137,11 @@ function castSpell(s: SimState, cmd: DeployCommand, card: CardDef) {
       }
     }
   }
+  if (card.slowTicks) {
+    for (const u of s.units) {
+      if (u.owner !== cmd.player && dist(at, u) <= card.effectRadius!) u.slowUntil = s.tick + card.slowTicks
+    }
+  }
 }
 
 

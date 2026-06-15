@@ -210,7 +210,7 @@ function OnboardingLootbox({ onOpen }: { onOpen: () => void }) {
     <div className="screen onboarding-lootbox">
       <h2>Commander starter pack</h2>
       <p className="subtitle">Every commander needs troops. Open your first pack.</p>
-      <PackOpen cardIds={FIRST_PACK} onDone={onOpen} />
+      <PackOpen cardIds={FIRST_PACK} onDone={onOpen} tier="wooden" />
       <TutorialGuide
         steps={[{ text: 'Tap the chest to reveal your squad cards one by one. These are your starting troops.' }]}
         onComplete={() => {}}
