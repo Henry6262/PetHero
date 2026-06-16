@@ -151,7 +151,7 @@ export function Shop({ onBalanceChange }: { onBalanceChange?: () => void } = {})
     const offer = CHEST_OFFERS.find((o) => o.tier === tier)
     if (!offer) return
     if (!spend(offer.currency, offer.price)) {
-      setMsg(`Not enough ${offer.currency === 'gold' ? '🪙 gold' : '💎 gems'} for that chest.`)
+      setMsg(`Not enough ${offer.currency === 'gold' ? 'gold' : 'gems'} for that chest.`)
       return
     }
     setGold(getBalance('gold'))
