@@ -22,7 +22,12 @@ export function createApp({ prisma, cookieSecret, clientUrl }: AppConfig) {
       origin: (origin, callback) => {
         if (!origin) return callback(null, true)
         if (process.env.NODE_ENV !== 'production') return callback(null, true)
-        if (origin === clientUrl) return callback(null, true)
+        const prodOrigins = [
+          clientUrl,
+          'https://trench-wars.vercel.app',
+          'https://trench-wars-k0dk8qcz7-henry6262s-projects.vercel.app',
+        ]
+        if (prodOrigins.includes(origin)) return callback(null, true)
         callback(new Error(`CORS blocked origin: ${origin}`))
       },
       credentials: true,
