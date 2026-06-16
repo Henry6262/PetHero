@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { SectionHeader } from './SectionHeader'
 import { ScrollReveal } from '../reactbits/ScrollReveal'
-import { CharacterModel } from '../three/CharacterModel'
 
 interface FeaturedCharacter {
   id: string
@@ -243,9 +242,27 @@ export function CharacterShowcase() {
               </div>
             </div>
 
-            {/* Right: animated 3D model */}
-            <div style={{ height: 560, minHeight: 460 }}>
-              <CharacterModel charName={char.charName} />
+            {/* Right: portrait image */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 560,
+              minHeight: 460,
+            }}>
+              <img
+                key={char.charName}
+                src={`/assets/3d/portraits/${char.charName}.png`}
+                alt={char.name}
+                style={{
+                  width: '100%',
+                  maxWidth: 420,
+                  height: '100%',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 0 40px rgba(212,161,60,0.25))',
+                  transition: 'opacity 0.3s ease',
+                }}
+              />
             </div>
           </div>
         </ScrollReveal>
