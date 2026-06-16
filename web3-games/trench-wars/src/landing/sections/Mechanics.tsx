@@ -31,12 +31,20 @@ const ICONS: Record<string, ReactNode> = {
   ),
 }
 
+const ACCENTS: Record<string, string> = {
+  Lanes: '212, 161, 60', // gold
+  Spells: '255, 106, 43', // ember
+  Progression: '43, 255, 136', // trader green
+  Units: '255, 77, 94', // jeet red
+}
+
 export function Mechanics() {
   const cards = MECHANICS.map((m) => ({
     label: m.label,
     title: m.title,
     description: m.body,
     icon: ICONS[m.label],
+    accent: ACCENTS[m.label],
   }))
 
   return (

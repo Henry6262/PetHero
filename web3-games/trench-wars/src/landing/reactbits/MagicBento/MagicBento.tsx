@@ -13,6 +13,7 @@ export interface BentoCardProps {
   description?: string;
   label?: string;
   icon?: React.ReactNode;
+  accent?: string; // 'r, g, b' — per-card accent for the icon badge + label + watermark
   textAutoHide?: boolean;
   disableAnimations?: boolean;
 }
@@ -572,7 +573,8 @@ const MagicBento: React.FC<BentoProps> = ({
               '--glow-radius': '200px',
             } as React.CSSProperties;
 
-            const Header = <span className="card__label text-sm uppercase tracking-widest opacity-70">{card.label}</span>;
+            const accent = card.accent || glowColor;
+            // Faint oversized watermark of the icon in the corner — adds depth.
             const BgIcon = card.icon ? (
               <div style={{
                 position: 'absolute',
@@ -585,27 +587,56 @@ const MagicBento: React.FC<BentoProps> = ({
                 overflow: 'hidden',
               }}>
                 <div style={{
-                  width: 220,
-                  height: 220,
-                  color: `rgb(${glowColor})`,
-                  opacity: 0.13,
-                  filter: `drop-shadow(0 0 24px rgba(${glowColor}, 0.6))`,
-                  transform: 'translateY(20%) translateX(30%)',
+                  width: 230,
+                  height: 230,
+                  color: `rgb(${accent})`,
+                  opacity: 0.1,
+                  filter: `drop-shadow(0 0 24px rgba(${accent}, 0.5))`,
+                  transform: 'translateY(24%) translateX(34%)',
                   flexShrink: 0,
                 }}>
                   {card.icon}
                 </div>
               </div>
             ) : null;
+            // Prominent accent-colored icon chip at the top of the card.
+            const IconBadge = card.icon ? (
+              <div style={{
+                position: 'relative',
+                zIndex: 1,
+                width: 56,
+                height: 56,
+                borderRadius: 16,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: `rgb(${accent})`,
+                background: `linear-gradient(150deg, rgba(${accent}, 0.22), rgba(${accent}, 0.04))`,
+                border: `1px solid rgba(${accent}, 0.42)`,
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 20px rgba(0,0,0,0.4)`,
+              }}>
+                <div style={{ width: 28, height: 28 }}>{card.icon}</div>
+              </div>
+            ) : null;
             const Content = (
-              <div className="card__content flex flex-col relative text-white">
-                <h3 className={`card__title font-display font-semibold text-xl m-0 mb-2 ${textAutoHide ? 'text-clamp-1' : ''}`}>
+              <div className="card__content flex flex-col relative text-white" style={{ gap: 7 }}>
+                <span className="card__label text-xs font-semibold uppercase" style={{ letterSpacing: '0.18em', color: `rgb(${accent})`, opacity: 0.92 }}>
+                  {card.label}
+                </span>
+                <h3 className={`card__title font-display font-semibold text-xl m-0 ${textAutoHide ? 'text-clamp-1' : ''}`}>
                   {card.title}
                 </h3>
-                <p className={`card__description text-sm leading-5 opacity-80 ${textAutoHide ? 'text-clamp-2' : ''}`}>
+                <p className={`card__description text-sm leading-5 opacity-75 m-0 ${textAutoHide ? 'text-clamp-2' : ''}`}>
                   {card.description}
                 </p>
               </div>
+            );
+            const inner = (
+              <>
+                {BgIcon}
+                {IconBadge}
+                {Content}
+              </>
             );
 
             if (enableStars) {
@@ -616,23 +647,19 @@ const MagicBento: React.FC<BentoProps> = ({
                   style={cardStyle}
                   disableAnimations={shouldDisableAnimations}
                   particleCount={particleCount}
-                  glowColor={glowColor}
+                  glowColor={accent}
                   enableTilt={enableTilt}
                   clickEffect={clickEffect}
                   enableMagnetism={enableMagnetism}
                 >
-                  {BgIcon}
-                  <div className="card__header flex justify-between gap-3 relative text-white">{Header}</div>
-                  {Content}
+                  {inner}
                 </ParticleCard>
               );
             }
 
             return (
               <div key={index} className={baseClassName} style={cardStyle}>
-                {BgIcon}
-                <div className="card__header flex justify-between gap-3 relative text-white">{Header}</div>
-                {Content}
+                {inner}
               </div>
             );
           })}
