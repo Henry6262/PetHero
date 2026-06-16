@@ -144,7 +144,7 @@ export function CharacterShowcase() {
 
   return (
     <section id="showcase" style={{ position: 'relative', padding: '0 10%' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 0 80px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '120px 0 100px' }}>
         <SectionHeader
           eyebrow="Character Showcase"
           title={<>Meet the <span style={{ color: 'var(--color-gold)' }}>trench lords</span></>}
@@ -155,38 +155,38 @@ export function CharacterShowcase() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: 40,
-              marginTop: 48,
+              gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+              gap: 64,
+              marginTop: 64,
               alignItems: 'center',
             }}
           >
             {/* Left: stats */}
             <div>
-              <div style={{ marginBottom: 28 }}>
+              <div style={{ marginBottom: 36 }}>
                 <span
                   style={{
                     display: 'inline-block',
                     fontSize: 11,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.2em',
-                    fontWeight: 700,
+                    letterSpacing: '0.22em',
+                    fontWeight: 800,
                     color: 'var(--color-gold)',
                     border: '1px solid rgba(212,161,60,0.35)',
                     borderRadius: 999,
-                    padding: '4px 12px',
-                    marginBottom: 14,
+                    padding: '6px 14px',
+                    marginBottom: 18,
                   }}
                 >
                   {char.role}
                 </span>
                 <h3
                   style={{
-                    fontSize: 'clamp(36px, 5vw, 56px)',
+                    fontSize: 'clamp(40px, 5vw, 64px)',
                     fontWeight: 900,
                     letterSpacing: '0.04em',
                     color: 'var(--color-platinum)',
-                    margin: '0 0 12px',
+                    margin: '0 0 16px',
                   }}
                 >
                   {char.name}
@@ -195,8 +195,9 @@ export function CharacterShowcase() {
                   style={{
                     color: 'var(--color-muted)',
                     fontSize: 17,
-                    lineHeight: 1.55,
+                    lineHeight: 1.65,
                     margin: 0,
+                    maxWidth: 480,
                   }}
                 >
                   {char.description}
@@ -205,11 +206,11 @@ export function CharacterShowcase() {
 
               <div
                 style={{
-                  background: 'linear-gradient(180deg, rgba(17,20,27,0.95), rgba(10,12,17,0.85))',
+                  background: 'var(--color-panel)',
                   border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: 20,
-                  padding: '26px 28px',
-                  marginBottom: 24,
+                  borderRadius: 24,
+                  padding: '36px 32px',
+                  marginBottom: 32,
                 }}
               >
                 {char.stats.map((s) => (
@@ -217,17 +218,17 @@ export function CharacterShowcase() {
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                 {CHARACTERS.map((c, i) => (
                   <button
                     key={c.id}
                     type="button"
                     onClick={() => setActive(i)}
                     style={{
-                      padding: '10px 18px',
-                      borderRadius: 10,
+                      padding: '12px 20px',
+                      borderRadius: 12,
                       border: '1px solid',
-                      borderColor: i === active ? 'rgba(212,161,60,0.55)' : 'rgba(255,255,255,0.1)',
+                      borderColor: i === active ? 'rgba(212,161,60,0.5)' : 'rgba(255,255,255,0.1)',
                       background: i === active ? 'rgba(212,161,60,0.1)' : 'rgba(255,255,255,0.03)',
                       color: i === active ? 'var(--color-gold)' : 'var(--color-muted)',
                       fontSize: 14,
@@ -243,7 +244,7 @@ export function CharacterShowcase() {
             </div>
 
             {/* Right: animated 3D model */}
-            <div style={{ height: 520, minHeight: 420 }}>
+            <div style={{ height: 140, minHeight: 115, marginLeft: 100 }}>
               <CharacterModel charName={char.charName} />
             </div>
           </div>
