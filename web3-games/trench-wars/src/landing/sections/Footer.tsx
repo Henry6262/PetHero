@@ -5,13 +5,15 @@ export function Footer() {
     <footer
       style={{
         borderTop: '1px solid rgba(212,161,60,0.14)',
-        padding: '28px 10%',
+        padding: '40px 10%',
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'center',
         flexWrap: 'wrap',
-        gap: 12,
+        gap: 16,
         color: 'var(--color-muted)',
-        fontSize: 13,
+        fontSize: 14,
+        letterSpacing: '0.04em',
       }}
     >
       <span
@@ -19,7 +21,7 @@ export function Footer() {
           fontFamily: 'var(--font-display)',
           color: 'var(--color-gold)',
           fontWeight: 900,
-          letterSpacing: '0.12em',
+          letterSpacing: '0.14em',
         }}
       >
         TRENCH ROYALE

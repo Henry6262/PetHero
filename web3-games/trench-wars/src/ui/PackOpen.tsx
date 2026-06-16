@@ -45,7 +45,7 @@ export function PackOpen({ cardIds, onDone, tier = 'rug' }: Props) {
 
   const current = cardIds[index]
   const rayColor = current ? rarityColor(rarityOf(current)) : '#fff'
-  const portrait = current ? (CARD_PORTRAIT[current] ?? 'explorer') : 'explorer'
+  const portrait = current ? (CARD_PORTRAIT[current] ?? 'pepe') : 'pepe'
   const rayColorHex = `${rayColor}55`
 
   return (

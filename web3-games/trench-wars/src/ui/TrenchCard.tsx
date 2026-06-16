@@ -69,7 +69,7 @@ export function TrenchCard({
             src={`/assets/3d/portraits/${portraitName}.png`}
             alt={card.name}
             draggable={false}
-            onError={(e) => { (e.target as HTMLImageElement).src = '/assets/3d/portraits/explorer.png' }}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/assets/3d/portraits/mert.png' }}
           />
         ) : (
           <Icon name={icon} className="spell-icon" size={size === 'sm' ? 40 : 64} />

@@ -5,7 +5,7 @@ import { ScrollReveal } from '../reactbits/ScrollReveal'
 export function HowItWorks() {
   return (
     <section id="how" style={{ position: 'relative', padding: '0 10%' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 0 80px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '120px 0 100px' }}>
         <SectionHeader
           eyebrow="How It Works"
           title={<>Three moves to <span style={{ color: 'var(--color-gold)' }}>win</span></>}
@@ -15,9 +15,9 @@ export function HowItWorks() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 20,
-            marginTop: 48,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 28,
+            marginTop: 64,
           }}
         >
           {STEPS.map((s, i) => (
@@ -25,18 +25,18 @@ export function HowItWorks() {
               <div
                 style={{
                   position: 'relative',
-                  padding: '32px 28px',
-                  background: 'linear-gradient(180deg, rgba(17,20,27,0.95), rgba(10,12,17,0.85))',
+                  padding: '42px 36px',
+                  background: 'var(--color-panel)',
                   border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: 20,
+                  borderRadius: 24,
                   overflow: 'hidden',
                   transition: 'all 0.2s ease',
                   height: '100%',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(212,161,60,0.45)'
+                  e.currentTarget.style.borderColor = 'rgba(212,161,60,0.35)'
                   e.currentTarget.style.transform = 'translateY(-6px)'
-                  e.currentTarget.style.boxShadow = '0 26px 60px rgba(0,0,0,0.45), 0 0 32px rgba(212,161,60,0.1)'
+                  e.currentTarget.style.boxShadow = '0 26px 60px rgba(0,0,0,0.45)'
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
@@ -44,17 +44,15 @@ export function HowItWorks() {
                   e.currentTarget.style.boxShadow = 'none'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 26 }}>
                   <span
                     style={{
                       fontFamily: 'var(--font-display)',
-                      fontSize: 54,
+                      fontSize: 56,
                       fontWeight: 900,
-                      background: 'linear-gradient(180deg, var(--color-gold), rgba(212,161,60,0.12))',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
+                      color: 'var(--color-gold)',
                       lineHeight: 0.9,
+                      opacity: 0.85,
                     }}
                   >
                     {s.n}
@@ -63,17 +61,17 @@ export function HowItWorks() {
                     style={{
                       flex: 1,
                       height: 1,
-                      background: 'linear-gradient(90deg, rgba(212,161,60,0.5), transparent)',
+                      background: 'linear-gradient(90deg, rgba(212,161,60,0.35), transparent)',
                     }}
                   />
                 </div>
                 <h3
                   style={{
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: 800,
                     letterSpacing: '0.04em',
                     color: 'var(--color-platinum)',
-                    margin: '0 0 10px',
+                    margin: '0 0 14px',
                   }}
                 >
                   {s.title}
@@ -81,8 +79,8 @@ export function HowItWorks() {
                 <p
                   style={{
                     color: 'var(--color-muted)',
-                    fontSize: 15,
-                    lineHeight: 1.5,
+                    fontSize: 16,
+                    lineHeight: 1.6,
                     margin: 0,
                   }}
                 >

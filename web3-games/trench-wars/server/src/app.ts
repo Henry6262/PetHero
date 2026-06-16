@@ -26,11 +26,22 @@ export function createApp({ prisma, cookieSecret, clientUrl }: AppConfig) {
           clientUrl,
           'https://trench-wars.vercel.app',
           'https://trench-wars-k0dk8qcz7-henry6262s-projects.vercel.app',
+          'https://trench-wars-henry6262s-projects.vercel.app',
+          'https://www.trenchroyale.app',
+          'https://trenchroyale.app',
         ]
-        if (prodOrigins.includes(origin)) return callback(null, true)
+        // Allow the production domain (any subdomain of trenchroyale.app) plus
+        // any trench-royale or legacy trench-wars Vercel preview/production URL.
+        const allowed =
+          prodOrigins.includes(origin) ||
+          /^https:\/\/([a-z0-9-]+\.)*trenchroyale\.app$/.test(origin) ||
+          /^https:\/\/trench-royale[a-z0-9-]*\.vercel\.app$/.test(origin) ||
+          /^https:\/\/trench-wars[a-z0-9-]*\.vercel\.app$/.test(origin)
+        if (allowed) return callback(null, true)
         callback(new Error(`CORS blocked origin: ${origin}`))
       },
       credentials: true,
+      maxAge: 0,
     }),
   )
   app.use(express.json({ limit: '5mb' }))

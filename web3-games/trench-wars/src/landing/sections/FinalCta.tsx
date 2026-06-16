@@ -11,9 +11,9 @@ export function FinalCta({ onPlay }: FinalCtaProps) {
       style={{
         position: 'relative',
         textAlign: 'center',
-        padding: '120px 10%',
+        padding: '140px 10%',
         background:
-          'radial-gradient(ellipse at 50% 50%, rgba(212,161,60,0.12), transparent 65%)',
+          'radial-gradient(ellipse at 50% 40%, rgba(212,161,60,0.07), transparent 60%)',
       }}
     >
       <h2

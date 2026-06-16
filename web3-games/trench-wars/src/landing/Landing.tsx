@@ -7,7 +7,6 @@ import { Roster } from './sections/Roster'
 import { CharacterShowcase } from './sections/CharacterShowcase'
 import { HowItWorks } from './sections/HowItWorks'
 import { Mechanics } from './sections/Mechanics'
-import { TokenEconomy } from './sections/TokenEconomy'
 import { FinalCta } from './sections/FinalCta'
 import { Footer } from './sections/Footer'
 import GridBackground from './reactbits/GridBackground'
@@ -51,7 +50,6 @@ export function Landing({ onEnter }: LandingProps) {
         <CharacterShowcase />
         <HowItWorks />
         <Mechanics />
-        <TokenEconomy />
         <FinalCta onPlay={onEnter} />
         <Footer />
       </div>

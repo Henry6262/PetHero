@@ -5,6 +5,7 @@ import { PackOpen } from './PackOpen'
 import { chestForTier, type ChestTier } from './crates'
 import { CARDS } from '../sim/cards'
 import { rarityOf } from './rarity'
+import { TOKEN } from '../landing/data'
 
 interface Offer {
   cardId: string
@@ -165,6 +166,51 @@ export function Shop() {
             <Icon name="elixir" size={16} color="#b44dff" />
             <span>0</span>
           </div>
+        </div>
+
+        <div className="shop-section">
+          <a
+            href={`https://dexscreener.com/solana/${TOKEN.mint}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shop-token-banner"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              padding: '12px 16px',
+              borderRadius: 12,
+              background: 'linear-gradient(90deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))',
+              border: '1px solid rgba(34,197,94,0.3)',
+              color: '#4ade80',
+              textDecoration: 'none',
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(90deg, rgba(34,197,94,0.2), rgba(34,197,94,0.08))'
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(34,197,94,0.15)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(90deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))'
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+          >
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+              {TOKEN.ticker} Token
+            </span>
+            <span style={{ fontFamily: 'monospace', fontSize: 11, opacity: 0.9 }}>
+              {TOKEN.mint.slice(0, 6)}...{TOKEN.mint.slice(-6)}
+            </span>
+          </a>
         </div>
 
         <div className="shop-section">

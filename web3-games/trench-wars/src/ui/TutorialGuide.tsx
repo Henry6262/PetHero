@@ -14,7 +14,7 @@ interface Props {
   startVisible?: boolean
 }
 
-const DEFAULT_AVATAR = '/assets/3d/portraits/vanguard.png'
+const DEFAULT_AVATAR = '/assets/3d/portraits/mert.png'
 
 export function TutorialGuide({
   steps,

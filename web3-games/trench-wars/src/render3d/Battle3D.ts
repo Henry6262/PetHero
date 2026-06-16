@@ -19,32 +19,34 @@ const ARENA_PX_W = 782
 const ARENA_PX_H = 960
 
 // Which character model plays each unit card. Seven distinct rigs spread across the roster.
+// Only the Solana heroes are used — every card maps to one of the 8 rigged
+// roster characters (mert, toly, gake, phoenix, ansem, sbf, pepe, vucan).
 export const CARD_CHAR: Record<string, CharName> = {
-  'jeet-horde': 'pepe',         // pepe "STOP BEING POOR" — the quintessential jeet swarm
+  'jeet-horde': 'pepe',         // jeet swarm
   'exit-liquidity': 'pepe',     // rekt retail mob
-  'bag-holder': 'bluemob',      // sad-sack holder
-  'paper-hands': 'bluemob',     // panicky, flees
-  'chad-trader': 'degen',       // degen in black + shades, the gigachad
-  'rug-dev': 'degen',           // anonymous hoodie dev
+  'bag-holder': 'gake',         // tanky sad-sack holder
+  'paper-hands': 'pepe',        // panicky, flees
+  'chad-trader': 'mert',        // golden bull gigachad
+  'rug-dev': 'ansem',           // anonymous hoodie dev
   'diamond-hands': 'phoenix',   // huge fiery tank
   'whale': 'phoenix',           // the boss
-  'mev-bots': 'vanguard',       // techy armored swarm
-  'sniper-bot': 'vanguard',     // military marksman
-  'fud-spirit': 'crimson',      // dark, spooky caster
-  'influencer': 'explorer',     // flashy youth
-  'scalper': 'explorer',        // cheap fast cycle
+  'mev-bots': 'vucan',          // techy ranged swarm
+  'sniper-bot': 'vucan',        // marksman
+  'fud-spirit': 'toly',         // caster
+  'influencer': 'mert',         // flashy frontman
+  'scalper': 'pepe',            // cheap fast cycle
   'discord-raid': 'pepe',       // cheap swarm
-  'moon-boy': 'degen',          // win-condition charger
+  'moon-boy': 'mert',           // win-condition charger
   // trading-bot is a building → rendered as a structure, no character
   'airdrop': 'phoenix',         // fiery flyer
-  'fomo-jet': 'crimson',        // flying splash mage
-  'gigachad': 'degen',          // big bruiser
+  'fomo-jet': 'phoenix',        // flying splash
+  'gigachad': 'mert',           // big bruiser
   'sailor-cat': 'gake',         // tanky support cat
   'fomo-mob': 'pepe',           // fast swarm
-  'shadow-dev': 'explorer',     // stealth assassin
-  'degen-titan': 'vanguard',    // massive tank
-  'mev-overlord': 'crimson',    // splash mage
-  'based-brawlers': 'degen',    // lifesteal swarm
+  'shadow-dev': 'ansem',        // stealth assassin
+  'degen-titan': 'sbf',         // massive tank
+  'mev-overlord': 'toly',       // splash mage
+  'based-brawlers': 'pepe',     // lifesteal swarm
   'mert': 'mert',               // golden-armored bull trader
   'ansem': 'ansem',             // hooded assassin
   'toly': 'toly',               // architect support
@@ -57,7 +59,7 @@ export const CARD_PORTRAIT: Record<string, string> = {
   ...CARD_CHAR,
 }
 
-export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix' | 'gake' | 'ansem' | 'sbf' | 'mert' | 'toly' | 'vucan'
+export type CharName = 'pepe' | 'phoenix' | 'gake' | 'ansem' | 'sbf' | 'mert' | 'toly' | 'vucan'
 
 interface CharAsset {
   scene: THREE.Group
@@ -186,7 +188,7 @@ export class Battle3D {
   async load(): Promise<void> {
     this.loader.setMeshoptDecoder(MeshoptDecoder)
     const glb = (url: string) => this.loader.loadAsync(url)
-    const charNames: CharName[] = ['vanguard', 'explorer', 'crimson', 'pepe', 'bluemob', 'degen', 'phoenix', 'gake', 'ansem', 'sbf', 'mert', 'toly', 'vucan']
+    const charNames: CharName[] = ['pepe', 'phoenix', 'gake', 'ansem', 'sbf', 'mert', 'toly', 'vucan']
     const [grass, water, towerBlue, towerRed, castleBlue, castleRed, ...charGlbs] = await Promise.all([
       glb('/assets/3d/kaykit/hex_grass.gltf'),
       glb('/assets/3d/kaykit/hex_water.gltf'),
@@ -645,7 +647,7 @@ export class Battle3D {
   private createUnit(u: UnitEntity): UnitView {
     const card = getCard(u.cardId)
     if (card.building) return this.createBuilding(u)
-    const charName = CARD_CHAR[u.cardId] ?? 'explorer'
+    const charName = CARD_CHAR[u.cardId] ?? 'pepe'
     const asset = this.chars[charName]!
     const model = cloneSkeleton(asset.scene)
     // size reads the role: tanks/bosses loom, swarms are small, plus a touch of hp scaling

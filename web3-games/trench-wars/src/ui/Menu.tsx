@@ -107,7 +107,7 @@ export function Menu({ account, setAccount, go }: Props) {
             <Icon name="loot" size={16} color="#f5c842" />
             <span>0</span>
           </div>
-          <div className="cr-resource cr-resource-token" title="$ROYALE">
+          <div className="cr-resource cr-resource-token" title="$TR">
             <Icon name="elixir" size={16} color="#b44dff" />
             <span>0</span>
           </div>

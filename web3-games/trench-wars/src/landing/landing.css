@@ -88,6 +88,13 @@ html.lenis::-webkit-scrollbar { width: 0; height: 0; display: none; }
 @media (max-width: 860px) {
   .tr-hero-stage { height: clamp(320px, 58vw, 480px); border-radius: 18px; }
   .tr-hero-stage::before, .tr-hero-stage-shine, .tr-hero-stage-vignette { border-radius: 18px; }
+  /* Remove the orange background aura behind the 3D world on mobile — it clashes with the scene. */
+  .tr-hero-bg-glow-gold { display: none; }
+  .tr-hero-bg {
+    background:
+      radial-gradient(ellipse 70% 45% at 80% 70%, rgba(255, 77, 94, 0.06), transparent 50%),
+      linear-gradient(180deg, #07090d 0%, #0a0e14 50%, #07090d 100%);
+  }
 }
 
 /* ---------- Hero background — trench battlefield atmosphere ---------- */
@@ -170,6 +177,10 @@ html.lenis::-webkit-scrollbar { width: 0; height: 0; display: none; }
   0%, 100% { transform: translateY(0); opacity: 0.7; }
   50% { transform: translateY(8px); opacity: 1; }
 }
+
+/* Hero 3D loading spinner */
+.tr-spin { animation: tr-spin 0.9s linear infinite; }
+@keyframes tr-spin { to { transform: rotate(360deg); } }
 
 /* ---------- Landing CTA button overrides ---------- */
 .tr-landing .btn.primary.big {

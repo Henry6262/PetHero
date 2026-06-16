@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react'
 import SideRays from '../reactbits/SideRays'
+import { SceneLoader } from '../three/SceneLoader'
 
 // The R3F battle preview pulls in three + drei — lazy-load so WebGL never blocks first paint.
 const BattlePreview = lazy(() =>
@@ -101,6 +102,8 @@ export function Hero() {
         <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>
           <BattlePreview />
         </Suspense>
+        {/* Branded loading overlay — covers the blank gap until the 3D assets stream in. */}
+        <SceneLoader />
       </div>
 
       {/* Scroll hint */}

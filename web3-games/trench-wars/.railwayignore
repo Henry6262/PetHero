@@ -6,4 +6,9 @@ dist
 test-results
 playwright-report
 *.log
-public/assets/3d/chars
+public
+frontend
+tests
+e2e
+scripts
+*.md

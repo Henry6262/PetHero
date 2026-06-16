@@ -244,7 +244,7 @@ export function CharacterShowcase() {
             </div>
 
             {/* Right: animated 3D model */}
-            <div style={{ height: 140, minHeight: 115, marginLeft: 100 }}>
+            <div style={{ height: 560, minHeight: 460 }}>
               <CharacterModel charName={char.charName} />
             </div>
           </div>

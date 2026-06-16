@@ -35,7 +35,7 @@ function BattleLoading() {
     const id = setInterval(() => setProgress((p) => Math.min(100, p + Math.random() * 12 + 4)), 120)
     return () => clearInterval(id)
   }, [])
-  const portrait = '/assets/3d/portraits/vanguard.png'
+  const portrait = '/assets/3d/portraits/mert.png'
   return (
     <div className="battle-loading">
       <div className="battle-loading-bg" style={{ backgroundImage: `url(${portrait})` }} />
