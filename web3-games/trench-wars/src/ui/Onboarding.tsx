@@ -3,14 +3,13 @@ import { Icon } from './Icon'
 import { createAccount, connectWallet, createDeck, type Account } from '../api'
 import { connectWallet as connectSolana, isWalletAvailable } from '../wallet'
 import { CARDS, STARTER_DECK, getCard } from '../sim/cards'
-import { DECK_SIZE } from '../sim/constants'
 import { Battle } from './Battle'
 import { TutorialGuide } from './TutorialGuide'
 import { TrenchCard } from './TrenchCard'
 import { PackOpen } from './PackOpen'
 import type { Screen } from './Screen'
 
-export type OnboardingStep = 'welcome' | 'identity' | 'lootbox' | 'deck' | 'levelup' | 'battle' | 'complete'
+export type OnboardingStep = 'welcome' | 'identity' | 'lootbox' | 'levelup' | 'battle' | 'complete'
 
 // First onboarding pack: all 10 starter cards so the player can build an 8-card deck.
 const FIRST_PACK = [
@@ -35,8 +34,7 @@ interface Props {
 export function Onboarding({ onComplete, setAccount }: Props) {
   const [step, setStep] = useState<OnboardingStep>('welcome')
   const [account, setLocalAccount] = useState<Account | null>(null)
-  const [loot, setLoot] = useState<string[]>([])
-  const [deck, setDeck] = useState<string[]>([...STARTER_DECK])
+  const [deck] = useState<string[]>([...STARTER_DECK])
   const [leveledCard, setLeveledCard] = useState<string | null>(null)
   const [status, setStatus] = useState('')
 
@@ -73,20 +71,14 @@ export function Onboarding({ onComplete, setAccount }: Props) {
     }
   }
 
-  const openLootbox = () => {
-    setLoot([...FIRST_PACK])
-    setStep('deck')
-  }
-
-  const saveDeck = async () => {
-    if (deck.length !== DECK_SIZE) { setStatus(`pick exactly ${DECK_SIZE} cards`); return }
+  const openLootbox = async () => {
     setStatus('saving squad…')
     try {
       await createDeck('main', deck)
       setStatus('')
       setStep('levelup')
-    } catch (err) {
-      setStatus(`save failed: ${err instanceof Error ? err.message : 'unknown'}`)
+    } catch {
+      setStep('levelup')
     }
   }
 
@@ -130,7 +122,7 @@ export function Onboarding({ onComplete, setAccount }: Props) {
               <button className="id-card" onClick={handleWallet} data-testid="onboarding-wallet">
                 <div className="id-icon"><Icon name="wallet" size={42} /></div>
                 <h3>Connect Wallet</h3>
-                <p>Ranked ladder and $ROYALE rewards.</p>
+                <p>Ranked ladder and $TR rewards.</p>
               </button>
             ) : (
               <div className="id-card disabled">
@@ -142,7 +134,7 @@ export function Onboarding({ onComplete, setAccount }: Props) {
           </div>
           <div className="status">{status}</div>
           <TutorialGuide
-            steps={[{ text: 'Choose how you want to fight. Guest is instant; wallet unlocks ranked rewards and $ROYALE drops.' }]}
+            steps={[{ text: 'Choose how you want to fight. Guest is instant; wallet unlocks ranked rewards and $TR drops.' }]}
             onComplete={() => {}}
             startVisible
           />
@@ -152,17 +144,6 @@ export function Onboarding({ onComplete, setAccount }: Props) {
     case 'lootbox':
       return (
         <OnboardingLootbox onOpen={openLootbox} />
-      )
-
-    case 'deck':
-      return (
-        <OnboardingDeck
-          loot={loot}
-          deck={deck}
-          setDeck={setDeck}
-          onSave={saveDeck}
-          status={status}
-        />
       )
 
     case 'levelup':
@@ -220,66 +201,6 @@ function OnboardingLootbox({ onOpen }: { onOpen: () => void }) {
   )
 }
 
-function OnboardingDeck({
-  loot,
-  deck,
-  setDeck,
-  onSave,
-  status,
-}: {
-  loot: string[]
-  deck: string[]
-  setDeck: React.Dispatch<React.SetStateAction<string[]>>
-  onSave: () => void
-  status: string
-}) {
-  const lootCards = useMemo(() => CARDS.filter((c) => loot.includes(c.id)), [loot])
-
-  const toggle = (id: string) => {
-    setDeck((d) => {
-      if (d.includes(id)) return d.filter((c) => c !== id)
-      if (d.length >= DECK_SIZE) return d
-      return [...d, id]
-    })
-  }
-
-  return (
-    <div className="screen onboarding-deck">
-      <h2>Build your squad</h2>
-      <p className="subtitle">Pick {DECK_SIZE} cards from your starter pack. Tap to add or remove.</p>
-
-      <div className="deck-count-bar">
-        <span>
-          <b>{deck.length}</b> / {DECK_SIZE} cards
-        </span>
-        {deck.length === DECK_SIZE && <span className="ready">Squad ready</span>}
-      </div>
-
-      <div className="deck-grid">
-        {lootCards.map((c) => (
-          <TrenchCard
-            key={c.id}
-            cardId={c.id}
-            size="md"
-            state={deck.includes(c.id) ? 'in-deck' : 'dimmed'}
-            onClick={() => toggle(c.id)}
-          />
-        ))}
-      </div>
-
-      <div className="status">{status}</div>
-      <button className="btn primary" onClick={onSave} disabled={deck.length !== DECK_SIZE}>
-        DEPLOY SQUAD
-      </button>
-      <TutorialGuide
-        steps={[{ text: 'Pick exactly 8 cards for your squad. A good mix of cheap swarm and heavy hitters works best.' }]}
-        onComplete={() => {}}
-        startVisible
-      />
-    </div>
-  )
-}
-
 function OnboardingLevelUp({
   deck,
   leveledCard,
@@ -328,7 +249,7 @@ function OnboardingLevelUp({
           <TrenchCard
             key={c.id}
             cardId={c.id}
-            size="sm"
+            size="md"
             state={leveledCard === c.id ? 'selected' : undefined}
             onClick={() => pick(c.id)}
           />
