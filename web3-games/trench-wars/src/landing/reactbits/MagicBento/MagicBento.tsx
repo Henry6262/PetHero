@@ -576,15 +576,25 @@ const MagicBento: React.FC<BentoProps> = ({
             const BgIcon = card.icon ? (
               <div style={{
                 position: 'absolute',
-                right: -16,
-                bottom: -16,
-                width: 140,
-                height: 140,
-                opacity: 0.08,
-                color: '#fff',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 pointerEvents: 'none',
+                zIndex: 0,
+                overflow: 'hidden',
               }}>
-                {card.icon}
+                <div style={{
+                  width: 220,
+                  height: 220,
+                  color: `rgb(${glowColor})`,
+                  opacity: 0.13,
+                  filter: `drop-shadow(0 0 24px rgba(${glowColor}, 0.6))`,
+                  transform: 'translateY(20%) translateX(30%)',
+                  flexShrink: 0,
+                }}>
+                  {card.icon}
+                </div>
               </div>
             ) : null;
             const Content = (
