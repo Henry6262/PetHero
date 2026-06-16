@@ -2,9 +2,9 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils.js'
-import { ARENA_H, ARENA_W, RIVER_Y, LANE_LEFT_X, LANE_RIGHT_X } from '../sim/constants'
+import { ARENA_H, ARENA_W, RIVER_Y, LANE_LEFT_X, LANE_RIGHT_X, TICK_MS } from '../sim/constants'
 import { getCard } from '../sim/cards'
-import type { SimState, UnitEntity, Tower } from '../sim/types'
+import type { SimState, UnitEntity, Tower, CardDef } from '../sim/types'
 
 /**
  * Real-3D battle renderer. Owns a WebGL canvas positioned underneath the
@@ -78,6 +78,8 @@ interface UnitView {
   flyHeight?: number
   /** True while the attack animation is playing and should not be interrupted by movement. */
   attacking?: boolean
+  lastAttackState: 'idle' | 'windup' | 'strike'
+  hitPauseUntil: number
 }
 
 interface TowerView {
@@ -96,6 +98,12 @@ interface Projectile {
 interface DyingUnit {
   group: THREE.Group
   t: number
+}
+
+interface HitFlash {
+  mesh: THREE.Mesh
+  t: number
+  dur: number
 }
 
 interface Meteor {
@@ -128,6 +136,7 @@ export class Battle3D {
   private projectiles: Projectile[] = []
   private dying: DyingUnit[] = []
   private meteors: Meteor[] = []
+  private flashes: HitFlash[] = []
   private shakeAmp = 0
   private clock = 0
   private camBase = new THREE.Vector3()
@@ -427,17 +436,58 @@ export class Battle3D {
     // hide enemy stealth units until revealed; dim own
     view.group.visible = u.revealed || u.owner === 0
 
-    // attack fired this tick → cooldown jumped up
-    if (u.cooldown > view.lastCooldown) {
-      if (view.attack && view.walk) {
-        view.attack.reset().play()
-        view.walk.crossFadeTo(view.attack, 0.12, false)
-        view.moving = false
-        view.attacking = true
-      }
-      const range = getCard(u.cardId).range ?? 0
-      if (range > 1.5) this.fireAt(u.x, u.y, u.owner, range, view.isBuilding ? 2.0 : 1.4, u.owner === 0 ? 0x6fd4ff : 0xffb04a)
+    const prev = view.lastAttackState
+    const next = u.attackState
+    const card = getCard(u.cardId)
+
+    // Transition into windup: play attack animation scaled to windup duration.
+    if (next === 'windup' && prev !== 'windup' && view.attack && view.walk) {
+      const windupTicks = Math.max(1, u.cooldown)
+      const windupSec = windupTicks * TICK_MS / 1000
+      view.attack.reset()
+      view.attack.setLoop(THREE.LoopOnce, 1)
+      view.attack.clampWhenFinished = true
+      view.attack.setEffectiveTimeScale(view.attack.getClip().duration / windupSec)
+      view.walk.fadeOut(0.12)
+      view.attack.fadeIn(0.12).play()
+      view.moving = false
+      view.attacking = true
     }
+
+    // Instant strike (fully preloaded): play attack clip at normal speed and impact now.
+    if (next === 'strike' && prev !== 'windup' && view.attack && view.walk) {
+      view.attack.reset()
+      view.attack.setLoop(THREE.LoopOnce, 1)
+      view.attack.setEffectiveTimeScale(1)
+      view.walk.fadeOut(0.12)
+      view.attack.fadeIn(0.12).play()
+      view.moving = false
+      view.attacking = true
+    }
+
+    // Strike frame: impact FX, hit-pause, screenshake, projectile.
+    if (next === 'strike') {
+      this.flashHit(view)
+      if (card.hitPauseMs) {
+        view.hitPauseUntil = performance.now() + card.hitPauseMs
+      }
+      if (card.screenShake) {
+        this.shake(card.screenShake * 0.2)
+      }
+      if (card.range && card.range > 1.5) {
+        this.fireProjectileAtTarget(u, view, card)
+      }
+    }
+
+    // Return to idle/movement.
+    if (next === 'idle' && prev !== 'idle' && view.attack && view.walk) {
+      view.attack.fadeOut(0.15)
+      view.walk.reset().fadeIn(0.15).play()
+      view.attacking = false
+      view.moving = true
+    }
+
+    view.lastAttackState = next
     view.lastCooldown = u.cooldown
   }
 
@@ -470,6 +520,77 @@ export class Battle3D {
   }
 
   private lastSim: SimState | null = null
+
+  /** Spawn a ranged projectile from the unit's muzzle toward its actual sim target. */
+  private fireProjectileAtTarget(u: UnitEntity, view: UnitView, card: CardDef) {
+    if (!this.lastSim) return
+    let target: { x: number; y: number; h: number } | null = null
+    if (u.targetId !== undefined) {
+      const t = this.lastSim.units.find((e) => e.id === u.targetId)
+      if (t) target = { x: t.x, y: t.y, h: getCard(t.cardId).flying ? (getCard(t.cardId).heightOffset ?? 2.4) : 1.2 }
+    }
+    if (!target) {
+      // Fallback to nearest enemy (should be rare; target died this tick).
+      let bestD = card.range! + 1
+      for (const e of this.lastSim.units) {
+        if (e.owner === u.owner) continue
+        const d = Math.hypot(e.x - u.x, e.y - u.y)
+        if (d < bestD) {
+          bestD = d
+          target = { x: e.x, y: e.y, h: getCard(e.cardId).flying ? (getCard(e.cardId).heightOffset ?? 2.4) : 1.2 }
+        }
+      }
+      for (const t of this.lastSim.towers) {
+        if (t.owner === u.owner || t.hp <= 0) continue
+        const d = Math.hypot(t.x - u.x, t.y - u.y)
+        if (d < bestD) {
+          bestD = d
+          target = { x: t.x, y: t.y, h: t.kind === 'king' ? 3.2 : 2.0 }
+        }
+      }
+    }
+    if (!target) return
+
+    const from = this.getMuzzleWorldPos(view, card)
+    const to = toWorld(target.x, target.y)
+    to.y = target.h
+    const flatD = Math.hypot(to.x - from.x, to.z - from.z)
+    const speed = card.projectileSpeed ?? 1.0 // tiles/tick
+    const dur = Math.max(0.08, (flatD / speed) * TICK_MS / 1000)
+
+    const color = u.owner === 0 ? 0x6fd4ff : 0xffb04a
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 10, 10),
+      new THREE.MeshBasicMaterial({ color }),
+    )
+    mesh.position.copy(from)
+    this.scene.add(mesh)
+    this.projectiles.push({ mesh, from, to, t: 0, dur })
+    this.onProjectile?.()
+  }
+
+  /** Compute projectile spawn point in world space from card.projectileOffset (local space). */
+  private getMuzzleWorldPos(view: UnitView, card: CardDef): THREE.Vector3 {
+    const offset = card.projectileOffset ?? [0, 1.0, 0.3]
+    // projectileOffset is [x, y, z] in local character space; z points forward.
+    const local = new THREE.Vector3(offset[0], offset[1], offset[2])
+    local.applyQuaternion(view.group.quaternion)
+    const pos = view.group.position.clone().add(local)
+    pos.y = Math.max(pos.y, 0.3)
+    return pos
+  }
+
+  /** Brief white flash at the unit's chest to sell melee/ranged impacts. */
+  private flashHit(view: UnitView) {
+    const geo = new THREE.SphereGeometry(0.28, 10, 10)
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 })
+    const mesh = new THREE.Mesh(geo, mat)
+    const pos = view.group.position.clone()
+    pos.y += 1.0
+    mesh.position.copy(pos)
+    this.scene.add(mesh)
+    this.flashes.push({ mesh, t: 0, dur: 0.12 })
+  }
 
   /** Camera shake — call on big impacts (tower kills). */
   shake(amp: number) {
@@ -538,14 +659,10 @@ export class Battle3D {
       target: group.position.clone(),
       lastCooldown: u.cooldown,
       moving: true,
-      flyHeight: card.flying ? 2.4 : undefined,
+      flyHeight: card.flying ? (card.heightOffset ?? 2.4) : undefined,
+      lastAttackState: u.attackState,
+      hitPauseUntil: 0,
     }
-    mixer.addEventListener('finished', () => {
-      view.attacking = false
-      view.attack!.stop()
-      view.walk!.reset().play()
-      view.walk!.paused = !view.moving
-    })
     this.units.set(u.id, view)
     return view
   }
@@ -592,6 +709,8 @@ export class Battle3D {
       lastCooldown: u.cooldown,
       moving: false,
       isBuilding: true,
+      lastAttackState: u.attackState,
+      hitPauseUntil: 0,
     }
     this.units.set(u.id, view)
     return view
@@ -657,8 +776,26 @@ export class Battle3D {
         walk.paused = true
       }
       if (view.moving && dist > 0.01 && !view.attacking) walk.paused = false
+
+      // Hit-pause: freeze this unit's mixer for the duration of the card's hitPauseMs.
+      const now = performance.now()
+      view.mixer.timeScale = now < view.hitPauseUntil ? 0 : 1
       view.mixer.update(dt)
     }
+
+    // hit flashes: expand and fade
+    for (const f of this.flashes) {
+      f.t += dt / f.dur
+      const k = Math.min(1, f.t)
+      const mat = f.mesh.material as THREE.MeshBasicMaterial
+      mat.opacity = 0.55 * (1 - k)
+      const s = 1 + k * 0.6
+      f.mesh.scale.setScalar(s)
+    }
+    this.flashes = this.flashes.filter((f) => {
+      if (f.t >= 1) { this.scene.remove(f.mesh); return false }
+      return true
+    })
 
     // projectiles: arc from muzzle to target
     for (const p of this.projectiles) {

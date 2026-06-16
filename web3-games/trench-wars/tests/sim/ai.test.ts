@@ -55,7 +55,7 @@ describe('aiCommands spell usage', () => {
     s.decks[1][0] = 'liquidation-cascade'
     // cluster of 3 enemy (player 0) units on the AI's half
     for (let i = 0; i < 3; i++) {
-      s.units.push({ id: s.nextId++, owner: 0, cardId: 'jeet-horde', x: 9 + i * 0.3, y: 22, hp: 90, maxHp: 90, cooldown: 0, fleeing: false, revealed: true, buffUntil: 0, slowUntil: 0, hasAttacked: false })
+      s.units.push({ id: s.nextId++, owner: 0, cardId: 'jeet-horde', x: 9 + i * 0.3, y: 22, hp: 90, maxHp: 90, cooldown: 0, fleeing: false, revealed: true, buffUntil: 0, slowUntil: 0, hasAttacked: false, loadProgress: 0, attackState: 'idle' })
     }
     s.tick = AI_LEVELS[2].thinkEvery
     const cmds = aiCommands(s, 1, AI_LEVELS[2])

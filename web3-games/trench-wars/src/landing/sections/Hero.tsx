@@ -25,6 +25,7 @@ export function Hero() {
       {/* Background layer — dark trench atmosphere. */}
       <div className="tr-hero-bg" style={{ position: 'absolute', inset: 0, zIndex: 0 }} aria-hidden>
         <div className="tr-hero-bg-grid" />
+        <div className="tr-hero-moon" />
         <div className="tr-hero-bg-glow tr-hero-bg-glow-gold" />
         <div className="tr-hero-bg-glow tr-hero-bg-glow-ember" />
         <div className="tr-hero-bg-vignette" />

@@ -14,10 +14,10 @@ export interface CardDef {
   count?: number            // units spawned per play
   hp?: number
   damage?: number
-  range?: number            // attack range (tiles)
-  sightRange?: number       // aggro acquisition range
+  range?: number            // attack range (tiles), measured edge-to-edge from collision radius
+  sightRange?: number       // aggro acquisition range, measured edge-to-edge from collision radius
   speed?: number            // tiles per tick
-  attackSpeed?: number      // ticks between attacks
+  attackSpeed?: number      // ticks between attacks (hit time)
   splashRadius?: number     // 0/undefined = single target
   targeting?: 'nearest' | 'lowestHp'
   flees?: boolean           // Paper Hands: flees below FLEE_HP_RATIO
@@ -41,6 +41,49 @@ export interface CardDef {
   buffTicks?: number
   buffSpeedMult?: number
   buffDamageMult?: number
+
+  // === COMBAT GEOMETRY (P0) ===
+  /** Collision radius in tiles. Determines melee contact distance,
+   *  separation steering, and visual scale. */
+  radius?: number
+  /** Approximate mass for push resolution (light 1 .. heavy 12).
+   *  Defaults to radius-based fallback in sim if absent. */
+  mass?: number
+
+  // === ATTACK TIMING (P1) ===
+  /** Portion of attackSpeed (in ticks) that can be preloaded while walking.
+   *  First hit delay = attackSpeed - loadTime.
+   *  Default: 0 (no preload — first hit takes full attackSpeed). */
+  loadTime?: number
+  /** Delay in ticks before damage is dealt during the attack animation.
+   *  Used to sync visual strike with damage application.
+   *  Default: attackSpeed / 2 */
+  damageDelay?: number
+
+  // === PROJECTILES (P1) ===
+  /** For ranged units: local [x, y, z] offset where projectiles spawn.
+   *  Applied in character local space. Default: [0, 1.0, 0.3] */
+  projectileOffset?: [number, number, number]
+  /** Named bone/empty in the GLB to use as projectile spawn point.
+   *  Falls back to projectileOffset if missing. */
+  muzzleBone?: string
+  /** Projectile travel speed in tiles per tick. */
+  projectileSpeed?: number
+
+  // === VISUAL / FX (P1/P3) ===
+  /** ID of impact particle effect to spawn on hit.
+   *  References an entry in a new fx registry. */
+  impactFx?: string
+  /** ID of death effect (particles, sound) to spawn on death. */
+  deathFx?: string
+  /** Duration of hit-pause in milliseconds. 0 = no pause.
+   *  Default: 80 for melee, 0 for ranged */
+  hitPauseMs?: number
+  /** Screen shake intensity (0–10) on attack impact. Default: 0 */
+  screenShake?: number
+  /** Visual height offset in tiles above ground plane.
+   *  Only applies when flying: true. Default: 2.4 */
+  heightOffset?: number
 }
 
 export interface UnitEntity {
@@ -57,6 +100,9 @@ export interface UnitEntity {
   buffUntil: number   // pump-signal expiry tick; 0 = no buff
   slowUntil: number   // mage-slow expiry tick; 0 = not slowed
   hasAttacked: boolean // for assassin critFirst
+  loadProgress: number // 0..loadTime; accumulated preload while walking toward a target
+  attackState: 'idle' | 'windup' | 'strike'
+  targetId?: number   // current combat target (unit only); renderer uses it for projectiles/aim
 }
 
 export interface Tower {

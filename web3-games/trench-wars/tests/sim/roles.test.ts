@@ -9,6 +9,7 @@ function place(s: SimState, cardId: string, owner: PlayerId, x: number, y: numbe
     id: s.nextId++, owner, cardId, x, y, hp: hp ?? c.hp!, maxHp: c.hp!,
     cooldown: 0, fleeing: false, revealed: c.stealthRange === undefined,
     buffUntil: 0, slowUntil: 0, hasAttacked: false,
+    loadProgress: c.loadTime ?? c.attackSpeed!, attackState: 'idle',
   }
   s.units.push(u)
   return u

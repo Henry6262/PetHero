@@ -11,6 +11,7 @@ function place(s: SimState, cardId: string, owner: PlayerId, x: number, y: numbe
     hp: hpOverride ?? card.hp!, maxHp: card.hp!,
     cooldown: 0, fleeing: false,
     revealed: card.stealthRange === undefined, buffUntil: 0, slowUntil: 0, hasAttacked: false,
+    loadProgress: card.loadTime ?? card.attackSpeed!, attackState: 'idle',
   }
   s.units.push(u)
   return u
@@ -102,5 +103,31 @@ describe('combat', () => {
     s = step(s, [])
     // whale damage 200 one-shots both 90hp jeets via splash (radius 1.5 covers both)
     expect(s.units.filter(u => u.owner === 1).length).toBe(0)
+  })
+  it('commander loadTime gives a faster first hit', () => {
+    let s = fresh()
+    const ansemId = place(s, 'ansem', 0, 9, 15).id // loadTime 8, attackSpeed 12
+    place(s, 'diamond-hands', 1, 9.4, 15, 2000) // big hp sponge
+    s = step(s, [])
+    // preload consumed: windup is 12 - 8 = 4 ticks instead of 12
+    const ansem = s.units.find(u => u.id === ansemId)!
+    expect(ansem.attackState).toBe('windup')
+    expect(ansem.cooldown).toBe(4)
+    // after 4 more steps the strike should land
+    for (let i = 0; i < 4; i++) s = step(s, [])
+    const ansemAfter = s.units.find(u => u.id === ansemId)!
+    expect(ansemAfter.hasAttacked).toBe(true)
+    expect(ansemAfter.attackState).toBe('strike')
+  })
+  it('non-commander with default loadTime attacks immediately when adjacent', () => {
+    let s = fresh()
+    const chadId = place(s, 'chad-trader', 0, 9, 15).id // loadTime defaults to attackSpeed 11
+    const victimId = place(s, 'jeet-horde', 1, 9.5, 15, 200).id
+    s = step(s, [])
+    const chad = s.units.find(u => u.id === chadId)!
+    const victim = s.units.find(u => u.id === victimId)!
+    expect(chad.attackState).toBe('strike')
+    expect(chad.hasAttacked).toBe(true)
+    expect(victim.hp).toBeLessThan(200)
   })
 })

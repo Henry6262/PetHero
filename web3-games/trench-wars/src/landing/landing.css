@@ -93,6 +93,22 @@ html.lenis::-webkit-scrollbar { width: 0; height: 0; display: none; }
     linear-gradient(180deg, #07090d 0%, #0a0e14 50%, #07090d 100%);
 }
 
+/* Moon in the sky — top area, behind the 3D landscape (canvas is transparent up there) */
+.tr-hero-moon {
+  position: absolute;
+  top: 7%;
+  left: 13%;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 38%, #f3f6fe 0%, #dfe6f6 42%, #b9c6e6 72%, rgba(150,168,210,0) 100%);
+  box-shadow:
+    0 0 50px 16px rgba(180, 196, 235, 0.35),
+    0 0 130px 50px rgba(150, 170, 220, 0.18);
+}
+@media (max-width: 860px) { .tr-hero-moon { width: 90px; height: 90px; top: 8%; left: 20%; } }
+
 .tr-hero-bg-grid {
   position: absolute;
   inset: 0;
