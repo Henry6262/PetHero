@@ -4,6 +4,7 @@ import { Icon } from './Icon'
 import { PackOpen } from './PackOpen'
 import { chestForTier, type ChestTier } from './crates'
 import { CARDS } from '../sim/cards'
+import { rarityOf } from './rarity'
 
 interface Offer {
   cardId: string
@@ -13,15 +14,15 @@ interface Offer {
 }
 
 const DAILY_DEALS: Offer[] = [
-  { cardId: 'jeet-horde', price: 200, currency: 'gold', stock: 20 },
-  { cardId: 'diamond-hands', price: 1200, currency: 'gold', stock: 5 },
-  { cardId: 'whale', price: 300, currency: 'gem', stock: 1 },
+  { cardId: 'ansem', price: 300, currency: 'gold', stock: 10 },
+  { cardId: 'sbf', price: 2500, currency: 'gold', stock: 2 },
+  { cardId: 'vucan', price: 400, currency: 'gem', stock: 1 },
 ]
 
 const TRADER_CARDS: Offer[] = [
-  { cardId: 'rug-dev', price: 150, currency: 'gem', stock: 1 },
-  { cardId: 'sniper-bot', price: 2500, currency: 'gold', stock: 3 },
-  { cardId: 'influencer', price: 120, currency: 'gem', stock: 2 },
+  { cardId: 'mert', price: 180, currency: 'gem', stock: 1 },
+  { cardId: 'toly', price: 2200, currency: 'gold', stock: 3 },
+  { cardId: 'whale', price: 150, currency: 'gem', stock: 1 },
 ]
 
 interface ChestOfferDef {
@@ -83,12 +84,54 @@ function Banner({ children }: { children: React.ReactNode }) {
   return <div className="shop-banner"><span>{children}</span></div>
 }
 
-function rollChest(count: number): string[] {
-  const ids = CARDS.map((c) => c.id)
-  const out: string[] = []
-  for (let i = 0; i < count; i++) {
-    out.push(ids[Math.floor(Math.random() * ids.length)])
+const RARITY_WEIGHTS = {
+  common: 50,
+  rare: 30,
+  epic: 15,
+  legendary: 5,
+}
+
+/** Cards released this season — boosted drop rate in every chest. */
+const FEATURED_CARDS = new Set(['mert', 'toly', 'ansem', 'sbf', 'vucan'])
+const FEATURED_BONUS = 4
+
+const CHEST_RARITY_FLOOR: Record<ChestTier, 'common' | 'rare' | 'epic' | 'legendary'> = {
+  wooden: 'common',
+  silver: 'common',
+  gold: 'rare',
+  magical: 'epic',
+  rug: 'epic',
+}
+
+const RARITY_ORDER = ['common', 'rare', 'epic', 'legendary'] as const
+
+function rollCard(tier: ChestTier): string {
+  const floorIdx = RARITY_ORDER.indexOf(CHEST_RARITY_FLOOR[tier])
+
+  // Build a weighted pool respecting the chest's rarity floor.
+  const pool: { id: string; weight: number }[] = []
+  for (const c of CARDS) {
+    if (c.type !== 'unit') continue // chests drop fighters, not spells
+    const rarity = rarityOf(c.id)
+    const idx = RARITY_ORDER.indexOf(rarity)
+    if (idx < floorIdx) continue
+    let weight = RARITY_WEIGHTS[rarity]
+    if (FEATURED_CARDS.has(c.id)) weight *= FEATURED_BONUS
+    pool.push({ id: c.id, weight })
   }
+
+  const total = pool.reduce((s, p) => s + p.weight, 0)
+  let roll = Math.random() * total
+  for (const p of pool) {
+    roll -= p.weight
+    if (roll <= 0) return p.id
+  }
+  return pool[pool.length - 1]?.id ?? 'mert'
+}
+
+function rollChest(count: number, tier: ChestTier): string[] {
+  const out: string[] = []
+  for (let i = 0; i < count; i++) out.push(rollCard(tier))
   return out
 }
 
@@ -97,7 +140,7 @@ export function Shop() {
   const [opening, setOpening] = useState<{ tier: ChestTier; cardIds: string[] } | null>(null)
 
   const openChest = (tier: ChestTier, count: number) => {
-    setOpening({ tier, cardIds: rollChest(count) })
+    setOpening({ tier, cardIds: rollChest(count, tier) })
   }
 
   return (
@@ -105,7 +148,7 @@ export function Shop() {
       <div className="screen shop-screen">
         <div className="shop-merchant">
           <div className="shop-portrait">
-            <img src="/assets/3d/portraits/degen.png" alt="Rug Merchant" />
+            <img src="/assets/3d/portraits/sbf.png" alt="Rug Merchant" />
           </div>
           <div className="shop-speech">
             <div className="shop-speech-name">RUG MERCHANT</div>

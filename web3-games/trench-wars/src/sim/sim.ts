@@ -346,7 +346,9 @@ function updateTowers(s: SimState) {
       if (!target || dist(t, u) < dist(t, target) || (dist(t, u) === dist(t, target) && u.id < target.id)) target = u
     }
     if (target) {
-      applyHit(target, stats.damage) // armor reduces tower damage too
+      // Towers delete direct attackers in ~3-4 hits, scaling with target health.
+      const directHitDmg = Math.round(target.maxHp / 3.5)
+      applyHit(target, directHitDmg)
       t.cooldown = stats.attackSpeed
     }
   }

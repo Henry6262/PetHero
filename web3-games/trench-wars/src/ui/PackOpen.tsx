@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { TrenchCard } from './TrenchCard'
 import { rarityOf, rarityColor } from './rarity'
-import { CARD_CHAR } from '../render3d/Battle3D'
+import { CARD_PORTRAIT } from '../render3d/Battle3D'
 import ChromaCard from './reactbits/ChromaCard'
 import Crate3D from './Crate3D'
 import { chestForTier, type ChestTier } from './crates'
@@ -45,7 +45,7 @@ export function PackOpen({ cardIds, onDone, tier = 'rug' }: Props) {
 
   const current = cardIds[index]
   const rayColor = current ? rarityColor(rarityOf(current)) : '#fff'
-  const portrait = current ? (CARD_CHAR[current] ?? 'explorer') : 'explorer'
+  const portrait = current ? (CARD_PORTRAIT[current] ?? 'explorer') : 'explorer'
   const rayColorHex = `${rayColor}55`
 
   return (

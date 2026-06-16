@@ -76,6 +76,8 @@ interface UnitView {
   moving: boolean
   isBuilding?: boolean
   flyHeight?: number
+  /** True while the attack animation is playing and should not be interrupted by movement. */
+  attacking?: boolean
 }
 
 interface TowerView {
@@ -429,8 +431,9 @@ export class Battle3D {
     if (u.cooldown > view.lastCooldown) {
       if (view.attack && view.walk) {
         view.attack.reset().play()
-        view.walk.crossFadeTo(view.attack, 0.08, false)
+        view.walk.crossFadeTo(view.attack, 0.12, false)
         view.moving = false
+        view.attacking = true
       }
       const range = getCard(u.cardId).range ?? 0
       if (range > 1.5) this.fireAt(u.x, u.y, u.owner, range, view.isBuilding ? 2.0 : 1.4, u.owner === 0 ? 0x6fd4ff : 0xffb04a)
@@ -538,6 +541,7 @@ export class Battle3D {
       flyHeight: card.flying ? 2.4 : undefined,
     }
     mixer.addEventListener('finished', () => {
+      view.attacking = false
       view.attack!.stop()
       view.walk!.reset().play()
       view.walk!.paused = !view.moving
@@ -644,14 +648,15 @@ export class Battle3D {
         while (diff < -Math.PI) diff += Math.PI * 2
         view.group.rotation.y += diff * Math.min(1, dt * 10)
         view.group.position.addScaledVector(d, Math.min(1, dt * 9))
-        if (!view.moving && !attack.isRunning()) {
+        // Only resume walking once the attack animation has finished.
+        if (!view.moving && !view.attacking && !attack.isRunning()) {
           view.moving = true
           attack.crossFadeTo(walk.reset().play(), 0.12, false)
         }
-      } else if (view.moving && !attack.isRunning()) {
+      } else if (view.moving && !view.attacking && !attack.isRunning()) {
         walk.paused = true
       }
-      if (view.moving && dist > 0.01) walk.paused = false
+      if (view.moving && dist > 0.01 && !view.attacking) walk.paused = false
       view.mixer.update(dt)
     }
 
