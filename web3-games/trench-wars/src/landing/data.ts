@@ -79,7 +79,6 @@ export interface Mechanic {
 }
 
 export const MECHANICS: Mechanic[] = [
-  { label: 'Economy', title: 'Elixir curve', body: 'Spend smart. Punish overextension.' },
   { label: 'Lanes', title: 'Three-front war', body: 'Commit, rotate, flank.' },
   { label: 'Spells', title: 'Impact VFX', body: 'Every hit, heal and burn reads clearly.' },
   { label: 'Progression', title: 'Win to unlock', body: 'Climb five tiers and expand your deck.' },
@@ -94,7 +93,8 @@ export interface TokenSplit {
 }
 
 export const TOKEN = {
-  ticker: '$ROYALE',
+  ticker: '$TR',
+  mint: 'HM9XYQihDEaKQQHnxo8fJVVVkUbXQD5WdgaD5XKepump',
   burnedToDate: 1_240_000,
   splits: [
     {

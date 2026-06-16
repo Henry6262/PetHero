@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { TOKEN } from '../data'
 
 interface NavProps {
   onPlay: () => void
@@ -8,8 +9,9 @@ const LINKS = [
   ['Roster', 'roster'],
   ['How It Works', 'how'],
   ['Mechanics', 'mechanics'],
-  ['Economy', 'economy'],
 ] as const
+
+const DEXSCREENER_URL = `https://dexscreener.com/solana/${TOKEN.mint}`
 
 export function Nav({ onPlay }: NavProps) {
   const [solid, setSolid] = useState(false)
@@ -47,8 +49,53 @@ export function Nav({ onPlay }: NavProps) {
         borderBottom: `1px solid ${solid ? 'rgba(212,161,60,0.18)' : 'transparent'}`,
       }}
     >
-      {/* left spacer — keeps the links/PLAY cluster right-aligned via space-between */}
-      <div aria-hidden style={{ width: 120 }} />
+      {/* DexScreener token button — left side */}
+      <a
+        href={DEXSCREENER_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '8px 14px',
+          borderRadius: 10,
+          background: 'rgba(34, 197, 94, 0.12)',
+          border: '1px solid rgba(34, 197, 94, 0.35)',
+          color: '#4ade80',
+          fontFamily: 'var(--font-display)',
+          fontWeight: 800,
+          fontSize: 13,
+          letterSpacing: '0.06em',
+          textDecoration: 'none',
+          textTransform: 'uppercase',
+          transition: 'all 0.2s ease',
+          backdropFilter: 'blur(8px)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(34, 197, 94, 0.22)'
+          e.currentTarget.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.25)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(34, 197, 94, 0.12)'
+          e.currentTarget.style.boxShadow = 'none'
+        }}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+          <polyline points="17 6 23 6 23 12" />
+        </svg>
+        <span>Screener</span>
+      </a>
 
       {/* Centered glassmorphic crown emblem */}
       <a
