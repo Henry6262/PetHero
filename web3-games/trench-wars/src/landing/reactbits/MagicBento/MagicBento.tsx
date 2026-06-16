@@ -12,6 +12,7 @@ export interface BentoCardProps {
   title?: string;
   description?: string;
   label?: string;
+  icon?: React.ReactNode;
   textAutoHide?: boolean;
   disableAnimations?: boolean;
 }
@@ -554,7 +555,7 @@ const MagicBento: React.FC<BentoProps> = ({
       <BentoCardGrid gridRef={gridRef}>
         <div className="card-responsive grid gap-2">
           {cards.map((card, index) => {
-            const baseClassName = `card flex flex-col justify-between relative aspect-[4/3] min-h-[200px] w-full max-w-full p-5 rounded-[20px] border border-solid font-light overflow-hidden transition-colors duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
+            const baseClassName = `card flex flex-col justify-between relative aspect-[4/3] min-h-[300px] w-full max-w-full p-7 rounded-[20px] border border-solid font-light overflow-hidden transition-colors duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
               enableBorderGlow ? 'card--border-glow' : ''
             }`;
 
@@ -572,9 +573,23 @@ const MagicBento: React.FC<BentoProps> = ({
             } as React.CSSProperties;
 
             const Header = <span className="card__label text-sm uppercase tracking-widest opacity-70">{card.label}</span>;
+            const BgIcon = card.icon ? (
+              <div style={{
+                position: 'absolute',
+                right: -16,
+                bottom: -16,
+                width: 140,
+                height: 140,
+                opacity: 0.08,
+                color: '#fff',
+                pointerEvents: 'none',
+              }}>
+                {card.icon}
+              </div>
+            ) : null;
             const Content = (
               <div className="card__content flex flex-col relative text-white">
-                <h3 className={`card__title font-display font-semibold text-lg m-0 mb-1 ${textAutoHide ? 'text-clamp-1' : ''}`}>
+                <h3 className={`card__title font-display font-semibold text-xl m-0 mb-2 ${textAutoHide ? 'text-clamp-1' : ''}`}>
                   {card.title}
                 </h3>
                 <p className={`card__description text-sm leading-5 opacity-80 ${textAutoHide ? 'text-clamp-2' : ''}`}>
@@ -596,6 +611,7 @@ const MagicBento: React.FC<BentoProps> = ({
                   clickEffect={clickEffect}
                   enableMagnetism={enableMagnetism}
                 >
+                  {BgIcon}
                   <div className="card__header flex justify-between gap-3 relative text-white">{Header}</div>
                   {Content}
                 </ParticleCard>
@@ -604,6 +620,7 @@ const MagicBento: React.FC<BentoProps> = ({
 
             return (
               <div key={index} className={baseClassName} style={cardStyle}>
+                {BgIcon}
                 <div className="card__header flex justify-between gap-3 relative text-white">{Header}</div>
                 {Content}
               </div>
