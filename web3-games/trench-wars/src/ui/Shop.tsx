@@ -6,6 +6,8 @@ import { chestForTier, type ChestTier } from './crates'
 import { CARDS } from '../sim/cards'
 import { rarityOf } from './rarity'
 import { TOKEN } from '../landing/data'
+import Crate3D, { R3FBoundary } from './Crate3D'
+import { getBalance, spend, addCards } from '../game/economy'
 
 interface Offer {
   cardId: string
@@ -61,15 +63,18 @@ function OfferCard({ offer }: { offer: Offer }) {
   )
 }
 
-function ChestOffer({ offer, onOpen }: { offer: ChestOfferDef; onOpen: (tier: ChestTier, count: number) => void }) {
+function ChestOffer({ offer, onOpen, disabled }: { offer: ChestOfferDef; onOpen: (tier: ChestTier, count: number) => void; disabled?: boolean }) {
   const chest = chestForTier(offer.tier)
   return (
-    <div className="shop-chest" onClick={() => onOpen(offer.tier, offer.count)}>
-      <div className="shop-chest-visual" style={{ ['--crate-glow' as any]: chest.glow }}>
-        <div className="crate-box">
-          <div className="crate-lid"><Icon name="loot" size={24} /></div>
-          <div className="crate-body"><Icon name="loot" size={32} /></div>
-        </div>
+    <div
+      className={`shop-chest${disabled ? ' shop-chest--disabled' : ''}`}
+      onClick={() => !disabled && onOpen(offer.tier, offer.count)}
+      style={{ opacity: disabled ? 0.45 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
+    >
+      <div className="shop-chest-visual" style={{ height: 160, pointerEvents: 'none' }}>
+        <R3FBoundary fallback={<div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center' }}><Icon name="loot" size={40} /></div>}>
+          <Crate3D src={chest.url} size={160} glow={chest.glow} />
+        </R3FBoundary>
       </div>
       <div className="shop-chest-name">{chest.name}</div>
       <div className="shop-chest-count">{offer.count} cards</div>
@@ -136,12 +141,28 @@ function rollChest(count: number, tier: ChestTier): string[] {
   return out
 }
 
-export function Shop() {
-  const [msg] = useState("Fresh cards and crates just dropped, commander. Spend wisely.")
+export function Shop({ onBalanceChange }: { onBalanceChange?: () => void } = {}) {
+  const [msg, setMsg] = useState("Fresh cards and crates just dropped, commander. Spend wisely.")
   const [opening, setOpening] = useState<{ tier: ChestTier; cardIds: string[] } | null>(null)
+  const [gold, setGold] = useState(() => getBalance('gold'))
+  const [gem, setGem] = useState(() => getBalance('gem'))
 
   const openChest = (tier: ChestTier, count: number) => {
+    const offer = CHEST_OFFERS.find((o) => o.tier === tier)
+    if (!offer) return
+    if (!spend(offer.currency, offer.price)) {
+      setMsg(`Not enough ${offer.currency === 'gold' ? '🪙 gold' : '💎 gems'} for that chest.`)
+      return
+    }
+    setGold(getBalance('gold'))
+    setGem(getBalance('gem'))
     setOpening({ tier, cardIds: rollChest(count, tier) })
+  }
+
+  const onPackDone = () => {
+    if (opening) addCards(opening.cardIds)
+    setOpening(null)
+    onBalanceChange?.()
   }
 
   return (
@@ -160,11 +181,11 @@ export function Shop() {
         <div className="shop-balance">
           <div className="shop-balance-row">
             <Icon name="loot" size={16} color="#f5c842" />
-            <span>0</span>
+            <span>{gold}</span>
           </div>
           <div className="shop-balance-row">
             <Icon name="elixir" size={16} color="#b44dff" />
-            <span>0</span>
+            <span>{gem}</span>
           </div>
         </div>
 
@@ -217,7 +238,12 @@ export function Shop() {
           <Banner>Chests</Banner>
           <div className="shop-chests">
             {CHEST_OFFERS.map((o) => (
-              <ChestOffer key={o.tier} offer={o} onOpen={openChest} />
+              <ChestOffer
+                key={o.tier}
+                offer={o}
+                onOpen={openChest}
+                disabled={(o.currency === 'gold' ? gold : gem) < o.price}
+              />
             ))}
           </div>
         </div>
@@ -244,7 +270,7 @@ export function Shop() {
 
       {opening && (
         <div className="shop-overlay">
-          <PackOpen tier={opening.tier} cardIds={opening.cardIds} onDone={() => setOpening(null)} />
+          <PackOpen tier={opening.tier} cardIds={opening.cardIds} onDone={onPackDone} />
         </div>
       )}
     </>

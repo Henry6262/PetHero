@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense, lazy } from 'react'
+import { useEffect, useState, Suspense, lazy, useCallback } from 'react'
 import { createAccount, getMe, getOpponent, connectWallet, getDecks } from '../api'
 import type { Account, Deck } from '../api'
 import { connectWallet as connectSolana, isWalletAvailable } from '../wallet'
@@ -7,6 +7,7 @@ import { Icon } from './Icon'
 import { TrenchCard } from './TrenchCard'
 import { Shop } from './Shop'
 import type { Screen } from './Screen'
+import { getBalance } from '../game/economy'
 
 interface Props {
   account: Account | null
@@ -22,6 +23,13 @@ export function Menu({ account, setAccount, go }: Props) {
   const [status, setStatus] = useState('')
   const [deck, setDeck] = useState<Deck | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('battle')
+  const [gold, setGold] = useState(() => getBalance('gold'))
+  const [gem, setGem] = useState(() => getBalance('gem'))
+
+  const refreshBalances = useCallback(() => {
+    setGold(getBalance('gold'))
+    setGem(getBalance('gem'))
+  }, [])
 
   useEffect(() => {
     ;(window as any).__TRENCH_READY__ = true
@@ -105,11 +113,11 @@ export function Menu({ account, setAccount, go }: Props) {
           </div>
           <div className="cr-resource cr-resource-gold" title="Gold">
             <Icon name="loot" size={16} color="#f5c842" />
-            <span>0</span>
+            <span>{gold}</span>
           </div>
-          <div className="cr-resource cr-resource-token" title="$TR">
+          <div className="cr-resource cr-resource-token" title="Gems">
             <Icon name="elixir" size={16} color="#b44dff" />
-            <span>0</span>
+            <span>{gem}</span>
           </div>
         </div>
       </header>
@@ -191,7 +199,7 @@ export function Menu({ account, setAccount, go }: Props) {
           </div>
         )}
 
-        {activeTab === 'loot' && <Shop />}
+        {activeTab === 'loot' && <Shop onBalanceChange={refreshBalances} />}
 
         {activeTab === 'leaderboard' && (
           <div className="cr-tab-panel">
