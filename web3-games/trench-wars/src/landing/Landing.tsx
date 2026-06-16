@@ -4,6 +4,7 @@ import { useScrollReveal } from './useScrollReveal'
 import { Nav } from './sections/Nav'
 import { Hero } from './sections/Hero'
 import { Roster } from './sections/Roster'
+import { CharacterShowcase } from './sections/CharacterShowcase'
 import { HowItWorks } from './sections/HowItWorks'
 import { Mechanics } from './sections/Mechanics'
 import { TokenEconomy } from './sections/TokenEconomy'
@@ -44,6 +45,7 @@ export function Landing({ onEnter }: LandingProps) {
       <Nav onPlay={onEnter} />
       <Hero />
       <Roster />
+      <CharacterShowcase />
       <HowItWorks />
       <Mechanics />
       <TokenEconomy />

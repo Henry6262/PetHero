@@ -28,5 +28,10 @@
   { "id": "degen-titan",    "name": "Degen Titan",         "cost": 7, "type": "unit", "role": "tank",     "count": 1, "hp": 3000, "damage": 130, "range": 0.8, "sightRange": 5.5, "speed": 0.06, "attackSpeed": 13, "armor": 14, "taunt": 3.5 },
   { "id": "mev-overlord",   "name": "MEV Overlord",        "cost": 5, "type": "unit", "role": "mage",     "count": 1, "hp": 300,  "damage": 110, "range": 5.5, "sightRange": 7.0, "speed": 0.08, "attackSpeed": 18, "splashRadius": 1.5, "slowTicks": 20 },
   { "id": "based-brawlers", "name": "Based Brawlers",      "cost": 3, "type": "unit", "role": "brawler",  "count": 3, "hp": 135,  "damage": 45,  "range": 0.8, "sightRange": 5.5, "speed": 0.16, "attackSpeed": 10, "lifesteal": 0.15 },
-  { "id": "liquidity-freeze", "name": "Liquidity Freeze",  "cost": 3, "type": "spell", "role": "spell", "effectRadius": 3.0, "slowTicks": 60 }
+  { "id": "liquidity-freeze", "name": "Liquidity Freeze",  "cost": 3, "type": "spell", "role": "spell", "effectRadius": 3.0, "slowTicks": 60 },
+  { "id": "mert",           "name": "Mert",                "cost": 4, "type": "unit", "role": "brawler",  "count": 1, "hp": 980,  "damage": 150, "range": 0.8, "sightRange": 5.5, "speed": 0.13, "attackSpeed": 11, "armor": 4, "rage": 0.35 },
+  { "id": "ansem",          "name": "Ansem",               "cost": 3, "type": "unit", "role": "assassin", "count": 1, "hp": 240,  "damage": 340, "range": 0.8, "sightRange": 6.0, "speed": 0.22, "attackSpeed": 12, "stealthRange": 4.0, "critFirst": 2.5 },
+  { "id": "toly",           "name": "Toly",                "cost": 4, "type": "unit", "role": "support",  "count": 1, "hp": 620,  "damage": 60,  "range": 4.0, "sightRange": 6.0, "speed": 0.10, "attackSpeed": 12, "armor": 3, "aura": { "radius": 3.2, "damageMult": 1.35 } },
+  { "id": "sbf",            "name": "SBF",                 "cost": 6, "type": "unit", "role": "tank",     "count": 1, "hp": 2800, "damage": 120, "range": 0.8, "sightRange": 5.5, "speed": 0.07, "attackSpeed": 14, "armor": 12, "taunt": 3.2, "targetsTowers": true },
+  { "id": "vucan",          "name": "Vucan",               "cost": 4, "type": "unit", "role": "ranged",   "count": 1, "hp": 360,  "damage": 180, "range": 6.5, "sightRange": 7.0, "speed": 0.10, "attackSpeed": 14 }
 ]

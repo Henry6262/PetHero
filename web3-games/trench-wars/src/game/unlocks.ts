@@ -16,10 +16,10 @@ export const UNLOCK_TIERS: UnlockTier[] = [
       'scalper', 'gas-war',
     ],
   },
-  { wins: 3, cards: ['fud-spirit', 'discord-raid', 'trading-bot', 'copium', 'fomo-mob'] },
-  { wins: 7, cards: ['rug-dev', 'influencer', 'sniper-bot', 'based-brawlers', 'liquidity-freeze'] },
-  { wins: 12, cards: ['exit-liquidity', 'moon-boy', 'whale', 'airdrop', 'sailor-cat'] },
-  { wins: 18, cards: ['shadow-dev', 'gigachad', 'fomo-jet', 'mev-overlord', 'degen-titan'] },
+  { wins: 3, cards: ['fud-spirit', 'discord-raid', 'trading-bot', 'copium', 'fomo-mob', 'ansem'] },
+  { wins: 7, cards: ['rug-dev', 'influencer', 'sniper-bot', 'based-brawlers', 'liquidity-freeze', 'mert'] },
+  { wins: 12, cards: ['exit-liquidity', 'moon-boy', 'whale', 'airdrop', 'sailor-cat', 'toly', 'vucan'] },
+  { wins: 18, cards: ['shadow-dev', 'gigachad', 'fomo-jet', 'mev-overlord', 'degen-titan', 'sbf'] },
 ]
 
 /** Set of card ids unlocked at a given total-win count. */

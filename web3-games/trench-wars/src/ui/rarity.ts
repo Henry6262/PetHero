@@ -6,14 +6,14 @@ export const RARITY: Record<string, Rarity> = {
   // epic
   'diamond-hands': 'epic', 'rug-dev': 'epic', 'shadow-dev': 'epic', 'sniper-bot': 'epic',
   'fomo-jet': 'epic', 'exit-liquidity': 'epic', influencer: 'epic', 'sailor-cat': 'epic',
-  airdrop: 'epic', 'liquidation-cascade': 'epic',
+  airdrop: 'epic', 'liquidation-cascade': 'epic', mert: 'epic', toly: 'epic', vucan: 'epic',
   // rare
   'mev-bots': 'rare', 'fud-spirit': 'rare', 'chad-trader': 'rare', 'discord-raid': 'rare',
   'trading-bot': 'rare', 'moon-boy': 'rare', 'based-brawlers': 'rare', 'fomo-mob': 'rare',
-  copium: 'rare', 'liquidity-freeze': 'rare',
+  copium: 'rare', 'liquidity-freeze': 'rare', ansem: 'rare',
   // common
   'bag-holder': 'common', scalper: 'common', 'jeet-horde': 'common', 'paper-hands': 'common',
-  'pump-signal': 'common', 'gas-war': 'common',
+  'pump-signal': 'common', 'gas-war': 'common', sbf: 'legendary',
 }
 
 const COLORS: Record<Rarity, string> = {

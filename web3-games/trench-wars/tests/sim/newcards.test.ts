@@ -18,10 +18,10 @@ const deck = ['bag-holder', 'jeet-horde', 'paper-hands', 'chad-trader', 'diamond
 const fresh = () => createMatch(1, [[...deck], [...deck]])
 
 describe('new card definitions', () => {
-  it('all 30 cards validate, with the new ones present', () => {
+  it('all 35 cards validate, with the new ones present', () => {
     const ids = CARDS.map(c => c.id)
-    expect(CARDS.length).toBe(30)
-    for (const id of ['scalper', 'discord-raid', 'moon-boy', 'trading-bot', 'gas-war', 'copium', 'airdrop', 'gigachad', 'sailor-cat', 'liquidity-freeze']) {
+    expect(CARDS.length).toBe(35)
+    for (const id of ['scalper', 'discord-raid', 'moon-boy', 'trading-bot', 'gas-war', 'copium', 'airdrop', 'gigachad', 'sailor-cat', 'liquidity-freeze', 'mert', 'ansem', 'toly', 'sbf', 'vucan']) {
       expect(ids).toContain(id)
     }
   })

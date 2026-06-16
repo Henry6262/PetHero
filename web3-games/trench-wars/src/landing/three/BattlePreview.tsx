@@ -37,11 +37,11 @@ const FENCE_GATE_URL = `${K}/fence_wood_straight_gate.gltf`
 const WATERLILY_URL = `${K}/waterlily_A.gltf`
 const WATERPLANT_URL = `${K}/waterplant_A.gltf`
 
-const BLUE_ARMY = ['vanguard', 'bluemob', 'explorer']
-const RED_ARMY = ['degen', 'crimson']
+const BLUE_ARMY = ['mert', 'toly', 'gake', 'phoenix']
+const RED_ARMY = ['ansem', 'sbf', 'pepe']
 const CHAR_NAMES = [...new Set([...BLUE_ARMY, ...RED_ARMY])]
-const WALK_URLS = CHAR_NAMES.map((n) => `/assets/3d/chars/${n}-walk.glb`)
-const ATTACK_URLS = CHAR_NAMES.map((n) => `/assets/3d/chars/${n}-attack.glb`)
+const WALK_URLS = CHAR_NAMES.map((n) => `/assets/3d/chars/${n}/walk.glb`)
+const ATTACK_URLS = CHAR_NAMES.map((n) => `/assets/3d/chars/${n}/attack.glb`)
 
 const ENV_URLS = [
   HEX_GRASS_URL, CASTLE_RED_URL, CASTLE_BLUE_URL, TOWER_RED_URL, TOWER_BLUE_URL, FLAG_RED_URL, FLAG_BLUE_URL,
@@ -52,9 +52,9 @@ const ENV_URLS = [
 ;[...ENV_URLS, ...WALK_URLS, ...ATTACK_URLS].forEach((u) => useGLTF.preload(u))
 
 // ---- board geometry ----
-const COLS = [-4, -3, -2, -1, 0, 1, 2, 3, 4]
-const ROWS = 20
-const RIVER_ROW = 9
+const COLS = [-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+const ROWS = 30
+const RIVER_ROW = 14
 const TARGET_TILE_W = 0.9
 const TILE_OVERLAP = 1.06
 const SURFACE_Y = 0.06
@@ -62,17 +62,19 @@ const WATER_DROP = -0.16 // river-row tiles sink into a channel (in-game look �
 
 // ---- combat / animation ----
 const UNIT_SCALE = 0.6 // fixed scale (skinned-mesh bounding boxes are unreliable; roster is baked uniformly)
-const UNIT_SPEED = 0.024
+const UNIT_SPEED = 0.013 // slow, deliberate march
+const WALK_TIMESCALE = 0.85 // play the walk cycle a touch slower so feet don't slide
+const LANE_SIDE = 0.34 // lateral offset so two units stand side-by-side in a lane
 const ENGAGE_RANGE = 0.62 // z-gap at which two enemies stop and fight
 const BASE_RANGE = 0.95 // z-gap at which a unit starts hitting the enemy base
-const UNIT_HP = 120
-const UNIT_DMG = 34
+const UNIT_HP = 380 // high HP -> fights last a good while
+const UNIT_DMG = 15
 const ATTACK_INTERVAL = 0.6
-const ARMY_CAP = 7 // per side — fuller battle now that both sides have full tower sets
-const SPAWN_BLUE = 1.9
-const SPAWN_RED = 2.1
-const ARROW_COOLDOWN = 1.6
-const ARROW_DMG = 42
+const ARMY_CAP = 4 // per side — only a few units at a time
+const SPAWN_BLUE = 3.6
+const SPAWN_RED = 4.0
+const ARROW_COOLDOWN = 3.0
+const ARROW_DMG = 16
 const TOWER_RANGE = 2.7 // lane tower fires at enemy units within this z-distance
 const PROJECTILE_SPEED = 2.8
 
@@ -120,28 +122,28 @@ function buildLayout(grassScene: THREE.Object3D): Layout {
     for (const col of COLS) {
       const x = worldX(col, row)
       edgeX = Math.max(edgeX, Math.abs(x))
-      cells.push({ x, z: worldZ(row), scale: tileScale, water: row === RIVER_ROW })
+      cells.push({ x, z: worldZ(row), scale: tileScale, water: Math.abs(row - RIVER_ROW) <= 1 })
     }
   }
 
   const backZ = worldZ(ROWS - 1)
   return {
     cells,
-    laneX: [-stepA, stepA],
-    laneWidth: stepA * 0.95,
+    laneX: [-stepA * 2.8, stepA * 2.8],
+    laneWidth: stepA * 2.0,
     frontZ,
     backZ,
     // symmetric arena: a king at each end, two lane towers pulled back near each
     // king and spread wide to flank it
-    blueKingZ: frontZ,
-    redKingZ: backZ,
-    blueTowerZ: worldZ(3),
-    redTowerZ: worldZ(ROWS - 4),
-    towerSpreadX: stepA * 2.2,
+    blueKingZ: worldZ(2.5),
+    redKingZ: worldZ(ROWS - 3.5),
+    blueTowerZ: worldZ(5),
+    redTowerZ: worldZ(ROWS - 6),
+    towerSpreadX: stepA * 4.3,
     castleZ: backZ, // alias kept for prop placement (red side)
     campZ: frontZ, // alias kept for prop placement (blue side)
     riverZ: worldZ(RIVER_ROW),
-    riverWidth: stepB * 1.15,
+    riverWidth: stepB * 3.3, // thicker river (3 rows of water)
     edgeX,
   }
 }
@@ -432,18 +434,22 @@ function PreviewScene() {
     const idxRef = owner === 'blue' ? blueIdx : redIdx
     const name = army[idxRef.current % army.length]
     idxRef.current++
-    const lane = idxRef.current % layout.laneX.length
+    const slot = idxRef.current
+    const lane = slot % layout.laneX.length
+    // alternate left/right within a lane so units pair up side-by-side (group fights: 2v2, 2v1)
+    const side = (Math.floor(slot / layout.laneX.length) % 2 === 0 ? -1 : 1) * LANE_SIDE
     const cd = charData[name]
     if (!cd) return
 
     const group = cloneWithUniqueMaterials(cd.scene)
     group.scale.setScalar(UNIT_SCALE)
-    group.position.set(layout.laneX[lane], 0, owner === 'blue' ? layout.blueTowerZ + 0.6 : layout.redTowerZ - 0.6)
+    group.position.set(layout.laneX[lane] + side, 0, owner === 'blue' ? layout.blueTowerZ + 0.6 : layout.redTowerZ - 0.6)
     group.rotation.y = owner === 'blue' ? Math.PI : 0
 
     const mixer = new THREE.AnimationMixer(group)
     const walk = mixer.clipAction(cd.walk)
     const attack = mixer.clipAction(cd.attack)
+    walk.timeScale = WALK_TIMESCALE
     walk.play()
 
     const { group: barGroup, fill } = createHealthBar(owner === 'blue' ? 0x3da5ff : 0xff5a4d)
@@ -515,8 +521,7 @@ function PreviewScene() {
 
   useFrame((state, delta) => {
     const now = state.clock.elapsedTime
-    // gentle left-right sway that eases back — small amplitude, not a spin
-    if (sceneRef.current) sceneRef.current.rotation.y = Math.sin(now * 0.16) * 0.05
+    // static — no camera sway
     const alive = (o: 'blue' | 'red') => unitsRef.current.filter((u) => u.owner === o && u.state !== 'die').length
 
     blueTimer.current += delta
@@ -608,12 +613,12 @@ function PreviewScene() {
 
 export function BattlePreview() {
   return (
-    <div style={{ width: '100%', height: '100%', minHeight: 680, transform: 'translateY(-6%)' }}>
+    <div style={{ width: '100%', height: '100%', minHeight: 680 }}>
       <Canvas
         gl={{ alpha: true, antialias: true }}
         dpr={[1, 1.8]}
         shadows
-        camera={{ position: [9, 6.2, 5], fov: 33, near: 0.1, far: 100 }}
+        camera={{ position: [8, 7, 8], fov: 33, near: 0.1, far: 100 }}
         style={{ background: 'transparent', pointerEvents: 'none' }}
       >
         <fog attach="fog" args={['#0b0e14', 22, 60]} />
@@ -623,7 +628,7 @@ export function BattlePreview() {
         <directionalLight position={[6, 5, -6]} intensity={1.0} color="#5f7fc8" />
         <spotLight position={[4, 8, 5]} angle={0.55} penumbra={0.9} intensity={45} color="#e8c158" castShadow />
         <Suspense fallback={null}>
-          <Bounds fit clip margin={0.74}>
+          <Bounds fit clip margin={0.55}>
             <PreviewScene />
           </Bounds>
           <ContactShadows position={[0, -0.04, 0]} opacity={0.45} scale={22} blur={2.8} far={7} color="#000000" />

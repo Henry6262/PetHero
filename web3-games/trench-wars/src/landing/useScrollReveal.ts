@@ -25,6 +25,26 @@ export function useScrollReveal(rootSelector = '.tr-landing section') {
             },
           }
         )
+
+        const reveals = el.querySelectorAll<HTMLElement>('.reveal')
+        if (reveals.length > 0) {
+          gsap.fromTo(
+            reveals,
+            { opacity: 0, y: 28 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.08,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 80%',
+                toggleActions: 'play none none none',
+              },
+            }
+          )
+        }
       })
     })
 

@@ -19,7 +19,12 @@ export function createApp({ prisma, cookieSecret, clientUrl }: AppConfig) {
 
   app.use(
     cors({
-      origin: clientUrl,
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true)
+        if (process.env.NODE_ENV !== 'production') return callback(null, true)
+        if (origin === clientUrl) return callback(null, true)
+        callback(new Error(`CORS blocked origin: ${origin}`))
+      },
       credentials: true,
     }),
   )

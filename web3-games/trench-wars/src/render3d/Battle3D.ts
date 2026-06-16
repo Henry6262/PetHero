@@ -45,9 +45,19 @@ export const CARD_CHAR: Record<string, CharName> = {
   'degen-titan': 'vanguard',    // massive tank
   'mev-overlord': 'crimson',    // splash mage
   'based-brawlers': 'degen',    // lifesteal swarm
+  'mert': 'mert',               // golden-armored bull trader
+  'ansem': 'ansem',             // hooded assassin
+  'toly': 'toly',               // architect support
+  'sbf': 'sbf',                 // final boss of rugs
+  'vucan': 'vucan',             // ranged archer
 }
 
-export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix' | 'gake'
+/** Portrait filename (no extension) for each card in the deck builder. */
+export const CARD_PORTRAIT: Record<string, string> = {
+  ...CARD_CHAR,
+}
+
+export type CharName = 'vanguard' | 'explorer' | 'crimson' | 'pepe' | 'bluemob' | 'degen' | 'phoenix' | 'gake' | 'ansem' | 'sbf' | 'mert' | 'toly' | 'vucan'
 
 interface CharAsset {
   scene: THREE.Group
@@ -136,7 +146,7 @@ export class Battle3D {
     this.renderer.setSize(ARENA_PX_W, ARENA_PX_H, false)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.shadowMap.enabled = true
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    this.renderer.shadowMap.type = THREE.PCFShadowMap
 
     this.scene.background = new THREE.Color(0x0a0e14)
     this.scene.fog = new THREE.Fog(0x0a0e14, 55, 90)
@@ -160,7 +170,7 @@ export class Battle3D {
   async load(): Promise<void> {
     this.loader.setMeshoptDecoder(MeshoptDecoder)
     const glb = (url: string) => this.loader.loadAsync(url)
-    const charNames: CharName[] = ['vanguard', 'explorer', 'crimson', 'pepe', 'bluemob', 'degen', 'phoenix', 'gake']
+    const charNames: CharName[] = ['vanguard', 'explorer', 'crimson', 'pepe', 'bluemob', 'degen', 'phoenix', 'gake', 'ansem', 'sbf', 'mert', 'toly', 'vucan']
     const [grass, water, towerBlue, towerRed, castleBlue, castleRed, ...charGlbs] = await Promise.all([
       glb('/assets/3d/kaykit/hex_grass.gltf'),
       glb('/assets/3d/kaykit/hex_water.gltf'),
@@ -168,7 +178,7 @@ export class Battle3D {
       glb('/assets/3d/kaykit/building_tower_A_red.gltf'),
       glb('/assets/3d/kaykit/building_castle_blue.gltf'),
       glb('/assets/3d/kaykit/building_castle_red.gltf'),
-      ...charNames.flatMap((n) => [glb(`/assets/3d/chars/${n}-walk.glb`), glb(`/assets/3d/chars/${n}-attack.glb`)]),
+      ...charNames.flatMap((n) => [glb(`/assets/3d/chars/${n}/walk.glb`), glb(`/assets/3d/chars/${n}/attack.glb`)]),
     ])
 
     this.buildings = {

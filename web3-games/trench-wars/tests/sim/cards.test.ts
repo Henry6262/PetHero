@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { CARDS, getCard, validateCards } from '../../src/sim/cards'
 
 describe('card config', () => {
-  it('loads 30 cards: 25 units + 5 spells', () => {
-    expect(CARDS.length).toBe(30)
-    expect(CARDS.filter(c => c.type === 'unit').length).toBe(25)
+  it('loads 35 cards: 30 units + 5 spells', () => {
+    expect(CARDS.length).toBe(35)
+    expect(CARDS.filter(c => c.type === 'unit').length).toBe(30)
     expect(CARDS.filter(c => c.type === 'spell').length).toBe(5)
   })
   it('every unit has complete combat stats', () => {

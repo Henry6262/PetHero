@@ -3,10 +3,10 @@ import { unlockedCards, unlockWins, nextUnlock, UNLOCK_TIERS } from '../../src/g
 import { CARDS, STARTER_DECK } from '../../src/sim/cards'
 
 describe('card unlocks', () => {
-  it('every card belongs to exactly one tier and all 30 are covered', () => {
+  it('every card belongs to exactly one tier and all 35 are covered', () => {
     const all = UNLOCK_TIERS.flatMap((t) => t.cards)
-    expect(all.length).toBe(30)
-    expect(new Set(all).size).toBe(30)
+    expect(all.length).toBe(35)
+    expect(new Set(all).size).toBe(35)
     for (const c of CARDS) expect(all).toContain(c.id)
   })
 
@@ -17,11 +17,11 @@ describe('card unlocks', () => {
 
   it('unlocks expand monotonically with wins', () => {
     expect(unlockedCards(0).size).toBe(10)
-    expect(unlockedCards(3).size).toBe(15)
-    expect(unlockedCards(7).size).toBe(20)
-    expect(unlockedCards(12).size).toBe(25)
-    expect(unlockedCards(18).size).toBe(30)
-    expect(unlockedCards(999).size).toBe(30)
+    expect(unlockedCards(3).size).toBe(16)
+    expect(unlockedCards(7).size).toBe(22)
+    expect(unlockedCards(12).size).toBe(29)
+    expect(unlockedCards(18).size).toBe(35)
+    expect(unlockedCards(999).size).toBe(35)
   })
 
   it('unlockWins and nextUnlock report progress', () => {

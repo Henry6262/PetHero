@@ -5,7 +5,7 @@ export function Footer() {
     <footer
       style={{
         borderTop: '1px solid rgba(212,161,60,0.14)',
-        padding: '28px clamp(20px, 4vw, 48px)',
+        padding: '28px 10%',
         display: 'flex',
         justifyContent: 'space-between',
         flexWrap: 'wrap',

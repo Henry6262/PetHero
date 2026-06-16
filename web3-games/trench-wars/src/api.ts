@@ -1,4 +1,7 @@
-const API_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3001/api'
+const PROD_API_URL = 'https://trench-wars-api-production.up.railway.app/api'
+const API_URL =
+  (import.meta.env.VITE_API_URL as string | undefined) ||
+  (import.meta.env.PROD ? PROD_API_URL : 'http://localhost:3001/api')
 
 export interface Account {
   id: string

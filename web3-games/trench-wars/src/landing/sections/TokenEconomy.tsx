@@ -1,229 +1,160 @@
 import CountUp from '../reactbits/CountUp'
 import { TOKEN } from '../data'
-import { Divider } from './Divider'
-
-const FLOW = [
-  'Spend $ROYALE on lootbox',
-  'Routed to burn / treasury contract',
-  '50% burned · 30% rewards · 20% treasury',
-]
+import { SectionHeader } from './SectionHeader'
+import { ScrollReveal } from '../reactbits/ScrollReveal'
 
 export function TokenEconomy() {
   return (
-    <section id="economy" style={{ position: 'relative' }}>
-      <Divider numeral="IV" label="Token Economy" />
-
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '24px 32px 80px',
-        }}
-      >
-        <p
-          style={{
-            color: 'var(--color-muted)',
-            maxWidth: 640,
-            fontSize: 18,
-            lineHeight: 1.6,
-            margin: '0 0 32px',
-          }}
-        >
-          <strong style={{ color: 'var(--color-gold)' }}>{TOKEN.ticker}</strong> is the fuel of the trench.
-          Spend it on lootboxes and card packs — every spend routes on-chain, and half is{' '}
-          <strong style={{ color: 'var(--color-ember)' }}>burned forever</strong>. Supply only shrinks.
-        </p>
+    <section id="economy" style={{ position: 'relative', padding: '0 10%' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 0 80px' }}>
+        <SectionHeader
+          eyebrow="Token Economy"
+          title={<>Supply only goes <span style={{ color: 'var(--color-gold)' }}>down</span></>}
+          subtitle="Every spend routes on-chain. Half is burned forever."
+        />
 
         <div
-          className="tr-flow"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-            flexWrap: 'wrap',
-            margin: '0 0 36px',
-          }}
-        >
-          {FLOW.map((t, i, arr) => (
-            <span
-              key={i}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-              }}
-            >
-              <span
-                style={{
-                  border: '1px solid rgba(212,161,60,0.35)',
-                  borderRadius: 999,
-                  padding: '12px 20px',
-                  background: 'var(--color-panel)',
-                  fontSize: 14,
-                  color: 'var(--color-platinum)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {t}
-              </span>
-              {i < arr.length - 1 && (
-                <span
-                  style={{
-                    color: 'var(--color-gold)',
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 900,
-                  }}
-                >
-                  →
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-
-        <div
-          className="tr-splits"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
             gap: 18,
-            marginBottom: 40,
+            marginTop: 48,
           }}
         >
-          {TOKEN.splits.map((s) => (
-            <div
-              key={s.label}
-              style={{
-                background: 'var(--color-panel)',
-                border: '1px solid rgba(42, 58, 94, 0.5)',
-                borderRadius: 18,
-                padding: 22,
-              }}
-            >
+          {TOKEN.splits.map((s, i) => (
+            <ScrollReveal key={s.label} delay={i * 0.1}>
               <div
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'baseline',
+                  background: 'linear-gradient(180deg, rgba(17,20,27,0.95), rgba(10,12,17,0.85))',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 20,
+                  padding: 26,
+                  transition: 'all 0.2s ease',
                 }}
-              >
-                <h3
-                  style={{
-                    fontSize: 17,
-                    fontWeight: 800,
-                    letterSpacing: '0.04em',
-                    color: 'var(--color-platinum)',
-                  }}
-                >
-                  {s.label}
-                </h3>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 900,
-                    fontSize: 24,
-                    color: s.color,
-                  }}
-                >
-                  {s.pct}%
-                </span>
-              </div>
-              <div
-                style={{
-                  height: 8,
-                  borderRadius: 99,
-                  background: '#1a1f29',
-                  marginTop: 14,
-                  overflow: 'hidden',
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(212,161,60,0.35)'
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                  e.currentTarget.style.transform = 'translateY(0)'
                 }}
               >
                 <div
                   style={{
-                    width: `${s.pct}%`,
-                    height: '100%',
-                    background: s.color,
-                    borderRadius: 99,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
                   }}
-                />
+                >
+                  <h3
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 800,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      color: 'var(--color-platinum)',
+                    }}
+                  >
+                    {s.label}
+                  </h3>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 900,
+                      fontSize: 28,
+                      color: 'var(--color-gold)',
+                    }}
+                  >
+                    {s.pct}%
+                  </span>
+                </div>
+                <div
+                  style={{
+                    height: 6,
+                    borderRadius: 99,
+                    background: 'rgba(255,255,255,0.06)',
+                    marginTop: 18,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${s.pct}%`,
+                      height: '100%',
+                      background: 'var(--color-gold)',
+                      borderRadius: 99,
+                    }}
+                  />
+                </div>
+                <p
+                  style={{
+                    color: 'var(--color-muted)',
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                    margin: '14px 0 0',
+                  }}
+                >
+                  {s.note}
+                </p>
               </div>
-              <p
-                style={{
-                  color: 'var(--color-muted)',
-                  fontSize: 13,
-                  lineHeight: 1.5,
-                  margin: '12px 0 0',
-                }}
-              >
-                {s.note}
-              </p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
 
-        <div
-          className="tr-burn-row"
-          style={{
-            display: 'flex',
-            gap: 32,
-            alignItems: 'center',
-            flexWrap: 'wrap',
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 44,
-                fontWeight: 900,
-                color: 'var(--color-ember)',
-                letterSpacing: '0.02em',
-              }}
-            >
-              <CountUp to={TOKEN.burnedToDate} separator="," />
-            </div>
-            <div
-              style={{
-                color: 'var(--color-muted)',
-                fontSize: 12,
-                textTransform: 'uppercase',
-                letterSpacing: '0.2em',
-                marginTop: 4,
-              }}
-            >
-              {TOKEN.ticker} burned to date
-            </div>
-          </div>
-
+        <ScrollReveal delay={0.2}>
           <div
             style={{
-              border: '1px solid rgba(212,161,60,0.35)',
-              borderRadius: 18,
-              padding: '18px 24px',
-              background: 'var(--color-panel)',
+              display: 'flex',
+              gap: 32,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              marginTop: 44,
+              padding: '28px 32px',
+              background: 'linear-gradient(180deg, rgba(17,20,27,0.95), rgba(10,12,17,0.85))',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 20,
             }}
           >
-            <div
-              style={{
-                color: 'var(--color-gold)',
-                fontFamily: 'var(--font-display)',
-                fontWeight: 900,
-                fontSize: 16,
-                letterSpacing: '0.06em',
-              }}
-            >
-              Fair launch on pump.fun
+            <div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 40,
+                  fontWeight: 900,
+                  color: 'var(--color-gold)',
+                  letterSpacing: '0.02em',
+                }}
+              >
+                <CountUp to={TOKEN.burnedToDate} separator="," />
+              </div>
+              <div
+                style={{
+                  color: 'var(--color-muted)',
+                  fontSize: 12,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.18em',
+                  marginTop: 4,
+                }}
+              >
+                {TOKEN.ticker} burned to date
+              </div>
             </div>
+
             <div
               style={{
+                flex: 1,
+                minWidth: 220,
                 color: 'var(--color-muted)',
-                fontSize: 14,
-                marginTop: 6,
+                fontSize: 15,
+                lineHeight: 1.5,
               }}
             >
-              No presale. No team allocation. Coming soon.
+              Fair launch on <strong style={{ color: 'var(--color-platinum)' }}>pump.fun</strong>. No presale.
+              No team allocation. Coming soon.
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   )

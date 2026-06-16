@@ -1,5 +1,5 @@
 import { getCard } from '../sim/cards'
-import { CARD_CHAR } from '../render3d/Battle3D'
+import { CARD_PORTRAIT } from '../render3d/Battle3D'
 import { rarityOf, rarityColor } from './rarity'
 import { Icon } from './Icon'
 
@@ -37,7 +37,7 @@ export function TrenchCard({
 }: Props) {
   const card = getCard(cardId)
   const rarity = rarityOf(cardId)
-  const charName = CARD_CHAR[cardId]
+  const portraitName = CARD_PORTRAIT[cardId]
   const icon = roleIcon(card)
   const stateClass = state ? `is-${state}` : ''
   const isSpell = card.type === 'spell'
@@ -64,9 +64,9 @@ export function TrenchCard({
         </span>
       )}
       <span className="tcard-art">
-        {charName ? (
+        {portraitName ? (
           <img
-            src={`/assets/3d/portraits/${charName}.png`}
+            src={`/assets/3d/portraits/${portraitName}.png`}
             alt={card.name}
             draggable={false}
             onError={(e) => { (e.target as HTMLImageElement).src = '/assets/3d/portraits/explorer.png' }}

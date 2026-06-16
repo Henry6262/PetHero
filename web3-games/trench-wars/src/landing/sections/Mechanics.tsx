@@ -1,57 +1,37 @@
 import { MECHANICS } from '../data'
-import { Divider } from './Divider'
-import SpotlightCard from '../reactbits/SpotlightCard'
+import { SectionHeader } from './SectionHeader'
+import { ScrollReveal } from '../reactbits/ScrollReveal'
+import MagicBento from '../reactbits/MagicBento/MagicBento'
 
 export function Mechanics() {
-  return (
-    <section id="mechanics" style={{ position: 'relative' }}>
-      <Divider numeral="III" label="Mechanics" />
+  const cards = MECHANICS.map((m) => ({
+    label: m.label,
+    title: m.title,
+    description: m.body,
+  }))
 
-      <div
-        className="tr-bento"
-        style={{
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '24px 32px 64px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 18,
-        }}
-      >
-        {MECHANICS.map((m, i) => (
-          <div
-            key={i}
-            className="tr-bento-cell"
-            style={{ gridColumn: m.span ? 'span 2' : 'span 1' }}
-          >
-            <SpotlightCard
-              className="!bg-[#0f1219] !border-[rgba(42,58,94,0.5)] h-full"
-              spotlightColor="rgba(212, 161, 60, 0.22)"
-            >
-              <h3
-                style={{
-                  fontSize: 18,
-                  fontWeight: 800,
-                  letterSpacing: '0.06em',
-                  color: 'var(--color-platinum)',
-                  margin: '0 0 10px',
-                }}
-              >
-                {m.title}
-              </h3>
-              <p
-                style={{
-                  color: 'var(--color-muted)',
-                  fontSize: 14,
-                  lineHeight: 1.55,
-                  margin: 0,
-                }}
-              >
-                {m.body}
-              </p>
-            </SpotlightCard>
-          </div>
-        ))}
+  return (
+    <section id="mechanics" style={{ position: 'relative', padding: '0 10%' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 0 80px' }}>
+        <SectionHeader
+          eyebrow="Mechanics"
+          title={<>Built for <span style={{ color: 'var(--color-gold)' }}>depth</span></>}
+          subtitle="Simple rules. Skill ceiling for days."
+        />
+
+        <ScrollReveal delay={0.1} style={{ marginTop: 48, display: 'flex', justifyContent: 'center' }}>
+          <MagicBento
+            cards={cards}
+            glowColor="212, 161, 60"
+            textAutoHide={false}
+            enableStars
+            enableSpotlight
+            enableBorderGlow
+            enableTilt
+            enableMagnetism
+            clickEffect
+          />
+        </ScrollReveal>
       </div>
     </section>
   )
