@@ -418,8 +418,25 @@
   .cr-deck-preview { max-width: 100%; }
 }
 
-@media (max-height: 760px) {
+/* short AND narrow screens only (phones) — don't shrink wide laptops */
+@media (max-height: 760px) and (max-width: 800px) {
   .cr-stage { gap: 10px; padding: 12px 14px 16px; }
   .cr-diorama-wrap { max-width: 280px; }
   .cr-battle-btn { width: min(170px, 46vw); font-size: 20px; }
+}
+
+/* Tablet+ : scale the menu up so it stops looking like a tiny phone column */
+@media (min-width: 768px) {
+  .cr-stage { gap: 22px; padding: 28px 24px 36px; }
+  .cr-diorama-wrap { max-width: 560px; }
+  .cr-battle-btn { width: min(260px, 30vw); font-size: var(--fs-xl); }
+  .cr-battle-icon { font-size: clamp(48px, 5vw, 68px); }
+  .cr-daily-banner, .cr-deck-preview, .cr-signin-prompt { max-width: 560px; }
+  .cr-secondary-actions { gap: 16px; }
+}
+/* Desktop : generous sizing */
+@media (min-width: 1100px) {
+  .cr-diorama-wrap { max-width: 640px; }
+  .cr-battle-btn { width: 280px; }
+  .cr-daily-banner, .cr-deck-preview, .cr-signin-prompt { max-width: 640px; }
 }

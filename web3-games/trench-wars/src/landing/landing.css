@@ -20,6 +20,11 @@
 /* Landing-scoped base (gated under .tr-landing so it never touches the game) */
 .tr-landing { background: var(--color-obsidian); color: var(--color-platinum); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: clip; width: 100%; max-width: 100%; }
 
+/* Below-hero sections share a subtle parallax grid (GridBackground at z-index 0);
+   section content paints above it. */
+.tr-below { position: relative; }
+.tr-below > section { position: relative; z-index: 1; }
+
 /* Lenis smooth-scroll drives the landing — hide the native scrollbar so it doesn't
    show as a strip on the right edge. Scoped to html.lenis (only while the landing's
    Lenis instance is active; the class is removed when it unmounts), so the game's
@@ -226,6 +231,12 @@ html.lenis::-webkit-scrollbar { width: 0; height: 0; display: none; }
   .tr-roster-card { width: 260px !important; }
 }
 
-/* Roster carousel track */
-.tr-roster-track::-webkit-scrollbar { display: none; }
-.tr-roster-card { scroll-snap-align: start; }
+/* Roster — React Bits gradient carousel */
+.tr-gradient-carousel { touch-action: none; }
+.tr-gradient-carousel canvas { transition: filter 0.3s ease; }
+@keyframes tr-gc-spin { to { transform: rotate(360deg); } }
+@keyframes tr-roster-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tr-roster-fade { animation: tr-roster-fade 0.35s ease both; }

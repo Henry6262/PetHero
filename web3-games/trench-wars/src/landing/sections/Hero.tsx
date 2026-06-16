@@ -18,8 +18,8 @@ export function Hero() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: '88px 0 40px',
+        justifyContent: 'stretch',
+        padding: '0',
       }}
     >
       {/* Background layer — dark trench atmosphere. */}
@@ -46,14 +46,56 @@ export function Hero() {
         />
       </div>
 
-      {/* Full-bleed battlefield — the hero IS the game preview. Edges fade into the dark. */}
+      {/* Big brand title — top-left, below the nav. */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 'clamp(96px, 13vh, 150px)',
+          left: 'clamp(20px, 4vw, 48px)',
+          zIndex: 3,
+          pointerEvents: 'none',
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: 'var(--font-display)',
+            fontWeight: 900,
+            textTransform: 'uppercase',
+            color: 'var(--color-gold)',
+            lineHeight: 0.92,
+            letterSpacing: '0.04em',
+            fontSize: 'clamp(46px, 8vw, 112px)',
+            textShadow: '0 6px 30px rgba(0,0,0,0.65)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Trench Royale
+        </h1>
+        <div
+          style={{
+            marginTop: 12,
+            color: 'var(--color-platinum)',
+            fontSize: 'clamp(11px, 1.3vw, 15px)',
+            letterSpacing: '0.24em',
+            textTransform: 'uppercase',
+            opacity: 0.78,
+          }}
+        >
+          the trenches have heroes now
+        </div>
+      </div>
+
+      {/* Full-bleed battlefield — the hero IS the game preview. Fills the whole
+          hero so there's no black strip; edges fade into the dark. */}
       <div
         className="tr-hero-stage-fb"
         style={{
           position: 'relative',
           zIndex: 1,
           width: '100%',
-          height: 'clamp(460px, 82vh, 980px)',
+          flex: '1 1 auto',
+          minHeight: '100vh',
         }}
       >
         <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>

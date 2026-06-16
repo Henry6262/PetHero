@@ -10,6 +10,7 @@ import { Mechanics } from './sections/Mechanics'
 import { TokenEconomy } from './sections/TokenEconomy'
 import { FinalCta } from './sections/FinalCta'
 import { Footer } from './sections/Footer'
+import GridBackground from './reactbits/GridBackground'
 
 interface LandingProps {
   onEnter: () => void
@@ -44,13 +45,16 @@ export function Landing({ onEnter }: LandingProps) {
     <div className="tr-landing">
       <Nav onPlay={onEnter} />
       <Hero />
-      <Roster />
-      <CharacterShowcase />
-      <HowItWorks />
-      <Mechanics />
-      <TokenEconomy />
-      <FinalCta onPlay={onEnter} />
-      <Footer />
+      <div className="tr-below">
+        <GridBackground />
+        <Roster />
+        <CharacterShowcase />
+        <HowItWorks />
+        <Mechanics />
+        <TokenEconomy />
+        <FinalCta onPlay={onEnter} />
+        <Footer />
+      </div>
     </div>
   )
 }

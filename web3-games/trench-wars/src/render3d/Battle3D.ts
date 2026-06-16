@@ -140,6 +140,11 @@ export class Battle3D {
   private shakeAmp = 0
   private clock = 0
   private camBase = new THREE.Vector3()
+  /** Live display size of the stage (CSS px). Drives renderer + projection so the
+   *  battle renders undistorted at any aspect (portrait on mobile, landscape on desktop). */
+  private dispW = ARENA_PX_W
+  private dispH = ARENA_PX_H
+  private resizeObs?: ResizeObserver
   /** Set by the host scene to hear projectile launches (for SFX). */
   onProjectile?: () => void
   ready = false
@@ -403,6 +408,26 @@ export class Battle3D {
   /** Mount the 3D canvas into a positioned container (it fills it). */
   attach(container: HTMLElement) {
     container.appendChild(this.canvas)
+    const apply = () => {
+      const w = container.clientWidth || ARENA_PX_W
+      const h = container.clientHeight || ARENA_PX_H
+      this.resize(w, h)
+    }
+    this.resizeObs = new ResizeObserver(apply)
+    this.resizeObs.observe(container)
+    apply()
+  }
+
+  /** Match the renderer + camera + projection to the container's real CSS size/aspect. */
+  resize(w: number, h: number) {
+    if (w <= 0 || h <= 0) return
+    this.dispW = w
+    this.dispH = h
+    this.renderer.setSize(w, h, false)
+    this.camera.aspect = w / h
+    // fov is vertical, so wider aspect just reveals more environment on the sides —
+    // the lane arena stays framed vertically.
+    this.camera.updateProjectionMatrix()
   }
 
   detach() {
@@ -861,7 +886,7 @@ export class Battle3D {
 
   /** Game-pixel arena coords (540×960) → sim tile coords via ground raycast. */
   screenToSim(px: number, py: number): { x: number; y: number } | null {
-    const ndc = new THREE.Vector2((px / ARENA_PX_W) * 2 - 1, -((py / ARENA_PX_H) * 2 - 1))
+    const ndc = new THREE.Vector2((px / this.dispW) * 2 - 1, -((py / this.dispH) * 2 - 1))
     this.ray.setFromCamera(ndc, this.camera)
     const hit = new THREE.Vector3()
     if (!this.ray.ray.intersectPlane(this.groundPlane, hit)) return null
@@ -873,10 +898,11 @@ export class Battle3D {
     const v = toWorld(simX, simY, this.tmpV)
     v.y = height
     v.project(this.camera)
-    return { x: ((v.x + 1) / 2) * ARENA_PX_W, y: ((1 - v.y) / 2) * ARENA_PX_H }
+    return { x: ((v.x + 1) / 2) * this.dispW, y: ((1 - v.y) / 2) * this.dispH }
   }
 
   dispose() {
+    this.resizeObs?.disconnect()
     this.renderer.dispose()
     this.canvas.remove()
     this.units.clear()

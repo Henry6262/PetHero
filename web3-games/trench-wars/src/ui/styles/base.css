@@ -15,6 +15,16 @@
   --dark: #5a6a85;
   --font-header: 'Orbitron', sans-serif;
   --font-body: 'Rajdhani', sans-serif;
+
+  /* Fluid type scale — readable on phones, scales up on desktop */
+  --fs-xs: clamp(12px, 0.4vw + 10px, 15px);
+  --fs-sm: clamp(13px, 0.5vw + 11px, 17px);
+  --fs-md: clamp(15px, 0.6vw + 12px, 20px);
+  --fs-lg: clamp(18px, 1vw + 14px, 26px);
+  --fs-xl: clamp(24px, 2vw + 16px, 40px);
+  --fs-2xl: clamp(32px, 4vw + 18px, 60px);
+  /* Shared content max-width for non-battle screens */
+  --screen-max: clamp(360px, 92vw, 1180px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,10 +63,10 @@ button { font-family: inherit; cursor: pointer; }
 .btn {
   display: block;
   width: 100%;
-  max-width: 340px;
-  padding: 16px 24px;
+  max-width: 360px;
+  padding: clamp(14px, 1.4vw, 20px) 24px;
   font-family: var(--font-header);
-  font-size: 16px;
+  font-size: var(--fs-md);
   font-weight: 700;
   letter-spacing: 1.5px;
   color: var(--text);

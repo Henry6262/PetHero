@@ -90,15 +90,18 @@
 
 .tcard-gem {
   position: absolute; top: 5px; left: 5px; z-index: 5;
-  width: 28px; height: 28px; display: grid; place-items: center;
-  font-family: var(--font-header); font-weight: 900; color: #fff; font-size: 13px;
+  width: 32px; height: 32px; display: grid; place-items: center;
+  font-family: var(--font-header); font-weight: 900; color: #fff; font-size: 16px;
+  /* dark outline so the white reads clearly on purple */
+  text-shadow: 0 0 3px #2a0a45, 0 1px 1px #1a0530, -1px 0 1px #2a0a45, 1px 0 1px #2a0a45;
   background:
-    radial-gradient(circle at 35% 30%, #d46aff, var(--elixir-dark)),
+    radial-gradient(circle at 35% 28%, #e79bff, #b44dff 55%, var(--elixir-dark)),
     linear-gradient(180deg, var(--elixir), var(--elixir-dark));
-  border: 2px solid #4a1a6e; border-radius: 50%;
+  border: 2px solid #ffffff; border-radius: 50%;
   box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.35),
-    0 2px 5px rgba(0,0,0,0.6);
+    inset 0 1px 2px rgba(255,255,255,0.5),
+    0 0 0 1px #3a0f5e,
+    0 2px 6px rgba(0,0,0,0.7);
 }
 .tcard-name {
   width: 100%; text-align: center; padding: 5px 4px 6px;
@@ -160,7 +163,8 @@
 .icon { display: inline-block; vertical-align: middle; }
 
 /* ---------- TrenchCard compat: hand + locked tiles ---------- */
-.tcard.broke { opacity: 0.45; }
-.hand .tcard { flex: 1; width: auto; }
+.tcard.broke { opacity: 0.7; filter: saturate(0.7); }
+.hand .tcard { flex: 1 1 0; width: auto; min-width: clamp(76px, 20vw, 128px); max-width: 150px; }
+@media (min-width: 1025px) { .hand .tcard { min-width: 116px; max-width: 168px; } }
 .tile-wrap.locked .tcard { filter: grayscale(0.85) brightness(0.55); cursor: not-allowed; }
 .tile-wrap.locked .tcard::after { background: rgba(10,14,20,0.35); }

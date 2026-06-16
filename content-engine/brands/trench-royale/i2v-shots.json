@@ -1,0 +1,101 @@
+{
+  "_note": "Image-to-video shots for TRENCH ROYALE 'THE REVIVAL' trailer. Each uses the matching STILL as i2v init. Kling 3.0, web UI or API.",
+  "i2vRules": [
+    "Do NOT re-describe appearance/clothing/world/color/lighting — the still already encodes it (re-describing causes drift).",
+    "Prompt = ACTION beats + VFX/motion, then ONE camera move placed LAST (Hollywood vocab).",
+    "Add a motion endpoint ('...then holds') to stop runaway motion.",
+    "One camera move per clip. Cut each to 1.5-2.5s in the edit (generate 5s, trim)."
+  ],
+  "settings": {
+    "model": "Kling 3.0 (or latest in UI)",
+    "mode": "Professional / 1080p",
+    "duration": "5s",
+    "cameraControl": "use UI camera presets where available (dolly, orbit, crane) to reinforce the text",
+    "aspectRatio": "16:9"
+  },
+  "negative": "morphing, warping face, extra limbs, deformed hands, flicker, jitter, text artifacts, watermark, blurry, slow drift, static lifeless",
+  "shots": [
+    {
+      "id": "01-alon-hook",
+      "init": "alon.png",
+      "beat": "0-3s HOOK",
+      "prompt": "he flexes hard and locks eyes with the camera, the screens behind him flare brighter, sparks and gold energy crackle outward, everything pulses with one beat; rapid dolly push-in then a fast smash zoom to his face"
+    },
+    {
+      "id": "02-snap-death",
+      "init": "sbf.png",
+      "beat": "3-8s THE DEATH",
+      "prompt": "he raises the gauntlet and snaps his fingers, a blinding shockwave erupts and the figures around him disintegrate into drifting dust, everything drains grey; low-angle dolly-in on the snap, then a fast crane pull-up revealing the dead trench"
+    },
+    {
+      "id": "03-alon-revive",
+      "init": "alon.png",
+      "beat": "8-14s THE REVIVAL (hero beat)",
+      "prompt": "he clenches a fist and slams it down, a wave of warm gold light explodes outward, drifting ash reforms into cheering figures that rise back to life, color and green light floods back across the scene; slow push-in on the fist, then a sweeping crane-up drone reveal rising over the reborn trench"
+    },
+    {
+      "id": "04-toly",
+      "init": "toly.png",
+      "beat": "reveal",
+      "prompt": "his wings snap open and holographic blocks assemble and orbit his raised hand as light beams shoot up, then he holds the pose; slow dolly-in with a slight orbit"
+    },
+    {
+      "id": "05-mert",
+      "init": "mert.png",
+      "beat": "reveal",
+      "prompt": "he charges a step and slams both fists into the ground sending a shockwave of dust outward, steam bursting, then braces; low-angle tracking push-in with a subtle dutch tilt"
+    },
+    {
+      "id": "06-ansem",
+      "init": "ansem.png",
+      "beat": "reveal",
+      "prompt": "he raises one hand and points to the sky, a glowing moon flares above and energy radiates down his arm, hood fluttering; crane-up following his arm toward the moon"
+    },
+    {
+      "id": "07-murad",
+      "init": "murad.png",
+      "beat": "reveal",
+      "prompt": "he slams the serpent staff down, a shockwave ripples outward and a spectral cobra rises and coils behind him, then he steadies; low-angle dolly-in with a slow orbit"
+    },
+    {
+      "id": "08-dino-spike",
+      "init": "vucan.png",
+      "beat": "~24s MID SPIKE",
+      "prompt": "he charges forward fast on the dino, debris kicking up, and thrusts a fist into the air; fast FPV drone shot tracking alongside him at speed"
+    },
+    {
+      "id": "09-villain-escalate",
+      "init": "sbf.png",
+      "beat": "24-30s WARLORD",
+      "prompt": "the gems pulse and glow brighter and he slowly clenches the gauntlet into a fist as candles rain behind him, then holds, menacing; slow ominous dolly-in with a slight dutch tilt"
+    },
+    {
+      "id": "10-assemble",
+      "init": "assemble.png OR build in edit from each hero facing camera",
+      "beat": "30-36s ASSEMBLE",
+      "prompt": "the heroes step forward together in unison, auras flaring, facing the camera, embers swirling, then plant their stance; slow crane-down drone orbit settling to a low hero angle"
+    },
+    {
+      "id": "11-logo",
+      "init": "(motion graphics in post — not i2v)",
+      "beat": "36-40s REVEAL",
+      "prompt": "TRENCH ROYALE gold wordmark + crown slams in over a trench mural, ember sparks, tagline fades; ffmpeg/After Effects"
+    }
+  ],
+  "elementsShots": [
+    {
+      "id": "10-clash",
+      "feature": "Kling Elements / Multi-Image Reference",
+      "uploadOrder": ["alon", "sbf"],
+      "note": "upload alon FIRST (@image1 = hero), sbf SECOND (@image2 = villain)",
+      "prompt": "@image1 the hero lunges forward with a glowing gold fist, @image2 the huge villain swings the gauntlet to meet him, they collide mid-air in a burst of gold and dark energy in the ruined trench; fast push-in, impact shockwave, slight slow-mo on contact"
+    },
+    {
+      "id": "11-assemble",
+      "feature": "Kling Elements / Multi-Image Reference (max 4 subjects)",
+      "uploadOrder": ["alon", "toly", "mert", "vucan"],
+      "note": "4 heroes = reads as the squad; the 6-way can be faked in the edit",
+      "prompt": "@image1 @image2 @image3 @image4 stand together in a line in the trench at golden hour, auras blazing gold and purple, they step forward in unison facing the camera; slow crane-down drone shot settling to a low hero angle"
+    }
+  ]
+}

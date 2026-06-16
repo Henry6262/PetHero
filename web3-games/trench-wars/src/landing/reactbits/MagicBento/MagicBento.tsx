@@ -402,7 +402,7 @@ const GlobalSpotlight: React.FC<{
 
 const BentoCardGrid: React.FC<{ children: React.ReactNode; gridRef?: React.RefObject<HTMLDivElement | null> }> = ({ children, gridRef }) => (
   <div
-    className="bento-section grid gap-2 p-3 max-w-[54rem] select-none relative mx-auto"
+    className="bento-section grid gap-2 p-3 w-full max-w-[76rem] select-none relative mx-auto"
     style={{ fontSize: 'clamp(1rem, 0.9rem + 0.5vw, 1.5rem)' }}
     ref={gridRef}
   >
@@ -468,7 +468,7 @@ const MagicBento: React.FC<BentoProps> = ({
           }
 
           @media (min-width: 1024px) {
-            .card-responsive { grid-template-columns: repeat(4, 1fr); }
+            .card-responsive { grid-template-columns: repeat(4, 1fr); width: 100%; }
             .card-responsive .card:nth-child(3) { grid-column: span 2; grid-row: span 2; }
             .card-responsive .card:nth-child(4) { grid-column: 1 / span 2; grid-row: 2 / span 2; }
             .card-responsive .card:nth-child(6) { grid-column: 4; grid-row: 3; }

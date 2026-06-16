@@ -1,0 +1,11 @@
+import { chromium } from '@playwright/test';
+const url = process.argv[2] || 'http://localhost:5175/';
+const out = process.argv[3] || '/tmp/hero.png';
+const b = await chromium.launch({ args: ['--use-gl=angle','--use-angle=swiftshader','--ignore-gpu-blocklist'] });
+const page = await b.newPage();
+await page.setViewportSize({ width: 1440, height: 820 });
+await page.goto(url, { waitUntil: 'load' }).catch(()=>{});
+await page.waitForTimeout(11000);
+await page.screenshot({ path: out });
+await b.close();
+console.log('shot saved', out);

@@ -1,0 +1,52 @@
+{
+  "_note": "HUMAN superheroes with powers (Spider-Man logic): real human face + body, wearing a THEMED super-suit. The animal is only a motif/emblem/codename — NOT an anthropomorphic animal. Likeness comes from the real photo used as face reference; the prompt only describes the suit + power. No real names, ever. Only the T-Rex (07) is an actual creature.",
+  "style": "Pixar-style stylized 3D render, Marvel cinematic hero quality, full-body three-quarter pose, clean dark studio gradient backdrop, dramatic cinematic rim lighting, volumetric glow, ultra-detailed, polished character design sheet,",
+  "negative": "anthropomorphic animal, furry, animal head, animal snout, beast, werewolf, mascot costume, full animal face, extra fingers, extra limbs, deformed hands, distorted face, mutated, text, watermark, logo, signature, blurry, low quality, flat lighting, photorealistic real human photograph, celebrity",
+  "aspectRatio": "3:4",
+  "resolution": "2k",
+  "n": 3,
+  "characters": [
+    {
+      "slug": "01-sovereign-lion",
+      "name": "The Sovereign (Lion-themed leader)",
+      "prompt": "a heroic human male superhero team-leader, athletic, wearing a sleek gold-and-crimson high-tech super-suit with a regal lion emblem on the chest and subtle mane-textured shoulder detailing, a slim golden circlet on his head, glowing golden gauntlets, a short tattered cape, confident commanding stance with one fist clenched and faint gold energy swirling around him; clearly human, Spider-Man-style themed suit"
+    },
+    {
+      "slug": "02-forgemaster-eagle",
+      "name": "The Forgemaster (Eagle-themed architect)",
+      "prompt": "a calm visionary human male tech-superhero, lean and composed, wearing a sleek silver-white-and-blue high-tech super-suit with an eagle emblem on the chest and a sleek retractable metallic wing-pack on the back, glowing cyan circuit lines across the armor, floating holographic geometric crystal blocks orbiting one open hand; clearly human"
+    },
+    {
+      "slug": "03-charger-bull",
+      "name": "The Charger (Bull-themed bruiser)",
+      "prompt": "a powerful broad-shouldered human male superhero with a confident grin, wearing heavy bronze-and-black armored super-suit with a bull emblem on the chest and small curved horn motifs on the shoulder pads (NOT on his head), massive armored gauntlets, steam venting from the shoulder vents, a battle-ready stance, ground cracking beneath his boots; clearly human, normal human head and face"
+    },
+    {
+      "slug": "04-howler-wolf",
+      "name": "The Howler (Wolf-themed seer)",
+      "prompt": "a sleek agile human male superhero with a sharp cool expression, wearing a dark grey-and-silver high-tech stealth super-suit with a wolf emblem on the chest and a lowered cloth hood, glowing pale-blue visor accents along the cheeks, lightweight segmented armor, one hand raised pointing upward toward the sky, faint silver aura; clearly human"
+    },
+    {
+      "slug": "05-prophet-cobra",
+      "name": "The Prophet (Cobra-themed oracle)",
+      "prompt": "a mysterious mystic human male superhero, wearing dark-green and black hooded robes layered over a sleek super-suit with a coiled-cobra emblem, glowing violet eyes visible under the hood, calm knowing half-smile, holding an ornate glowing staff topped with a coiled metal serpent, swirling purple energy aura behind him; clearly human, human face visible under the hood"
+    },
+    {
+      "slug": "06-beastlord-raptor",
+      "name": "The Beastlord (human hero torso + iconic INFLATABLE ride-on dino costume on lower body)",
+      "prompt": "a bold adventurous human male superhero, confident fearless grin, the face from the reference image, heroic human upper body wearing a rugged amber-and-bronze hero jacket with shoulder armor, but his LOWER body is a big goofy inflatable ride-on cartoon dinosaur costume — a chubby cartoon green T-Rex with a blue-and-yellow belly, tiny stubby arms and little fake legs dangling at the sides — so it looks like he is permanently riding a silly inflatable dino, comedic yet epic hero pose, dust and embers swirling around the dino's feet; clearly a real human upper body emerging from a colorful inflatable dinosaur ride-on suit, funny meme energy"
+    },
+    {
+      "slug": "07-fossil-titan",
+      "name": "The Fossil Titan (the dino creature — the only non-human)",
+      "prompt": "a colossal armored Tyrannosaurus Rex monster with dark scaled hide cracked by glowing amber fossil-light running through its body, battle scars, ancient bone armor plates, roaring with mouth wide open, dynamic powerful full-body stance, dust and embers swirling, epic creature design",
+      "aspectRatio": "16:9"
+    },
+    {
+      "slug": "08-snap-warlord",
+      "name": "The Snap Warlord (villain — FULLY HUMAN face = FTX guy via ref photo; Rug Gauntlet w/ 6 collapse-stones)",
+      "prompt": "a towering, large, heavyset CHUBBY human male supervillain, soft pudgy doughy build with a round belly straining against the armor, big imposing through sheer size rather than muscle, a soft round chubby boyish face with full plump cheeks and a soft rounded jawline, messy curly dark hair, a smug awkward grin, the face from the reference image, natural human skin tone, wearing heavy ruined dark-gold armor stretched over his bulky frame, a massive ornate golden gauntlet on his raised fist set with six differently-colored glowing gems (purple, crimson-red, icy-blue, yellow, black, green) across the knuckles, menacing pose in a ruined battlefield trench, ominous cinematic lighting; fully human, NOT an alien, NOT purple, NOT bald",
+      "negativeExtra": "purple skin, blue skin, alien, Thanos, bald head, non-human, monster face, muscular, ripped, six-pack, bodybuilder, lean, athletic, chiseled jaw, sharp jawline, square jaw, model face, handsome"
+    }
+  ]
+}

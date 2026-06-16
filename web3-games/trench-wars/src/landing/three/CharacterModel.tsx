@@ -14,7 +14,7 @@ interface AnimatedCharacterProps {
   bg?: string
 }
 
-function Model({ charName, scale = 2.2 }: Pick<AnimatedCharacterProps, 'charName' | 'scale'>) {
+function Model({ charName, scale = 1, fitHeight = 2.0 }: Pick<AnimatedCharacterProps, 'charName' | 'scale'> & { fitHeight?: number }) {
   const groupRef = useRef<THREE.Group>(null)
   const mixerRef = useRef<THREE.AnimationMixer | null>(null)
   const walkActionRef = useRef<THREE.AnimationAction | null>(null)
@@ -30,7 +30,10 @@ function Model({ charName, scale = 2.2 }: Pick<AnimatedCharacterProps, 'charName
   const walkGltf = useGLTF(walkUrl)
   const attackGltf = useGLTF(attackUrl)
 
-  const scene = useMemo(() => {
+  // Auto-fit: recenter the model at the origin and scale it to a consistent
+  // target height so every character (big SBF, small Ansem) frames the same way
+  // and never overflows the container.
+  const { scene, fit } = useMemo(() => {
     const clone = cloneSkeleton(modelGltf.scene)
     clone.traverse((o) => {
       const m = o as THREE.Mesh
@@ -39,8 +42,12 @@ function Model({ charName, scale = 2.2 }: Pick<AnimatedCharacterProps, 'charName
         m.receiveShadow = true
       }
     })
-    return clone
-  }, [modelGltf.scene])
+    const box = new THREE.Box3().setFromObject(clone)
+    const size = box.getSize(new THREE.Vector3())
+    const center = box.getCenter(new THREE.Vector3())
+    clone.position.set(-center.x, -center.y, -center.z)
+    return { scene: clone, fit: fitHeight / (size.y || 1) }
+  }, [modelGltf.scene, fitHeight])
 
   useEffect(() => {
     if (!groupRef.current) return
@@ -92,17 +99,17 @@ function Model({ charName, scale = 2.2 }: Pick<AnimatedCharacterProps, 'charName
   })
 
   return (
-    <group ref={groupRef} rotation={[0, -0.4, 0]} scale={scale} position={[0, -1.1, 0]}>
+    <group ref={groupRef} rotation={[0, -0.4, 0]} scale={fit * scale} position={[0, 0, 0]}>
       <primitive object={scene} />
     </group>
   )
 }
 
-export function CharacterModel({ charName, scale = 2.2, bg = '#0a0c11' }: AnimatedCharacterProps) {
+export function CharacterModel({ charName, scale = 1, bg = '#0a0c11' }: AnimatedCharacterProps) {
   return (
     <div style={{ width: '100%', height: '100%', borderRadius: 24, overflow: 'hidden', background: bg }}>
       <Canvas
-        camera={{ position: [0, 0.6, 4.2], fov: 36 }}
+        camera={{ position: [0, 0.2, 4.4], fov: 34 }}
         shadows
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false }}
@@ -113,7 +120,7 @@ export function CharacterModel({ charName, scale = 2.2, bg = '#0a0c11' }: Animat
         <directionalLight position={[-3, 2, -2]} intensity={0.8} color="#d4a13c" />
         <Suspense fallback={null}>
           <Model charName={charName} scale={scale} />
-          <ContactShadows position={[0, -1.1, 0]} opacity={0.35} scale={8} blur={2.5} far={3} />
+          <ContactShadows position={[0, -1.05, 0]} opacity={0.35} scale={8} blur={2.5} far={3} />
           <Environment preset="city" />
         </Suspense>
       </Canvas>

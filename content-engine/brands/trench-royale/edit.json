@@ -1,0 +1,23 @@
+{
+  "_note": "Scene timeline for the TRENCH ROYALE trailer. Each scene renders to build/<id>.mp4. Source = clips/<id>.mp4 if present, else stills/<still>.png (ken-burns). Swap stills for i2v clips scene-by-scene and re-run to iterate. Durations ~= 39s.",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "voPath": "vo/narrator.mp3",
+  "musicPath": "music/bed.mp3",
+  "fontFile": "/System/Library/Fonts/HelveticaNeue.ttc",
+  "grade": "eq=contrast=1.10:brightness=-0.02:saturation=1.16,colorbalance=rs=-0.04:bs=0.05:rh=0.05:bh=-0.04,vignette=PI/5",
+  "scenes": [
+    { "id": "01-alon-hook",   "still": "alon",  "dur": 3.0, "text": "SOLANA HAS AVENGERS NOW" },
+    { "id": "02-snap-death",  "still": "sbf",   "dur": 4.0 },
+    { "id": "03-alon-revive", "still": "alon",  "dur": 6.0, "text": "THE REVIVAL" },
+    { "id": "04-toly",        "still": "toly",  "dur": 2.5 },
+    { "id": "05-mert",        "still": "mert",  "dur": 2.5 },
+    { "id": "06-ansem",       "still": "ansem", "dur": 2.5 },
+    { "id": "07-murad",       "still": "murad", "dur": 2.5 },
+    { "id": "08-dino",        "still": "vucan", "dur": 3.0 },
+    { "id": "09-villain",     "still": "sbf",   "dur": 4.0 },
+    { "id": "10-assemble",    "still": "alon",  "dur": 5.0 },
+    { "id": "11-logo",        "logo": true,     "dur": 4.0, "title": "TRENCH ROYALE", "text": "the trenches have heroes now" }
+  ]
+}

@@ -100,13 +100,10 @@ export class BattleController {
     if (this.over) this.startMatch()
   }
 
-  /** Stage-relative pointer position → game pixels (540×960 space). */
+  /** Stage-relative pointer position → display px (matches Battle3D.dispW/H projection space). */
   private toGamePx(clientX: number, clientY: number): { x: number; y: number } {
     const r = this.opts.stage.getBoundingClientRect()
-    return {
-      x: ((clientX - r.left) / r.width) * ARENA_W_PX,
-      y: ((clientY - r.top) / r.height) * ARENA_H_PX,
-    }
+    return { x: clientX - r.left, y: clientY - r.top }
   }
 
   deployAtClient(clientX: number, clientY: number): boolean {
@@ -201,13 +198,17 @@ export class BattleController {
   private drawOverlay() {
     const canvas = this.opts.overlay
     const dpr = Math.min(window.devicePixelRatio, 2)
-    if (canvas.width !== ARENA_W_PX * dpr) {
-      canvas.width = ARENA_W_PX * dpr
-      canvas.height = ARENA_H_PX * dpr
+    // overlay shares the stage's CSS box; size its buffer to the real display size so
+    // projected HP bars / VFX align with the 3D at any aspect (portrait or landscape).
+    const cw = canvas.clientWidth || ARENA_W_PX
+    const ch = canvas.clientHeight || ARENA_H_PX
+    if (canvas.width !== Math.round(cw * dpr) || canvas.height !== Math.round(ch * dpr)) {
+      canvas.width = Math.round(cw * dpr)
+      canvas.height = Math.round(ch * dpr)
     }
     const ctx = canvas.getContext('2d')!
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    ctx.clearRect(0, 0, ARENA_W_PX, ARENA_H_PX)
+    ctx.clearRect(0, 0, cw, ch)
 
     const hpBar = (x: number, y: number, w: number, h: number, hp: number, maxHp: number, friendly: boolean) => {
       ctx.fillStyle = 'rgba(10,14,20,0.65)'

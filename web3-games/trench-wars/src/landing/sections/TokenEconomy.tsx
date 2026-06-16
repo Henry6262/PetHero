@@ -25,21 +25,36 @@ export function TokenEconomy() {
             <ScrollReveal key={s.label} delay={i * 0.1}>
               <div
                 style={{
+                  position: 'relative',
                   background: 'linear-gradient(180deg, rgba(17,20,27,0.95), rgba(10,12,17,0.85))',
                   border: '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 20,
                   padding: 26,
+                  overflow: 'hidden',
                   transition: 'all 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(212,161,60,0.35)'
+                  e.currentTarget.style.borderColor = `${s.color}80`
                   e.currentTarget.style.transform = 'translateY(-4px)'
+                  e.currentTarget.style.boxShadow = `0 24px 60px rgba(0,0,0,0.45), 0 0 30px ${s.color}26`
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
                   e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'none'
                 }}
               >
+                {/* top accent bar in the split's colour */}
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 3,
+                    background: `linear-gradient(90deg, ${s.color}, transparent)`,
+                  }}
+                />
                 <div
                   style={{
                     display: 'flex',
@@ -63,7 +78,7 @@ export function TokenEconomy() {
                       fontFamily: 'var(--font-display)',
                       fontWeight: 900,
                       fontSize: 28,
-                      color: 'var(--color-gold)',
+                      color: s.color,
                     }}
                   >
                     {s.pct}%
@@ -82,8 +97,9 @@ export function TokenEconomy() {
                     style={{
                       width: `${s.pct}%`,
                       height: '100%',
-                      background: 'var(--color-gold)',
+                      background: `linear-gradient(90deg, ${s.color}, ${s.color}aa)`,
                       borderRadius: 99,
+                      boxShadow: `0 0 12px ${s.color}66`,
                     }}
                   />
                 </div>
@@ -120,10 +136,11 @@ export function TokenEconomy() {
               <div
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: 40,
+                  fontSize: 44,
                   fontWeight: 900,
-                  color: 'var(--color-gold)',
+                  color: 'var(--color-ember)',
                   letterSpacing: '0.02em',
+                  textShadow: '0 0 28px rgba(255,106,43,0.35)',
                 }}
               >
                 <CountUp to={TOKEN.burnedToDate} separator="," />

@@ -974,19 +974,19 @@ function PreviewScene() {
 function CameraRig() {
   const { camera } = useThree()
   useEffect(() => {
-    camera.lookAt(0, 0.5, 0)
+    camera.lookAt(0, 0.9, 0)
   }, [camera])
   return null
 }
 
 export function BattlePreview() {
   return (
-    <div style={{ width: '100%', height: '100%', minHeight: 680, transform: 'translateY(-12%)' }}>
+    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
       <Canvas
         gl={{ alpha: true, antialias: true }}
         dpr={[1, 1.8]}
         shadows
-        camera={{ position: [21, 17.5, 21], fov: 33, near: 0.1, far: 220 }}
+        camera={{ position: [27, 22, 27], fov: 35, near: 0.1, far: 220 }}
         style={{ background: 'transparent', pointerEvents: 'none' }}
       >
         <CameraRig />

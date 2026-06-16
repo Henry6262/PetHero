@@ -13,9 +13,18 @@ const LINKS = [
 
 export function Nav({ onPlay }: NavProps) {
   const [solid, setSolid] = useState(false)
+  const [hidden, setHidden] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 40)
+    let last = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      setSolid(y > 40)
+      // hide the menu when scrolling down (past the hero), reveal when scrolling up
+      if (y > 90 && y > last + 4) setHidden(true)
+      else if (y < last - 4) setHidden(false)
+      last = y
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -38,19 +47,41 @@ export function Nav({ onPlay }: NavProps) {
         borderBottom: `1px solid ${solid ? 'rgba(212,161,60,0.18)' : 'transparent'}`,
       }}
     >
+      {/* left spacer — keeps the links/PLAY cluster right-aligned via space-between */}
+      <div aria-hidden style={{ width: 120 }} />
+
+      {/* Centered glassmorphic crown emblem */}
       <a
         href="#"
+        aria-label="Trench Royale"
         style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 900,
-          letterSpacing: '0.14em',
-          fontSize: 16,
-          color: 'var(--color-gold)',
-          textTransform: 'uppercase',
-          textDecoration: 'none',
+          position: 'absolute',
+          left: '50%',
+          top: '136%',
+          transform: 'translate(-50%, -50%)',
+          width: 152,
+          height: 152,
+          display: 'grid',
+          placeItems: 'center',
+          transition: 'transform 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.06)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)'
         }}
       >
-        TRENCH ROYALE
+        <img
+          src="/assets/brand/crown.png"
+          alt="Trench Royale"
+          style={{
+            width: 94,
+            height: 94,
+            objectFit: 'cover',
+            borderRadius: '50%',
+          }}
+        />
       </a>
 
       <div
@@ -59,6 +90,10 @@ export function Nav({ onPlay }: NavProps) {
           display: 'flex',
           alignItems: 'center',
           gap: 28,
+          opacity: hidden ? 0 : 1,
+          transform: hidden ? 'translateY(-14px)' : 'translateY(0)',
+          pointerEvents: hidden ? 'none' : 'auto',
+          transition: 'opacity 0.3s ease, transform 0.3s ease',
         }}
       >
         {LINKS.map(([label, id]) => (
@@ -67,7 +102,7 @@ export function Nav({ onPlay }: NavProps) {
             href={`#${id}`}
             style={{
               color: 'var(--color-muted)',
-              fontSize: 14,
+              fontSize: 16,
               textDecoration: 'none',
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
@@ -94,7 +129,7 @@ export function Nav({ onPlay }: NavProps) {
             borderRadius: 10,
             fontFamily: 'var(--font-display)',
             fontWeight: 900,
-            fontSize: 13,
+            fontSize: 15,
             letterSpacing: '0.1em',
             cursor: 'pointer',
             transition: 'transform 0.15s, box-shadow 0.15s',
