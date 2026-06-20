@@ -396,7 +396,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
         badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
 
-        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, padding: space.md, marginBottom: space.lg, gap: 10 },
+        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.lg, gap: 10 },
         alertEmoji: { fontSize: 20 },
         alertTitle: { color: colors.red, fontWeight: "700", fontSize: 15 },
         alertSub: { color: colors.muted, fontSize: 12, marginTop: 2 },
