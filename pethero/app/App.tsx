@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { api } from "./src/api";
 import { useBackend } from "./src/useBackend";
@@ -80,7 +81,7 @@ function Home() {
     <>
     <ScrollView
       style={styles.screen}
-      contentContainerStyle={{ padding: space.lg, paddingBottom: 48 }}
+      contentContainerStyle={{ padding: 20, paddingBottom: 48 }}
       showsVerticalScrollIndicator={false}
     >
       <Header
@@ -109,6 +110,8 @@ function Home() {
         />
       )}
 
+      <Separator />
+
       <SectionLabel text="PETS" right="tap to simulate" />
       <PetsSection
         variant={PETS_VARIANT}
@@ -117,7 +120,8 @@ function Home() {
         activeId={currentPetId}
         onPick={simulate}
       />
-      <View style={{ height: space.xl }} />
+
+      <Separator />
 
       <SectionLabel text="DISPENSE NOW" right={currentPet ? `for ${currentPet.name}` : "pick a pet"} />
       <DispenseSection variant={DISPENSE_VARIANT} pet={currentPet} onDispense={dispense} />
@@ -212,6 +216,17 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
         </Text>
       </View>
     </View>
+  );
+}
+
+function Separator() {
+  return (
+    <LinearGradient
+      colors={["transparent", "rgba(22,163,74,0.28)", "transparent"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.separator}
+    />
   );
 }
 
@@ -356,11 +371,12 @@ const styles = StyleSheet.create({
   liveBottom: { flexDirection: "row", alignItems: "center" },
   liveStatus: { color: "#EAE8E3", fontSize: 13 },
 
-  bracket: { position: "absolute", width: 26, height: 26 },
-  brTL: { top: 10, left: 10, borderTopWidth: 3, borderLeftWidth: 3, borderTopLeftRadius: 8 },
-  brTR: { top: 10, right: 10, borderTopWidth: 3, borderRightWidth: 3, borderTopRightRadius: 8 },
-  brBL: { bottom: 10, left: 10, borderBottomWidth: 3, borderLeftWidth: 3, borderBottomLeftRadius: 8 },
-  brBR: { bottom: 10, right: 10, borderBottomWidth: 3, borderRightWidth: 3, borderBottomRightRadius: 8 },
+  bracket: { position: "absolute", width: 30, height: 30 },
+  brTL: { top: 0, left: 0, borderTopWidth: 3, borderLeftWidth: 3, borderTopLeftRadius: radius.lg },
+  brTR: { top: 0, right: 0, borderTopWidth: 3, borderRightWidth: 3, borderTopRightRadius: radius.lg },
+  brBL: { bottom: 0, left: 0, borderBottomWidth: 3, borderLeftWidth: 3, borderBottomLeftRadius: radius.lg },
+  brBR: { bottom: 0, right: 0, borderBottomWidth: 3, borderRightWidth: 3, borderBottomRightRadius: radius.lg },
+  separator: { height: 1.5, borderRadius: 1, marginVertical: space.xl },
 
   reason: { backgroundColor: "#fff", borderRadius: radius.lg, borderLeftWidth: 4, padding: space.md, marginBottom: space.lg, ...shadow.card },
   reasonHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 },
