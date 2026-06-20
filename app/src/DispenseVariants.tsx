@@ -28,9 +28,7 @@ function TintedTiles({ pet, onDispense }: Props) {
     <View style={t.row}>
       {ALL.map((x) => (
         <Pressable key={x.action} disabled={off} onPress={() => onDispense(x.action)} style={[t.tile, off && t.off]}>
-          <View style={t.iconChip}>
-            <Text style={{ fontSize: 22 }}>{x.icon}</Text>
-          </View>
+          <Text style={t.icon}>{x.icon}</Text>
           <Text style={t.label}>{x.label}</Text>
         </Pressable>
       ))}
@@ -94,8 +92,8 @@ function Segmented({ pet, onDispense }: Props) {
 
 const t = StyleSheet.create({
   row: { flexDirection: "row", gap: space.md },
-  tile: { flex: 1, borderRadius: radius.lg, backgroundColor: "#FFFFFF", paddingVertical: 18, alignItems: "center", gap: 10, borderWidth: 1, borderColor: "rgba(28,24,18,0.05)", ...shadow.lift },
-  iconChip: { width: 50, height: 50, borderRadius: 25, alignItems: "center", justifyContent: "center", backgroundColor: "#EFEBE3" },
+  tile: { flex: 1, borderRadius: radius.lg, backgroundColor: "#FFFFFF", paddingVertical: 20, alignItems: "center", gap: 10, borderWidth: 1, borderColor: "rgba(28,24,18,0.05)", ...shadow.lift },
+  icon: { fontSize: 32 },
   label: { fontSize: 14, fontWeight: "700", color: colors.text },
   off: { opacity: 0.45 },
 });
