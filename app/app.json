@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "PetHero",
+    "slug": "pethero",
+    "scheme": "pethero",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": false },
+    "android": {},
+    "web": { "bundler": "metro" }
+  }
+}
