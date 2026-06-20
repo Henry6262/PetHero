@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -12,10 +12,12 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
 
 import { api } from "./src/api";
 import { useBackend } from "./src/useBackend";
-import { colors, radius, shadow, space } from "./src/theme";
+import { radius, shadow, space } from "./src/theme";
+import { ThemeProvider, useTheme } from "./src/ThemeContext";
 import { deriveStatus } from "./src/petStatus";
 import { PetAvatar } from "./src/PetAvatar";
 import { PetsSection, type PetsVariant } from "./src/PetsVariants";
@@ -32,15 +34,28 @@ const DISPENSE_VARIANT: DispenseVariant = "1";
 export default function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.root} edges={["top", "bottom"]}>
-        <StatusBar style="dark" />
-        <Home />
-      </SafeAreaView>
+      <ThemeProvider>
+        <ThemedApp />
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
 
+function ThemedApp() {
+  const { colors, isDark } = useTheme();
+  const styles = useThemedStyles(colors);
+
+  return (
+    <SafeAreaView style={styles.root} edges={["top", "bottom"]}>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <Home />
+    </SafeAreaView>
+  );
+}
+
 function Home() {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const backend = useBackend();
   const [pets, setPets] = useState<Pet[]>(SEED_PETS);
   const [selected, setSelected] = useState<string | null>(null);
@@ -145,10 +160,13 @@ function Home() {
 /* ---------------- components ---------------- */
 
 function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boolean; mode: string; agent: string; alerts: number; onOpenDemo: () => void }) {
+  const { colors, isDark, toggle } = useTheme();
+  const styles = useThemedStyles(colors);
+
   return (
     <View style={styles.header}>
       <View>
-        <Text style={styles.brand}>RELOAD-OK</Text>
+        <Text style={styles.brand}>PetHero</Text>
         <View style={styles.subRow}>
           <View style={[styles.dot, { backgroundColor: connected ? colors.green : colors.muted }]} />
           <Text style={styles.subText}>
@@ -157,19 +175,19 @@ function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boo
         </View>
       </View>
       <View style={styles.headerIcons}>
-        <Pressable style={[styles.iconBtn, styles.iconBtnAccent]} onPress={onOpenDemo} hitSlop={8}>
-          <Text style={styles.iconGlyph}>🐾</Text>
+        <Pressable style={styles.iconBtn} onPress={onOpenDemo} hitSlop={8}>
+          <Ionicons name="paw" size={18} color={colors.text} />
+        </Pressable>
+        <Pressable style={styles.iconBtn} onPress={toggle} hitSlop={8}>
+          <Ionicons name={isDark ? "sunny" : "moon"} size={18} color={colors.text} />
         </Pressable>
         <View style={styles.iconBtn}>
-          <Text style={styles.iconGlyph}>🔔</Text>
+          <Ionicons name="notifications" size={18} color={colors.text} />
           {alerts > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{alerts}</Text>
             </View>
           )}
-        </View>
-        <View style={styles.iconBtn}>
-          <Text style={styles.iconGlyph}>⚙️</Text>
         </View>
       </View>
     </View>
@@ -177,6 +195,8 @@ function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boo
 }
 
 function AlertBanner({ pet }: { pet: Pet }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const med = pet.medications[0];
   return (
     <View style={styles.alert}>
@@ -187,20 +207,31 @@ function AlertBanner({ pet }: { pet: Pet }) {
         </Text>
         <Text style={styles.alertSub}>tap {pet.name}'s tile to dispense</Text>
       </View>
-      <Text style={styles.alertChevron}>→</Text>
+      <Ionicons name="chevron-forward" size={18} color={colors.red} />
     </View>
   );
 }
 
 function LivePanel({ frame, watching, confidence, busy }: { frame: string | null; watching: string | null; confidence: number; busy: boolean }) {
+  const { colors, isDark } = useTheme();
+  const styles = useThemedStyles(colors);
+
   return (
     <View style={styles.live}>
-      <Image
-        source={require("./assets/live-preview.png")}
-        style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
-        resizeMode="contain"
-      />
-      {/* <View style={styles.liveScrim} /> */}
+      {frame ? (
+        <Image
+          source={{ uri: `data:image/jpeg;base64,${frame}` }}
+          style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
+          resizeMode="cover"
+        />
+      ) : (
+        <Image
+          source={require("./assets/live-preview.png")}
+          style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
+          resizeMode="contain"
+        />
+      )}
+      <View style={styles.liveScrim} />
       <CornerBrackets active={!!watching} />
       <View style={styles.liveTopRow}>
         <View style={styles.liveTag}>
@@ -220,17 +251,20 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
 }
 
 function Separator() {
+  const { colors } = useTheme();
   return (
     <LinearGradient
-      colors={["transparent", "rgba(22,163,74,0.28)", "transparent"]}
+      colors={["transparent", colors.greenSoft, "transparent"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      style={styles.separator}
+      style={{ height: 1.5, borderRadius: 1, marginVertical: space.lg }}
     />
   );
 }
 
 function CornerBrackets({ active }: { active: boolean }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const c = active ? colors.green : "rgba(255,255,255,0.22)";
   return (
     <>
@@ -243,6 +277,8 @@ function CornerBrackets({ active }: { active: boolean }) {
 }
 
 function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boolean; pets: Pet[]; selected: string | null; onPick: (id: string | null) => void; onClose: () => void }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.drawerBackdrop} onPress={onClose}>
@@ -272,12 +308,14 @@ function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boo
 }
 
 function Chip({ children, active, danger, onPress, leading }: { children: React.ReactNode; active?: boolean; danger?: boolean; onPress: () => void; leading?: React.ReactNode }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.chip,
-        active && { borderColor: colors.text, backgroundColor: "#fff" },
+        active && { borderColor: colors.text, backgroundColor: colors.card },
         danger && { borderColor: colors.red },
       ]}
     >
@@ -288,6 +326,8 @@ function Chip({ children, active, danger, onPress, leading }: { children: React.
 }
 
 function PetCard({ pet, active, status, onPress }: { pet: Pet; active: boolean; status: ReturnType<typeof deriveStatus>; onPress: () => void }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const toneColor = status.tone === "alert" ? colors.red : status.tone === "good" ? colors.green : colors.muted;
   return (
     <Pressable onPress={onPress} style={[styles.petCard, active && { borderColor: colors.text }]}>
@@ -302,6 +342,8 @@ function PetCard({ pet, active, status, onPress }: { pet: Pet; active: boolean; 
 }
 
 function DispenseCard({ emoji, label, tint, disabled, onPress }: { emoji: string; label: string; tint: string; disabled?: boolean; onPress: () => void }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   return (
     <Pressable onPress={onPress} disabled={disabled} style={[styles.dispenseCard, disabled && { opacity: 0.4 }]}>
       <Text style={styles.dispenseEmoji}>{emoji}</Text>
@@ -311,6 +353,8 @@ function DispenseCard({ emoji, label, tint, disabled, onPress }: { emoji: string
 }
 
 function SectionLabel({ text, right }: { text: string; right?: string }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   return (
     <View style={styles.sectionRow}>
       <Text style={styles.section}>{text}</Text>
@@ -325,66 +369,78 @@ function cap(s: string) {
 
 /* ---------------- styles ---------------- */
 
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.screen },
-  screen: { flex: 1, backgroundColor: colors.screen },
+function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        root: { flex: 1, backgroundColor: colors.screen },
+        screen: { flex: 1, backgroundColor: colors.screen },
 
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: space.lg },
-  brand: { fontSize: 28, fontWeight: "800", color: colors.text, letterSpacing: -0.5 },
-  subRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  subText: { fontSize: 13, color: colors.muted },
-  dot: { width: 7, height: 7, borderRadius: 4, marginRight: 6 },
-  headerIcons: { flexDirection: "row", gap: 10 },
-  iconBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", ...shadow.card },
-  iconBtnAccent: { backgroundColor: colors.amberSoft, borderWidth: 1.5, borderColor: colors.amber },
-  iconGlyph: { fontSize: 16 },
-  badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
-  badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
+        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: space.lg },
+        brand: { fontSize: 28, fontWeight: "800", color: colors.text, letterSpacing: -0.5 },
+        subRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
+        subText: { fontSize: 13, color: colors.muted },
+        dot: { width: 7, height: 7, borderRadius: 4, marginRight: 6 },
+        headerIcons: { flexDirection: "row", gap: 10 },
+        iconBtn: {
+          width: 38,
+          height: 38,
+          borderRadius: 19,
+          backgroundColor: colors.card,
+          borderWidth: 1,
+          borderColor: colors.border,
+          alignItems: "center",
+          justifyContent: "center",
+          ...shadow.card,
+        },
+        badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
+        badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
 
-  alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, padding: space.md, marginBottom: space.lg, gap: 10 },
-  alertEmoji: { fontSize: 20 },
-  alertTitle: { color: colors.red, fontWeight: "700", fontSize: 15 },
-  alertSub: { color: "#B4736B", fontSize: 12, marginTop: 2 },
-  alertChevron: { color: colors.red, fontSize: 18, fontWeight: "700" },
+        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, padding: space.md, marginBottom: space.lg, gap: 10 },
+        alertEmoji: { fontSize: 20 },
+        alertTitle: { color: colors.red, fontWeight: "700", fontSize: 15 },
+        alertSub: { color: colors.muted, fontSize: 12, marginTop: 2 },
 
-  live: { height: 220, borderRadius: radius.lg, backgroundColor: "#FF00AA", marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
-  liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
-  liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
-  liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red },
-  liveTagText: { color: "#fff", fontSize: 12, fontWeight: "700", letterSpacing: 1 },
-  liveCam: { color: colors.liveText, fontSize: 11 },
-  liveBottom: { flexDirection: "row", alignItems: "center" },
-  liveStatus: { color: "#EAE8E3", fontSize: 13 },
+        live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
+        liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
+        liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+        liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
+        liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red },
+        liveTagText: { color: "#fff", fontSize: 12, fontWeight: "700", letterSpacing: 1 },
+        liveCam: { color: colors.liveText, fontSize: 11 },
+        liveBottom: { flexDirection: "row", alignItems: "center" },
+        liveStatus: { color: "#EAE8E3", fontSize: 13 },
 
-  bracket: { position: "absolute", width: 38, height: 38 },
-  brTL: { top: -4, left: -4, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: radius.lg + 4 },
-  brTR: { top: -4, right: -4, borderTopWidth: 6, borderRightWidth: 6, borderTopRightRadius: radius.lg + 4 },
-  brBL: { bottom: -4, left: -4, borderBottomWidth: 6, borderLeftWidth: 6, borderBottomLeftRadius: radius.lg + 4 },
-  brBR: { bottom: -4, right: -4, borderBottomWidth: 6, borderRightWidth: 6, borderBottomRightRadius: radius.lg + 4 },
-  separator: { height: 1.5, borderRadius: 1, marginVertical: space.lg },
+        bracket: { position: "absolute", width: 38, height: 38 },
+        brTL: { top: -4, left: -4, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: radius.lg + 4 },
+        brTR: { top: -4, right: -4, borderTopWidth: 6, borderRightWidth: 6, borderTopRightRadius: radius.lg + 4 },
+        brBL: { bottom: -4, left: -4, borderBottomWidth: 6, borderLeftWidth: 6, borderBottomLeftRadius: radius.lg + 4 },
+        brBR: { bottom: -4, right: -4, borderBottomWidth: 6, borderRightWidth: 6, borderBottomRightRadius: radius.lg + 4 },
 
-  drawerBackdrop: { flex: 1, backgroundColor: "rgba(20,16,10,0.35)", justifyContent: "flex-end" },
-  drawerSheet: { backgroundColor: colors.screen, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: space.xl, paddingBottom: 40 },
-  drawerHandle: { alignSelf: "center", width: 40, height: 5, borderRadius: 3, backgroundColor: colors.borderStrong, marginBottom: space.lg },
-  drawerKicker: { fontSize: 11, fontWeight: "800", color: colors.amber, letterSpacing: 1.2, marginBottom: 4 },
-  drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, marginBottom: space.lg },
-  demoChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  chip: { flexDirection: "row", alignItems: "center", gap: 7, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7, backgroundColor: "#fff" },
-  chipText: { fontSize: 14, fontWeight: "600", color: colors.text },
+        drawerBackdrop: { flex: 1, backgroundColor: "rgba(20,16,10,0.35)", justifyContent: "flex-end" },
+        drawerSheet: { backgroundColor: colors.screen, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: space.xl, paddingBottom: 40 },
+        drawerHandle: { alignSelf: "center", width: 40, height: 5, borderRadius: 3, backgroundColor: colors.borderStrong, marginBottom: space.lg },
+        drawerKicker: { fontSize: 11, fontWeight: "800", color: colors.amber, letterSpacing: 1.2, marginBottom: 4 },
+        drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, marginBottom: space.lg },
+        demoChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+        chip: { flexDirection: "row", alignItems: "center", gap: 7, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7, backgroundColor: colors.card },
+        chipText: { fontSize: 14, fontWeight: "600", color: colors.text },
 
-  sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: space.md },
-  section: { fontSize: 12, fontWeight: "700", color: colors.label, letterSpacing: 1.2 },
-  sectionRight: { fontSize: 12, color: colors.muted },
+        sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: space.md },
+        section: { fontSize: 12, fontWeight: "700", color: colors.label, letterSpacing: 1.2 },
+        sectionRight: { fontSize: 12, color: colors.muted },
 
-  petGrid: { flexDirection: "row", flexWrap: "wrap", gap: space.md, marginBottom: space.xl },
-  petCard: { flexGrow: 1, flexBasis: "45%", backgroundColor: "#fff", borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border, padding: space.md, ...shadow.card },
-  avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: "#EFEAE2", alignItems: "center", justifyContent: "center", marginBottom: 8 },
-  petName: { fontSize: 16, fontWeight: "700", color: colors.text },
-  petStatus: { fontSize: 13, fontWeight: "600" },
+        petGrid: { flexDirection: "row", flexWrap: "wrap", gap: space.md, marginBottom: space.xl },
+        petCard: { flexGrow: 1, flexBasis: "45%", backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border, padding: space.md, ...shadow.card },
+        avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.border, alignItems: "center", justifyContent: "center", marginBottom: 8 },
+        petName: { fontSize: 16, fontWeight: "700", color: colors.text },
+        petStatus: { fontSize: 13, fontWeight: "600" },
 
-  dispenseRow: { flexDirection: "row", gap: space.md },
-  dispenseCard: { flex: 1, aspectRatio: 1, backgroundColor: "#fff", borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border, alignItems: "center", justifyContent: "center", gap: 8, ...shadow.card },
-  dispenseEmoji: { fontSize: 26 },
-  dispenseLabel: { fontSize: 14, fontWeight: "700" },
-});
+        dispenseRow: { flexDirection: "row", gap: space.md },
+        dispenseCard: { flex: 1, aspectRatio: 1, backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border, alignItems: "center", justifyContent: "center", gap: 8, ...shadow.card },
+        dispenseEmoji: { fontSize: 26 },
+        dispenseLabel: { fontSize: 14, fontWeight: "700" },
+      }),
+    [colors]
+  );
+}
