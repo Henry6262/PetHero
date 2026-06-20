@@ -9,17 +9,21 @@ export const SEED_PETS: Pet[] = [
     name: "Mochi",
     species: "cat",
     photo_ref: "mochi.png",
-    max_portion_grams: 45,
-    min_feed_interval_hours: 5,
-    medications: [{ name: "thyroid", dose_count: 1, interval_hours: 12, notes: "Hyperthyroid — 1 pill twice daily" }],
+    food_options: [
+      { id: "default", name: "Dry food", portion_grams: 45, min_interval_hours: 5, is_default: true },
+    ],
+    medications: [
+      { id: "thyroid", name: "thyroid", dose_count: 1, interval_hours: 12, notes: "Hyperthyroid — 1 pill twice daily", active: true },
+    ],
   },
   {
     id: "biscuit",
     name: "Biscuit",
     species: "cat",
     photo_ref: "biscuit.png",
-    max_portion_grams: 55,
-    min_feed_interval_hours: 4,
+    food_options: [
+      { id: "default", name: "Dry food", portion_grams: 55, min_interval_hours: 4, is_default: true },
+    ],
     medications: [],
   },
   {
@@ -27,8 +31,9 @@ export const SEED_PETS: Pet[] = [
     name: "Pixel",
     species: "cat",
     photo_ref: "pixel.png",
-    max_portion_grams: 40,
-    min_feed_interval_hours: 5,
+    food_options: [
+      { id: "default", name: "Dry food", portion_grams: 40, min_interval_hours: 5, is_default: true },
+    ],
     medications: [],
   },
 ];
