@@ -96,6 +96,24 @@ class SystemStatus(BaseModel):
     state: str = "idle"
 
 
+class RobotCommand(BaseModel):
+    """A safety-approved physical action for a robot worker to execute.
+
+    This is the contract between PetHero and the robot. PetHero never contains
+    motion logic — a separate worker (LeRobot/LeLab) subscribes to /ws/robot,
+    receives these, and performs the dispense.
+    """
+
+    command: str = "dispense"
+    action: Action
+    pet_id: Optional[str] = None
+    pet_name: Optional[str] = None
+    amount_grams: float = 0
+    medicine_name: Optional[str] = None
+    bowl: Optional[str] = None  # which bowl/station to target (defaults to pet id)
+    issued_at: datetime
+
+
 class ModeRequest(BaseModel):
     mode: str  # "demo" | "live"
 

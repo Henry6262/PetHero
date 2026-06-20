@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from . import agent, dispense, safety, vision
+from . import agent, dispense, robot, safety, vision
 from .models import (
     Action,
     ActivityEvent,
@@ -46,6 +46,13 @@ def _apply(decision: DispenseDecision, pet: Optional[Pet], now: datetime) -> Act
             store.record_dose(pet.id, verdict.medicine_name, now)
 
     store.add_event(event)
+
+    # Hand an approved physical action to the robot channel (no-op if no robot
+    # is connected). PetHero never drives the hardware itself.
+    command = robot.build_command(verdict, pet, now=now)
+    if command is not None:
+        robot.robot_hub.dispatch(command)
+
     return event
 
 

@@ -43,6 +43,34 @@ pytest -q                 # safety rules (the trust-critical layer)
 | POST | `/process` | run one autonomous step on the current frame |
 | POST | `/trigger` | `{ pet_id, action, medicine_name? }` — owner button press |
 | WS | `/ws/feed` | live stream: `status` / `detection` / `decision` / `event` / `frame` envelopes |
+| GET | `/robot/status` | how many robot workers are connected + last command issued |
+| WS | `/ws/robot` | robot worker subscribes here to receive approved `dispense` commands |
+
+## Robot communication (the seam)
+
+PetHero decides *what* to dispense; a separate **robot worker** does the physical
+motion. They talk over `/ws/robot`. PetHero contains **no motion/hardware code**.
+
+When a dispense is **approved by the safety layer**, the backend pushes a
+`RobotCommand` to every connected worker:
+
+```json
+{ "type": "command", "command": "dispense", "action": "medicine",
+  "pet_id": "max", "pet_name": "Max", "amount_grams": 0,
+  "medicine_name": "joint-supplement", "bowl": "max", "issued_at": "..." }
+```
+
+Vetoed actions (double-dose, toxic, etc.) never reach the robot. To wire a real
+robot (LeRobot/LeLab), subscribe to `/ws/robot` and execute the motion — see
+`robot_worker_example.py` for a runnable template:
+
+```bash
+pip install websockets
+python robot_worker_example.py     # prints commands; plug LeRobot motion in
+```
+
+Because LeRobot needs its own Python 3.10 env, run the worker as a **separate
+process** (even on another machine) and point it at the backend's `ws://` URL.
 
 ### WebSocket envelopes
 Every message is JSON with a `type`:
