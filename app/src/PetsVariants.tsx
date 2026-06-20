@@ -109,7 +109,7 @@ function Vital({ icon, label, ok, warn }: { icon: string; label: string; ok: boo
 /* C — Status-ring tray: horizontal scroll of avatars in activity-style rings. */
 function PetsRingTray({ pets, log, activeId, onPick }: Props) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.lg, paddingVertical: 4, paddingHorizontal: space.xs, flexGrow: 1, justifyContent: "center" }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.xl, paddingVertical: 4 }}>
       {pets.map((pet) => {
         const s = deriveStatus(pet, log);
         const c = tone(s.tone);
@@ -158,7 +158,7 @@ const b = StyleSheet.create({
 });
 
 const cc = StyleSheet.create({
-  item: { alignItems: "center", width: 92 },
+  item: { alignItems: "center", width: 78 },
   ring: { width: 78, height: 78, borderRadius: 39, borderWidth: 3, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...shadow.card },
   ringActive: { borderWidth: 4 },
   avatar: { width: 60, height: 60, borderRadius: 30, backgroundColor: "#EFEAE2", alignItems: "center", justifyContent: "center" },
