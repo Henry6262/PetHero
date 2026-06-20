@@ -14,6 +14,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import agent, camera, vision
+from .robot import robot_hub
 from .models import (
     Detection,
     ManualTrigger,
@@ -150,6 +151,32 @@ def trigger(req: ManualTrigger):
 
 
 # --- WebSocket -----------------------------------------------------------
+
+@app.get("/robot/status")
+def robot_status():
+    last = robot_hub.last_command
+    return {
+        "robots_connected": robot_hub.connected(),
+        "last_command": last.model_dump(mode="json") if last else None,
+    }
+
+
+@app.websocket("/ws/robot")
+async def ws_robot(ws: WebSocket):
+    """A robot worker (LeRobot/LeLab) subscribes here to receive dispense
+    commands. PetHero pushes a RobotCommand whenever a dispense is approved."""
+    await ws.accept()
+    q = robot_hub.connect()
+    await ws.send_json({"type": "hello", "role": "robot", "note": "awaiting dispense commands"})
+    try:
+        while True:
+            cmd = await q.get()
+            await ws.send_json({"type": "command", **cmd.model_dump(mode="json")})
+    except WebSocketDisconnect:
+        pass
+    finally:
+        robot_hub.disconnect(q)
+
 
 @app.websocket("/ws/feed")
 async def ws_feed(ws: WebSocket):
