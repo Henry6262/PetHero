@@ -134,7 +134,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         const active = pet.id === activeId;
         return (
           <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
-            <View style={[styles.ring, s.tone !== "muted" && { borderWidth: active ? 3.5 : 2.5, borderColor: c }]}>
+            <View style={[styles.ring, active && { borderColor: colors.text, borderWidth: 2.5 }]}>
               <PetAvatar pet={pet} size={80} />
             </View>
             <Text style={styles.name}>{pet.name}</Text>
@@ -205,7 +205,7 @@ function useVariantCStyles(colors: ReturnType<typeof useTheme>["colors"]) {
     () =>
       StyleSheet.create({
         item: { alignItems: "center", width: 88 },
-        ring: { width: 88, height: 88, borderRadius: 44, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.lift },
+        ring: { width: 88, height: 88, borderRadius: 44, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, borderWidth: 2, borderColor: colors.borderStrong, ...shadow.lift },
         name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: space.sm },
         status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
       }),
