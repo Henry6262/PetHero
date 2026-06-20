@@ -563,7 +563,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveStatus: { color: "#EAE8E3", fontSize: 13 },
         liveFallback: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", gap: space.sm },
         liveFallbackText: { color: "rgba(255,255,255,0.75)", fontSize: 17, fontWeight: "700" },
-        actionOverlay: { position: "absolute", right: space.sm, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.md },
+        actionOverlay: { position: "absolute", right: space.md, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.lg },
         actionBtn: { width: 48, height: 48, borderRadius: 24 },
         actionBtnInner: { flex: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(10,10,12,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
 
