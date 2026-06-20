@@ -143,7 +143,7 @@ function Home() {
           onDispense={dispense}
         />
 
-        {duePet && <AlertBanner pet={duePet} />}
+        {duePet && <AlertBanner pet={duePet} onPress={() => simulate(duePet.id)} />}
 
         <Separator />
 
@@ -210,12 +210,12 @@ function Header({ connected, alerts, onOpenDemo, onOpenActivity }: { connected: 
   );
 }
 
-function AlertBanner({ pet }: { pet: Pet }) {
+function AlertBanner({ pet, onPress }: { pet: Pet; onPress: () => void }) {
   const { colors } = useTheme();
   const styles = useThemedStyles(colors);
   const med = pet.medications[0];
   return (
-    <View style={styles.alert}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.alert, pressed && { opacity: 0.85, transform: [{ scale: 0.99 }] }]}>
       <View style={[styles.alertIconChip, { backgroundColor: colors.redSoft }]}>
         <Icon name="medicine" size={22} color={colors.red} />
       </View>
@@ -223,10 +223,10 @@ function AlertBanner({ pet }: { pet: Pet }) {
         <Text style={styles.alertTitle}>
           {med ? `${cap(med.name)} due for ${pet.name}` : `${pet.name} needs attention`}
         </Text>
-        <Text style={styles.alertSub}>tap {pet.name}'s tile to dispense</Text>
+        <Text style={styles.alertSub}>tap to select {pet.name}</Text>
       </View>
       <Ionicons name="chevron-forward" size={20} color={colors.muted} />
-    </View>
+    </Pressable>
   );
 }
 
@@ -316,10 +316,12 @@ function Separator() {
   const { colors } = useTheme();
   return (
     <LinearGradient
-      colors={["transparent", colors.greenSoft, "transparent"]}
+      // Solid, bright center band that dissolves into the background toward both ends.
+      colors={["transparent", colors.green, colors.green, "transparent"]}
+      locations={[0, 0.38, 0.62, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      style={{ height: 1.5, borderRadius: 1, marginVertical: space.sm }}
+      style={{ height: 2, borderRadius: 1, marginVertical: space.md }}
     />
   );
 }
