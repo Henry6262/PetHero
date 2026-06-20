@@ -19,6 +19,7 @@ import { colors, radius, shadow, space } from "./src/theme";
 import { deriveStatus, petEmoji } from "./src/petStatus";
 import { PetsSection, type PetsVariant } from "./src/PetsVariants";
 import { DispenseSection, type DispenseVariant } from "./src/DispenseVariants";
+import { AgentPanel } from "./src/AgentPanel";
 import { SEED_PETS } from "./src/seed";
 import type { Action, Pet } from "./src/types";
 
@@ -102,14 +103,12 @@ function Home() {
 
       {duePet && <AlertBanner pet={duePet} />}
 
-      {backend.decision && (
-        <ReasoningCard
-          reasoning={backend.decision.reasoning}
-          allowed={backend.lastEvent?.allowed ?? true}
-          verdict={backend.lastEvent?.reason ?? ""}
-          rule={backend.lastEvent?.rule ?? null}
-        />
-      )}
+      <AgentPanel
+        decision={backend.decision}
+        lastEvent={backend.lastEvent}
+        log={backend.log}
+        pets={pets}
+      />
 
       <Separator />
 
@@ -243,25 +242,6 @@ function CornerBrackets({ active }: { active: boolean }) {
   );
 }
 
-function ReasoningCard({ reasoning, allowed, verdict, rule }: { reasoning: string; allowed: boolean; verdict: string; rule: string | null }) {
-  const tone = allowed ? colors.green : colors.red;
-  const bg = allowed ? colors.greenSoft : colors.redSoft;
-  return (
-    <View style={[styles.reason, { borderColor: tone }]}>
-      <View style={styles.reasonHead}>
-        <Text style={styles.reasonKicker}>AGENT REASONING</Text>
-        <View style={[styles.verdictPill, { backgroundColor: bg }]}>
-          <Text style={[styles.verdictText, { color: tone }]}>
-            {allowed ? "DISPENSED" : `BLOCKED${rule ? ` · ${rule}` : ""}`}
-          </Text>
-        </View>
-      </View>
-      <Text style={styles.reasonBody}>{reasoning}</Text>
-      {!!verdict && <Text style={[styles.reasonVerdict, { color: tone }]}>{verdict}</Text>}
-    </View>
-  );
-}
-
 function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boolean; pets: Pet[]; selected: string | null; onPick: (id: string | null) => void; onClose: () => void }) {
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -378,14 +358,6 @@ const styles = StyleSheet.create({
   brBL: { bottom: -4, left: -4, borderBottomWidth: 6, borderLeftWidth: 6, borderBottomLeftRadius: radius.lg + 4 },
   brBR: { bottom: -4, right: -4, borderBottomWidth: 6, borderRightWidth: 6, borderBottomRightRadius: radius.lg + 4 },
   separator: { height: 1.5, borderRadius: 1, marginVertical: space.lg },
-
-  reason: { backgroundColor: "#fff", borderRadius: radius.lg, borderLeftWidth: 4, padding: space.md, marginBottom: space.lg, ...shadow.card },
-  reasonHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 },
-  reasonKicker: { fontSize: 11, fontWeight: "700", color: colors.label, letterSpacing: 1 },
-  verdictPill: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.pill },
-  verdictText: { fontSize: 11, fontWeight: "800", letterSpacing: 0.5 },
-  reasonBody: { color: colors.text, fontSize: 15, lineHeight: 21 },
-  reasonVerdict: { fontSize: 13, marginTop: 6, fontWeight: "600" },
 
   drawerBackdrop: { flex: 1, backgroundColor: "rgba(20,16,10,0.35)", justifyContent: "flex-end" },
   drawerSheet: { backgroundColor: colors.screen, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: space.xl, paddingBottom: 40 },
