@@ -25,7 +25,7 @@ import { ThemeProvider, useTheme } from "./src/ThemeContext";
 import { deriveStatus } from "./src/petStatus";
 import { PetAvatar } from "./src/PetAvatar";
 import { PetsSection, type PetsVariant } from "./src/PetsVariants";
-import { DispenseSection, type DispenseVariant } from "./src/DispenseVariants";
+
 import { AgentPanel } from "./src/AgentPanel";
 import { Icon } from "./src/Icon";
 import { SEED_PETS } from "./src/seed";
@@ -33,9 +33,6 @@ import type { Action, Pet } from "./src/types";
 
 // Which Pets-section design to render (A = care rows, B = vitals cards, C = ring tray).
 const PETS_VARIANT: PetsVariant = "C";
-// Which Dispense control to render (1 = tinted tiles, 2 = primary+secondary, 3 = segmented).
-const DISPENSE_VARIANT: DispenseVariant = "1";
-
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 export default function App() {
@@ -143,6 +140,7 @@ function Home() {
           watching={backend.detection?.present ? backend.detection.pet_name : null}
           confidence={backend.detection?.confidence ?? 0}
           busy={busy}
+          onDispense={dispense}
         />
 
         {duePet && <AlertBanner pet={duePet} />}
@@ -165,10 +163,6 @@ function Home() {
           onPick={simulate}
         />
 
-        <Separator />
-
-        <SectionLabel text="DISPENSE NOW" right={currentPet ? `for ${currentPet.name}` : "pick a pet"} />
-        <DispenseSection variant={DISPENSE_VARIANT} pet={currentPet} onDispense={dispense} />
       </ScrollView>
 
       <DemoDrawer
@@ -237,7 +231,19 @@ function AlertBanner({ pet }: { pet: Pet }) {
   );
 }
 
-function LivePanel({ frame, watching, confidence, busy }: { frame: string | null; watching: string | null; confidence: number; busy: boolean }) {
+function LivePanel({
+  frame,
+  watching,
+  confidence,
+  busy,
+  onDispense,
+}: {
+  frame: string | null;
+  watching: string | null;
+  confidence: number;
+  busy: boolean;
+  onDispense: (action: Action) => void;
+}) {
   const { colors } = useTheme();
   const styles = useThemedStyles(colors);
 
@@ -271,6 +277,33 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
           {watching ? `Watching · ${watching} (${Math.round(confidence * 100)}%)` : "Watching · no pet at the bowl"}
         </Text>
       </View>
+      <ActionOverlay onDispense={onDispense} />
+    </View>
+  );
+}
+
+function ActionOverlay({ onDispense }: { onDispense: (action: Action) => void }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
+  const items = [
+    { action: "feed" as Action, icon: "feed" as const, color: colors.green },
+    { action: "water" as Action, icon: "water" as const, color: colors.blue },
+    { action: "medicine" as Action, icon: "medicine" as const, color: colors.amber },
+  ];
+
+  return (
+    <View style={styles.actionOverlay} pointerEvents="box-none">
+      {items.map((item) => (
+        <Pressable
+          key={item.action}
+          onPress={() => onDispense(item.action)}
+          style={({ pressed }) => [styles.actionBtn, pressed && { opacity: 0.75, transform: [{ scale: 0.92 }] }]}
+        >
+          <View style={[styles.actionBtnInner, { backgroundColor: `${colors.screen}CC` }]}>
+            <Icon name={item.icon} size={20} color={item.color} />
+          </View>
+        </Pressable>
+      ))}
     </View>
   );
 }
@@ -453,6 +486,9 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveCam: { color: colors.liveText, fontSize: 11 },
         liveBottom: { flexDirection: "row", alignItems: "center" },
         liveStatus: { color: "#EAE8E3", fontSize: 13 },
+        actionOverlay: { position: "absolute", right: space.sm, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.sm },
+        actionBtn: { width: 40, height: 40, borderRadius: 20 },
+        actionBtnInner: { flex: 1, borderRadius: 20, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
 
         bracket: { position: "absolute", width: 38, height: 38 },
         brTL: { top: -4, left: -4, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: radius.lg + 4 },
