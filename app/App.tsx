@@ -216,14 +216,16 @@ function AlertBanner({ pet }: { pet: Pet }) {
   const med = pet.medications[0];
   return (
     <View style={styles.alert}>
-      <Icon name="medicine" size={24} color={colors.red} />
+      <View style={[styles.alertIconChip, { backgroundColor: colors.redSoft }]}>
+        <Icon name="medicine" size={22} color={colors.red} />
+      </View>
       <View style={{ flex: 1 }}>
         <Text style={styles.alertTitle}>
           {med ? `${cap(med.name)} due for ${pet.name}` : `${pet.name} needs attention`}
         </Text>
         <Text style={styles.alertSub}>tap {pet.name}'s tile to dispense</Text>
       </View>
-      <Ionicons name="chevron-forward" size={20} color={colors.red} />
+      <Ionicons name="chevron-forward" size={20} color={colors.muted} />
     </View>
   );
 }
@@ -548,8 +550,9 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
         badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
 
-        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.lg, gap: space.md },
-        alertTitle: { color: colors.red, fontWeight: "700", fontSize: 18 },
+        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.card, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.lg, gap: space.md, borderWidth: 1, borderColor: colors.border, ...shadow.card },
+        alertIconChip: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
+        alertTitle: { color: colors.text, fontWeight: "700", fontSize: 17 },
         alertSub: { color: colors.muted, fontSize: 13, marginTop: space.xs },
 
         live: { height: 280, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
