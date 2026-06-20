@@ -565,7 +565,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveFallbackText: { color: "rgba(255,255,255,0.75)", fontSize: 17, fontWeight: "700" },
         actionOverlay: { position: "absolute", right: space.md, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.lg },
         actionBtn: { width: 52, height: 52, borderRadius: 26 },
-        actionBtnInner: { flex: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(10,10,12,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
+        actionBtnInner: { flex: 1, borderRadius: 26, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, ...shadow.card },
 
         bracket: { position: "absolute", width: 38, height: 38 },
         brTL: { top: -4, left: -4, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: radius.lg + 4 },
