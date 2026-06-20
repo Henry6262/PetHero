@@ -185,7 +185,7 @@ function useVariantCStyles(colors: ReturnType<typeof useTheme>["colors"]) {
     () =>
       StyleSheet.create({
         item: { alignItems: "center", width: 108 },
-        ring: { width: 108, height: 108, borderRadius: 54, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.card },
+        ring: { width: 108, height: 108, borderRadius: 54, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.lift },
         name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
         status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
       }),
