@@ -13,7 +13,10 @@
       "ios": { "simulator": false }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_PETHERO_API": "https://pethero-backend-production.up.railway.app"
+      }
     }
   },
   "submit": {
