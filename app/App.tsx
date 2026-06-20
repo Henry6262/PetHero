@@ -465,7 +465,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: "colors.sheet" in colors ? (colors as any).sheet : colors.card,
+          backgroundColor: colors.sheet,
           borderTopLeftRadius: radius.xl,
           borderTopRightRadius: radius.xl,
           padding: space.lg,

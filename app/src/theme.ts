@@ -5,6 +5,7 @@ export const lightColors = {
   bg: "#F3EEE7", // outer cream
   screen: "#FBF9F5", // app surface
   card: "#FFFFFF",
+  sheet: "#FFFFFF",
   border: "rgba(28,24,18,0.08)",
   borderStrong: "rgba(28,24,18,0.14)",
 
