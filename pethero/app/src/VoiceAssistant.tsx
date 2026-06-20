@@ -127,14 +127,7 @@ export function VoiceAssistant() {
           style={({ pressed }) => [styles.btn, pressed && { opacity: 0.82, transform: [{ scale: 0.96 }] }]}
           hitSlop={12}
         >
-          {connecting ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <View style={styles.btnContent}>
-              <Ionicons name={connected ? "stop" : "mic"} size={26} color="#fff" />
-              {label && <Text style={styles.btnText}>{label}</Text>}
-            </View>
-          )}
+          {connecting ? <ActivityIndicator color="#fff" /> : <Ionicons name={connected ? "stop" : "mic"} size={26} color="#fff" />}
         </Pressable>
       </Animated.View>
     </View>
@@ -145,8 +138,8 @@ const styles = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 36, alignItems: "center" },
   btn: {
     width: "60%",
-    height: 52,
-    borderRadius: 26,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#1C1B19",
@@ -158,6 +151,4 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     elevation: 9,
   },
-  btnContent: { flexDirection: "row", alignItems: "center", gap: 10 },
-  btnText: { color: "#fff", fontSize: 14, fontWeight: "700" },
 });
