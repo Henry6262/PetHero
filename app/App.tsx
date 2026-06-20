@@ -147,7 +147,7 @@ function Home() {
 
         <Separator />
 
-        <SectionLabel text="PETS" right="tap to simulate" />
+        <SectionLabel text="PETS" />
         <PetsSection
           variant={PETS_VARIANT}
           pets={pets}
@@ -316,12 +316,12 @@ function Separator() {
   const { colors } = useTheme();
   return (
     <LinearGradient
-      // Solid, bright center band that dissolves into the background toward both ends.
-      colors={["transparent", colors.green, colors.green, "transparent"]}
+      // Subtle neutral line that dissolves into the background toward both ends.
+      colors={["transparent", colors.borderStrong, colors.borderStrong, "transparent"]}
       locations={[0, 0.38, 0.62, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      style={{ height: 2, borderRadius: 1, marginVertical: space.md }}
+      style={{ height: 1.5, borderRadius: 1, marginVertical: space.sm }}
     />
   );
 }
@@ -553,12 +553,12 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
         badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
 
-        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.card, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.lg, gap: space.md, borderWidth: 1, borderColor: colors.border, ...shadow.card },
+        alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.card, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.sm, gap: space.md, borderWidth: 1, borderColor: colors.border, ...shadow.card },
         alertIconChip: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
         alertTitle: { color: colors.text, fontWeight: "700", fontSize: 17 },
         alertSub: { color: colors.muted, fontSize: 13, marginTop: space.xs },
 
-        live: { height: 280, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
+        live: { height: 280, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.sm, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
         liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
         liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
         liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
