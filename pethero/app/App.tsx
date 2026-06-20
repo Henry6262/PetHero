@@ -302,7 +302,7 @@ function ActionOverlay({ onDispense }: { onDispense: (action: Action) => void })
           style={({ pressed }) => [styles.actionBtn, pressed && { opacity: 0.75, transform: [{ scale: 0.92 }] }]}
         >
           <View style={styles.actionBtnInner}>
-            <Icon name={item.icon} size={26} color={item.color} />
+            <Icon name={item.icon} size={30} color={item.color} />
           </View>
         </Pressable>
       ))}
@@ -564,7 +564,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveFallback: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", gap: space.sm },
         liveFallbackText: { color: "rgba(255,255,255,0.75)", fontSize: 17, fontWeight: "700" },
         actionOverlay: { position: "absolute", right: space.md, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.lg },
-        actionBtn: { width: 48, height: 48, borderRadius: 24 },
+        actionBtn: { width: 52, height: 52, borderRadius: 26 },
         actionBtnInner: { flex: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(10,10,12,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
 
         bracket: { position: "absolute", width: 38, height: 38 },
