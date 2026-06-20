@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { radius, shadow, space } from "./theme";
 import { useTheme } from "./ThemeContext";
+import { Icon, type IconName } from "./Icon";
 import type { Action, Pet } from "./types";
 
 export type DispenseVariant = "1" | "2" | "3";
@@ -21,9 +22,9 @@ function useActions() {
   const { colors } = useTheme();
   return useMemo(
     () => ({
-      FEED: { action: "feed" as Action, icon: "🍽", label: "Feed", tint: colors.green, soft: colors.greenSoft },
-      WATER: { action: "water" as Action, icon: "💧", label: "Water", tint: colors.blue, soft: colors.blueSoft },
-      MED: { action: "medicine" as Action, icon: "💊", label: "Med", tint: colors.amber, soft: colors.amberSoft },
+      FEED: { action: "feed" as Action, icon: "feed" as IconName, label: "Feed", tint: colors.green, soft: colors.greenSoft },
+      WATER: { action: "water" as Action, icon: "water" as IconName, label: "Water", tint: colors.blue, soft: colors.blueSoft },
+      MED: { action: "medicine" as Action, icon: "medicine" as IconName, label: "Med", tint: colors.amber, soft: colors.amberSoft },
     }),
     [colors]
   );
@@ -41,7 +42,7 @@ function TintedTiles({ pet, onDispense }: Props) {
     <View style={styles.row}>
       {ALL.map((x) => (
         <Pressable key={x.action} disabled={off} onPress={() => onDispense(x.action)} style={[styles.tile, off && styles.off]}>
-          <Text style={styles.icon}>{x.icon}</Text>
+          <Icon name={x.icon} size={38} color={x.tint} />
           <Text style={styles.label}>{x.label}</Text>
         </Pressable>
       ))}
@@ -61,7 +62,7 @@ function PrimarySecondary({ pet, onDispense }: Props) {
       <View style={styles.row}>
         {ALL.map((x) => (
           <View key={x.action} style={[styles.chip, styles.off]}>
-            <Text style={{ fontSize: 16 }}>{x.icon}</Text>
+            <Icon name={x.icon} size={22} color={x.tint} />
             <Text style={styles.chipText}>{x.label}</Text>
           </View>
         ))}
@@ -75,13 +76,13 @@ function PrimarySecondary({ pet, onDispense }: Props) {
   return (
     <View>
       <Pressable onPress={() => onDispense(primary.action)} style={[styles.primary, { backgroundColor: primary.tint }]}>
-        <Text style={styles.primaryIcon}>{primary.icon}</Text>
+        <Icon name={primary.icon} size={28} color="#fff" />
         <Text style={styles.primaryText}>{primaryLabel}</Text>
       </Pressable>
       <View style={styles.secondaryRow}>
         {rest.map((x) => (
           <Pressable key={x.action} onPress={() => onDispense(x.action)} style={styles.chip}>
-            <Text style={{ fontSize: 16 }}>{x.icon}</Text>
+            <Icon name={x.icon} size={22} color={x.tint} />
             <Text style={styles.chipText}>{x.label}</Text>
           </Pressable>
         ))}
@@ -104,7 +105,7 @@ function Segmented({ pet, onDispense }: Props) {
         <React.Fragment key={x.action}>
           {i > 0 && <View style={styles.divider} />}
           <Pressable disabled={off} onPress={() => onDispense(x.action)} style={styles.seg}>
-            <Text style={{ fontSize: 19 }}>{x.icon}</Text>
+            <Icon name={x.icon} size={28} color={x.tint} />
             <Text style={[styles.segLabel, { color: x.tint }]}>{x.label}</Text>
           </Pressable>
         </React.Fragment>
@@ -119,7 +120,6 @@ function useTintedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
       StyleSheet.create({
         row: { flexDirection: "row", gap: space.md },
         tile: { flex: 1, borderRadius: radius.lg, backgroundColor: colors.card, paddingVertical: 20, alignItems: "center", gap: 10, borderWidth: 1, borderColor: colors.border, ...shadow.lift },
-        icon: { fontSize: 32 },
         label: { fontSize: 14, fontWeight: "700", color: colors.text },
         off: { opacity: 0.45 },
       }),

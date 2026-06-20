@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { radius, shadow, space } from "./theme";
 import { useTheme } from "./ThemeContext";
 import { PetAvatar } from "./PetAvatar";
+import { Icon } from "./Icon";
 import type { Action, ActivityEvent, DispenseDecision, Pet } from "./types";
 
 interface AgentPanelProps {
@@ -76,9 +77,12 @@ function ReasoningRow({
       </View>
       <View style={styles.content}>
         <View style={styles.topLine}>
-          <Text style={styles.actor} numberOfLines={1}>
-            🧠 Agent
-          </Text>
+          <View style={styles.actorRow}>
+            <Icon name="agent" size={18} color={colors.text} />
+            <Text style={[styles.actor, { marginLeft: 6 }]} numberOfLines={1}>
+              Agent
+            </Text>
+          </View>
           <View style={[styles.verdictPill, { backgroundColor: bg }]}>
             <Text style={[styles.verdictText, { color: tone }]}>
               {allowed ? "DISPENSED" : `BLOCKED${rule ? ` · ${rule}` : ""}`}
@@ -118,15 +122,18 @@ function EventRow({
         <View style={styles.topLine}>
           <View style={styles.actorRow}>
             {event.action === "water" ? (
-              <Text style={styles.actor} numberOfLines={1}>💧 Shared</Text>
+              <View style={styles.actorRow}>
+                <Icon name="water" size={18} color={colors.text} />
+                <Text style={[styles.actor, { marginLeft: 6 }]} numberOfLines={1}>Shared</Text>
+              </View>
             ) : pet ? (
-              <>
+              <View style={styles.actorRow}>
                 <PetAvatar pet={pet} size={20} style={{ marginRight: 6 }} />
                 <Text style={styles.actor} numberOfLines={1}>
                   {pet.name}
-                  <Text style={styles.actionIcon}> {actionIcon(event.action)}</Text>
                 </Text>
-              </>
+                <Icon name={event.action === "feed" ? "feed" : event.action === "medicine" ? "medicine" : "agent"} size={16} color={colors.text} style={{ marginLeft: 6 }} />
+              </View>
             ) : (
               <Text style={styles.actor} numberOfLines={1}>{event.pet_name ?? "Unknown"}</Text>
             )}
@@ -145,19 +152,6 @@ function eventOutcome(event: ActivityEvent): string {
   if (!event.allowed) return `Blocked · ${event.reason || "safety rule"}`;
   if (event.action === "none") return event.reason || "No action needed";
   return event.reason || `${cap(event.action)} completed`;
-}
-
-function actionIcon(action: Action): string {
-  switch (action) {
-    case "feed":
-      return "🍽";
-    case "water":
-      return "💧";
-    case "medicine":
-      return "💊";
-    default:
-      return "—";
-  }
 }
 
 function formatTime(iso: string): string {
