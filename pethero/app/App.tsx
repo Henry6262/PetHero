@@ -282,7 +282,7 @@ function Separator() {
       colors={["transparent", colors.greenSoft, "transparent"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      style={{ height: 1.5, borderRadius: 1, marginVertical: space.lg }}
+      style={{ height: 1.5, borderRadius: 1, marginVertical: space.sm }}
     />
   );
 }
