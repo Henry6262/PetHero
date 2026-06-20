@@ -20,6 +20,14 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "enriquemiloslavov11@gmail.com",
+        "ascAppId": "6782448130",
+        "ascApiKeyPath": "/Users/henry/.appstoreconnect/private_keys/AuthKey_QNSK2K5886.p8",
+        "ascApiKeyId": "QNSK2K5886",
+        "ascApiKeyIssuerId": "1bd31ef6-6fd7-4cdd-9462-5c5ee0699ccd"
+      }
+    }
   }
 }
