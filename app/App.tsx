@@ -19,6 +19,7 @@ import { colors, radius, shadow, space } from "./src/theme";
 import { deriveStatus, petEmoji } from "./src/petStatus";
 import { PetsSection, type PetsVariant } from "./src/PetsVariants";
 import { DispenseSection, type DispenseVariant } from "./src/DispenseVariants";
+import { SEED_PETS } from "./src/seed";
 import type { Action, Pet } from "./src/types";
 
 // Which Pets-section design to render (A = care rows, B = vitals cards, C = ring tray).
@@ -39,13 +40,13 @@ export default function App() {
 
 function Home() {
   const backend = useBackend();
-  const [pets, setPets] = useState<Pet[]>([]);
+  const [pets, setPets] = useState<Pet[]>(SEED_PETS);
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
 
   useEffect(() => {
-    api.pets().then(setPets).catch(() => {});
+    api.pets().then((p) => p.length && setPets(p)).catch(() => {});
   }, [backend.connected]);
 
   const currentPetId = backend.detection?.pet_id ?? selected;
