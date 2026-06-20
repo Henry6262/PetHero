@@ -121,14 +121,20 @@ export function VoiceAssistant() {
 
   return (
     <View pointerEvents="box-none" style={styles.wrap}>
-      {label && <Text style={styles.label}>{label}</Text>}
       <Animated.View style={{ transform: [{ scale: pulse }] }}>
         <Pressable
           onPress={toggle}
           style={({ pressed }) => [styles.btn, pressed && { opacity: 0.82, transform: [{ scale: 0.96 }] }]}
           hitSlop={12}
         >
-          {connecting ? <ActivityIndicator color="#fff" /> : <Ionicons name={connected ? "stop" : "mic"} size={30} color="#fff" />}
+          {connecting ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <View style={styles.btnContent}>
+              <Ionicons name={connected ? "stop" : "mic"} size={26} color="#fff" />
+              {label && <Text style={styles.btnText}>{label}</Text>}
+            </View>
+          )}
         </Pressable>
       </Animated.View>
     </View>
@@ -137,17 +143,6 @@ export function VoiceAssistant() {
 
 const styles = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 36, alignItems: "center" },
-  label: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#1B1A18",
-    marginBottom: 10,
-    backgroundColor: "rgba(255,255,255,0.9)",
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
   btn: {
     width: "60%",
     height: 52,
@@ -163,4 +158,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     elevation: 9,
   },
+  btnContent: { flexDirection: "row", alignItems: "center", gap: 10 },
+  btnText: { color: "#fff", fontSize: 14, fontWeight: "700" },
 });
