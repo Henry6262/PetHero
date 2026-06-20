@@ -35,7 +35,7 @@ function PetsRows({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.row, active && { borderColor: colors.text }]}>
             <View style={[styles.accent, { backgroundColor: c }]} />
-            <PetAvatar pet={pet} size={42} style={{ marginRight: space.md }} />
+            <PetAvatar pet={pet} size={48} style={{ marginRight: space.md }} />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{pet.name}</Text>
               <Text style={styles.species}>{pet.species.toUpperCase()}</Text>
@@ -70,7 +70,7 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.card, active && { borderColor: colors.text }]}>
             <View style={[styles.topAccent, { backgroundColor: c }]} />
             <View style={styles.head}>
-              <PetAvatar pet={pet} size={44} />
+              <PetAvatar pet={pet} size={52} />
               <View>
                 <Text style={styles.name}>{pet.name}</Text>
                 <Text style={styles.species}>{pet.species}</Text>
@@ -115,7 +115,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
             <View style={[styles.ring, { borderColor: active ? c : ringTone(s.tone, colors) }, active && { borderWidth: 3.5 }]}>
-              <PetAvatar pet={pet} size={74} />
+              <PetAvatar pet={pet} size={96} />
             </View>
             <Text style={styles.name}>{pet.name}</Text>
             <Text style={[styles.status, { color: c }]}>{s.label}</Text>
@@ -184,8 +184,8 @@ function useVariantCStyles(colors: ReturnType<typeof useTheme>["colors"]) {
   return useMemo(
     () =>
       StyleSheet.create({
-        item: { alignItems: "center", width: 84 },
-        ring: { width: 84, height: 84, borderRadius: 42, borderWidth: 2.5, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.card },
+        item: { alignItems: "center", width: 108 },
+        ring: { width: 108, height: 108, borderRadius: 54, borderWidth: 2.5, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.card },
         name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
         status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
       }),
