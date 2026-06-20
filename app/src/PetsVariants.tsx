@@ -16,6 +16,12 @@ function toneSoft(t: "good" | "alert" | "muted") {
   if (t === "good") return colors.greenSoft;
   return "#F0ECE4";
 }
+// Muted ring tones — a calm cue, not a stoplight. Strong color stays in the label.
+function ringTone(t: "good" | "alert" | "muted") {
+  if (t === "alert") return "#E7AEA4";
+  if (t === "good") return "#AAD4BB";
+  return "#D9D3C9";
+}
 
 interface Props {
   pets: Pet[];
@@ -116,7 +122,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         const active = pet.id === activeId;
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={cc.item}>
-            <View style={[cc.ring, { borderColor: c }, active && cc.ringActive]}>
+            <View style={[cc.ring, { borderColor: active ? c : ringTone(s.tone) }, active && cc.ringActive]}>
               <Text style={cc.emoji}>{petEmoji(pet.species)}</Text>
             </View>
             <Text style={cc.name}>{pet.name}</Text>
@@ -157,8 +163,8 @@ const b = StyleSheet.create({
 
 const cc = StyleSheet.create({
   item: { alignItems: "center", width: 84 },
-  ring: { width: 84, height: 84, borderRadius: 42, borderWidth: 3.5, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...shadow.card },
-  ringActive: { borderWidth: 4.5 },
+  ring: { width: 84, height: 84, borderRadius: 42, borderWidth: 2.5, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...shadow.card },
+  ringActive: { borderWidth: 3.5 },
   emoji: { fontSize: 40 },
   name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
   status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
