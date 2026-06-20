@@ -10,11 +10,21 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.henry6262.pethero",
-      "buildNumber": "1"
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.henry6262.pethero"
     },
-    "web": { "bundler": "metro" }
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cc900270-9654-4f3a-b768-3bf21482ab9a"
+      }
+    },
+    "owner": "henry6262"
   }
 }
