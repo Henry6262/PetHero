@@ -168,7 +168,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
   return useMemo(
     () =>
       StyleSheet.create({
-        container: { marginBottom: space.lg },
+        container: { marginBottom: space.xs },
         card: {
           backgroundColor: colors.card,
           borderRadius: radius.lg,
