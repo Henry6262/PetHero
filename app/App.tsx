@@ -256,11 +256,17 @@ function LivePanel({
           resizeMode="cover"
         />
       ) : (
-        <Image
-          source={require("./assets/live-preview.png")}
-          style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
-          resizeMode="contain"
-        />
+        <>
+          <Image
+            source={require("./assets/live-preview.png")}
+            style={[StyleSheet.absoluteFill, { borderRadius: radius.lg, opacity: 0.35 }]}
+            resizeMode="cover"
+          />
+          <View style={styles.liveFallback}>
+            <Ionicons name="videocam-off" size={28} color="rgba(255,255,255,0.6)" />
+            <Text style={styles.liveFallbackText}>Camera offline</Text>
+          </View>
+        </>
       )}
       <View style={styles.liveScrim} />
       <CornerBrackets active={!!watching} />
@@ -492,6 +498,8 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveCam: { color: colors.liveText, fontSize: 11 },
         liveBottom: { flexDirection: "row", alignItems: "center" },
         liveStatus: { color: "#EAE8E3", fontSize: 13 },
+        liveFallback: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", gap: space.sm },
+        liveFallbackText: { color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: "600" },
         actionOverlay: { position: "absolute", right: space.sm, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.sm },
         actionBtn: { width: 44, height: 44, borderRadius: 22 },
         actionBtnInner: { flex: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(10,10,12,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
