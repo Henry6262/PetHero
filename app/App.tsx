@@ -23,6 +23,7 @@ import { PetAvatar } from "./src/PetAvatar";
 import { PetsSection, type PetsVariant } from "./src/PetsVariants";
 import { DispenseSection, type DispenseVariant } from "./src/DispenseVariants";
 import { AgentPanel } from "./src/AgentPanel";
+import { Icon } from "./src/Icon";
 import { SEED_PETS } from "./src/seed";
 import type { Action, Pet } from "./src/types";
 
@@ -176,13 +177,13 @@ function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boo
       </View>
       <View style={styles.headerIcons}>
         <Pressable style={styles.iconBtn} onPress={onOpenDemo} hitSlop={8}>
-          <Ionicons name="paw" size={18} color={colors.text} />
+          <Ionicons name="paw" size={20} color={colors.text} />
         </Pressable>
         <Pressable style={styles.iconBtn} onPress={toggle} hitSlop={8}>
-          <Ionicons name={isDark ? "sunny" : "moon"} size={18} color={colors.text} />
+          <Ionicons name={isDark ? "sunny" : "moon"} size={20} color={colors.text} />
         </Pressable>
         <View style={styles.iconBtn}>
-          <Ionicons name="notifications" size={18} color={colors.text} />
+          <Ionicons name="notifications" size={20} color={colors.text} />
           {alerts > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{alerts}</Text>
@@ -200,7 +201,7 @@ function AlertBanner({ pet }: { pet: Pet }) {
   const med = pet.medications[0];
   return (
     <View style={styles.alert}>
-      <Text style={styles.alertEmoji}>💊</Text>
+      <Icon name="medicine" size={24} color={colors.red} />
       <View style={{ flex: 1 }}>
         <Text style={styles.alertTitle}>
           {med ? `${cap(med.name)} due for ${pet.name}` : `${pet.name} needs attention`}
@@ -397,7 +398,6 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
 
         alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.lg, gap: 10 },
-        alertEmoji: { fontSize: 20 },
         alertTitle: { color: colors.red, fontWeight: "700", fontSize: 18 },
         alertSub: { color: colors.muted, fontSize: 13, marginTop: 3 },
 

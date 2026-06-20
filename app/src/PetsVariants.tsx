@@ -4,6 +4,7 @@ import { radius, shadow, space } from "./theme";
 import { useTheme } from "./ThemeContext";
 import { deriveStatus } from "./petStatus";
 import { PetAvatar } from "./PetAvatar";
+import { Icon } from "./Icon";
 import type { ActivityEvent, Pet } from "./types";
 
 export type PetsVariant = "A" | "B" | "C";
@@ -35,7 +36,7 @@ function PetsRows({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.row, active && { borderColor: colors.text }]}>
             <View style={[styles.accent, { backgroundColor: c }]} />
-            <PetAvatar pet={pet} size={48} style={{ marginRight: space.md }} />
+            <PetAvatar pet={pet} size={44} style={{ marginRight: space.md }} />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{pet.name}</Text>
               <Text style={styles.species}>{pet.species.toUpperCase()}</Text>
@@ -70,16 +71,16 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.card, active && { borderColor: colors.text }]}>
             <View style={[styles.topAccent, { backgroundColor: c }]} />
             <View style={styles.head}>
-              <PetAvatar pet={pet} size={52} />
+              <PetAvatar pet={pet} size={48} />
               <View>
                 <Text style={styles.name}>{pet.name}</Text>
                 <Text style={styles.species}>{pet.species}</Text>
               </View>
             </View>
             <View style={styles.vitals}>
-              <Vital icon="🍽" label="Fed" ok={fed} />
-              <Vital icon="💧" label="Water" ok={watered} />
-              <Vital icon="💊" label="Meds" ok={dosedOrNoMeds} warn={!dosedOrNoMeds} />
+              <Vital icon="feed" label="Fed" ok={fed} />
+              <Vital icon="water" label="Water" ok={watered} />
+              <Vital icon="medicine" label="Meds" ok={dosedOrNoMeds} warn={!dosedOrNoMeds} />
             </View>
           </Pressable>
         );
@@ -88,14 +89,14 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
   );
 }
 
-function Vital({ icon, label, ok, warn }: { icon: string; label: string; ok: boolean; warn?: boolean }) {
+function Vital({ icon, label, ok, warn }: { icon: "feed" | "water" | "medicine"; label: string; ok: boolean; warn?: boolean }) {
   const { colors } = useTheme();
   const styles = useVariantBStyles(colors);
   const c = warn ? colors.red : ok ? colors.green : colors.muted;
   return (
     <View style={styles.vital}>
-      <Text style={{ fontSize: 15 }}>{icon}</Text>
-      <Text style={styles.vitalLabel}>{label}</Text>
+      <Icon name={icon} size={22} color={c} />
+      <Text style={[styles.vitalLabel, { color: c }]}>{label}</Text>
       <View style={[styles.vitalDot, { backgroundColor: c }]} />
     </View>
   );
@@ -115,7 +116,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
             <View style={[styles.ring, s.tone !== "muted" && { borderWidth: active ? 3.5 : 2.5, borderColor: c }]}>
-              <PetAvatar pet={pet} size={96} />
+              <PetAvatar pet={pet} size={84} />
             </View>
             <Text style={styles.name}>{pet.name}</Text>
             <Text style={[styles.status, { color: c }]}>{s.label}</Text>
@@ -184,8 +185,8 @@ function useVariantCStyles(colors: ReturnType<typeof useTheme>["colors"]) {
   return useMemo(
     () =>
       StyleSheet.create({
-        item: { alignItems: "center", width: 108 },
-        ring: { width: 108, height: 108, borderRadius: 54, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.lift },
+        item: { alignItems: "center", width: 96 },
+        ring: { width: 96, height: 96, borderRadius: 48, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.lift },
         name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
         status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
       }),
