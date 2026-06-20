@@ -28,11 +28,19 @@ export const radius = { sm: 10, md: 14, lg: 18, xl: 24, pill: 999 };
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 };
 
 export const shadow = {
+  // Soft warm-gray shadows for depth on the cream surface.
   card: {
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
+    shadowColor: "#4A4038",
+    shadowOpacity: 0.14,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+  lift: {
+    shadowColor: "#4A4038",
+    shadowOpacity: 0.18,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 7,
   },
 };

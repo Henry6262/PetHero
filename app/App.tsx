@@ -92,14 +92,14 @@ function Home() {
         onOpenDemo={() => setDemoOpen(true)}
       />
 
-      {duePet && <AlertBanner pet={duePet} />}
-
       <LivePanel
         frame={backend.frame}
         watching={backend.detection?.present ? backend.detection.pet_name : null}
         confidence={backend.detection?.confidence ?? 0}
         busy={busy}
       />
+
+      {duePet && <AlertBanner pet={duePet} />}
 
       {backend.decision && (
         <ReasoningCard
@@ -197,7 +197,7 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
       {frame ? (
         <Image
           source={{ uri: `data:image/jpeg;base64,${frame}` }}
-          style={StyleSheet.absoluteFill}
+          style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
           resizeMode="cover"
         />
       ) : null}
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   alertSub: { color: "#B4736B", fontSize: 12, marginTop: 2 },
   alertChevron: { color: colors.red, fontSize: 18, fontWeight: "700" },
 
-  live: { height: 200, borderRadius: radius.lg, backgroundColor: colors.live, overflow: "hidden", marginBottom: space.md, justifyContent: "space-between", padding: space.md },
+  live: { height: 200, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md },
   liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red },
@@ -371,11 +371,11 @@ const styles = StyleSheet.create({
   liveBottom: { flexDirection: "row", alignItems: "center" },
   liveStatus: { color: "#EAE8E3", fontSize: 13 },
 
-  bracket: { position: "absolute", width: 30, height: 30 },
-  brTL: { top: 0, left: 0, borderTopWidth: 3, borderLeftWidth: 3, borderTopLeftRadius: radius.lg },
-  brTR: { top: 0, right: 0, borderTopWidth: 3, borderRightWidth: 3, borderTopRightRadius: radius.lg },
-  brBL: { bottom: 0, left: 0, borderBottomWidth: 3, borderLeftWidth: 3, borderBottomLeftRadius: radius.lg },
-  brBR: { bottom: 0, right: 0, borderBottomWidth: 3, borderRightWidth: 3, borderBottomRightRadius: radius.lg },
+  bracket: { position: "absolute", width: 38, height: 38 },
+  brTL: { top: -4, left: -4, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: radius.lg + 4 },
+  brTR: { top: -4, right: -4, borderTopWidth: 6, borderRightWidth: 6, borderTopRightRadius: radius.lg + 4 },
+  brBL: { bottom: -4, left: -4, borderBottomWidth: 6, borderLeftWidth: 6, borderBottomLeftRadius: radius.lg + 4 },
+  brBR: { bottom: -4, right: -4, borderBottomWidth: 6, borderRightWidth: 6, borderBottomRightRadius: radius.lg + 4 },
   separator: { height: 1.5, borderRadius: 1, marginVertical: space.xl },
 
   reason: { backgroundColor: "#fff", borderRadius: radius.lg, borderLeftWidth: 4, padding: space.md, marginBottom: space.lg, ...shadow.card },
