@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   btn: {
-    width: 60,
+    width: "60%",
     height: 52,
     borderRadius: 26,
     alignItems: "center",
