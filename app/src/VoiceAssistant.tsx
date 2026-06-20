@@ -149,9 +149,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   btn: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 84,
+    height: 52,
+    borderRadius: 26,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#1C1B19",
