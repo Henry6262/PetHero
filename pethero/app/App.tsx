@@ -29,7 +29,7 @@ import { PetsSection, type PetsVariant } from "./src/PetsVariants";
 import { AgentPanel } from "./src/AgentPanel";
 import { Icon } from "./src/Icon";
 import { SEED_PETS } from "./src/seed";
-import type { Action, Pet } from "./src/types";
+import type { Action, ActivityEvent, DispenseDecision, Pet } from "./src/types";
 
 // Which Pets-section design to render (A = care rows, B = vitals cards, C = ring tray).
 const PETS_VARIANT: PetsVariant = "C";
@@ -65,6 +65,7 @@ function Home() {
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
 
   useEffect(() => {
@@ -131,6 +132,7 @@ function Home() {
           connected={backend.connected}
           alerts={duePet ? 1 : 0}
           onOpenDemo={() => setDemoOpen(true)}
+          onOpenActivity={() => setActivityOpen(true)}
         />
 
         <LivePanel
@@ -142,13 +144,6 @@ function Home() {
         />
 
         {duePet && <AlertBanner pet={duePet} />}
-
-        <AgentPanel
-          decision={backend.decision}
-          lastEvent={backend.lastEvent}
-          log={backend.log}
-          pets={pets}
-        />
 
         <Separator />
 
@@ -170,13 +165,22 @@ function Home() {
         onPick={handleDemoPick}
         onClose={() => setDemoOpen(false)}
       />
+
+      <ActivityDrawer
+        visible={activityOpen}
+        decision={backend.decision}
+        lastEvent={backend.lastEvent}
+        log={backend.log}
+        pets={pets}
+        onClose={() => setActivityOpen(false)}
+      />
     </>
   );
 }
 
 /* ---------------- components ---------------- */
 
-function Header({ connected, alerts, onOpenDemo }: { connected: boolean; alerts: number; onOpenDemo: () => void }) {
+function Header({ connected, alerts, onOpenDemo, onOpenActivity }: { connected: boolean; alerts: number; onOpenDemo: () => void; onOpenActivity: () => void }) {
   const { colors, isDark, toggle } = useTheme();
   const styles = useThemedStyles(colors);
 
@@ -193,14 +197,14 @@ function Header({ connected, alerts, onOpenDemo }: { connected: boolean; alerts:
         <Pressable style={styles.iconBtn} onPress={toggle} hitSlop={8}>
           <Ionicons name={isDark ? "sunny" : "moon"} size={22} color={colors.text} />
         </Pressable>
-        <View style={styles.iconBtn}>
+        <Pressable style={styles.iconBtn} onPress={onOpenActivity} hitSlop={8}>
           <Ionicons name="notifications" size={22} color={colors.text} />
           {alerts > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{alerts}</Text>
             </View>
           )}
-        </View>
+        </Pressable>
       </View>
     </View>
   );
@@ -393,6 +397,73 @@ function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boo
               ? Unknown
             </Chip>
           </View>
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+}
+
+function ActivityDrawer({
+  visible,
+  decision,
+  lastEvent,
+  log,
+  pets,
+  onClose,
+}: {
+  visible: boolean;
+  decision: DispenseDecision | null;
+  lastEvent: ActivityEvent | null;
+  log: ActivityEvent[];
+  pets: Pet[];
+  onClose: () => void;
+}) {
+  const { colors, isDark } = useTheme();
+  const styles = useThemedStyles(colors);
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.spring(slideAnim, { toValue: 0, friction: 8, tension: 42, useNativeDriver: true }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 0, duration: 160, useNativeDriver: true }),
+        Animated.timing(slideAnim, { toValue: SCREEN_HEIGHT, duration: 220, useNativeDriver: true }),
+      ]).start();
+    }
+  }, [visible, fadeAnim, slideAnim]);
+
+  return (
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
+      <View style={StyleSheet.absoluteFill}>
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
+          <BlurView intensity={24} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+          <Pressable
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: isDark ? "rgba(0,0,0,0.55)" : "rgba(20,16,10,0.38)" },
+            ]}
+            onPress={onClose}
+          />
+        </Animated.View>
+        <Animated.View style={[styles.drawerSheet, { transform: [{ translateY: slideAnim }] }]}>
+          <Pressable onPress={onClose} style={styles.drawerHandleBar}>
+            <View style={styles.drawerHandle} />
+          </Pressable>
+          <View style={styles.drawerHeader}>
+            <View>
+              <Text style={styles.drawerKicker}>ACTIVITY</Text>
+              <Text style={styles.drawerTitle}>Agent log & decisions</Text>
+            </View>
+            <Pressable onPress={onClose} style={styles.drawerCloseBtn} hitSlop={8}>
+              <Ionicons name="close" size={22} color={colors.text} />
+            </Pressable>
+          </View>
+          <AgentPanel decision={decision} lastEvent={lastEvent} log={log} pets={pets} />
         </Animated.View>
       </View>
     </Modal>
