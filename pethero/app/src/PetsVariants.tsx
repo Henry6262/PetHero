@@ -117,9 +117,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={cc.item}>
             <View style={[cc.ring, { borderColor: c }, active && cc.ringActive]}>
-              <View style={cc.avatar}>
-                <Text style={{ fontSize: 30 }}>{petEmoji(pet.species)}</Text>
-              </View>
+              <Text style={cc.emoji}>{petEmoji(pet.species)}</Text>
             </View>
             <Text style={cc.name}>{pet.name}</Text>
             <Text style={[cc.status, { color: c }]}>{s.label}</Text>
@@ -161,7 +159,7 @@ const cc = StyleSheet.create({
   item: { alignItems: "center", width: 78 },
   ring: { width: 78, height: 78, borderRadius: 39, borderWidth: 3, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...shadow.card },
   ringActive: { borderWidth: 4 },
-  avatar: { width: 60, height: 60, borderRadius: 30, backgroundColor: "#EFEAE2", alignItems: "center", justifyContent: "center" },
+  emoji: { fontSize: 38 },
   name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
   status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
 });
