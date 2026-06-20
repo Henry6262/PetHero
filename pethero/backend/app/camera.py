@@ -18,21 +18,12 @@ _W, _H = 640, 480
 
 
 def _placeholder(detection: Optional[Detection]) -> bytes:
-    from PIL import Image, ImageDraw
+    # Clean dark panel — no baked-in overlays. The app renders LIVE / cam-01 /
+    # status text on top. (A real detection overlay belongs on a real camera
+    # frame, not a fake rectangle on a blank panel.)
+    from PIL import Image
 
-    img = Image.new("RGB", (_W, _H), (12, 18, 14))
-    draw = ImageDraw.Draw(img)
-
-    if detection and detection.present:
-        x, y, w, h = (detection.bbox or [120, 80, 320, 320])
-        draw.rectangle([x, y, x + w, y + h], outline=(74, 222, 128), width=4)
-        label = f"{detection.pet_name or detection.species} · {int(detection.confidence * 100)}%"
-        draw.rectangle([x, y - 26, x + 8 + len(label) * 8, y], fill=(74, 222, 128))
-        draw.text((x + 4, y - 22), label, fill=(0, 0, 0))
-    else:
-        draw.text((_W // 2 - 70, _H // 2 - 8), "No pet detected", fill=(120, 130, 124))
-
-    draw.text((12, 12), "PetHero · live feed", fill=(150, 160, 154))
+    img = Image.new("RGB", (_W, _H), (20, 27, 23))
     buf = io.BytesIO()
     img.save(buf, format="JPEG", quality=80)
     return buf.getvalue()
@@ -40,12 +31,9 @@ def _placeholder(detection: Optional[Detection]) -> bytes:
 
 def _from_file(path: Path, detection: Optional[Detection]) -> Optional[bytes]:
     try:
-        from PIL import Image, ImageDraw
+        from PIL import Image
 
         img = Image.open(path).convert("RGB").resize((_W, _H))
-        if detection and detection.present and detection.bbox:
-            x, y, w, h = detection.bbox
-            ImageDraw.Draw(img).rectangle([x, y, x + w, y + h], outline=(74, 222, 128), width=4)
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=80)
         return buf.getvalue()
