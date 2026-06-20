@@ -3,11 +3,21 @@
 export type Action = "feed" | "water" | "medicine" | "none";
 export type Species = "cat" | "dog";
 
+export interface FoodOption {
+  id: string;
+  name: string;
+  portion_grams: number;
+  min_interval_hours: number;
+  is_default: boolean;
+}
+
 export interface Medication {
+  id: string;
   name: string;
   dose_count: number;
   interval_hours: number;
   notes: string;
+  active: boolean;
 }
 
 export interface Pet {
@@ -15,8 +25,7 @@ export interface Pet {
   name: string;
   species: Species;
   photo_ref: string;
-  max_portion_grams: number;
-  min_feed_interval_hours: number;
+  food_options: FoodOption[];
   medications: Medication[];
 }
 

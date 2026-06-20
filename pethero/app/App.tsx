@@ -124,7 +124,7 @@ function Home() {
     <>
       <ScrollView
         style={styles.screen}
-        contentContainerStyle={{ padding: space.lg, paddingBottom: space.xl }}
+        contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xl }}
         showsVerticalScrollIndicator={false}
       >
         <Header
@@ -460,7 +460,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
 
         header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: space.lg },
         logoRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
-        logo: { width: 48, height: 48, borderRadius: 14 },
+        logo: { width: 64, height: 64, borderRadius: 18 },
         dot: { width: 10, height: 10, borderRadius: 5 },
         headerIcons: { flexDirection: "row", gap: space.sm },
         iconBtn: {
