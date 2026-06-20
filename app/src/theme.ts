@@ -1,6 +1,6 @@
 // Design tokens matching the PetHero prototype — warm, light, premium.
 
-export const colors = {
+export const lightColors = {
   bg: "#F3EEE7", // outer cream
   screen: "#FBF9F5", // app surface
   card: "#FFFFFF",
@@ -23,6 +23,43 @@ export const colors = {
   live: "#1C1B19", // dark camera panel
   liveText: "#8B8983",
 };
+
+export const darkColors = {
+  bg: "#121212",
+  screen: "#1A1A1A",
+  card: "#242424",
+  border: "rgba(255,255,255,0.08)",
+  borderStrong: "rgba(255,255,255,0.14)",
+
+  text: "#F5F5F0",
+  muted: "#A0A0A0",
+  label: "#888888",
+
+  green: "#4ADE80",
+  greenSoft: "rgba(74,222,128,0.12)",
+  red: "#F87171",
+  redSoft: "rgba(248,113,113,0.12)",
+  blue: "#60A5FA",
+  blueSoft: "rgba(96,165,250,0.12)",
+  amber: "#FBBF24",
+  amberSoft: "rgba(251,191,36,0.12)",
+
+  live: "#0D0D0D",
+  liveText: "#6B6B6B",
+};
+
+export type ThemeColors = typeof lightColors;
+
+export const palettes = {
+  light: lightColors,
+  dark: darkColors,
+};
+
+// Back-compat: static light palette for components not yet migrated to
+// useTheme() (PetsVariants, DispenseVariants). Safe to drop once they are.
+export const colors = lightColors;
+
+export type Theme = keyof typeof palettes;
 
 export const radius = { sm: 10, md: 14, lg: 18, xl: 24, pill: 999 };
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 };

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { colors, radius, shadow, space } from "./theme";
+import { radius, shadow, space } from "./theme";
+import { useTheme } from "./ThemeContext";
 import { PetAvatar } from "./PetAvatar";
 import type { Action, ActivityEvent, DispenseDecision, Pet } from "./types";
 
@@ -19,13 +20,13 @@ export function AgentPanel({
   pets,
   maxItems = 8,
 }: AgentPanelProps) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const events = log.slice(0, maxItems);
   if (!decision && events.length === 0) return null;
 
   const allowed = lastEvent?.allowed ?? true;
   const rule = lastEvent?.rule ?? null;
-  const tone = allowed ? colors.green : colors.red;
-  const bg = allowed ? colors.greenSoft : colors.redSoft;
 
   return (
     <View style={styles.container}>
@@ -62,6 +63,8 @@ function ReasoningRow({
   rule: string | null;
   hasMore: boolean;
 }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const tone = allowed ? colors.green : colors.red;
   const bg = allowed ? colors.greenSoft : colors.redSoft;
 
@@ -99,6 +102,8 @@ function EventRow({
   pet?: Pet;
   isLast: boolean;
 }) {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
   const allowed = event.allowed && event.action !== "none";
   const toneColor = allowed ? colors.green : event.allowed ? colors.muted : colors.red;
   const outcome = eventOutcome(event);
@@ -165,80 +170,86 @@ function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-const styles = StyleSheet.create({
-  container: { marginBottom: space.lg },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: radius.lg,
-    paddingVertical: space.md,
-    paddingRight: space.md,
-    ...shadow.card,
-  },
-  row: {
-    flexDirection: "row",
-    paddingVertical: 10,
-  },
-  timeline: {
-    width: 38,
-    alignItems: "center",
-  },
-  dot: {
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    zIndex: 1,
-  },
-  line: {
-    position: "absolute",
-    top: 18,
-    bottom: -14,
-    width: 1.5,
-    backgroundColor: colors.borderStrong,
-  },
-  content: {
-    flex: 1,
-    paddingTop: 1,
-  },
-  topLine: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 3,
-  },
-  actorRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexShrink: 1,
-    marginRight: 8,
-  },
-  actor: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: colors.text,
-    flexShrink: 1,
-  },
-  actionIcon: {
-    fontSize: 14,
-    fontWeight: "400",
-  },
-  verdictPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: radius.pill,
-  },
-  verdictText: {
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
-  time: {
-    fontSize: 12,
-    color: colors.muted,
-    fontVariant: ["tabular-nums"],
-  },
-  outcome: {
-    fontSize: 14,
-    lineHeight: 19,
-    fontWeight: "600",
-  },
-});
+function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        container: { marginBottom: space.lg },
+        card: {
+          backgroundColor: colors.card,
+          borderRadius: radius.lg,
+          paddingVertical: space.md,
+          paddingRight: space.md,
+          ...shadow.card,
+        },
+        row: {
+          flexDirection: "row",
+          paddingVertical: 10,
+        },
+        timeline: {
+          width: 38,
+          alignItems: "center",
+        },
+        dot: {
+          width: 9,
+          height: 9,
+          borderRadius: 5,
+          zIndex: 1,
+        },
+        line: {
+          position: "absolute",
+          top: 18,
+          bottom: -14,
+          width: 1.5,
+          backgroundColor: colors.borderStrong,
+        },
+        content: {
+          flex: 1,
+          paddingTop: 1,
+        },
+        topLine: {
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 3,
+        },
+        actorRow: {
+          flexDirection: "row",
+          alignItems: "center",
+          flexShrink: 1,
+          marginRight: 8,
+        },
+        actor: {
+          fontSize: 15,
+          fontWeight: "700",
+          color: colors.text,
+          flexShrink: 1,
+        },
+        actionIcon: {
+          fontSize: 14,
+          fontWeight: "400",
+        },
+        verdictPill: {
+          paddingHorizontal: 8,
+          paddingVertical: 2,
+          borderRadius: radius.pill,
+        },
+        verdictText: {
+          fontSize: 10,
+          fontWeight: "800",
+          letterSpacing: 0.5,
+        },
+        time: {
+          fontSize: 12,
+          color: colors.muted,
+          fontVariant: ["tabular-nums"],
+        },
+        outcome: {
+          fontSize: 14,
+          lineHeight: 19,
+          fontWeight: "600",
+        },
+      }),
+    [colors]
+  );
+}
