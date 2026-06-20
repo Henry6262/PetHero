@@ -260,7 +260,7 @@ function LivePanel({
             resizeMode="cover"
           />
           <View style={styles.liveFallback}>
-            <Ionicons name="videocam-off" size={28} color="rgba(255,255,255,0.6)" />
+            <Ionicons name="videocam-off" size={40} color="rgba(255,255,255,0.65)" />
             <Text style={styles.liveFallbackText}>Camera offline</Text>
           </View>
         </>
@@ -552,7 +552,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         alertTitle: { color: colors.red, fontWeight: "700", fontSize: 18 },
         alertSub: { color: colors.muted, fontSize: 13, marginTop: space.xs },
 
-        live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
+        live: { height: 280, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
         liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
         liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
         liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
@@ -562,7 +562,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveBottom: { flexDirection: "row", alignItems: "center" },
         liveStatus: { color: "#EAE8E3", fontSize: 13 },
         liveFallback: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", gap: space.sm },
-        liveFallbackText: { color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: "600" },
+        liveFallbackText: { color: "rgba(255,255,255,0.75)", fontSize: 17, fontWeight: "700" },
         actionOverlay: { position: "absolute", right: space.sm, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.sm },
         actionBtn: { width: 44, height: 44, borderRadius: 22 },
         actionBtnInner: { flex: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(10,10,12,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
