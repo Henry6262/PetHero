@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -33,6 +34,7 @@ function Home() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
 
   useEffect(() => {
     api.pets().then(setPets).catch(() => {});
@@ -68,6 +70,7 @@ function Home() {
   const duePet = pets.find((p) => deriveStatus(p, backend.log).tone === "alert");
 
   return (
+    <>
     <ScrollView
       style={styles.screen}
       contentContainerStyle={{ padding: space.lg, paddingBottom: 48 }}
@@ -78,6 +81,7 @@ function Home() {
         mode={backend.status?.mode ?? "demo"}
         agent={backend.status?.agent_backend ?? "rules"}
         alerts={duePet ? 1 : 0}
+        onOpenDemo={() => setDemoOpen(true)}
       />
 
       {duePet && <AlertBanner pet={duePet} />}
@@ -97,8 +101,6 @@ function Home() {
           rule={backend.lastEvent?.rule ?? null}
         />
       )}
-
-      <DemoRow pets={pets} selected={selected} onPick={simulate} />
 
       <SectionLabel text="PETS" right="tap to simulate" />
       <View style={styles.petGrid}>
@@ -120,12 +122,24 @@ function Home() {
         <DispenseCard emoji="💊" label="Med" tint={colors.amber} disabled={!currentPet} onPress={() => dispense("medicine")} />
       </View>
     </ScrollView>
+
+    <DemoDrawer
+      visible={demoOpen}
+      pets={pets}
+      selected={selected}
+      onPick={(id) => {
+        simulate(id);
+        setDemoOpen(false);
+      }}
+      onClose={() => setDemoOpen(false)}
+    />
+    </>
   );
 }
 
 /* ---------------- components ---------------- */
 
-function Header({ connected, mode, agent, alerts }: { connected: boolean; mode: string; agent: string; alerts: number }) {
+function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boolean; mode: string; agent: string; alerts: number; onOpenDemo: () => void }) {
   return (
     <View style={styles.header}>
       <View>
@@ -138,6 +152,9 @@ function Header({ connected, mode, agent, alerts }: { connected: boolean; mode: 
         </View>
       </View>
       <View style={styles.headerIcons}>
+        <Pressable style={[styles.iconBtn, styles.iconBtnAccent]} onPress={onOpenDemo} hitSlop={8}>
+          <Text style={styles.iconGlyph}>🐾</Text>
+        </Pressable>
         <View style={styles.iconBtn}>
           <Text style={styles.iconGlyph}>🔔</Text>
           {alerts > 0 && (
@@ -216,24 +233,27 @@ function ReasoningCard({ reasoning, allowed, verdict, rule }: { reasoning: strin
   );
 }
 
-function DemoRow({ pets, selected, onPick }: { pets: Pet[]; selected: string | null; onPick: (id: string | null) => void }) {
+function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boolean; pets: Pet[]; selected: string | null; onPick: (id: string | null) => void; onClose: () => void }) {
   return (
-    <View style={styles.demo}>
-      <Text style={styles.demoSide}>DEMO</Text>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.demoTitle}>Simulate a pet walking up to the bowl</Text>
-        <View style={styles.demoChips}>
-          {pets.map((p) => (
-            <Chip key={p.id} active={selected === p.id} onPress={() => onPick(p.id)}>
-              {petEmoji(p.species)} {p.name}
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <Pressable style={styles.drawerBackdrop} onPress={onClose}>
+        <Pressable style={styles.drawerSheet} onPress={() => {}}>
+          <View style={styles.drawerHandle} />
+          <Text style={styles.drawerKicker}>DEMO</Text>
+          <Text style={styles.drawerTitle}>Simulate a pet walking up to the bowl</Text>
+          <View style={styles.demoChips}>
+            {pets.map((p) => (
+              <Chip key={p.id} active={selected === p.id} onPress={() => onPick(p.id)}>
+                {petEmoji(p.species)} {p.name}
+              </Chip>
+            ))}
+            <Chip active={selected === null} danger onPress={() => onPick(null)}>
+              ? Unknown
             </Chip>
-          ))}
-          <Chip active={selected === null} danger onPress={() => onPick(null)}>
-            ? Unknown
-          </Chip>
-        </View>
-      </View>
-    </View>
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -303,6 +323,7 @@ const styles = StyleSheet.create({
   dot: { width: 7, height: 7, borderRadius: 4, marginRight: 6 },
   headerIcons: { flexDirection: "row", gap: 10 },
   iconBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", ...shadow.card },
+  iconBtnAccent: { backgroundColor: colors.amberSoft, borderWidth: 1.5, borderColor: colors.amber },
   iconGlyph: { fontSize: 16 },
   badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
   badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
@@ -330,9 +351,11 @@ const styles = StyleSheet.create({
   reasonBody: { color: colors.text, fontSize: 15, lineHeight: 21 },
   reasonVerdict: { fontSize: 13, marginTop: 6, fontWeight: "600" },
 
-  demo: { flexDirection: "row", borderWidth: 1.5, borderColor: colors.amber, borderStyle: "dashed", borderRadius: radius.lg, backgroundColor: colors.amberSoft, padding: space.md, marginBottom: space.xl, gap: 10 },
-  demoSide: { fontSize: 10, fontWeight: "800", color: colors.amber, letterSpacing: 1, transform: [{ rotate: "-90deg" }], width: 16, textAlign: "center", alignSelf: "center" },
-  demoTitle: { fontSize: 13, color: colors.muted, marginBottom: 8 },
+  drawerBackdrop: { flex: 1, backgroundColor: "rgba(20,16,10,0.35)", justifyContent: "flex-end" },
+  drawerSheet: { backgroundColor: colors.screen, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: space.xl, paddingBottom: 40 },
+  drawerHandle: { alignSelf: "center", width: 40, height: 5, borderRadius: 3, backgroundColor: colors.borderStrong, marginBottom: space.lg },
+  drawerKicker: { fontSize: 11, fontWeight: "800", color: colors.amber, letterSpacing: 1.2, marginBottom: 4 },
+  drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, marginBottom: space.lg },
   demoChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: { borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: "#fff" },
   chipText: { fontSize: 14, fontWeight: "600", color: colors.text },
