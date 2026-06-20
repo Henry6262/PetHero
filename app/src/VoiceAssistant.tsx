@@ -128,7 +128,7 @@ export function VoiceAssistant() {
           style={({ pressed }) => [styles.btn, pressed && { opacity: 0.82, transform: [{ scale: 0.96 }] }]}
           hitSlop={12}
         >
-          {connecting ? <ActivityIndicator color="#fff" /> : <Ionicons name={connected ? "stop" : "mic"} size={28} color="#fff" />}
+          {connecting ? <ActivityIndicator color="#fff" /> : <Ionicons name={connected ? "stop" : "mic"} size={30} color="#fff" />}
         </Pressable>
       </Animated.View>
     </View>
@@ -149,9 +149,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   btn: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#1C1B19",
