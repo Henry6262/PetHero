@@ -24,30 +24,35 @@ export function AgentPanel({
   const { colors } = useTheme();
   const styles = useThemedStyles(colors);
   const events = log.slice(0, maxItems);
-  if (!decision && events.length === 0) return null;
-
   const allowed = lastEvent?.allowed ?? true;
   const rule = lastEvent?.rule ?? null;
+  const empty = !decision && events.length === 0;
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        {decision && (
-          <ReasoningRow
-            reasoning={decision.reasoning}
-            allowed={allowed}
-            rule={rule}
-            hasMore={events.length > 0}
-          />
+        {empty ? (
+          <EmptyRow />
+        ) : (
+          <>
+            {decision && (
+              <ReasoningRow
+                reasoning={decision.reasoning}
+                allowed={allowed}
+                rule={rule}
+                hasMore={events.length > 0}
+              />
+            )}
+            {events.map((event, index) => (
+              <EventRow
+                key={`${event.timestamp}-${index}`}
+                event={event}
+                pet={pets.find((p) => p.name === event.pet_name)}
+                isLast={index === events.length - 1}
+              />
+            ))}
+          </>
         )}
-        {events.map((event, index) => (
-          <EventRow
-            key={`${event.timestamp}-${index}`}
-            event={event}
-            pet={pets.find((p) => p.name === event.pet_name)}
-            isLast={index === events.length - 1}
-          />
-        ))}
       </View>
     </View>
   );
@@ -91,6 +96,31 @@ function ReasoningRow({
         </View>
         <Text style={[styles.outcome, { color: colors.text }]} numberOfLines={3}>
           {reasoning}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function EmptyRow() {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(colors);
+  return (
+    <View style={styles.row}>
+      <View style={styles.timeline}>
+        <View style={[styles.dot, { backgroundColor: colors.muted }]} />
+      </View>
+      <View style={styles.content}>
+        <View style={styles.topLine}>
+          <View style={styles.actorRow}>
+            <Icon name="agent" size={18} color={colors.text} />
+            <Text style={[styles.actor, { marginLeft: 6 }]} numberOfLines={1}>
+              Agent
+            </Text>
+          </View>
+        </View>
+        <Text style={[styles.outcome, { color: colors.muted }]} numberOfLines={2}>
+          Monitoring the bowl · no activity yet
         </Text>
       </View>
     </View>
