@@ -1,4 +1,4 @@
-# Design Request: Food & Medication Creation Drawer
+# Design Request: Food & Medication Configuration (Automation-First)
 
 > For: design/agent teammate  
 > Project: PetHero (React Native / Expo app)  
@@ -7,7 +7,16 @@
 
 ---
 
-## 1. What PetHero is
+## 1. Direction from Henry
+
+- **Food is per-pet.** This is super important.
+- **Notifications are overkill.** Skip push/banner reminders entirely.
+- **Focus on automation.** We are setting up the machine to auto-dispense based on configured rules.
+- The frontend code and API should be **ready to plug into the real backend** when the backend teammate is done.
+
+---
+
+## 2. What PetHero is
 
 PetHero is a smart pet feeder mobile app. The home screen shows:
 
@@ -20,7 +29,7 @@ Backend is FastAPI. The app talks to it over REST + WebSocket.
 
 ---
 
-## 2. What we have today
+## 3. What we have today
 
 ### Data model (see `src/types.ts`)
 
@@ -63,7 +72,7 @@ export interface Pet {
 
 ---
 
-## 3. The problem
+## 4. The problem
 
 Food and medication are too abstract:
 
@@ -75,64 +84,83 @@ The app feels like a demo because the configuration layer is missing.
 
 ---
 
-## 4. The idea
+## 5. The idea
 
-Add a **creation / management drawer** (or sheet) that lets the user configure:
+Add a **pet configuration sheet** that lets the user set up per-pet automation rules. The machine then uses these rules to decide when and how much to dispense.
 
 ### A. Food options per pet
 
-- Food name (e.g., "Royal Canin Indoor", "Chicken & Rice").
-- Default portion in grams (linked to `Pet.max_portion_grams`).
-- Minimum interval between feeds in hours (linked to `Pet.min_feed_interval_hours`).
-- Optionally: calories per 100g, feeding schedule (morning / evening).
+Each pet has one or more food options. For each option:
+
+- **Name** (e.g., "Royal Canin Indoor", "Chicken & Rice").
+- **Portion in grams** — how much to dispense per feeding.
+- **Minimum interval between feeds** in hours — safety cooldown.
+- **Default flag** — which option the auto-feeder uses by default.
+- Optionally: calories per 100g (nice-to-have, not required).
+
+The existing `Pet.max_portion_grams` and `Pet.min_feed_interval_hours` are migrated into the default food option.
 
 ### B. Medications per pet
 
-- Medication name (e.g., "Prednisolone").
-- Dose count (number of pills / ml).
-- Interval in hours (e.g., every 12h).
-- Notes (e.g., "Give with food").
-- Optionally: active / paused toggle.
+Each pet has a list of medications. For each medication:
 
-### C. Drawer entry points
+- **Name** (e.g., "Prednisolone").
+- **Dose count** (number of pills / ml).
+- **Interval in hours** (e.g., every 12h).
+- **Notes** (e.g., "Give with food").
+- **Active / paused** toggle.
 
-1. **Long-press or "edit" badge on a pet avatar** opens a pet detail sheet with tabs/cards for "Food" and "Meds".
-2. **A "+" or settings icon in the header** opens a global management sheet.
-3. **When dispensing medicine** and no medication exists, prompt the user to add one instead of silently failing.
+The agent uses the interval to decide when the medication is due.
 
-### D. Drawer behavior
+### C. Automation
+
+- When the camera detects a pet, the agent checks:
+  - Is food due? (last feed time + default food's `minIntervalHours`)
+  - Is any active medication due? (last med time + `interval_hours`)
+- If something is due, the agent auto-dispenses with the configured dose/portion.
+- Manual taps still work, but respect the same safety intervals.
+
+### D. Entry points
+
+1. **Long-press on a pet avatar** opens the pet configuration sheet.
+2. **When tapping Feed/Med** and no food option / medication exists, prompt the user to create one first.
+
+### E. Drawer behavior
 
 - Reuse the existing sheet pattern: static blur/dim backdrop, sheet slides up from bottom.
-- Keep it simple — one sheet at a time. If we need more depth, push sub-sheets or use accordions.
+- Use a single sheet with two sections/cards: **Food** and **Meds**.
+- Keep it simple — no multi-page wizard if a single form sheet works.
 - Use the existing 8pt spacing grid and theme tokens (`src/theme.ts`).
 
 ---
 
-## 5. What we need from you
+## 6. What we need from you
 
 Please produce a **design spec** that includes:
 
 1. **User flows**
-   - How the user creates a food option.
+   - How the user creates the first food option for a pet.
    - How the user adds a medication.
    - How the user edits or deletes either.
    - How the dispense buttons behave when no config exists.
+   - How the agent log shows automated decisions based on config.
 
 2. **Wireframes / high-fidelity mockups**
-   - The pet detail / configuration sheet.
-   - The food creation form.
-   - The medication creation form.
-   - Empty states (e.g., "No medications yet").
+   - The pet configuration sheet (Food + Meds cards).
+   - The food creation/edit form.
+   - The medication creation/edit form.
+   - Empty states (e.g., "No food configured yet").
    - Error / validation states.
 
 3. **Component recommendations**
    - Whether to reuse `DemoDrawer` as a generic `BottomSheet` component.
-   - Form inputs: number steppers, text fields, toggle switches, date/time pickers for schedules.
+   - Form inputs: number steppers, text fields, toggle switches.
    - List UI for existing food / meds.
 
 4. **API contract suggestions**
-   - What endpoints the backend needs (e.g., `POST /pets/{id}/medications`, `PATCH /pets/{id}/food`).
-   - How the app should sync config with backend.
+   - Endpoints the backend needs (e.g., `PUT /pets/{id}/food-options`, `POST /pets/{id}/medications`).
+   - How the app syncs config with backend.
+   - What fields the agent needs from the backend to run automation.
 
 5. **State management notes**
    - Should config live in a context, or is local component state enough for now?
@@ -143,8 +171,11 @@ Please produce a **design spec** that includes:
 
 ---
 
-## 6. Constraints
+## 7. Constraints
 
+- **Per-pet only.** No global food catalog.
+- **No notifications.** Do not design push or banner reminders.
+- **Automation-first.** Every config value should be usable by the agent to make auto-dispense decisions.
 - Keep it **stupidly simple**. No multi-page wizard if a single form sheet works.
 - Use the existing design system: colors in `src/theme.ts`, spacing 8pt grid, Ionicons via `src/Icon.tsx`.
 - Target mobile-first; tablet support is a nice-to-have.
@@ -152,7 +183,7 @@ Please produce a **design spec** that includes:
 
 ---
 
-## 7. Files to look at
+## 8. Files to look at
 
 - `App.tsx` — current screen layout, `DemoDrawer`, dispense flow.
 - `src/AgentPanel.tsx` — how the agent log surfaces decisions.
@@ -161,24 +192,24 @@ Please produce a **design spec** that includes:
 - `src/types.ts` — Pet / Medication types.
 - `src/seed.ts` — example pets and medications.
 - `src/theme.ts` — colors, spacing, radius, shadows.
+- `src/api.ts` — current REST client.
 
 ---
 
-## 8. Success criteria
+## 9. Success criteria
 
-A user should be able to open the app, tap into a pet's settings, and within 30 seconds:
+A user should be able to open the app, long-press a pet, and within 30 seconds:
 
-1. Set the default food portion.
-2. Add a new medication with dose and interval.
-3. Return to the home screen and tap "Feed" or "Med" and see the agent use the configured values.
+1. Add a default food option with portion size and interval.
+2. Add an active medication with dose and interval.
+3. Return to the home screen and see the agent use these values for auto and manual dispenses.
 
 ---
 
-## 9. Open questions for you to resolve
+## 10. Open questions for you to resolve
 
-- Should food be **global** (shared across pets) or **per-pet**?
-- Should medication reminders be push notifications, in-app banners, or both?
-- Should we support multiple active food options per pet (e.g., breakfast vs dinner), or one default?
-- Should the drawer be a **bottom sheet** or a **full-screen modal**?
+- Should we support **multiple food options per pet** (e.g., breakfast vs dinner presets) or just **one default** for v1?
+- Should the food/medication forms be **inline in the sheet** or open in a **sub-sheet**?
+- Should deleting the last food option **block manual feeding** or fall back to a global default?
 
 Please answer these in the design spec and propose the simplest path forward.

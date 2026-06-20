@@ -129,8 +129,6 @@ function Home() {
       >
         <Header
           connected={backend.connected}
-          mode={backend.status?.mode ?? "demo"}
-          agent={backend.status?.agent_backend ?? "rules"}
           alerts={duePet ? 1 : 0}
           onOpenDemo={() => setDemoOpen(true)}
         />
@@ -178,20 +176,15 @@ function Home() {
 
 /* ---------------- components ---------------- */
 
-function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boolean; mode: string; agent: string; alerts: number; onOpenDemo: () => void }) {
+function Header({ connected, alerts, onOpenDemo }: { connected: boolean; alerts: number; onOpenDemo: () => void }) {
   const { colors, isDark, toggle } = useTheme();
   const styles = useThemedStyles(colors);
 
   return (
     <View style={styles.header}>
-      <View>
-        <Image source={require("./assets/icon.png")} style={{ width: 40, height: 40, borderRadius: 11 }} resizeMode="cover" />
-        <View style={styles.subRow}>
-          <View style={[styles.dot, { backgroundColor: connected ? colors.green : colors.muted }]} />
-          <Text style={styles.subText}>
-            Arm · {mode === "live" ? "live" : "simulated"} · {agent === "mistral" ? "Mistral" : "rules"}
-          </Text>
-        </View>
+      <View style={styles.logoRow}>
+        <Image source={require("./assets/icon.png")} style={styles.logo} resizeMode="cover" />
+        <View style={[styles.dot, { backgroundColor: connected ? colors.green : colors.muted }]} />
       </View>
       <View style={styles.headerIcons}>
         <Pressable style={styles.iconBtn} onPress={onOpenDemo} hitSlop={8}>
@@ -433,7 +426,7 @@ function PetCard({ pet, active, status, onPress }: { pet: Pet; active: boolean; 
     <Pressable onPress={onPress} style={[styles.petCard, active && { borderColor: colors.text }]}>
       <PetAvatar pet={pet} size={44} style={{ marginBottom: space.sm }} />
       <Text style={styles.petName}>{pet.name}</Text>
-      <View style={styles.subRow}>
+      <View style={{ flexDirection: "row", alignItems: "center", marginTop: space.xs }}>
         <View style={[styles.dot, { backgroundColor: toneColor }]} />
         <Text style={[styles.petStatus, { color: toneColor }]}>{status.label}</Text>
       </View>
@@ -465,11 +458,10 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         root: { flex: 1, backgroundColor: colors.screen },
         screen: { flex: 1, backgroundColor: colors.screen },
 
-        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: space.lg },
-        brand: { fontSize: 28, fontWeight: "800", color: colors.text, letterSpacing: -0.5 },
-        subRow: { flexDirection: "row", alignItems: "center", marginTop: space.xs },
-        subText: { fontSize: 13, color: colors.muted },
-        dot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
+        header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: space.lg },
+        logoRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
+        logo: { width: 48, height: 48, borderRadius: 14 },
+        dot: { width: 10, height: 10, borderRadius: 5 },
         headerIcons: { flexDirection: "row", gap: space.sm },
         iconBtn: {
           width: 44,
