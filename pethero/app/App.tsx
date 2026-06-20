@@ -185,7 +185,7 @@ function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boo
   return (
     <View style={styles.header}>
       <View>
-        <Text style={styles.brand}>PetHero</Text>
+        <Image source={require("./assets/icon.png")} style={{ width: 40, height: 40, borderRadius: 11 }} resizeMode="cover" />
         <View style={styles.subRow}>
           <View style={[styles.dot, { backgroundColor: connected ? colors.green : colors.muted }]} />
           <Text style={styles.subText}>
@@ -269,7 +269,6 @@ function LivePanel({
           <View style={styles.liveDot} />
           <Text style={styles.liveTagText}>LIVE</Text>
         </View>
-        <Text style={styles.liveCam}>cam-01</Text>
       </View>
       <View style={styles.liveBottom}>
         {busy && <ActivityIndicator color="#fff" style={{ marginRight: space.sm }} />}
@@ -299,7 +298,7 @@ function ActionOverlay({ onDispense }: { onDispense: (action: Action) => void })
           onPress={() => onDispense(item.action)}
           style={({ pressed }) => [styles.actionBtn, pressed && { opacity: 0.75, transform: [{ scale: 0.92 }] }]}
         >
-          <View style={[styles.actionBtnInner, { backgroundColor: `${colors.screen}CC` }]}>
+          <View style={styles.actionBtnInner}>
             <Icon name={item.icon} size={20} color={item.color} />
           </View>
         </Pressable>
@@ -371,8 +370,15 @@ function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boo
           <Pressable onPress={onClose} style={styles.drawerHandleBar}>
             <View style={styles.drawerHandle} />
           </Pressable>
-          <Text style={styles.drawerKicker}>DEMO</Text>
-          <Text style={styles.drawerTitle}>Simulate a pet walking up to the bowl</Text>
+          <View style={styles.drawerHeader}>
+            <View>
+              <Text style={styles.drawerKicker}>DEMO</Text>
+              <Text style={styles.drawerTitle}>Simulate a pet walking up to the bowl</Text>
+            </View>
+            <Pressable onPress={onClose} style={styles.drawerCloseBtn} hitSlop={8}>
+              <Ionicons name="close" size={22} color={colors.text} />
+            </Pressable>
+          </View>
           <View style={styles.demoChips}>
             {pets.map((p) => (
               <Chip
@@ -487,8 +493,8 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         liveBottom: { flexDirection: "row", alignItems: "center" },
         liveStatus: { color: "#EAE8E3", fontSize: 13 },
         actionOverlay: { position: "absolute", right: space.sm, top: space.sm, bottom: space.sm, justifyContent: "center", gap: space.sm },
-        actionBtn: { width: 40, height: 40, borderRadius: 20 },
-        actionBtnInner: { flex: 1, borderRadius: 20, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
+        actionBtn: { width: 44, height: 44, borderRadius: 22 },
+        actionBtnInner: { flex: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(10,10,12,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
 
         bracket: { position: "absolute", width: 38, height: 38 },
         brTL: { top: -4, left: -4, borderTopWidth: 6, borderLeftWidth: 6, borderTopLeftRadius: radius.lg + 4 },
@@ -510,8 +516,10 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         },
         drawerHandleBar: { alignSelf: "center", paddingVertical: space.sm, paddingHorizontal: space.lg, marginBottom: space.sm },
         drawerHandle: { width: 40, height: 5, borderRadius: 3, backgroundColor: colors.borderStrong },
+        drawerHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: space.lg },
+        drawerCloseBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignItems: "center", justifyContent: "center" },
         drawerKicker: { fontSize: 11, fontWeight: "800", color: colors.amber, letterSpacing: 1.2, marginBottom: space.xs },
-        drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, marginBottom: space.lg },
+        drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, flexShrink: 1, marginRight: space.sm },
         demoChips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
         chip: { flexDirection: "row", alignItems: "center", gap: 8, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: colors.card },
         chipText: { fontSize: 14, fontWeight: "600", color: colors.text },
