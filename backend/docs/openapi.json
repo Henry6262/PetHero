@@ -1,0 +1,482 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PetHero",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/status": {
+      "get": {
+        "summary": "Get Status",
+        "operationId": "get_status_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pets": {
+      "get": {
+        "summary": "Get Pets",
+        "operationId": "get_pets_pets_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Pet"
+                  },
+                  "type": "array",
+                  "title": "Response Get Pets Pets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pets/{pet_id}": {
+      "get": {
+        "summary": "Get Pet",
+        "operationId": "get_pet_pets__pet_id__get",
+        "parameters": [
+          {
+            "name": "pet_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Pet Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/log": {
+      "get": {
+        "summary": "Get Log",
+        "operationId": "get_log_log_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mode": {
+      "post": {
+        "summary": "Set Mode",
+        "operationId": "set_mode_mode_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vision/current": {
+      "post": {
+        "summary": "Set Current",
+        "description": "Demo control: declare which pet is in front of the camera.",
+        "operationId": "set_current_vision_current_post",
+        "parameters": [
+          {
+            "name": "pet_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pet Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/process": {
+      "post": {
+        "summary": "Process",
+        "description": "Run one autonomous step on the current frame.",
+        "operationId": "process_process_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trigger": {
+      "post": {
+        "summary": "Trigger",
+        "description": "Owner pressed a Feed / Water / Medicine button.",
+        "operationId": "trigger_trigger_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManualTrigger"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/robot/status": {
+      "get": {
+        "summary": "Robot Status",
+        "operationId": "robot_status_robot_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Action": {
+        "type": "string",
+        "enum": [
+          "feed",
+          "water",
+          "medicine",
+          "none"
+        ],
+        "title": "Action"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ManualTrigger": {
+        "properties": {
+          "pet_id": {
+            "type": "string",
+            "title": "Pet Id"
+          },
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "medicine_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Medicine Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pet_id",
+          "action"
+        ],
+        "title": "ManualTrigger",
+        "description": "A human pressing 'Feed Mittens' in the app."
+      },
+      "Medication": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "dose_count": {
+            "type": "integer",
+            "title": "Dose Count",
+            "default": 1
+          },
+          "interval_hours": {
+            "type": "number",
+            "title": "Interval Hours",
+            "default": 12
+          },
+          "notes": {
+            "type": "string",
+            "title": "Notes",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Medication"
+      },
+      "ModeRequest": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "title": "Mode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "title": "ModeRequest"
+      },
+      "Pet": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "species": {
+            "$ref": "#/components/schemas/Species"
+          },
+          "photo_ref": {
+            "type": "string",
+            "title": "Photo Ref",
+            "default": ""
+          },
+          "max_portion_grams": {
+            "type": "number",
+            "title": "Max Portion Grams",
+            "default": 50
+          },
+          "min_feed_interval_hours": {
+            "type": "number",
+            "title": "Min Feed Interval Hours",
+            "default": 4
+          },
+          "medications": {
+            "items": {
+              "$ref": "#/components/schemas/Medication"
+            },
+            "type": "array",
+            "title": "Medications"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "species"
+        ],
+        "title": "Pet"
+      },
+      "Species": {
+        "type": "string",
+        "enum": [
+          "cat",
+          "dog"
+        ],
+        "title": "Species"
+      },
+      "SystemStatus": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "title": "Mode"
+          },
+          "vision_backend": {
+            "type": "string",
+            "title": "Vision Backend"
+          },
+          "agent_backend": {
+            "type": "string",
+            "title": "Agent Backend"
+          },
+          "camera": {
+            "type": "string",
+            "title": "Camera"
+          },
+          "pets": {
+            "type": "integer",
+            "title": "Pets"
+          },
+          "state": {
+            "type": "string",
+            "title": "State",
+            "default": "idle"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "vision_backend",
+          "agent_backend",
+          "camera",
+          "pets"
+        ],
+        "title": "SystemStatus"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

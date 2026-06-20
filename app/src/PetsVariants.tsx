@@ -1,7 +1,8 @@
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { colors, radius, shadow, space } from "./theme";
-import { deriveStatus, petEmoji } from "./petStatus";
+import { deriveStatus } from "./petStatus";
+import { PetAvatar } from "./PetAvatar";
 import type { ActivityEvent, Pet } from "./types";
 
 export type PetsVariant = "A" | "B" | "C";
@@ -47,9 +48,7 @@ function PetsRows({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[a.row, active && a.rowActive]}>
             <View style={[a.accent, { backgroundColor: c }]} />
-            <View style={a.avatar}>
-              <Text style={a.emoji}>{petEmoji(pet.species)}</Text>
-            </View>
+            <PetAvatar pet={pet} size={42} style={{ marginRight: space.md }} />
             <View style={{ flex: 1 }}>
               <Text style={a.name}>{pet.name}</Text>
               <Text style={a.species}>{pet.species.toUpperCase()}</Text>
@@ -81,9 +80,7 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[b.card, active && { borderColor: colors.text }]}>
             <View style={[b.topAccent, { backgroundColor: c }]} />
             <View style={b.head}>
-              <View style={b.avatar}>
-                <Text style={{ fontSize: 22 }}>{petEmoji(pet.species)}</Text>
-              </View>
+              <PetAvatar pet={pet} size={44} />
               <View>
                 <Text style={b.name}>{pet.name}</Text>
                 <Text style={b.species}>{pet.species}</Text>
@@ -123,7 +120,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={cc.item}>
             <View style={[cc.ring, { borderColor: active ? c : ringTone(s.tone) }, active && cc.ringActive]}>
-              <Text style={cc.emoji}>{petEmoji(pet.species)}</Text>
+              <PetAvatar pet={pet} size={74} />
             </View>
             <Text style={cc.name}>{pet.name}</Text>
             <Text style={[cc.status, { color: c }]}>{s.label}</Text>

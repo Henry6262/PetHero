@@ -16,7 +16,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { api } from "./src/api";
 import { useBackend } from "./src/useBackend";
 import { colors, radius, shadow, space } from "./src/theme";
-import { deriveStatus, petEmoji } from "./src/petStatus";
+import { deriveStatus } from "./src/petStatus";
+import { PetAvatar } from "./src/PetAvatar";
 import { PetsSection, type PetsVariant } from "./src/PetsVariants";
 import { DispenseSection, type DispenseVariant } from "./src/DispenseVariants";
 import { AgentPanel } from "./src/AgentPanel";
@@ -194,13 +195,12 @@ function AlertBanner({ pet }: { pet: Pet }) {
 function LivePanel({ frame, watching, confidence, busy }: { frame: string | null; watching: string | null; confidence: number; busy: boolean }) {
   return (
     <View style={styles.live}>
-      {frame ? (
-        <Image
-          source={{ uri: `data:image/jpeg;base64,${frame}` }}
-          style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
-          resizeMode="cover"
-        />
-      ) : null}
+      <Image
+        source={frame ? { uri: `data:image/jpeg;base64,${frame}` } : require("./assets/live-preview.png")}
+        style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
+        resizeMode="contain"
+      />
+      <View style={styles.liveScrim} />
       <CornerBrackets active={!!watching} />
       <View style={styles.liveTopRow}>
         <View style={styles.liveTag}>
@@ -252,8 +252,13 @@ function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boo
           <Text style={styles.drawerTitle}>Simulate a pet walking up to the bowl</Text>
           <View style={styles.demoChips}>
             {pets.map((p) => (
-              <Chip key={p.id} active={selected === p.id} onPress={() => onPick(p.id)}>
-                {petEmoji(p.species)} {p.name}
+              <Chip
+                key={p.id}
+                active={selected === p.id}
+                onPress={() => onPick(p.id)}
+                leading={<PetAvatar pet={p} size={20} />}
+              >
+                {p.name}
               </Chip>
             ))}
             <Chip active={selected === null} danger onPress={() => onPick(null)}>
@@ -266,7 +271,7 @@ function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boo
   );
 }
 
-function Chip({ children, active, danger, onPress }: { children: React.ReactNode; active?: boolean; danger?: boolean; onPress: () => void }) {
+function Chip({ children, active, danger, onPress, leading }: { children: React.ReactNode; active?: boolean; danger?: boolean; onPress: () => void; leading?: React.ReactNode }) {
   return (
     <Pressable
       onPress={onPress}
@@ -276,6 +281,7 @@ function Chip({ children, active, danger, onPress }: { children: React.ReactNode
         danger && { borderColor: colors.red },
       ]}
     >
+      {leading}
       <Text style={[styles.chipText, danger && { color: colors.red }]}>{children}</Text>
     </Pressable>
   );
@@ -285,9 +291,7 @@ function PetCard({ pet, active, status, onPress }: { pet: Pet; active: boolean; 
   const toneColor = status.tone === "alert" ? colors.red : status.tone === "good" ? colors.green : colors.muted;
   return (
     <Pressable onPress={onPress} style={[styles.petCard, active && { borderColor: colors.text }]}>
-      <View style={styles.avatar}>
-        <Text style={{ fontSize: 22 }}>{petEmoji(pet.species)}</Text>
-      </View>
+      <PetAvatar pet={pet} size={44} style={{ marginBottom: 8 }} />
       <Text style={styles.petName}>{pet.name}</Text>
       <View style={styles.subRow}>
         <View style={[styles.dot, { backgroundColor: toneColor }]} />
@@ -343,7 +347,8 @@ const styles = StyleSheet.create({
   alertSub: { color: "#B4736B", fontSize: 12, marginTop: 2 },
   alertChevron: { color: colors.red, fontSize: 18, fontWeight: "700" },
 
-  live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md },
+  live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
+  liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
   liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red },
@@ -365,7 +370,7 @@ const styles = StyleSheet.create({
   drawerKicker: { fontSize: 11, fontWeight: "800", color: colors.amber, letterSpacing: 1.2, marginBottom: 4 },
   drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, marginBottom: space.lg },
   demoChips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  chip: { borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: "#fff" },
+  chip: { flexDirection: "row", alignItems: "center", gap: 7, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7, backgroundColor: "#fff" },
   chipText: { fontSize: 14, fontWeight: "600", color: colors.text },
 
   sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: space.md },

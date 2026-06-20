@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { colors, radius, shadow, space } from "./theme";
-import { petEmoji } from "./petStatus";
+import { PetAvatar } from "./PetAvatar";
 import type { Action, ActivityEvent, DispenseDecision, Pet } from "./types";
 
 interface AgentPanelProps {
@@ -111,16 +111,21 @@ function EventRow({
       </View>
       <View style={styles.content}>
         <View style={styles.topLine}>
-          <Text style={styles.actor} numberOfLines={1}>
-            {event.action === "water"
-              ? "💧 Shared"
-              : pet
-                ? `${petEmoji(pet.species)} ${pet.name}`
-                : event.pet_name ?? "Unknown"}
-            {event.action !== "water" && (
-              <Text style={styles.actionIcon}> {actionIcon(event.action)}</Text>
+          <View style={styles.actorRow}>
+            {event.action === "water" ? (
+              <Text style={styles.actor} numberOfLines={1}>💧 Shared</Text>
+            ) : pet ? (
+              <>
+                <PetAvatar pet={pet} size={20} style={{ marginRight: 6 }} />
+                <Text style={styles.actor} numberOfLines={1}>
+                  {pet.name}
+                  <Text style={styles.actionIcon}> {actionIcon(event.action)}</Text>
+                </Text>
+              </>
+            ) : (
+              <Text style={styles.actor} numberOfLines={1}>{event.pet_name ?? "Unknown"}</Text>
             )}
-          </Text>
+          </View>
           <Text style={styles.time}>{formatTime(event.timestamp)}</Text>
         </View>
         <Text style={[styles.outcome, { color: toneColor }]} numberOfLines={2}>
@@ -200,12 +205,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 3,
   },
+  actorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexShrink: 1,
+    marginRight: 8,
+  },
   actor: {
     fontSize: 15,
     fontWeight: "700",
     color: colors.text,
     flexShrink: 1,
-    marginRight: 8,
   },
   actionIcon: {
     fontSize: 14,
