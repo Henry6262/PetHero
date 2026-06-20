@@ -1,0 +1,20 @@
+# --- Core (required, lightweight — backend boots with just these) ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+websockets>=12.0
+python-multipart>=0.0.9
+pillow>=10.0          # frame encoding / placeholder generation
+
+# --- Optional extras (install to light up the real pipeline) ---
+# Vision (local detection + crop). AGPL-3.0 — fine for the demo.
+#   pip install ultralytics opencv-python
+#
+# Mistral decision agent:
+#   pip install mistralai
+#
+# Hugging Face Inference (CLIP individual-pet ID):
+#   pip install huggingface_hub
+#
+# The backend detects whether each extra is installed and falls back to a
+# deterministic stub when it is not. Nothing here is import-time required.

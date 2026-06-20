@@ -1,0 +1,43 @@
+[
+  {
+    "id": "mittens",
+    "name": "Mittens",
+    "species": "cat",
+    "photo_ref": "mittens.jpg",
+    "max_portion_grams": 50,
+    "min_feed_interval_hours": 4,
+    "medications": [
+      {
+        "name": "thyroid",
+        "dose_count": 1,
+        "interval_hours": 12,
+        "notes": "Hyperthyroid — 1 pill twice daily"
+      }
+    ]
+  },
+  {
+    "id": "whiskers",
+    "name": "Whiskers",
+    "species": "cat",
+    "photo_ref": "whiskers.jpg",
+    "max_portion_grams": 45,
+    "min_feed_interval_hours": 5,
+    "medications": []
+  },
+  {
+    "id": "max",
+    "name": "Max",
+    "species": "dog",
+    "photo_ref": "max.jpg",
+    "max_portion_grams": 120,
+    "min_feed_interval_hours": 6,
+    "medications": [
+      {
+        "name": "joint-supplement",
+        "dose_count": 1,
+        "interval_hours": 24,
+        "notes": "Glucosamine — once daily with breakfast"
+      }
+    ]
+  }
+]
