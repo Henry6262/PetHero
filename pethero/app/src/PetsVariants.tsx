@@ -156,10 +156,10 @@ const b = StyleSheet.create({
 });
 
 const cc = StyleSheet.create({
-  item: { alignItems: "center", width: 94 },
-  ring: { width: 94, height: 94, borderRadius: 47, borderWidth: 3.5, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...shadow.card },
-  ringActive: { borderWidth: 5 },
-  emoji: { fontSize: 46 },
+  item: { alignItems: "center", width: 84 },
+  ring: { width: 84, height: 84, borderRadius: 42, borderWidth: 3.5, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", ...shadow.card },
+  ringActive: { borderWidth: 4.5 },
+  emoji: { fontSize: 40 },
   name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
   status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
 });
