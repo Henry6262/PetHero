@@ -54,7 +54,7 @@ function PetsRows({ pets, log, activeId, onPick }: Props) {
         const active = pet.id === activeId;
         return (
           <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.row, active && { borderColor: colors.text }]}>
-            <View style={[styles.accent, { backgroundColor: c }]} />
+            <View style={styles.accent} />
             <PetAvatar pet={pet} size={48} style={{ marginRight: space.md }} />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{pet.name}</Text>
@@ -88,7 +88,7 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
         const dosedOrNoMeds = pet.medications.length === 0 || mine.some((e) => e.action === "medicine");
         return (
           <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.card, active && { borderColor: colors.text }]}>
-            <View style={[styles.topAccent, { backgroundColor: c }]} />
+            <View style={styles.topAccent} />
             <View style={styles.head}>
               <PetAvatar pet={pet} size={48} />
               <View>
@@ -135,7 +135,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         return (
           <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
             <View style={[styles.ring, active && { borderColor: colors.text, borderWidth: 2.5 }]}>
-              <PetAvatar pet={pet} size={80} />
+              <PetAvatar pet={pet} size={92} />
             </View>
             <Text style={styles.name}>{pet.name}</Text>
             <Text style={[styles.status, { color: c }]}>{s.label}</Text>
@@ -170,7 +170,7 @@ function useVariantAStyles(colors: ReturnType<typeof useTheme>["colors"]) {
     () =>
       StyleSheet.create({
         row: { flexDirection: "row", alignItems: "center", backgroundColor: colors.card, borderRadius: radius.lg, padding: space.md, paddingLeft: space.lg, overflow: "hidden", ...shadow.card },
-        accent: { position: "absolute", left: 0, top: 0, bottom: 0, width: 5 },
+        accent: { position: "absolute", left: 0, top: 0, bottom: 0, width: 5, backgroundColor: colors.borderStrong },
         name: { fontSize: 16, fontWeight: "700", color: colors.text },
         species: { fontSize: 11, fontWeight: "700", color: colors.label, letterSpacing: 1, marginTop: 1 },
         pill: { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: radius.pill },
@@ -187,7 +187,7 @@ function useVariantBStyles(colors: ReturnType<typeof useTheme>["colors"]) {
       StyleSheet.create({
         grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
         card: { flexGrow: 1, flexBasis: "45%", backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border, padding: space.md, paddingTop: space.lg, overflow: "hidden", ...shadow.card },
-        topAccent: { position: "absolute", left: 0, right: 0, top: 0, height: 5 },
+        topAccent: { position: "absolute", left: 0, right: 0, top: 0, height: 5, backgroundColor: colors.borderStrong },
         head: { flexDirection: "row", alignItems: "center", gap: space.sm, marginBottom: space.md },
         name: { fontSize: 16, fontWeight: "700", color: colors.text },
         species: { fontSize: 12, color: colors.muted, textTransform: "capitalize" },
@@ -204,8 +204,8 @@ function useVariantCStyles(colors: ReturnType<typeof useTheme>["colors"]) {
   return useMemo(
     () =>
       StyleSheet.create({
-        item: { alignItems: "center", width: 88 },
-        ring: { width: 88, height: 88, borderRadius: 44, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, borderWidth: 2, borderColor: colors.borderStrong, ...shadow.lift },
+        item: { alignItems: "center", width: 104 },
+        ring: { width: 104, height: 104, borderRadius: 52, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, borderWidth: 2, borderColor: colors.borderStrong, ...shadow.lift },
         name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: space.sm },
         status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
       }),
