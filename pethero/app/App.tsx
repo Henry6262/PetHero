@@ -148,7 +148,7 @@ function Header({ connected, mode, agent, alerts, onOpenDemo }: { connected: boo
   return (
     <View style={styles.header}>
       <View>
-        <Text style={styles.brand}>PetHero</Text>
+        <Text style={styles.brand}>RELOAD-OK</Text>
         <View style={styles.subRow}>
           <View style={[styles.dot, { backgroundColor: connected ? colors.green : colors.muted }]} />
           <Text style={styles.subText}>
@@ -196,11 +196,11 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
   return (
     <View style={styles.live}>
       <Image
-        source={frame ? { uri: `data:image/jpeg;base64,${frame}` } : require("./assets/live-preview.png")}
+        source={require("./assets/live-preview.png")}
         style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]}
         resizeMode="contain"
       />
-      <View style={styles.liveScrim} />
+      {/* <View style={styles.liveScrim} /> */}
       <CornerBrackets active={!!watching} />
       <View style={styles.liveTopRow}>
         <View style={styles.liveTag}>
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   alertSub: { color: "#B4736B", fontSize: 12, marginTop: 2 },
   alertChevron: { color: colors.red, fontSize: 18, fontWeight: "700" },
 
-  live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
+  live: { height: 220, borderRadius: radius.lg, backgroundColor: "#FF00AA", marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
   liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
   liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
