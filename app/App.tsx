@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   alertSub: { color: "#B4736B", fontSize: 12, marginTop: 2 },
   alertChevron: { color: colors.red, fontSize: 18, fontWeight: "700" },
 
-  live: { height: 200, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md },
+  live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md },
   liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red },
