@@ -398,8 +398,8 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
 
         alert: { flexDirection: "row", alignItems: "center", backgroundColor: colors.redSoft, borderRadius: radius.lg, paddingHorizontal: space.md, paddingVertical: space.lg, marginBottom: space.lg, gap: 10 },
         alertEmoji: { fontSize: 20 },
-        alertTitle: { color: colors.red, fontWeight: "700", fontSize: 15 },
-        alertSub: { color: colors.muted, fontSize: 12, marginTop: 2 },
+        alertTitle: { color: colors.red, fontWeight: "700", fontSize: 18 },
+        alertSub: { color: colors.muted, fontSize: 13, marginTop: 3 },
 
         live: { height: 220, borderRadius: radius.lg, backgroundColor: colors.live, marginBottom: space.md, justifyContent: "space-between", padding: space.md, overflow: "hidden" },
         liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: radius.lg, backgroundColor: "rgba(18,14,8,0.28)" },
