@@ -137,11 +137,12 @@ export function VoiceAssistant() {
 const styles = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 36, alignItems: "center" },
   btn: {
-    width: "80%",
-    height: 44,
-    borderRadius: 22,
+    width: "92%",
+    height: 56,
+    borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 24,
     backgroundColor: "#1C1B19",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
