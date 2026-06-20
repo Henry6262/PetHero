@@ -16,7 +16,14 @@ import { api } from "./src/api";
 import { useBackend } from "./src/useBackend";
 import { colors, radius, shadow, space } from "./src/theme";
 import { deriveStatus, petEmoji } from "./src/petStatus";
+import { PetsSection, type PetsVariant } from "./src/PetsVariants";
+import { DispenseSection, type DispenseVariant } from "./src/DispenseVariants";
 import type { Action, Pet } from "./src/types";
+
+// Which Pets-section design to render (A = care rows, B = vitals cards, C = ring tray).
+const PETS_VARIANT: PetsVariant = "C";
+// Which Dispense control to render (1 = tinted tiles, 2 = primary+secondary, 3 = segmented).
+const DISPENSE_VARIANT: DispenseVariant = "1";
 
 export default function App() {
   return (
@@ -103,24 +110,17 @@ function Home() {
       )}
 
       <SectionLabel text="PETS" right="tap to simulate" />
-      <View style={styles.petGrid}>
-        {pets.map((p) => (
-          <PetCard
-            key={p.id}
-            pet={p}
-            active={p.id === currentPetId}
-            status={deriveStatus(p, backend.log)}
-            onPress={() => simulate(p.id)}
-          />
-        ))}
-      </View>
+      <PetsSection
+        variant={PETS_VARIANT}
+        pets={pets}
+        log={backend.log}
+        activeId={currentPetId}
+        onPick={simulate}
+      />
+      <View style={{ height: space.xl }} />
 
       <SectionLabel text="DISPENSE NOW" right={currentPet ? `for ${currentPet.name}` : "pick a pet"} />
-      <View style={styles.dispenseRow}>
-        <DispenseCard emoji="🍽️" label="Feed" tint={colors.text} disabled={!currentPet} onPress={() => dispense("feed")} />
-        <DispenseCard emoji="💧" label="Water" tint={colors.blue} disabled={!currentPet} onPress={() => dispense("water")} />
-        <DispenseCard emoji="💊" label="Med" tint={colors.amber} disabled={!currentPet} onPress={() => dispense("medicine")} />
-      </View>
+      <DispenseSection variant={DISPENSE_VARIANT} pet={currentPet} onDispense={dispense} />
     </ScrollView>
 
     <DemoDrawer
@@ -197,6 +197,7 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
           resizeMode="cover"
         />
       ) : null}
+      <CornerBrackets active={!!watching} />
       <View style={styles.liveTopRow}>
         <View style={styles.liveTag}>
           <View style={styles.liveDot} />
@@ -211,6 +212,18 @@ function LivePanel({ frame, watching, confidence, busy }: { frame: string | null
         </Text>
       </View>
     </View>
+  );
+}
+
+function CornerBrackets({ active }: { active: boolean }) {
+  const c = active ? colors.green : "rgba(255,255,255,0.22)";
+  return (
+    <>
+      <View style={[styles.bracket, styles.brTL, { borderColor: c }]} />
+      <View style={[styles.bracket, styles.brTR, { borderColor: c }]} />
+      <View style={[styles.bracket, styles.brBL, { borderColor: c }]} />
+      <View style={[styles.bracket, styles.brBR, { borderColor: c }]} />
+    </>
   );
 }
 
@@ -342,6 +355,12 @@ const styles = StyleSheet.create({
   liveCam: { color: colors.liveText, fontSize: 11 },
   liveBottom: { flexDirection: "row", alignItems: "center" },
   liveStatus: { color: "#EAE8E3", fontSize: 13 },
+
+  bracket: { position: "absolute", width: 26, height: 26 },
+  brTL: { top: 10, left: 10, borderTopWidth: 3, borderLeftWidth: 3, borderTopLeftRadius: 8 },
+  brTR: { top: 10, right: 10, borderTopWidth: 3, borderRightWidth: 3, borderTopRightRadius: 8 },
+  brBL: { bottom: 10, left: 10, borderBottomWidth: 3, borderLeftWidth: 3, borderBottomLeftRadius: 8 },
+  brBR: { bottom: 10, right: 10, borderBottomWidth: 3, borderRightWidth: 3, borderBottomRightRadius: 8 },
 
   reason: { backgroundColor: "#fff", borderRadius: radius.lg, borderLeftWidth: 4, padding: space.md, marginBottom: space.lg, ...shadow.card },
   reasonHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 },
