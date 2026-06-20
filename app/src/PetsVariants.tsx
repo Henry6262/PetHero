@@ -114,7 +114,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
         const active = pet.id === activeId;
         return (
           <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
-            <View style={[styles.ring, active && { borderWidth: 3.5, borderColor: c }]}>
+            <View style={[styles.ring, s.tone !== "muted" && { borderWidth: active ? 3.5 : 2.5, borderColor: c }]}>
               <PetAvatar pet={pet} size={96} />
             </View>
             <Text style={styles.name}>{pet.name}</Text>
