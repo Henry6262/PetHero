@@ -81,7 +81,7 @@ function Home() {
     <>
     <ScrollView
       style={styles.screen}
-      contentContainerStyle={{ padding: 20, paddingBottom: 48 }}
+      contentContainerStyle={{ padding: 20, paddingBottom: 24 }}
       showsVerticalScrollIndicator={false}
     >
       <Header
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   brTR: { top: -4, right: -4, borderTopWidth: 6, borderRightWidth: 6, borderTopRightRadius: radius.lg + 4 },
   brBL: { bottom: -4, left: -4, borderBottomWidth: 6, borderLeftWidth: 6, borderBottomLeftRadius: radius.lg + 4 },
   brBR: { bottom: -4, right: -4, borderBottomWidth: 6, borderRightWidth: 6, borderBottomRightRadius: radius.lg + 4 },
-  separator: { height: 1.5, borderRadius: 1, marginVertical: space.xl },
+  separator: { height: 1.5, borderRadius: 1, marginVertical: space.lg },
 
   reason: { backgroundColor: "#fff", borderRadius: radius.lg, borderLeftWidth: 4, padding: space.md, marginBottom: space.lg, ...shadow.card },
   reasonHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 },
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   chip: { borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: "#fff" },
   chipText: { fontSize: 14, fontWeight: "600", color: colors.text },
 
-  sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: space.sm },
+  sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: space.md },
   section: { fontSize: 12, fontWeight: "700", color: colors.label, letterSpacing: 1.2 },
   sectionRight: { fontSize: 12, color: colors.muted },
 
