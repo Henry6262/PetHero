@@ -11,15 +11,27 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.henry6262.pethero",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "PetHero uses the microphone so you can talk to the PetHero voice assistant."
       }
     },
     "android": {
-      "package": "com.henry6262.pethero"
+      "package": "com.henry6262.pethero",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.BLUETOOTH"
+      ]
     },
     "web": {
       "bundler": "metro"
     },
+    "plugins": [
+      "@livekit/react-native-expo-plugin",
+      "@config-plugins/react-native-webrtc"
+    ],
     "extra": {
       "eas": {
         "projectId": "cc900270-9654-4f3a-b768-3bf21482ab9a"

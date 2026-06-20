@@ -22,6 +22,25 @@ export function PetsSection({ variant, ...p }: Props & { variant: PetsVariant })
   return <PetsRingTray {...p} />;
 }
 
+function PetPressable({
+  children,
+  onPress,
+  style,
+}: {
+  children: React.ReactNode;
+  onPress: () => void;
+  style?: any;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [style, pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] }]}
+    >
+      {children}
+    </Pressable>
+  );
+}
+
 /* A — Care rows: console-style, one full-width row per pet. */
 function PetsRows({ pets, log, activeId, onPick }: Props) {
   const { colors } = useTheme();
@@ -34,9 +53,9 @@ function PetsRows({ pets, log, activeId, onPick }: Props) {
         const c = tone(s.tone, colors);
         const active = pet.id === activeId;
         return (
-          <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.row, active && { borderColor: colors.text }]}>
+          <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.row, active && { borderColor: colors.text }]}>
             <View style={[styles.accent, { backgroundColor: c }]} />
-            <PetAvatar pet={pet} size={44} style={{ marginRight: space.md }} />
+            <PetAvatar pet={pet} size={48} style={{ marginRight: space.md }} />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{pet.name}</Text>
               <Text style={styles.species}>{pet.species.toUpperCase()}</Text>
@@ -45,7 +64,7 @@ function PetsRows({ pets, log, activeId, onPick }: Props) {
               <View style={[styles.dot, { backgroundColor: c }]} />
               <Text style={[styles.pillText, { color: c }]}>{s.label}</Text>
             </View>
-          </Pressable>
+          </PetPressable>
         );
       })}
     </View>
@@ -68,7 +87,7 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
         const watered = mine.some((e) => e.action === "water");
         const dosedOrNoMeds = pet.medications.length === 0 || mine.some((e) => e.action === "medicine");
         return (
-          <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.card, active && { borderColor: colors.text }]}>
+          <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={[styles.card, active && { borderColor: colors.text }]}>
             <View style={[styles.topAccent, { backgroundColor: c }]} />
             <View style={styles.head}>
               <PetAvatar pet={pet} size={48} />
@@ -82,7 +101,7 @@ function PetsVitals({ pets, log, activeId, onPick }: Props) {
               <Vital icon="water" label="Water" ok={watered} />
               <Vital icon="medicine" label="Meds" ok={dosedOrNoMeds} warn={!dosedOrNoMeds} />
             </View>
-          </Pressable>
+          </PetPressable>
         );
       })}
     </View>
@@ -108,19 +127,19 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
   const styles = useVariantCStyles(colors);
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.xl, paddingVertical: 4 }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.lg, paddingVertical: space.xs }}>
       {pets.map((pet) => {
         const s = deriveStatus(pet, log);
         const c = tone(s.tone, colors);
         const active = pet.id === activeId;
         return (
-          <Pressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
+          <PetPressable key={pet.id} onPress={() => onPick(pet.id)} style={styles.item}>
             <View style={[styles.ring, s.tone !== "muted" && { borderWidth: active ? 3.5 : 2.5, borderColor: c }]}>
-              <PetAvatar pet={pet} size={84} />
+              <PetAvatar pet={pet} size={80} />
             </View>
             <Text style={styles.name}>{pet.name}</Text>
             <Text style={[styles.status, { color: c }]}>{s.label}</Text>
-          </Pressable>
+          </PetPressable>
         );
       })}
     </ScrollView>
@@ -155,7 +174,7 @@ function useVariantAStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         name: { fontSize: 16, fontWeight: "700", color: colors.text },
         species: { fontSize: 11, fontWeight: "700", color: colors.label, letterSpacing: 1, marginTop: 1 },
         pill: { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: radius.pill },
-        dot: { width: 7, height: 7, borderRadius: 4 },
+        dot: { width: 8, height: 8, borderRadius: 4 },
         pillText: { fontSize: 13, fontWeight: "700" },
       }),
     [colors]
@@ -169,7 +188,7 @@ function useVariantBStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
         card: { flexGrow: 1, flexBasis: "45%", backgroundColor: colors.card, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border, padding: space.md, paddingTop: space.lg, overflow: "hidden", ...shadow.card },
         topAccent: { position: "absolute", left: 0, right: 0, top: 0, height: 5 },
-        head: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: space.md },
+        head: { flexDirection: "row", alignItems: "center", gap: space.sm, marginBottom: space.md },
         name: { fontSize: 16, fontWeight: "700", color: colors.text },
         species: { fontSize: 12, color: colors.muted, textTransform: "capitalize" },
         vitals: { flexDirection: "row", justifyContent: "space-between", backgroundColor: colors.border, borderRadius: radius.md, padding: space.sm },
@@ -185,9 +204,9 @@ function useVariantCStyles(colors: ReturnType<typeof useTheme>["colors"]) {
   return useMemo(
     () =>
       StyleSheet.create({
-        item: { alignItems: "center", width: 96 },
-        ring: { width: 96, height: 96, borderRadius: 48, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.lift },
-        name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: 8 },
+        item: { alignItems: "center", width: 88 },
+        ring: { width: 88, height: 88, borderRadius: 44, alignItems: "center", justifyContent: "center", backgroundColor: colors.card, ...shadow.lift },
+        name: { fontSize: 14, fontWeight: "700", color: colors.text, marginTop: space.sm },
         status: { fontSize: 11, fontWeight: "700", marginTop: 1, textAlign: "center" },
       }),
     [colors]

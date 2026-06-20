@@ -1,4 +1,5 @@
 // Design tokens matching the PetHero prototype — warm, light, premium.
+// Spacing follows an 8pt grid: 4/8/16/24/32/48.
 
 export const lightColors = {
   bg: "#F3EEE7", // outer cream
@@ -25,9 +26,11 @@ export const lightColors = {
 };
 
 export const darkColors = {
-  bg: "#121212",
-  screen: "#1A1A1A",
-  card: "#242424",
+  // Elevation-aware dark surface: higher layers are lighter so shadows read as depth.
+  bg: "#0A0A0C",
+  screen: "#121214", // app surface
+  card: "#1C1C20", // cards / sheets
+  sheet: "#222226", // bottom sheet (slightly above card)
   border: "rgba(255,255,255,0.08)",
   borderStrong: "rgba(255,255,255,0.14)",
 
@@ -44,7 +47,7 @@ export const darkColors = {
   amber: "#FBBF24",
   amberSoft: "rgba(251,191,36,0.12)",
 
-  live: "#0D0D0D",
+  live: "#0A0A0C",
   liveText: "#6B6B6B",
 };
 
@@ -62,7 +65,7 @@ export const colors = lightColors;
 export type Theme = keyof typeof palettes;
 
 export const radius = { sm: 10, md: 14, lg: 18, xl: 24, pill: 999 };
-export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 };
+export const space = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48 };
 
 export const shadow = {
   // Soft warm-gray shadows for depth on the cream surface.

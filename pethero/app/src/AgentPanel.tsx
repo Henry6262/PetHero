@@ -172,21 +172,21 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         card: {
           backgroundColor: colors.card,
           borderRadius: radius.lg,
-          paddingVertical: space.md,
+          paddingVertical: space.sm,
           paddingRight: space.md,
           ...shadow.card,
         },
         row: {
           flexDirection: "row",
-          paddingVertical: 10,
+          paddingVertical: space.sm,
         },
         timeline: {
-          width: 38,
+          width: 40,
           alignItems: "center",
         },
         dot: {
-          width: 9,
-          height: 9,
+          width: 10,
+          height: 10,
           borderRadius: 5,
           zIndex: 1,
         },
@@ -205,7 +205,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 3,
+          marginBottom: space.xs,
         },
         actorRow: {
           flexDirection: "row",
@@ -224,7 +224,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
           fontWeight: "400",
         },
         verdictPill: {
-          paddingHorizontal: 8,
+          paddingHorizontal: space.sm,
           paddingVertical: 2,
           borderRadius: radius.pill,
         },
@@ -240,7 +240,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         },
         outcome: {
           fontSize: 14,
-          lineHeight: 19,
+          lineHeight: 20,
           fontWeight: "600",
         },
       }),
