@@ -191,13 +191,13 @@ function Header({ connected, alerts, onOpenDemo, onOpenActivity }: { connected: 
         <View style={[styles.dot, { backgroundColor: connected ? colors.green : colors.muted }]} />
       </View>
       <View style={styles.headerIcons}>
-        <Pressable style={styles.iconBtn} onPress={onOpenDemo} hitSlop={8}>
+        <Pressable style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]} onPress={onOpenDemo} hitSlop={8}>
           <Ionicons name="paw" size={22} color={colors.text} />
         </Pressable>
-        <Pressable style={styles.iconBtn} onPress={toggle} hitSlop={8}>
+        <Pressable style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]} onPress={toggle} hitSlop={8}>
           <Ionicons name={isDark ? "sunny" : "moon"} size={22} color={colors.text} />
         </Pressable>
-        <Pressable style={styles.iconBtn} onPress={onOpenActivity} hitSlop={8}>
+        <Pressable style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]} onPress={onOpenActivity} hitSlop={8}>
           <Ionicons name="notifications" size={22} color={colors.text} />
           {alerts > 0 && (
             <View style={styles.badge}>
@@ -382,7 +382,7 @@ function DemoDrawer({ visible, pets, selected, onPick, onClose }: { visible: boo
               <Text style={styles.drawerKicker}>DEMO</Text>
               <Text style={styles.drawerTitle}>Simulate a pet walking up to the bowl</Text>
             </View>
-            <Pressable onPress={onClose} style={styles.drawerCloseBtn} hitSlop={8}>
+            <Pressable onPress={onClose} style={({ pressed }) => [styles.drawerCloseBtn, pressed && styles.drawerCloseBtnPressed]} hitSlop={8}>
               <Ionicons name="close" size={22} color={colors.text} />
             </Pressable>
           </View>
@@ -463,7 +463,7 @@ function ActivityDrawer({
               <Text style={styles.drawerKicker}>ACTIVITY</Text>
               <Text style={styles.drawerTitle}>Agent log & decisions</Text>
             </View>
-            <Pressable onPress={onClose} style={styles.drawerCloseBtn} hitSlop={8}>
+            <Pressable onPress={onClose} style={({ pressed }) => [styles.drawerCloseBtn, pressed && styles.drawerCloseBtnPressed]} hitSlop={8}>
               <Ionicons name="close" size={22} color={colors.text} />
             </Pressable>
           </View>
@@ -549,6 +549,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
           justifyContent: "center",
           ...shadow.card,
         },
+        iconBtnPressed: { opacity: 0.78, transform: [{ scale: 0.94 }] },
         badge: { position: "absolute", top: -2, right: -2, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: colors.red, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
         badgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
 
@@ -594,6 +595,7 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
         drawerHandle: { width: 40, height: 5, borderRadius: 3, backgroundColor: colors.borderStrong },
         drawerHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: space.lg },
         drawerCloseBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignItems: "center", justifyContent: "center" },
+        drawerCloseBtnPressed: { opacity: 0.78, transform: [{ scale: 0.94 }] },
         drawerKicker: { fontSize: 11, fontWeight: "800", color: colors.amber, letterSpacing: 1.2, marginBottom: space.xs },
         drawerTitle: { fontSize: 16, fontWeight: "700", color: colors.text, flexShrink: 1, marginRight: space.sm },
         demoChips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
