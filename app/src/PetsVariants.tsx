@@ -127,7 +127,7 @@ function PetsRingTray({ pets, log, activeId, onPick }: Props) {
   const styles = useVariantCStyles(colors);
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.lg, paddingVertical: space.xs }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.lg, paddingVertical: space.md, paddingHorizontal: space.sm }}>
       {pets.map((pet) => {
         const s = deriveStatus(pet, log);
         const c = tone(s.tone, colors);
