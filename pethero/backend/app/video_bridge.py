@@ -18,6 +18,7 @@ VIDEO_UDP_HOST = os.environ.get("VIDEO_UDP_HOST", "0.0.0.0")
 VIDEO_UDP_PORT = int(os.environ.get("VIDEO_UDP_PORT", "5007"))
 
 _task: asyncio.Task | None = None
+_frame_count = 0
 
 
 class _UDPFrameProtocol(asyncio.DatagramProtocol):
@@ -25,27 +26,37 @@ class _UDPFrameProtocol(asyncio.DatagramProtocol):
         self._broadcast = broadcast_fn
 
     def datagram_received(self, data: bytes, addr) -> None:
+        global _frame_count
         if not data:
             return
+        _frame_count += 1
+        if _frame_count == 1 or _frame_count % 100 == 0:
+            print(f"[video_bridge] frame #{_frame_count} from {addr} ({len(data)} bytes)")
         b64 = base64.b64encode(data).decode("ascii")
         self._broadcast({"type": "frame", "jpeg_b64": b64})
+
+    def error_received(self, exc) -> None:
+        print(f"[video_bridge] error: {exc}")
+
+    def connection_lost(self, exc) -> None:
+        print(f"[video_bridge] connection lost: {exc}")
 
 
 async def _run(broadcast_fn) -> None:
     loop = asyncio.get_running_loop()
     try:
-        _, protocol = await loop.create_datagram_endpoint(
+        transport, _ = await loop.create_datagram_endpoint(
             lambda: _UDPFrameProtocol(broadcast_fn),
             local_addr=(VIDEO_UDP_HOST, VIDEO_UDP_PORT),
         )
-        print(f"[video_bridge] listening for robot frames on UDP {VIDEO_UDP_HOST}:{VIDEO_UDP_PORT}")
+        print(f"[video_bridge] listening on UDP {VIDEO_UDP_HOST}:{VIDEO_UDP_PORT}")
         await asyncio.Future()   # run forever
     except Exception as e:
         print(f"[video_bridge] failed to start: {e}")
 
 
-def start(broadcast_fn) -> None:
-    """Launch the bridge as a background asyncio task."""
+async def start(broadcast_fn) -> None:
+    """Launch the bridge as a background asyncio task (call from async startup)."""
     global _task
 
     async def _safe_run():
@@ -54,8 +65,7 @@ def start(broadcast_fn) -> None:
         except asyncio.CancelledError:
             pass
 
-    loop = asyncio.get_event_loop()
-    _task = loop.create_task(_safe_run())
+    _task = asyncio.create_task(_safe_run())
 
 
 def stop() -> None:

@@ -90,6 +90,31 @@ POST /robot/command  {"cmd": "pick", "cup": "2"}
 - too soon → `push_away` + robot received `{"cmd":"protect"}` ✅
 - direct `/robot/command pick cup 1` → `sent: true` ✅
 
+## If device-to-device UDP is blocked
+
+Hackathon / conference WiFi often has **AP isolation**: two laptops on the same
+network cannot reach each other directly, so UDP from the friend's PC never
+arrives. The fix is a private local network:
+
+1. Enable a **phone hotspot** (Henry's iPhone or any teammate's phone).
+2. Connect both the Mac running the backend **and** the friend's PC to that hotspot.
+3. Use the Mac's hotspot IP (`ipconfig getifaddr en0`) as `TARGET_IP`.
+
+Then UDP 5007 flows because both devices are on the same tiny subnet.
+
+## Simple UDP video sender for the friend's PC
+
+`scripts/video_sender_udp.py` reads the camera and sends one JPEG datagram per
+frame to the backend's UDP 5007:
+
+```bash
+cd pethero/scripts
+pip install opencv-python
+python video_sender_udp.py --target 10.19.29.244 --width 320 --quality 60 --fps 10
+```
+
+Use `--image path/to.jpg` to loop a static image for testing.
+
 ## Notes
 - UDP sends are fire-and-forget — a missing robot never crashes the backend.
 - Backend persists pets + events to a local SQLite file (resets cleanly if deleted).
