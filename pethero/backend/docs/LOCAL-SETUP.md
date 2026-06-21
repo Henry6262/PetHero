@@ -96,21 +96,27 @@ Hackathon / conference WiFi often has **AP isolation**: two laptops on the same
 network cannot reach each other directly, so UDP from the friend's PC never
 arrives. Two fixes:
 
-### Option A: official backend (Railway)
-Use the public backend. The camera machine pushes frames over **WebSocket**
-instead of UDP.
+### Option A: official backend (Railway) + robot cloud bridge
+Use the public backend and run `robot_cloud_bridge.py` on the robot PC. The
+bridge connects **outbound** to Railway, so AP isolation doesn't matter.
 
+On the robot PC:
 ```bash
 cd pethero/scripts
 pip install opencv-python websockets
-python video_sender_ws.py --url wss://pethero-backend-production.up.railway.app/ws/ingest
+
+# 1. Start the robot controller (listens UDP 5006, sends camera to UDP 5007)
+VIDEO_TARGET_IP=127.0.0.1 VIDEO_TARGET_PORT=5007 python /path/to/cat_feeder_main.py
+
+# 2. In another terminal, run the cloud bridge
+python robot_cloud_bridge.py
 ```
 
 The app already defaults to `https://pethero-backend-production.up.railway.app`
 when `EXPO_PUBLIC_PETHERO_HOST` is not set.
 
 ### Option B: phone hotspot (local backend)
-Enable a hotspot, connect the Mac (backend) and the friend's PC, then use the
+Enable a hotspot, connect the Mac (backend) and the robot PC, then use the
 Mac's hotspot IP (`ipconfig getifaddr en0`) as the target.
 
 ```bash
