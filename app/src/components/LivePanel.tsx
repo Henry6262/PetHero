@@ -2,9 +2,7 @@ import React from "react";
 import { View, Text, Image, ActivityIndicator, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../ThemeContext";
-import { ActionOverlay } from "./ActionOverlay";
 import { radius, space } from "../theme";
-import type { Action } from "../types";
 
 interface LivePanelProps {
   frame: string | null;
@@ -13,10 +11,9 @@ interface LivePanelProps {
   busy: boolean;
   candyClass: string | null;
   candyConfidence: number;
-  onDispense: (action: Action) => void;
 }
 
-export function LivePanel({ frame, watching, confidence, busy, candyClass, candyConfidence, onDispense }: LivePanelProps) {
+export function LivePanel({ frame, watching, confidence, busy, candyClass, candyConfidence }: LivePanelProps) {
   const { colors } = useTheme();
 
   return (
@@ -61,7 +58,6 @@ export function LivePanel({ frame, watching, confidence, busy, candyClass, candy
           {watching ? `Watching · ${watching} (${Math.round(confidence * 100)}%)` : "Watching · no pet at the bowl"}
         </Text>
       </View>
-      <ActionOverlay onDispense={onDispense} />
     </View>
   );
 }

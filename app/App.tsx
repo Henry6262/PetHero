@@ -95,11 +95,10 @@ function Main() {
       }
       const target = pets.find((p) => p.id === targetId);
       if (!target) return;
-      const med = action === "medicine" ? target.medications.find((m) => m.active)?.name : undefined;
       Vibration.vibrate(8);
       setBusy(true);
       try {
-        await api.trigger(target.id, action, med);
+        await api.trigger(target.id, action);
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         showToast(`Action failed: ${msg}`);
@@ -107,6 +106,28 @@ function Main() {
       setBusy(false);
     },
     [currentPet, pets]
+  );
+
+  const giveMedicine = useCallback(
+    async (name: string) => {
+      const targetId = currentPet?.id;
+      if (!targetId) {
+        setPendingAction("medicine");
+        setDemoOpen(true);
+        return;
+      }
+      Vibration.vibrate(8);
+      setBusy(true);
+      try {
+        await api.trigger(targetId, "medicine", name);
+        showToast(`Gave ${name}`);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        showToast(`Pill failed: ${msg}`);
+      }
+      setBusy(false);
+    },
+    [currentPet]
   );
 
   const handleDemoPick = useCallback(
@@ -240,11 +261,11 @@ function Main() {
             log={backend.log}
             onOpenDemo={() => setDemoOpen(true)}
             onOpenActivity={() => setActivityOpen(true)}
-            onDispense={dispense}
             onSelectPet={(id) => simulate(id)}
             onOpenPetSettings={openSettings}
             onGenerateAvatar={generateAvatar}
             onView3D={() => setActiveTab("train")}
+            onGiveMedicine={giveMedicine}
             onEnforce={enforce}
             onRobotCommand={robotCommand}
             lastRobotCommand={lastRobot}
