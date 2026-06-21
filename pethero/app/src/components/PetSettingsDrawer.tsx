@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Pressable, ScrollView, Switch, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, Switch, ActivityIndicator, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+const PILL_IMAGES: Record<string, ReturnType<typeof require>> = {
+  red:   require("../../assets/pills/red.png"),
+  blue:  require("../../assets/pills/blue.png"),
+  black: require("../../assets/pills/black.png"),
+};
+
+function pillImage(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("red"))   return PILL_IMAGES.red;
+  if (n.includes("blue"))  return PILL_IMAGES.blue;
+  if (n.includes("black")) return PILL_IMAGES.black;
+  return PILL_IMAGES.blue;
+}
 import { DrawerSheet } from "./DrawerSheet";
 import { useTheme } from "../ThemeContext";
 import { api } from "../api";
@@ -212,6 +226,11 @@ export function PetSettingsDrawer({ pet, visible, onClose, onSaved }: PetSetting
           <View key={med.id} style={[styles.card, { backgroundColor: colors.card }]}>
             <View style={styles.cardHeader}>
               <View style={styles.rowIcon}>
+                <Image
+                  source={pillImage(med.name)}
+                  style={styles.pillIcon}
+                  resizeMode="contain"
+                />
                 <Switch
                   value={med.active}
                   onValueChange={(v) => updateMed(i, { active: v })}
@@ -340,6 +359,11 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
       flexDirection: "row",
       alignItems: "center",
       gap: space.sm,
+    },
+    pillIcon: {
+      width: 48,
+      height: 20,
+      marginRight: space.xs,
     },
     iconCircle: {
       width: 36,

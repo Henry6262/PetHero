@@ -35,8 +35,8 @@ export function DrawerSheet({ visible, onClose, title, kicker, children }: Drawe
   }, [visible, fadeAnim, slideAnim]);
 
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
-      <View style={StyleSheet.absoluteFill}>
+    <Modal visible={visible} transparent animationType="none" statusBarTranslucent onRequestClose={onClose}>
+      <View style={[StyleSheet.absoluteFill, { zIndex: 9999 }]}>
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
           <BlurView intensity={24} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
           <Pressable
