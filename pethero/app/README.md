@@ -141,4 +141,9 @@ python backend_simulator.py --ws-port 8765 --http-port 8080
 - WebSocket: `ws://localhost:8765` — connect the bridge and the mobile app here.
 - MJPEG preview: `http://localhost:8080/video.mjpg` — open in any browser.
 
+Test the bridge without a camera by looping a static image:
+```bash
+python camera_bridge.py --image dataset/candy_one/img1.jpg --ws-url ws://localhost:8765/ws/feed --model-path model_resnet.pth --max-frames 100
+```
+
 The bridge sends `{ type: "frame", jpeg_b64: "...", candy_class: "...", confidence: 0.95 }`. The mobile app already renders `jpeg_b64`; it will also display the candy class when present.

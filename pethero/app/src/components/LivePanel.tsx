@@ -11,10 +11,12 @@ interface LivePanelProps {
   watching: string | null;
   confidence: number;
   busy: boolean;
+  candyClass: string | null;
+  candyConfidence: number;
   onDispense: (action: Action) => void;
 }
 
-export function LivePanel({ frame, watching, confidence, busy, onDispense }: LivePanelProps) {
+export function LivePanel({ frame, watching, confidence, busy, candyClass, candyConfidence, onDispense }: LivePanelProps) {
   const { colors } = useTheme();
 
   return (
@@ -45,6 +47,13 @@ export function LivePanel({ frame, watching, confidence, busy, onDispense }: Liv
           <View style={styles.liveDot} />
           <Text style={styles.liveTagText}>LIVE</Text>
         </View>
+        {candyClass && (
+          <View style={styles.candyBadge}>
+            <Text style={styles.candyBadgeText}>
+              {candyClass} {Math.round(candyConfidence * 100)}%
+            </Text>
+          </View>
+        )}
       </View>
       <View style={styles.liveBottom}>
         {busy && <ActivityIndicator color="#fff" style={{ marginRight: space.sm }} />}
@@ -77,6 +86,8 @@ const styles = StyleSheet.create({
   liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: "#E5372B" },
   liveTagText: { color: "#fff", fontSize: 12, fontWeight: "700", letterSpacing: 1 },
+  candyBadge: { backgroundColor: "rgba(0,0,0,0.55)", borderRadius: 30, paddingHorizontal: 10, paddingVertical: 4 },
+  candyBadgeText: { color: "#fff", fontSize: 11, fontWeight: "700" },
   liveBottom: { flexDirection: "row", alignItems: "center" },
   liveStatus: { color: "#EAE8E3", fontSize: 13 },
   liveFallback: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", gap: 8 },

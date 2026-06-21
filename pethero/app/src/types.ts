@@ -102,4 +102,4 @@ export type WsMessage =
   | ({ type: "detection" } & Detection)
   | ({ type: "decision" } & DispenseDecision)
   | ({ type: "event" } & ActivityEvent)
-  | { type: "frame"; jpeg_b64: string };
+  | { type: "frame"; jpeg_b64: string; candy_class?: string; confidence?: number };

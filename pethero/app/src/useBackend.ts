@@ -16,6 +16,8 @@ export interface BackendState {
   lastEvent: ActivityEvent | null;
   log: ActivityEvent[];
   frame: string | null; // base64 jpeg
+  candyClass: string | null;
+  candyConfidence: number;
 }
 
 const EMPTY: BackendState = {
@@ -26,6 +28,8 @@ const EMPTY: BackendState = {
   lastEvent: null,
   log: [],
   frame: null,
+  candyClass: null,
+  candyConfidence: 0,
 };
 
 export function useBackend(): BackendState {
@@ -89,7 +93,12 @@ function reduce(s: BackendState, msg: WsMessage): BackendState {
       return { ...s, lastEvent: event, log: [event, ...s.log].slice(0, 50) };
     }
     case "frame":
-      return { ...s, frame: msg.jpeg_b64 };
+      return {
+        ...s,
+        frame: msg.jpeg_b64,
+        candyClass: msg.candy_class ?? null,
+        candyConfidence: msg.confidence ?? 0,
+      };
     default:
       return s;
   }
