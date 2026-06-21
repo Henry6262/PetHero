@@ -1,93 +1,113 @@
 # PetHero Backend
 
-FastAPI orchestrator for the PetHero iOS app. Pipeline:
+FastAPI orchestrator — safety enforcement, robot control, live WebSocket hub.
+
+**Production:** `https://pethero-backend-production.up.railway.app` (auto-deploy from `main`)
+
+## Architecture
 
 ```
-vision.identify()  →  agent.decide()  →  safety.evaluate()  →  dispense.record()  →  store
-   (which pet?)        (Mistral/rules)    (code-enforced)        (intent log)         (state)
-```
+POST /enforce
+  → resolve cat (pet_id or vision)
+  → check food allow-list
+  → check feed interval (safety)
+  → send UDP command to robot (port 5006)
+  → broadcast decision to app (/ws/feed)
 
-**Boots with stubs.** No ML deps and no API keys required — the iOS app gets a
-live endpoint immediately. Real vision/agent light up when you install the extras
-and set keys. **There is no robot/hardware code here** (out of scope for now); the
-dispense step only records *intent* for the app to render.
+UDP port 5007 (video_bridge)
+  → receive JPEG frames from robot camera
+  → broadcast as {type:"frame"} to /ws/feed
+
+WS /ws/ingest
+  → receive frames from camera_bridge.py (WebSocket path)
+  → broadcast to /ws/feed
+```
 
 ## Run
 
 ```bash
-python3.11 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-# Swagger UI: http://localhost:8000/docs
-```
-
-Find your Mac's LAN IP (`ipconfig getifaddr en0`) and point the iOS app at
-`ws://<that-ip>:8000/ws/feed`.
-
-## Test
-
-```bash
-source .venv/bin/activate
-pytest -q                 # safety rules (the trust-critical layer)
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+# Swagger: http://localhost:8000/docs
 ```
 
 ## API
 
 | Method | Path | Purpose |
-|---|---|---|
-| GET | `/status` | mode + which backends are live (stub vs real) |
-| GET | `/pets`, `/pets/{id}` | pet profiles + schedules |
+|--------|------|---------|
+| GET | `/status` | system health + pet count |
+| GET | `/pets` | all pets + food options |
+| GET | `/pets/{id}` | single pet |
+| GET | `/pets/{id}/settings` | get pet config |
+| PUT | `/pets/{id}/settings` | update food rules, portions, intervals |
+| POST | `/enforce` | `{pet_id, food_label, confidence}` → allow/deny + robot UDP command |
+| POST | `/robot/command` | `{cmd, cup?}` → send UDP command directly to robot |
+| POST | `/trigger` | `{pet_id, action}` — manual feed/water/med from app |
+| POST | `/process` | run one autonomous vision step |
 | GET | `/log` | activity history |
-| POST | `/mode` | `{ "mode": "demo" \| "live" }` toggle (UI label; no hardware) |
-| POST | `/vision/current?pet_id=mittens` | demo control: declare who's at the bowl |
-| POST | `/process` | run one autonomous step on the current frame |
-| POST | `/trigger` | `{ pet_id, action, medicine_name? }` — owner button press |
-| WS | `/ws/feed` | live stream: `status` / `detection` / `decision` / `event` / `frame` envelopes |
-| GET | `/robot/status` | how many robot workers are connected + last command issued |
-| WS | `/ws/robot` | robot worker subscribes here to receive approved `dispense` commands |
+| WS | `/ws/feed` | live stream to app: frame / detection / decision / event / status |
+| WS | `/ws/ingest` | camera bridge pushes frames in → fanned out to /ws/feed |
+| WS | `/ws/robot` | legacy robot command channel |
 
-## Robot communication (the seam)
-
-PetHero decides *what* to dispense; a separate **robot worker** does the physical
-motion. They talk over `/ws/robot`. PetHero contains **no motion/hardware code**.
-
-When a dispense is **approved by the safety layer**, the backend pushes a
-`RobotCommand` to every connected worker:
+### /enforce response
 
 ```json
-{ "type": "command", "command": "dispense", "action": "medicine",
-  "pet_id": "max", "pet_name": "Max", "amount_grams": 0,
-  "medicine_name": "joint-supplement", "bowl": "max", "issued_at": "..." }
+{
+  "allow": true,
+  "action": "dispense",
+  "robot_cmd": "feed",
+  "reason": "Dispensing 45g for Banga.",
+  "pet_name": "Banga",
+  "food": "Pastrami"
+}
 ```
 
-Vetoed actions (double-dose, toxic, etc.) never reach the robot. To wire a real
-robot (LeRobot/LeLab), subscribe to `/ws/robot` and execute the motion — see
-`robot_worker_example.py` for a runnable template:
+### Robot UDP commands (sent to ROBOT_HOST:ROBOT_PORT)
+
+| Payload | Meaning |
+|---------|---------|
+| `{"cmd": "feed"}` | Dispense food |
+| `{"cmd": "protect"}` | Push food away |
+| `{"cmd": "pick", "cup": "1"}` | Sort into cup 1/2/3 |
+
+## Robot config (env vars)
 
 ```bash
-pip install websockets
-python robot_worker_example.py     # prints commands; plug LeRobot motion in
+ROBOT_HOST=127.0.0.1    # default — robot on same PC as backend
+ROBOT_PORT=5006          # default
+VIDEO_UDP_PORT=5007      # default — camera frames in
 ```
 
-Because LeRobot needs its own Python 3.10 env, run the worker as a **separate
-process** (even on another machine) and point it at the backend's `ws://` URL.
+## Tests
 
-### WebSocket envelopes
-Every message is JSON with a `type`:
-- `status` — `SystemStatus`
-- `detection` — `Detection` (`present`, `pet_name`, `confidence`, `bbox`)
-- `decision` — `DispenseDecision` (the agent's proposal + **`reasoning`** ← reasoning panel)
-- `event` — `ActivityEvent` (final verdict: `allowed`, `reason`, `rule`)
-- `frame` — `{ "jpeg_b64": "..." }` (decode → `UIImage`)
+```bash
+pytest -q
+```
 
-## Lighting up the real pipeline
-- **Mistral agent:** `pip install mistralai`, set `MISTRAL_API_KEY` → `/status` shows `agent_backend: mistral`. Falls back to rules on any error.
-- **YOLO vision:** `pip install ultralytics opencv-python` → `vision_backend: yolo+clip` (detection wiring is a later step; stub stays the demo driver).
-- **Camera:** set `PETHERO_CAMERA=/path/to/pet.jpg` to use a real image as the feed.
+## Key modules
 
-## Safety model
-The agent only *proposes*. `app/safety.py` (fully unit-tested) makes the call and
-**vetoes** unsafe dispenses: double-dosing, un-prescribed or species-toxic meds,
-cross-pet meds, over-portion (clamped), feeding too soon, and any action on an
-unidentified pet (water only). This is the demo's trust story — never trust the LLM
-with a dose.
+```
+app/
+  main.py         FastAPI app, startup, WebSocket endpoints
+  enforce.py      /enforce + /robot/command (own router, survives rewrites)
+  robot_tcp.py    UDP client → robot (fire-and-forget)
+  video_bridge.py UDP server on 5007 → broadcast frames to hub
+  hub.py          in-process broadcast hub for /ws/feed
+  store.py        pet state + SQLite persistence
+  safety.py       feed interval + food allow-list enforcement
+  orchestrator.py manual() + auto() feed flows
+  scheduler.py    automation timer
+  models.py       Pydantic models
+data/
+  pethero.db      SQLite (pets, events, state)
+  pets.json       seed data
+docs/
+  LOCAL-SETUP.md  full local wifi demo guide
+  API.md          extended API reference
+```
+
+## Local wifi demo
+
+Backend + robot on teammate's PC, app on Henry's phone — same hotspot, no Railway.
+Full guide: [`docs/LOCAL-SETUP.md`](docs/LOCAL-SETUP.md)
