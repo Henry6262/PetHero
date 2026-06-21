@@ -46,7 +46,7 @@ app.include_router(enforce_router)
 @app.on_event("startup")
 async def _startup() -> None:
     scheduler.start_scheduler()
-    video_bridge.start(hub.broadcast)
+    await video_bridge.start(hub.broadcast)
 
 
 @app.on_event("shutdown")
@@ -208,3 +208,18 @@ async def ws_feed(ws: WebSocket):
         pass
     finally:
         hub.disconnect(q)
+
+
+@app.websocket("/ws/ingest")
+async def ws_ingest(ws: WebSocket):
+    """Robot/camera pushes frames in here → backend fans out to /ws/feed."""
+    await ws.accept()
+    print("[ingest] camera connected")
+    try:
+        while True:
+            msg = await ws.receive_json()
+            hub.broadcast(msg)
+    except WebSocketDisconnect:
+        print("[ingest] camera disconnected")
+    except Exception as e:
+        print(f"[ingest] error: {e}")
