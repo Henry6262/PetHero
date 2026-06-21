@@ -1,6 +1,6 @@
 // Mirrors the backend Pydantic models (pethero/backend/app/models.py).
 
-export type Action = "feed" | "water" | "medicine" | "none";
+export type Action = "feed" | "water" | "medicine" | "pet" | "none";
 export type Species = "cat" | "dog";
 
 export interface FoodOption {
@@ -51,8 +51,13 @@ export interface Pet {
   name: string;
   species: Species;
   photo_ref: string;
+  color: string;
   food_options: FoodOption[];
   medications: Medication[];
+  automation_enabled: boolean;
+  weight_kg: number;
+  daily_water_ml: number;
+  daily_food_grams: number;
   avatar?: PetAvatar;
   stats?: PetStats;
 }

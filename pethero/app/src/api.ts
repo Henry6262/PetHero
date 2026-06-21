@@ -1,5 +1,15 @@
 import { BASE_URL } from "./config";
-import type { ActivityEvent, DispenseDecision, Pet, SystemStatus, Action, PetAvatar } from "./types";
+import type { ActivityEvent, DispenseDecision, FoodOption, Medication, Pet, SystemStatus, Action, PetAvatar } from "./types";
+
+export interface PetSettingsPayload {
+  automation_enabled?: boolean;
+  food_options?: FoodOption[];
+  medications?: Medication[];
+  color?: string;
+  weight_kg?: number;
+  daily_water_ml?: number;
+  daily_food_grams?: number;
+}
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -43,4 +53,13 @@ export const api = {
 
   deleteAvatar: (pet_id: string) =>
     req<void>(`/pets/${encodeURIComponent(pet_id)}/avatar`, { method: "DELETE" }),
+
+  getPetSettings: (pet_id: string) =>
+    req<Pet>(`/pets/${encodeURIComponent(pet_id)}/settings`),
+
+  updatePetSettings: (pet_id: string, payload: PetSettingsPayload) =>
+    req<Pet>(`/pets/${encodeURIComponent(pet_id)}/settings`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };

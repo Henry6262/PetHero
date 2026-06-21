@@ -104,6 +104,12 @@ def manual(trigger: ManualTrigger, now: Optional[datetime] = None) -> StepResult
             medicine_name=med_name,
             reasoning=f"Owner requested medication for {pet.name}.",
         )
+    elif trigger.action is Action.pet:
+        decision = DispenseDecision(
+            pet_name=pet.name,
+            action=Action.pet,
+            reasoning=f"Owner requested a petting session for {pet.name}.",
+        )
     else:
         decision = DispenseDecision(pet_name=pet.name, action=Action.none, reasoning="No action.")
 

@@ -13,13 +13,15 @@ from typing import Optional
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import agent, camera, vision
+from . import agent, camera, scheduler, vision
+from .hub import hub
 from .robot import robot_hub
 from .models import (
     Detection,
     ManualTrigger,
     ModeRequest,
     Pet,
+    PetSettingsUpdate,
     SystemStatus,
 )
 from .orchestrator import autonomous, manual
@@ -34,30 +36,14 @@ app.add_middleware(
 )
 
 
-# --- WebSocket fan-out ---------------------------------------------------
-
-class Hub:
-    def __init__(self) -> None:
-        self._queues: list[asyncio.Queue] = []
-
-    def connect(self) -> asyncio.Queue:
-        q: asyncio.Queue = asyncio.Queue(maxsize=64)
-        self._queues.append(q)
-        return q
-
-    def disconnect(self, q: asyncio.Queue) -> None:
-        if q in self._queues:
-            self._queues.remove(q)
-
-    def broadcast(self, message: dict) -> None:
-        for q in list(self._queues):
-            try:
-                q.put_nowait(message)
-            except asyncio.QueueFull:
-                pass
+@app.on_event("startup")
+def _startup() -> None:
+    scheduler.start_scheduler()
 
 
-hub = Hub()
+@app.on_event("shutdown")
+def _shutdown() -> None:
+    scheduler.stop_scheduler()
 
 
 def _status() -> SystemStatus:
@@ -100,6 +86,23 @@ def get_pet(pet_id: str):
     pet = store.get_pet(pet_id)
     if pet is None:
         return {"error": "not found"}
+    return pet
+
+
+@app.get("/pets/{pet_id}/settings", response_model=Pet)
+def get_pet_settings(pet_id: str):
+    pet = store.get_pet(pet_id)
+    if pet is None:
+        return {"error": "not found"}
+    return pet
+
+
+@app.post("/pets/{pet_id}/settings", response_model=Pet)
+def update_pet_settings(pet_id: str, req: PetSettingsUpdate):
+    pet = store.update_pet(pet_id, req)
+    if pet is None:
+        return {"error": "not found"}
+    hub.broadcast({"type": "status", **_status().model_dump(mode="json")})
     return pet
 
 

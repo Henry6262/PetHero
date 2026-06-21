@@ -63,7 +63,17 @@ def evaluate(
     if decision.action is Action.water:
         return SafetyVerdict(allowed=True, action=Action.water, reason="Fresh water dispensed.")
 
-    # Beyond water, we must know who the pet is.
+    # Petting is always safe when a pet is known.
+    if decision.action is Action.pet:
+        if pet is None:
+            return _veto(
+                "unknown_pet",
+                "Pet not identified — can't pet an unknown pet.",
+                decision,
+            )
+        return SafetyVerdict(allowed=True, action=Action.pet, reason=f"Petting {pet.name}.")
+
+    # Beyond water/petting, we must know who the pet is.
     if pet is None:
         return _veto(
             "unknown_pet",

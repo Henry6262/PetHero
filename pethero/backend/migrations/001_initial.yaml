@@ -1,0 +1,23 @@
+version: "001"
+description: Initial SQLite schema for pets, events, and runtime state.
+up: |
+  CREATE TABLE IF NOT EXISTS migrations (
+    version TEXT PRIMARY KEY,
+    applied_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS pets (
+    id TEXT PRIMARY KEY,
+    data TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    data TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS state (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+  );
