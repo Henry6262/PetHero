@@ -11,7 +11,6 @@ import { SEED_PETS } from "./src/seed";
 import type { Action, EnforceResult, Pet, RobotCommandResult } from "./src/types";
 
 import { HomeScreen } from "./src/screens/HomeScreen";
-import { LooksmaxHub } from "./src/LooksmaxHub";
 import { PetsList } from "./src/PetsList";
 import { BottomNav, type AppTab } from "./src/components/BottomNav";
 import { DemoDrawer } from "./src/components/DemoDrawer";
@@ -143,59 +142,6 @@ function Main() {
     [pendingAction, simulate, dispense]
   );
 
-  const generateAvatar = useCallback(async () => {
-    if (!currentPet) return;
-    setPets((prev) =>
-      prev.map((p) =>
-        p.id === currentPet.id
-          ? {
-              ...p,
-              avatar: {
-                task_id: "mock-task",
-                status: "generating" as const,
-                progress: 0,
-                glb_url: null,
-                thumbnail_url: null,
-                last_error: null,
-                updated_at: new Date().toISOString(),
-              },
-            }
-          : p
-      )
-    );
-
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      setPets((prev) =>
-        prev.map((p) =>
-          p.id === currentPet.id && p.avatar?.status === "generating"
-            ? { ...p, avatar: { ...p.avatar!, progress } }
-            : p
-        )
-      );
-      if (progress >= 100) {
-        clearInterval(interval);
-        setPets((prev) =>
-          prev.map((p) =>
-            p.id === currentPet.id
-              ? {
-                  ...p,
-                  avatar: {
-                    ...p.avatar!,
-                    status: "succeeded" as const,
-                    progress: 100,
-                    glb_url: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
-                    thumbnail_url: null,
-                  },
-                }
-              : p
-          )
-        );
-      }
-    }, 300);
-  }, [currentPet]);
-
   const alerts = pets.some((p) => deriveStatus(p, backend.log).tone === "alert") ? 1 : 0;
 
   const openSettings = useCallback((petId: string) => {
@@ -263,18 +209,12 @@ function Main() {
             onOpenActivity={() => setActivityOpen(true)}
             onSelectPet={(id) => simulate(id)}
             onOpenPetSettings={openSettings}
-            onGenerateAvatar={generateAvatar}
-            onView3D={() => setActiveTab("train")}
             onGiveMedicine={giveMedicine}
             onEnforce={enforce}
             onRobotCommand={robotCommand}
             lastRobotCommand={lastRobot}
           />
         );
-      case "train":
-        return currentPet ? (
-          <LooksmaxHub pet={currentPet} onGenerate={generateAvatar} onRetry={generateAvatar} />
-        ) : null;
       case "pets":
         return (
           <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 8 }}>

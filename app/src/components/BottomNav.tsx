@@ -3,7 +3,7 @@ import { View, Pressable, Text, StyleSheet, Dimensions, Animated } from "react-n
 import { Ionicons } from "@expo/vector-icons";
 import { shadow } from "../theme";
 
-export type AppTab = "home" | "train" | "pets";
+export type AppTab = "home" | "pets";
 
 interface BottomNavProps {
   active: AppTab;
@@ -12,7 +12,6 @@ interface BottomNavProps {
 
 const TABS: { key: AppTab; icon: keyof typeof Ionicons.glyphMap; label: string }[] = [
   { key: "home", icon: "home", label: "Home" },
-  { key: "train", icon: "sparkles", label: "Looksmax" },
   { key: "pets", icon: "paw", label: "Cats" },
 ];
 
