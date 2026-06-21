@@ -19,6 +19,8 @@ interface HomeScreenProps {
   watching: string | null;
   confidence: number;
   busy: boolean;
+  candyClass: string | null;
+  candyConfidence: number;
   onOpenDemo: () => void;
   onOpenActivity: () => void;
   onDispense: (action: Action) => void;
@@ -37,6 +39,8 @@ export function HomeScreen({
   watching,
   confidence,
   busy,
+  candyClass,
+  candyConfidence,
   onOpenDemo,
   onOpenActivity,
   onDispense,
@@ -66,6 +70,8 @@ export function HomeScreen({
         watching={watching}
         confidence={confidence}
         busy={busy}
+        candyClass={candyClass}
+        candyConfidence={candyConfidence}
         onDispense={onDispense}
       />
 

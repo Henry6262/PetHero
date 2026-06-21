@@ -167,6 +167,8 @@ function Main() {
             watching={backend.detection?.present ? backend.detection.pet_name : null}
             confidence={backend.detection?.confidence ?? 0}
             busy={busy}
+            candyClass={backend.candyClass}
+            candyConfidence={backend.candyConfidence}
             onOpenDemo={() => setDemoOpen(true)}
             onOpenActivity={() => setActivityOpen(true)}
             onDispense={dispense}
