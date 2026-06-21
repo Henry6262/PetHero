@@ -6,7 +6,6 @@ import { Separator } from "../components/Separator";
 import { ActivityLogCard } from "../components/ActivityLogCard";
 import { RobotCard } from "../components/RobotCard";
 import { PillSelector } from "../components/PillSelector";
-import { AvatarCard } from "../AvatarCard";
 import { PetNavigator } from "../PetNavigator";
 import { space } from "../theme";
 import type { ActivityEvent, DispenseDecision, EnforceResult, Pet, RobotCommandResult } from "../types";
@@ -30,8 +29,6 @@ interface HomeScreenProps {
   onOpenActivity: () => void;
   onSelectPet: (id: string) => void;
   onOpenPetSettings?: (id: string) => void;
-  onGenerateAvatar: () => void;
-  onView3D: () => void;
   onGiveMedicine: (name: string) => void;
   onEnforce: (petId: string, foodLabel: string) => Promise<EnforceResult> | void;
   onRobotCommand: (cmd: "feed" | "protect" | "pick", cup?: string) => Promise<RobotCommandResult> | void;
@@ -57,8 +54,6 @@ export function HomeScreen({
   onOpenActivity,
   onSelectPet,
   onOpenPetSettings,
-  onGenerateAvatar,
-  onView3D,
   onGiveMedicine,
   onEnforce,
   onRobotCommand,
@@ -105,15 +100,6 @@ export function HomeScreen({
       <Separator />
 
       <PetNavigator pets={pets} activeId={currentPetId} onSelect={onSelectPet} onOpenSettings={onOpenPetSettings} />
-
-      {currentPet && (
-        <AvatarCard
-          pet={currentPet}
-          onGenerate={onGenerateAvatar}
-          onRetry={onGenerateAvatar}
-          onView3D={onView3D}
-        />
-      )}
 
       <ActivityLogCard pets={pets} decision={decision} lastEvent={lastEvent} log={log} />
     </ScrollView>

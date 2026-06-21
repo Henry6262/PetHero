@@ -28,7 +28,7 @@ export function LivePanel({ frame, watching, confidence, busy, candyClass, candy
         <>
           <Image
             source={require("../../assets/live-preview.png")}
-            style={[StyleSheet.absoluteFill, { borderRadius: radius.lg, opacity: 0.35 }]}
+            style={[StyleSheet.absoluteFill, { borderRadius: radius.lg, opacity: 0.55 }]}
             resizeMode="cover"
           />
           <View style={styles.liveFallback}>
@@ -77,7 +77,7 @@ function CornerBrackets({ active }: { active: boolean }) {
 
 const styles = StyleSheet.create({
   live: { height: 280, borderRadius: 18, marginBottom: 8, justifyContent: "space-between", padding: 16, overflow: "hidden" },
-  liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 18, backgroundColor: "rgba(18,14,8,0.28)" },
+  liveScrim: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 18, backgroundColor: "rgba(10,8,4,0.48)" },
   liveTopRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   liveTag: { flexDirection: "row", alignItems: "center", gap: 6 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: "#E5372B" },
