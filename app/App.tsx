@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Vibration } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View, Vibration, Text, StyleSheet, Animated } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
@@ -52,6 +52,19 @@ function Main() {
   const [lastRobot, setLastRobot] = useState<
     { type: "enforce"; result: EnforceResult } | { type: "raw"; result: RobotCommandResult } | null
   >(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const toastAnim = useRef(new Animated.Value(0)).current;
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    Animated.sequence([
+      Animated.timing(toastAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.delay(2600),
+      Animated.timing(toastAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+    ]).start(() => setToast(null));
+  }, [toastAnim]);
 
   useEffect(() => {
     api.pets().then((p) => p.length && setPets(p)).catch(() => {});
@@ -66,9 +79,11 @@ function Main() {
     try {
       await api.setCurrentPet(petId);
       await api.process();
-    } catch {}
+    } catch (e) {
+      showToast("Backend unreachable — running in demo mode");
+    }
     setBusy(false);
-  }, []);
+  }, [showToast]);
 
   const dispense = useCallback(
     async (action: Action, petId?: string) => {
@@ -85,7 +100,10 @@ function Main() {
       setBusy(true);
       try {
         await api.trigger(target.id, action, med);
-      } catch {}
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        showToast(`Action failed: ${msg}`);
+      }
       setBusy(false);
     },
     [currentPet, pets]
@@ -172,8 +190,10 @@ function Main() {
     try {
       const p = await api.pets();
       if (p.length) setPets(p);
-    } catch {}
-  }, []);
+    } catch {
+      showToast("Could not refresh pets — using cached data");
+    }
+  }, [showToast]);
 
   const enforce = useCallback(async (petId: string, foodLabel: string) => {
     try {
@@ -276,6 +296,32 @@ function Main() {
           refreshPets();
         }}
       />
+
+      {toast && (
+        <Animated.View style={[toastStyles.toast, { opacity: toastAnim }]} pointerEvents="none">
+          <Text style={toastStyles.toastText}>{toast}</Text>
+        </Animated.View>
+      )}
     </>
   );
 }
+
+const toastStyles = StyleSheet.create({
+  toast: {
+    position: "absolute",
+    bottom: 110,
+    left: 20,
+    right: 20,
+    backgroundColor: "rgba(20,14,8,0.88)",
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    zIndex: 9999,
+  },
+  toastText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+});

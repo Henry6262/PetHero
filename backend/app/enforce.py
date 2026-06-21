@@ -16,7 +16,10 @@ from typing import Optional
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+from datetime import datetime, timezone
+
 from . import vision, robot_udp
+from .robot import robot_hub, RobotCommand
 from .store import store
 from .hub import hub
 from .orchestrator import manual
@@ -89,11 +92,27 @@ def enforce(req: EnforceRequest):
 
 
 @router.post("/robot/command")
-def robot_command(req: RawRobotCommand):
-    """Direct passthrough: app/UI sends feed / protect / pick → robot over UDP."""
+async def robot_command(req: RawRobotCommand):
+    """Direct passthrough: app/UI sends feed / protect / pick → robot over UDP + WebSocket."""
     payload: dict = {"cmd": req.cmd}
     if req.cup is not None:
         payload["cup"] = req.cup
     ok = robot_udp.send(payload)
+
+    # Also fan out to any connected robot workers (cloud bridge, etc.)
+    action = {"feed": Action.feed, "medicine": Action.medicine}.get(req.cmd, Action.none)
+    robot_hub.dispatch(RobotCommand(
+        command={"subject": "app", "verb": req.cmd, "object": req.cup, "count": 1},
+        action=action,
+        pet_id=None,
+        pet_name=None,
+        amount_grams=0,
+        medicine_name=None,
+        food_name=None,
+        count=1,
+        bowl=None,
+        issued_at=datetime.now(timezone.utc),
+    ))
+
     return {"sent": ok, "command": payload,
             "robot": f"{robot_udp.ROBOT_HOST}:{robot_udp.ROBOT_PORT}"}
