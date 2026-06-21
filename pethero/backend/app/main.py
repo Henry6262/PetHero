@@ -35,15 +35,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# /enforce (robot feeding-rule gate) lives in its own module so it survives
+# concurrent rewrites of this file. DO NOT remove this include.
+from .enforce import router as enforce_router  # noqa: E402
+from . import video_bridge                     # noqa: E402
+
+app.include_router(enforce_router)
+
 
 @app.on_event("startup")
-def _startup() -> None:
+async def _startup() -> None:
     scheduler.start_scheduler()
+    video_bridge.start(hub.broadcast)
 
 
 @app.on_event("shutdown")
 def _shutdown() -> None:
     scheduler.stop_scheduler()
+    video_bridge.stop()
 
 
 def _status() -> SystemStatus:
