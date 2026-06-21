@@ -94,15 +94,30 @@ POST /robot/command  {"cmd": "pick", "cup": "2"}
 
 Hackathon / conference WiFi often has **AP isolation**: two laptops on the same
 network cannot reach each other directly, so UDP from the friend's PC never
-arrives. The fix is a private local network:
+arrives. Two fixes:
 
-1. Enable a **phone hotspot** (Henry's iPhone or any teammate's phone).
-2. Connect both the Mac running the backend **and** the friend's PC to that hotspot.
-3. Use the Mac's hotspot IP (`ipconfig getifaddr en0`) as `TARGET_IP`.
+### Option A: official backend (Railway)
+Use the public backend. The camera machine pushes frames over **WebSocket**
+instead of UDP.
 
-Then UDP 5007 flows because both devices are on the same tiny subnet.
+```bash
+cd pethero/scripts
+pip install opencv-python websockets
+python video_sender_ws.py --url wss://pethero-backend-production.up.railway.app/ws/ingest
+```
 
-## Simple UDP video sender for the friend's PC
+The app already defaults to `https://pethero-backend-production.up.railway.app`
+when `EXPO_PUBLIC_PETHERO_HOST` is not set.
+
+### Option B: phone hotspot (local backend)
+Enable a hotspot, connect the Mac (backend) and the friend's PC, then use the
+Mac's hotspot IP (`ipconfig getifaddr en0`) as the target.
+
+```bash
+python video_sender_udp.py --target 172.20.10.2 --width 320 --quality 60 --fps 10
+```
+
+## Simple UDP video sender for local wifi
 
 `scripts/video_sender_udp.py` reads the camera and sends one JPEG datagram per
 frame to the backend's UDP 5007:

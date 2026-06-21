@@ -34,10 +34,7 @@
     "web": {
       "bundler": "metro"
     },
-    "plugins": [
-      "@livekit/react-native-expo-plugin",
-      "@config-plugins/react-native-webrtc"
-    ],
+    "plugins": [],
     "extra": {
       "eas": {
         "projectId": "cc900270-9654-4f3a-b768-3bf21482ab9a"
