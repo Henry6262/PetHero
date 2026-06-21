@@ -50,3 +50,95 @@ The Simulator can use `localhost`; a real phone needs the LAN IP.
 ```bash
 npm run tsc
 ```
+
+## Food / candy classifier (training + inference)
+
+A computer-vision pipeline lives in `scripts/food_classifier/`. It can collect new training images from a webcam, or train/predict from existing robot-camera PNGs/JPGs.
+
+### 1. Setup
+```bash
+cd scripts/food_classifier
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Collect images from webcam (optional)
+```bash
+python collect_data.py --classes candy_one candy_two candy_three --output-dir dataset
+```
+
+Controls (once the crop box is locked):
+- `1`, `2`, `3` … switch active class
+- `Space` capture one frame
+- `C` toggle auto-capture
+- `R` redo crop box
+- `Q` / `Esc` quit
+
+### 3. Train the ResNet18 classifier
+Drop your robot-camera PNGs into class folders:
+
+```
+dataset/
+  candy_one/
+    img1.png
+    img2.png
+  candy_two/
+    ...
+  candy_three/
+    ...
+```
+
+Then train:
+```bash
+python train_resnet.py --data-dir dataset --model-path model_resnet.pth --epochs 25
+```
+
+This uses transfer learning (ImageNet-pretrained ResNet18) with heavy augmentation, and saves `model_resnet.pth`.
+
+> There is also a lightweight `train.py` / `predict.py` baseline using HOG + SVM, but ResNet18 is the recommended model for real candy images.
+
+### 4. Predict one image
+```bash
+python predict_resnet.py path/to/photo.png --model-path model_resnet.pth
+```
+
+The existing `dataset/` folder contains sample candy classes (`candy_one`, `candy_two`, `candy_three`, `candy_four`). A sample `model_resnet.pth` can be trained from these in ~30s.
+
+> Note: `collect_data.py` needs a physical webcam and a GUI (macOS/Linux desktop). `train_resnet.py` and `predict_resnet.py` run anywhere with the venv.
+
+## Live camera bridge
+
+When the USB robot camera is plugged into a colleague’s machine, run the camera bridge on that machine to push live frames to the PetHero backend.
+
+```
+USB camera (colleague's Mac/PC)
+    ↓ OpenCV
+camera_bridge.py
+    ↓ WebSocket
+PetHero backend (/ws/feed)
+    ↓ WebSocket
+mobile app
+```
+
+### Run the bridge
+```bash
+cd scripts/food_classifier
+source .venv/bin/activate
+
+# Push to the real Railway backend
+python camera_bridge.py --camera 0 --ws-url wss://pethero-backend-production.up.railway.app/ws/feed --model-path model_resnet.pth
+
+# Or push to the local simulator for testing
+python camera_bridge.py --camera 0 --ws-url ws://localhost:8765 --model-path model_resnet.pth
+```
+
+### Run the local backend simulator (for testing without Railway)
+```bash
+python backend_simulator.py --ws-port 8765 --http-port 8080
+```
+
+- WebSocket: `ws://localhost:8765` — connect the bridge and the mobile app here.
+- MJPEG preview: `http://localhost:8080/video.mjpg` — open in any browser.
+
+The bridge sends `{ type: "frame", jpeg_b64: "...", candy_class: "...", confidence: 0.95 }`. The mobile app already renders `jpeg_b64`; it will also display the candy class when present.

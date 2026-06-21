@@ -20,6 +20,32 @@ export interface Medication {
   active: boolean;
 }
 
+export type AvatarStatus = "pending" | "generating" | "succeeded" | "failed";
+
+export interface PetAvatar {
+  task_id: string;
+  status: AvatarStatus;
+  progress: number;
+  glb_url: string | null;
+  thumbnail_url: string | null;
+  last_error: string | null;
+  updated_at: string;
+}
+
+export interface PetStats {
+  hunger: number; // 0-100
+  hydration: number; // 0-100
+  health: number; // 0-100
+  happiness: number; // 0-100
+  looks: number; // 0-100 — the "looksmax" score
+  level: number;
+  xp: number;
+  xp_to_next: number;
+  streak_days: number;
+  rating: number;
+  tier: string;
+}
+
 export interface Pet {
   id: string;
   name: string;
@@ -27,6 +53,8 @@ export interface Pet {
   photo_ref: string;
   food_options: FoodOption[];
   medications: Medication[];
+  avatar?: PetAvatar;
+  stats?: PetStats;
 }
 
 export interface Detection {

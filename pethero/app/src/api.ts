@@ -1,5 +1,5 @@
 import { BASE_URL } from "./config";
-import type { ActivityEvent, DispenseDecision, Pet, SystemStatus, Action } from "./types";
+import type { ActivityEvent, DispenseDecision, Pet, SystemStatus, Action, PetAvatar } from "./types";
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -33,4 +33,14 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ pet_id, action, medicine_name }),
     }),
+
+  // 3D avatar generation via Meshy AI pipeline.
+  startAvatar: (pet_id: string) =>
+    req<{ avatar: PetAvatar }>(`/pets/${encodeURIComponent(pet_id)}/avatar`, { method: "POST" }),
+
+  getAvatar: (pet_id: string) =>
+    req<{ avatar: PetAvatar }>(`/pets/${encodeURIComponent(pet_id)}/avatar`),
+
+  deleteAvatar: (pet_id: string) =>
+    req<void>(`/pets/${encodeURIComponent(pet_id)}/avatar`, { method: "DELETE" }),
 };
