@@ -11,7 +11,7 @@ interface ActionOverlayProps {
 
 interface ActionItem {
   action: Action;
-  icon: "feed" | "water" | "medicine";
+  icon: "feed" | "water" | "medicine" | "pet";
   color: string;
 }
 
@@ -21,6 +21,7 @@ export function ActionOverlay({ onDispense }: ActionOverlayProps) {
     { action: "feed", icon: "feed", color: colors.green },
     { action: "water", icon: "water", color: colors.blue },
     { action: "medicine", icon: "medicine", color: colors.amber },
+    { action: "pet", icon: "pet", color: colors.pink ?? "#F472B6" },
   ];
 
   return (

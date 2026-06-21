@@ -9,9 +9,10 @@ interface PetNavigatorProps {
   pets: Pet[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  onOpenSettings?: (id: string) => void;
 }
 
-export function PetNavigator({ pets, activeId, onSelect }: PetNavigatorProps) {
+export function PetNavigator({ pets, activeId, onSelect, onOpenSettings }: PetNavigatorProps) {
   const { colors } = useTheme();
   const styles = useThemedStyles(colors);
 
@@ -27,6 +28,8 @@ export function PetNavigator({ pets, activeId, onSelect }: PetNavigatorProps) {
           <Pressable
             key={pet.id}
             onPress={() => onSelect(pet.id)}
+            onLongPress={() => onOpenSettings?.(pet.id)}
+            delayLongPress={350}
             style={({ pressed }) => [
               styles.chip,
               active && styles.chipActive,

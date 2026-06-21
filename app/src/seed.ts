@@ -5,35 +5,41 @@ import type { Pet } from "./types";
 // backend/data/pets.json. Live agent reasoning / dispense still require the API.
 export const SEED_PETS: Pet[] = [
   {
-    id: "mochi",
-    name: "Mochi",
+    id: "banga",
+    name: "Banga",
     species: "cat",
-    photo_ref: "mochi.png",
+    photo_ref: "banga.png",
+    color: "red",
     food_options: [
-      { id: "default", name: "Dry food", portion_grams: 45, min_interval_hours: 5, is_default: true },
+      { id: "default", name: "Pastrami", portion_grams: 45, min_interval_hours: 5, is_default: true },
     ],
     medications: [
-      { id: "thyroid", name: "thyroid", dose_count: 1, interval_hours: 12, notes: "Hyperthyroid — 1 pill twice daily", active: true },
+      { id: "red", name: "red pill", dose_count: 1, interval_hours: 12, notes: "Matrix red pill", active: true },
+      { id: "black", name: "black pill", dose_count: 1, interval_hours: 12, notes: "Matrix black pill", active: true },
+      { id: "blue", name: "blue pill", dose_count: 1, interval_hours: 12, notes: "Matrix blue pill", active: true },
     ],
+    automation_enabled: true,
+    weight_kg: 4.2,
+    daily_water_ml: 220,
+    daily_food_grams: 45,
   },
   {
-    id: "biscuit",
-    name: "Biscuit",
+    id: "ranga",
+    name: "Ranga",
     species: "cat",
-    photo_ref: "biscuit.png",
+    photo_ref: "ranga.png",
+    color: "orange",
     food_options: [
-      { id: "default", name: "Dry food", portion_grams: 55, min_interval_hours: 4, is_default: true },
+      { id: "default", name: "Pastrami", portion_grams: 55, min_interval_hours: 4, is_default: true },
     ],
-    medications: [],
-  },
-  {
-    id: "pixel",
-    name: "Pixel",
-    species: "cat",
-    photo_ref: "pixel.png",
-    food_options: [
-      { id: "default", name: "Dry food", portion_grams: 40, min_interval_hours: 5, is_default: true },
+    medications: [
+      { id: "red", name: "red pill", dose_count: 1, interval_hours: 12, notes: "Matrix red pill", active: true },
+      { id: "black", name: "black pill", dose_count: 1, interval_hours: 12, notes: "Matrix black pill", active: true },
+      { id: "blue", name: "blue pill", dose_count: 1, interval_hours: 12, notes: "Matrix blue pill", active: true },
     ],
-    medications: [],
+    automation_enabled: false,
+    weight_kg: 5.1,
+    daily_water_ml: 260,
+    daily_food_grams: 55,
   },
 ];

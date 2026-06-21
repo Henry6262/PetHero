@@ -16,6 +16,7 @@ import { PetsList } from "./src/PetsList";
 import { BottomNav, type AppTab } from "./src/components/BottomNav";
 import { DemoDrawer } from "./src/components/DemoDrawer";
 import { ActivityDrawer } from "./src/components/ActivityDrawer";
+import { PetSettingsDrawer } from "./src/components/PetSettingsDrawer";
 
 export default function App() {
   return (
@@ -44,6 +45,8 @@ function Main() {
   const [busy, setBusy] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
   const [activityOpen, setActivityOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsPetId, setSettingsPetId] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
   const [activeTab, setActiveTab] = useState<AppTab>("home");
 
@@ -74,7 +77,7 @@ function Main() {
       }
       const target = pets.find((p) => p.id === targetId);
       if (!target) return;
-      const med = action === "medicine" ? target.medications[0]?.name : undefined;
+      const med = action === "medicine" ? target.medications.find((m) => m.active)?.name : undefined;
       Vibration.vibrate(8);
       setBusy(true);
       try {
@@ -153,6 +156,22 @@ function Main() {
 
   const alerts = pets.some((p) => deriveStatus(p, backend.log).tone === "alert") ? 1 : 0;
 
+  const openSettings = useCallback((petId: string) => {
+    setSettingsPetId(petId);
+    setSettingsOpen(true);
+  }, []);
+
+  const handleSettingsSaved = useCallback((updated: Pet) => {
+    setPets((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+  }, []);
+
+  const refreshPets = useCallback(async () => {
+    try {
+      const p = await api.pets();
+      if (p.length) setPets(p);
+    } catch {}
+  }, []);
+
   const renderTab = () => {
     switch (activeTab) {
       case "home":
@@ -169,10 +188,14 @@ function Main() {
             busy={busy}
             candyClass={backend.candyClass}
             candyConfidence={backend.candyConfidence}
+            decision={backend.decision}
+            lastEvent={backend.lastEvent}
+            log={backend.log}
             onOpenDemo={() => setDemoOpen(true)}
             onOpenActivity={() => setActivityOpen(true)}
             onDispense={dispense}
             onSelectPet={(id) => simulate(id)}
+            onOpenPetSettings={openSettings}
             onGenerateAvatar={generateAvatar}
             onView3D={() => setActiveTab("train")}
           />
@@ -212,6 +235,16 @@ function Main() {
         log={backend.log}
         pets={pets}
         onClose={() => setActivityOpen(false)}
+      />
+
+      <PetSettingsDrawer
+        visible={settingsOpen}
+        pet={pets.find((p) => p.id === settingsPetId) ?? null}
+        onClose={() => setSettingsOpen(false)}
+        onSaved={(updated) => {
+          handleSettingsSaved(updated);
+          refreshPets();
+        }}
       />
     </>
   );

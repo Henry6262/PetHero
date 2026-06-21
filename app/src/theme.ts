@@ -21,6 +21,8 @@ export const lightColors = {
   blueSoft: "#EAF5FC",
   amber: "#C98A2B",
   amberSoft: "#FBF6EC",
+  pink: "#F472B6",
+  pinkSoft: "#FDF2F8",
 
   live: "#1C1B19", // dark camera panel
   liveText: "#8B8983",
@@ -47,6 +49,8 @@ export const darkColors = {
   blueSoft: "rgba(96,165,250,0.12)",
   amber: "#FBBF24",
   amberSoft: "rgba(251,191,36,0.12)",
+  pink: "#F472B6",
+  pinkSoft: "rgba(244,114,182,0.12)",
 
   live: "#0A0A0C",
   liveText: "#6B6B6B",

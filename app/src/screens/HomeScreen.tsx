@@ -4,10 +4,11 @@ import { Header } from "../components/Header";
 import { LivePanel } from "../components/LivePanel";
 import { AlertBanner } from "../components/AlertBanner";
 import { Separator } from "../components/Separator";
+import { ActivityLogCard } from "../components/ActivityLogCard";
 import { AvatarCard } from "../AvatarCard";
 import { PetNavigator } from "../PetNavigator";
 import { space } from "../theme";
-import type { Action, Pet } from "../types";
+import type { Action, ActivityEvent, DispenseDecision, Pet } from "../types";
 
 interface HomeScreenProps {
   pets: Pet[];
@@ -21,10 +22,14 @@ interface HomeScreenProps {
   busy: boolean;
   candyClass: string | null;
   candyConfidence: number;
+  decision: DispenseDecision | null;
+  lastEvent: ActivityEvent | null;
+  log: ActivityEvent[];
   onOpenDemo: () => void;
   onOpenActivity: () => void;
   onDispense: (action: Action) => void;
   onSelectPet: (id: string) => void;
+  onOpenPetSettings?: (id: string) => void;
   onGenerateAvatar: () => void;
   onView3D: () => void;
 }
@@ -41,10 +46,14 @@ export function HomeScreen({
   busy,
   candyClass,
   candyConfidence,
+  decision,
+  lastEvent,
+  log,
   onOpenDemo,
   onOpenActivity,
   onDispense,
   onSelectPet,
+  onOpenPetSettings,
   onGenerateAvatar,
   onView3D,
 }: HomeScreenProps) {
@@ -81,7 +90,7 @@ export function HomeScreen({
 
       <Separator />
 
-      <PetNavigator pets={pets} activeId={currentPetId} onSelect={onSelectPet} />
+      <PetNavigator pets={pets} activeId={currentPetId} onSelect={onSelectPet} onOpenSettings={onOpenPetSettings} />
 
       {currentPet && (
         <AvatarCard
@@ -91,6 +100,8 @@ export function HomeScreen({
           onView3D={onView3D}
         />
       )}
+
+      <ActivityLogCard pets={pets} decision={decision} lastEvent={lastEvent} log={log} />
     </ScrollView>
   );
 }

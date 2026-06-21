@@ -52,12 +52,28 @@ def build_command(verdict: SafetyVerdict, pet: Optional[Pet], *, now: datetime) 
     nothing physical to do (vetoed, or a no-op)."""
     if not verdict.allowed or verdict.action is Action.none:
         return None
+
+    subject = f"{pet.color} {pet.species.value}" if pet and pet.color else (pet.name if pet else "unknown")
+    food = pet.default_food() if pet else None
+    food_name = food.name if food else None
+    item = food_name if verdict.action is Action.feed else (verdict.medicine_name if verdict.action is Action.medicine else None)
+
+    command_dict = {
+        "subject": subject,
+        "verb": verdict.action.value,
+        "object": item,
+        "count": 1,
+    }
+
     return RobotCommand(
+        command=command_dict,
         action=verdict.action,
         pet_id=pet.id if pet else None,
         pet_name=pet.name if pet else None,
         amount_grams=verdict.amount_grams,
         medicine_name=verdict.medicine_name,
+        food_name=food_name,
+        count=1,
         bowl=pet.id if pet else None,
         issued_at=now,
     )

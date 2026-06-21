@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "./ThemeContext";
 import { PetAvatar } from "./PetAvatar";
+import { CircularRing } from "./components/CircularRing";
 import { radius, shadow, space } from "./theme";
 import type { Pet, PetStats } from "./types";
 
@@ -15,18 +16,6 @@ interface AvatarCardProps {
 
 function clamp(n: number) {
   return Math.max(0, Math.min(100, Math.round(n)));
-}
-
-function StatBar({ label, value, color }: { label: string; value: number; color: string }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: space.sm }}>
-      <Text style={{ width: 70, fontSize: 12, fontWeight: "600", color: colors.muted }}>{label}</Text>
-      <View style={{ flex: 1, height: 8, backgroundColor: colors.border, borderRadius: 4, overflow: "hidden" }}>
-        <View style={{ width: `${clamp(value)}%`, height: "100%", borderRadius: 4, backgroundColor: color }} />
-      </View>
-    </View>
-  );
 }
 
 function QuickStat({ icon, value, label }: { icon: keyof typeof Ionicons.glyphMap; value: string | number; label: string }) {
@@ -59,6 +48,8 @@ export function AvatarCard({ pet, onGenerate, onRetry, onView3D }: AvatarCardPro
   };
 
   const xpPct = Math.min(100, Math.round((stats.xp / stats.xp_to_next) * 100));
+  const foodProgress = Math.max(0, 1 - stats.hunger / 100);
+  const waterProgress = stats.hydration / 100;
 
   const renderAvatar = () => {
     if (!pet.avatar || pet.avatar.status === "pending") {
@@ -130,17 +121,42 @@ export function AvatarCard({ pet, onGenerate, onRetry, onView3D }: AvatarCardPro
         </View>
       </View>
 
-      <View style={styles.statsCard}>
-        <StatBar label="Hunger" value={stats.hunger} color="#E5372B" />
-        <StatBar label="Hydration" value={stats.hydration} color="#3BA0E3" />
-        <StatBar label="Health" value={stats.health} color="#16A34A" />
-        <StatBar label="Happiness" value={stats.happiness} color="#F0A33C" />
-        <StatBar label="Looks" value={stats.looks} color="#C98A2B" />
+      <View style={[styles.statsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={styles.ringsRow}>
+          <CircularRing
+            progress={1}
+            color={colors.amber}
+            icon="scale-outline"
+            value={`${pet.weight_kg} kg`}
+            label="Weight"
+          />
+          <CircularRing
+            progress={waterProgress}
+            color={colors.blue}
+            icon="water"
+            value={`${clamp(stats.hydration)}%`}
+            label="Water 24h"
+          />
+          <CircularRing
+            progress={foodProgress}
+            color={colors.green}
+            icon="nutrition"
+            value={`${pet.daily_food_grams}g`}
+            label="Food 24h"
+          />
+          <CircularRing
+            progress={stats.health / 100}
+            color={colors.red}
+            icon="heart"
+            value={`${clamp(stats.health)}%`}
+            label="Health"
+          />
+        </View>
       </View>
 
       <View style={styles.quickStats}>
         <QuickStat icon="flame" value={stats.streak_days} label="streak" />
-        <QuickStat icon="heart" value={`${clamp(stats.happiness)}%`} label="mood" />
+        <QuickStat icon="happy-outline" value={`${clamp(stats.happiness)}%`} label="mood" />
         <QuickStat icon="paw" value={stats.level} label="level" />
         <QuickStat icon="time" value="45m" label="this wk" />
       </View>
@@ -270,60 +286,19 @@ function useThemedStyles(colors: ReturnType<typeof useTheme>["colors"]) {
       borderRadius: 4,
     },
     statsCard: {
-      backgroundColor: colors.card,
       borderWidth: 1.5,
-      borderColor: colors.border,
       borderRadius: radius.xl,
-      padding: space.md,
-      gap: space.sm,
+      paddingVertical: space.md,
+      ...shadow.card,
     },
-    statRow: {
+    ringsRow: {
       flexDirection: "row",
-      alignItems: "center",
-      gap: space.sm,
-    },
-    statLabel: {
-      width: 70,
-      fontSize: 12,
-      fontWeight: "600",
-      color: colors.muted,
-    },
-    statTrack: {
-      flex: 1,
-      height: 8,
-      backgroundColor: colors.border,
-      borderRadius: 4,
-      overflow: "hidden",
-    },
-    statFill: {
-      height: "100%",
-      borderRadius: 4,
+      justifyContent: "space-around",
+      alignItems: "flex-start",
     },
     quickStats: {
       flexDirection: "row",
       gap: space.sm,
-    },
-    quickStat: {
-      flex: 1,
-      backgroundColor: colors.card,
-      borderWidth: 1.5,
-      borderColor: colors.border,
-      borderRadius: radius.lg,
-      paddingVertical: space.sm,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    quickStatValue: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: colors.text,
-      marginTop: 2,
-      fontVariant: ["tabular-nums"],
-    },
-    quickStatLabel: {
-      fontSize: 9,
-      color: colors.muted,
-      marginTop: 1,
     },
   });
 }

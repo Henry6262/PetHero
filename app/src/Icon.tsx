@@ -7,6 +7,7 @@ export type IconName =
   | "feed"
   | "water"
   | "medicine"
+  | "pet"
   | "agent"
   | "notifications"
   | "settings"
@@ -19,6 +20,7 @@ const ICON_3D_ASSETS: Record<IconName, ReturnType<typeof require> | null> = {
   feed: null,
   water: null,
   medicine: null,
+  pet: null,
   agent: null,
   notifications: null,
   settings: null,
@@ -30,6 +32,7 @@ const IONICON_MAP: Record<IconName, keyof typeof Ionicons.glyphMap> = {
   feed: "nutrition",
   water: "water",
   medicine: "medical",
+  pet: "hand-left",
   agent: "bulb",
   notifications: "notifications",
   settings: "settings",
