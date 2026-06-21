@@ -2,7 +2,6 @@ import React from "react";
 import { ScrollView } from "react-native";
 import { Header } from "../components/Header";
 import { LivePanel } from "../components/LivePanel";
-import { AlertBanner } from "../components/AlertBanner";
 import { Separator } from "../components/Separator";
 import { ActivityLogCard } from "../components/ActivityLogCard";
 import { RobotCard } from "../components/RobotCard";
@@ -101,10 +100,6 @@ export function HomeScreen({
 
       {currentPet && (
         <PillSelector medications={currentPet.medications} onGive={onGiveMedicine} />
-      )}
-
-      {currentPet && currentPet.medications.length > 0 && (
-        <AlertBanner pet={currentPet} onPress={() => onSelectPet(currentPet.id)} />
       )}
 
       <Separator />
