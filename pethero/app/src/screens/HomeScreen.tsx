@@ -6,10 +6,11 @@ import { AlertBanner } from "../components/AlertBanner";
 import { Separator } from "../components/Separator";
 import { ActivityLogCard } from "../components/ActivityLogCard";
 import { RobotCard } from "../components/RobotCard";
+import { PillSelector } from "../components/PillSelector";
 import { AvatarCard } from "../AvatarCard";
 import { PetNavigator } from "../PetNavigator";
 import { space } from "../theme";
-import type { Action, ActivityEvent, DispenseDecision, EnforceResult, Pet, RobotCommandResult } from "../types";
+import type { ActivityEvent, DispenseDecision, EnforceResult, Pet, RobotCommandResult } from "../types";
 
 interface HomeScreenProps {
   pets: Pet[];
@@ -28,11 +29,11 @@ interface HomeScreenProps {
   log: ActivityEvent[];
   onOpenDemo: () => void;
   onOpenActivity: () => void;
-  onDispense: (action: Action) => void;
   onSelectPet: (id: string) => void;
   onOpenPetSettings?: (id: string) => void;
   onGenerateAvatar: () => void;
   onView3D: () => void;
+  onGiveMedicine: (name: string) => void;
   onEnforce: (petId: string, foodLabel: string) => Promise<EnforceResult> | void;
   onRobotCommand: (cmd: "feed" | "protect" | "pick", cup?: string) => Promise<RobotCommandResult> | void;
   lastRobotCommand: { type: "enforce"; result: EnforceResult } | { type: "raw"; result: RobotCommandResult } | null;
@@ -55,11 +56,11 @@ export function HomeScreen({
   log,
   onOpenDemo,
   onOpenActivity,
-  onDispense,
   onSelectPet,
   onOpenPetSettings,
   onGenerateAvatar,
   onView3D,
+  onGiveMedicine,
   onEnforce,
   onRobotCommand,
   lastRobotCommand,
@@ -88,7 +89,6 @@ export function HomeScreen({
         busy={busy}
         candyClass={candyClass}
         candyConfidence={candyConfidence}
-        onDispense={onDispense}
       />
 
       <RobotCard
@@ -98,6 +98,10 @@ export function HomeScreen({
         onRobotCommand={onRobotCommand}
         lastCommand={lastRobotCommand}
       />
+
+      {currentPet && (
+        <PillSelector medications={currentPet.medications} onGive={onGiveMedicine} />
+      )}
 
       {currentPet && currentPet.medications.length > 0 && (
         <AlertBanner pet={currentPet} onPress={() => onSelectPet(currentPet.id)} />

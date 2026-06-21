@@ -14,9 +14,7 @@ export const SEED_PETS: Pet[] = [
       { id: "default", name: "Pastrami", portion_grams: 45, min_interval_hours: 5, is_default: true },
     ],
     medications: [
-      { id: "red", name: "red pill", dose_count: 1, interval_hours: 12, notes: "Matrix red pill", active: true },
-      { id: "black", name: "black pill", dose_count: 1, interval_hours: 12, notes: "Matrix black pill", active: true },
-      { id: "blue", name: "blue pill", dose_count: 1, interval_hours: 12, notes: "Matrix blue pill", active: true },
+      { id: "red", name: "red pill", dose_count: 1, interval_hours: 12, notes: "Daily vitamin", active: true },
     ],
     automation_enabled: true,
     weight_kg: 4.2,
@@ -33,9 +31,7 @@ export const SEED_PETS: Pet[] = [
       { id: "default", name: "Pastrami", portion_grams: 55, min_interval_hours: 4, is_default: true },
     ],
     medications: [
-      { id: "red", name: "red pill", dose_count: 1, interval_hours: 12, notes: "Matrix red pill", active: true },
-      { id: "black", name: "black pill", dose_count: 1, interval_hours: 12, notes: "Matrix black pill", active: true },
-      { id: "blue", name: "blue pill", dose_count: 1, interval_hours: 12, notes: "Matrix blue pill", active: true },
+      { id: "blue", name: "blue pill", dose_count: 1, interval_hours: 12, notes: "Daily vitamin", active: true },
     ],
     automation_enabled: false,
     weight_kg: 5.1,
