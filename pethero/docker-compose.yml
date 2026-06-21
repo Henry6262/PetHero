@@ -1,0 +1,13 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+      - "5007:5007/udp"   # video frames in from robot camera
+    volumes:
+      - ./backend/data:/app/data  # persist SQLite + pets.json across restarts
+    environment:
+      - ROBOT_HOST=${ROBOT_HOST:-127.0.0.1}
+      - ROBOT_PORT=${ROBOT_PORT:-5006}
+      - VIDEO_UDP_PORT=5007
+    restart: unless-stopped
