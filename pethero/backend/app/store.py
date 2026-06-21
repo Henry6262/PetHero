@@ -10,24 +10,11 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
 from . import config, migrations
 from .db import Database
 from .models import ActivityEvent, Pet, PetSettingsUpdate
-
-
-def _now_iso() -> str:
-    return datetime.now().isoformat()
-
-
-def _parse_iso(value: Optional[str]) -> Optional[datetime]:
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(value)
-    except ValueError:
-        return None
 
 
 class Store:

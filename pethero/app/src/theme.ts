@@ -63,8 +63,7 @@ export const palettes = {
   dark: darkColors,
 };
 
-// Back-compat: static light palette for components not yet migrated to
-// useTheme() (PetsVariants, DispenseVariants). Safe to drop once they are.
+// Back-compat: static light palette for components not yet migrated to useTheme().
 export const colors = lightColors;
 
 export type Theme = keyof typeof palettes;
