@@ -101,6 +101,21 @@ export interface SystemStatus {
   state: string;
 }
 
+export interface EnforceResult {
+  allow: boolean;
+  action: string;
+  robot_cmd: string;
+  reason: string;
+  pet_name: string | null;
+  food: string | null;
+}
+
+export interface RobotCommandResult {
+  sent: boolean;
+  command: { cmd: string; cup?: string };
+  robot: string;
+}
+
 // WebSocket envelopes (each carries a `type` discriminator).
 export type WsMessage =
   | ({ type: "status" } & SystemStatus)
