@@ -5,10 +5,11 @@ import { LivePanel } from "../components/LivePanel";
 import { AlertBanner } from "../components/AlertBanner";
 import { Separator } from "../components/Separator";
 import { ActivityLogCard } from "../components/ActivityLogCard";
+import { RobotCard } from "../components/RobotCard";
 import { AvatarCard } from "../AvatarCard";
 import { PetNavigator } from "../PetNavigator";
 import { space } from "../theme";
-import type { Action, ActivityEvent, DispenseDecision, Pet } from "../types";
+import type { Action, ActivityEvent, DispenseDecision, EnforceResult, Pet, RobotCommandResult } from "../types";
 
 interface HomeScreenProps {
   pets: Pet[];
@@ -32,6 +33,9 @@ interface HomeScreenProps {
   onOpenPetSettings?: (id: string) => void;
   onGenerateAvatar: () => void;
   onView3D: () => void;
+  onEnforce: (petId: string, foodLabel: string) => Promise<EnforceResult> | void;
+  onRobotCommand: (cmd: "feed" | "protect" | "pick", cup?: string) => Promise<RobotCommandResult> | void;
+  lastRobotCommand: { type: "enforce"; result: EnforceResult } | { type: "raw"; result: RobotCommandResult } | null;
 }
 
 export function HomeScreen({
@@ -56,6 +60,9 @@ export function HomeScreen({
   onOpenPetSettings,
   onGenerateAvatar,
   onView3D,
+  onEnforce,
+  onRobotCommand,
+  lastRobotCommand,
 }: HomeScreenProps) {
   return (
     <ScrollView
@@ -82,6 +89,14 @@ export function HomeScreen({
         candyClass={candyClass}
         candyConfidence={candyConfidence}
         onDispense={onDispense}
+      />
+
+      <RobotCard
+        pet={currentPet}
+        candyClass={candyClass}
+        onEnforce={onEnforce}
+        onRobotCommand={onRobotCommand}
+        lastCommand={lastRobotCommand}
       />
 
       {currentPet && currentPet.medications.length > 0 && (

@@ -1,5 +1,5 @@
 import { BASE_URL } from "./config";
-import type { ActivityEvent, DispenseDecision, FoodOption, Medication, Pet, SystemStatus, Action, PetAvatar } from "./types";
+import type { ActivityEvent, DispenseDecision, FoodOption, Medication, Pet, SystemStatus, Action, PetAvatar, EnforceResult, RobotCommandResult } from "./types";
 
 export interface PetSettingsPayload {
   automation_enabled?: boolean;
@@ -61,5 +61,19 @@ export const api = {
     req<Pet>(`/pets/${encodeURIComponent(pet_id)}/settings`, {
       method: "POST",
       body: JSON.stringify(payload),
+    }),
+
+  // Robot feeding-rule gate: backend decides feed/protect and dispatches to robot.
+  enforce: (pet_id: string, food_label?: string, food_id?: string, confidence?: number) =>
+    req<EnforceResult>("/enforce", {
+      method: "POST",
+      body: JSON.stringify({ pet_id, food_label, food_id, confidence }),
+    }),
+
+  // Direct robot command passthrough (feed / protect / pick).
+  robotCommand: (cmd: "feed" | "protect" | "pick", cup?: string) =>
+    req<RobotCommandResult>("/robot/command", {
+      method: "POST",
+      body: JSON.stringify({ cmd, cup }),
     }),
 };

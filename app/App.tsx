@@ -8,7 +8,7 @@ import { useBackend } from "./src/useBackend";
 import { ThemeProvider, useTheme } from "./src/ThemeContext";
 import { deriveStatus } from "./src/petStatus";
 import { SEED_PETS } from "./src/seed";
-import type { Action, Pet } from "./src/types";
+import type { Action, EnforceResult, Pet, RobotCommandResult } from "./src/types";
 
 import { HomeScreen } from "./src/screens/HomeScreen";
 import { LooksmaxHub } from "./src/LooksmaxHub";
@@ -49,6 +49,9 @@ function Main() {
   const [settingsPetId, setSettingsPetId] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
   const [activeTab, setActiveTab] = useState<AppTab>("home");
+  const [lastRobot, setLastRobot] = useState<
+    { type: "enforce"; result: EnforceResult } | { type: "raw"; result: RobotCommandResult } | null
+  >(null);
 
   useEffect(() => {
     api.pets().then((p) => p.length && setPets(p)).catch(() => {});
@@ -172,6 +175,30 @@ function Main() {
     } catch {}
   }, []);
 
+  const enforce = useCallback(async (petId: string, foodLabel: string) => {
+    try {
+      const result = await api.enforce(petId, foodLabel);
+      setLastRobot({ type: "enforce", result });
+      return result;
+    } catch (e) {
+      const reason = e instanceof Error ? e.message : "enforce failed";
+      setLastRobot({ type: "enforce", result: { allow: false, action: "push_away", robot_cmd: "protect", reason, pet_name: null, food: foodLabel } });
+      throw e;
+    }
+  }, []);
+
+  const robotCommand = useCallback(async (cmd: "feed" | "protect" | "pick", cup?: string) => {
+    try {
+      const result = await api.robotCommand(cmd, cup);
+      setLastRobot({ type: "raw", result });
+      return result;
+    } catch (e) {
+      const result: RobotCommandResult = { sent: false, command: { cmd, cup }, robot: "unknown" };
+      setLastRobot({ type: "raw", result });
+      throw e;
+    }
+  }, []);
+
   const renderTab = () => {
     switch (activeTab) {
       case "home":
@@ -198,6 +225,9 @@ function Main() {
             onOpenPetSettings={openSettings}
             onGenerateAvatar={generateAvatar}
             onView3D={() => setActiveTab("train")}
+            onEnforce={enforce}
+            onRobotCommand={robotCommand}
+            lastRobotCommand={lastRobot}
           />
         );
       case "train":
