@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html><head><script>window.__resources = {};</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="4b34da81-1674-4afb-ad05-378e66fbecea.js"></script>
+</head>
+<body>
+
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<style>/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f043003b-b8f6-4020-a601-1aba650c7f55.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("9dbd2636-8b57-4896-aa9f-27542b5bb76d.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f4da7852-b479-4473-b164-a8fc86044a37.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("7c3ddf5d-39ad-4590-bd5c-6f1b02f10d1e.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("2e63b3c7-7133-4d79-920c-cd4105fb9198.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("6bfc7ccb-d126-48a6-8c87-7d8143a8a225.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("e6edd375-854f-4199-8392-039ea3d75540.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("f043003b-b8f6-4020-a601-1aba650c7f55.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("9dbd2636-8b57-4896-aa9f-27542b5bb76d.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("f4da7852-b479-4473-b164-a8fc86044a37.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("7c3ddf5d-39ad-4590-bd5c-6f1b02f10d1e.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("2e63b3c7-7133-4d79-920c-cd4105fb9198.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("6bfc7ccb-d126-48a6-8c87-7d8143a8a225.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("e6edd375-854f-4199-8392-039ea3d75540.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("f043003b-b8f6-4020-a601-1aba650c7f55.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("9dbd2636-8b57-4896-aa9f-27542b5bb76d.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("f4da7852-b479-4473-b164-a8fc86044a37.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("7c3ddf5d-39ad-4590-bd5c-6f1b02f10d1e.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("2e63b3c7-7133-4d79-920c-cd4105fb9198.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("6bfc7ccb-d126-48a6-8c87-7d8143a8a225.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("e6edd375-854f-4199-8392-039ea3d75540.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("f043003b-b8f6-4020-a601-1aba650c7f55.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("9dbd2636-8b57-4896-aa9f-27542b5bb76d.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("f4da7852-b479-4473-b164-a8fc86044a37.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("7c3ddf5d-39ad-4590-bd5c-6f1b02f10d1e.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("2e63b3c7-7133-4d79-920c-cd4105fb9198.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("6bfc7ccb-d126-48a6-8c87-7d8143a8a225.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("e6edd375-854f-4199-8392-039ea3d75540.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("f043003b-b8f6-4020-a601-1aba650c7f55.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("9dbd2636-8b57-4896-aa9f-27542b5bb76d.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("f4da7852-b479-4473-b164-a8fc86044a37.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("7c3ddf5d-39ad-4590-bd5c-6f1b02f10d1e.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("2e63b3c7-7133-4d79-920c-cd4105fb9198.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("6bfc7ccb-d126-48a6-8c87-7d8143a8a225.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("e6edd375-854f-4199-8392-039ea3d75540.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("f5100fe3-04e0-4c60-af30-ef514573064e.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("6600e45a-08d9-40c2-a12a-621a69669108.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("d4f10e02-1c59-4a1b-8fa9-6a147ca4aa8d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("f5100fe3-04e0-4c60-af30-ef514573064e.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("6600e45a-08d9-40c2-a12a-621a69669108.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("d4f10e02-1c59-4a1b-8fa9-6a147ca4aa8d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("f5100fe3-04e0-4c60-af30-ef514573064e.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("6600e45a-08d9-40c2-a12a-621a69669108.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("d4f10e02-1c59-4a1b-8fa9-6a147ca4aa8d.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b0913}
+  @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(20,241,149,.0),0 0 60px rgba(153,69,255,.55)}50%{box-shadow:0 0 0 10px rgba(20,241,149,.06),0 0 80px rgba(153,69,255,.75)}}
+  .scr{position:relative;width:312px;height:676px;border-radius:42px;overflow:hidden;border:8px solid #060409;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04)}
+  .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:104px;height:26px;background:#060409;border-radius:0 0 16px 16px;z-index:30}
+  .stat{position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:14px 22px 0;font:600 12px Inter;color:#fff;z-index:20}
+.hero{position:relative;margin:-56px -64px 10px;padding:56px 64px 42px;min-height:420px;display:flex;flex-direction:column;justify-content:flex-end;background:url('hero-bg.png') center/cover no-repeat #0b0913;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.06)}
+  .hero::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(11,9,19,.72) 0%,rgba(11,9,19,.2) 35%,rgba(11,9,19,.88) 100%),radial-gradient(ellipse at center,transparent 25%,rgba(11,9,19,.8) 90%);pointer-events:none}
+  .hero__content{position:relative;z-index:1;max-width:900px}
+</style>
+</helmet>
+
+<div style="min-width:100%;min-height:100vh;width:max-content;box-sizing:border-box;padding:56px 64px;background:radial-gradient(1200px 600px at 20% 0%,#1a1230,#0b0913 60%);font-family:Inter,sans-serif">
+
+  <!-- MASTHEAD / HERO -->
+  <div class="hero">
+    <div class="hero__content">
+      <div style="display:flex;align-items:center;gap:13px">
+        <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#9945FF,#14F195);display:flex;align-items:center;justify-content:center"><div style="width:15px;height:15px;border:2.5px solid #0b0913;border-radius:4px;transform:rotate(45deg)"></div></div>
+        <div style="font:700 30px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.5)">Solana Event Pass</div>
+        <div style="border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:5px 12px;font:600 12px Inter;color:#8b84a3">Hi-fi · v1</div>
+      </div>
+      <div style="font:400 16px Inter;color:#b9b2d0;margin-top:8px;max-width:680px;text-shadow:0 1px 12px rgba(0,0,0,.6)">Committed direction: tab-bar shell · immersive event detail · buddy onboarding · orb assistant — dark, Solana-neon, Luma-grade polish. Mobile first.</div>
+    </div>
+  </div>
+
+  <!-- ============ A · ONBOARDING ============ -->
+  <div style="margin:46px 0 22px"><div style="font:700 13px 'Space Grotesk';letter-spacing:.16em;color:#9945FF">A · ONBOARDING</div><div style="font:600 24px 'Space Grotesk';color:#f4f1ff;margin-top:3px">Sol walks you in</div></div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start">
+
+    <!-- A1 welcome -->
+    <div class="scr" style="background:radial-gradient(420px 380px at 50% 28%,#2a1860,#120c22 70%)">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span style="display:flex;gap:5px;align-items:center">5G<span style="display:inline-block;width:22px;height:11px;border:1.5px solid #fff;border-radius:3px;opacity:.7"></span></span></div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px">
+        <div style="position:relative;width:128px;height:128px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#1bf6a0,#14F195 50%,#0b9c62);box-shadow:0 18px 50px rgba(20,241,149,.4);animation:pulseGlow 3.4s ease-in-out infinite">
+          <div style="position:absolute;top:46px;left:34px;width:14px;height:14px;border-radius:50%;background:#06281b"></div>
+          <div style="position:absolute;top:46px;right:34px;width:14px;height:14px;border-radius:50%;background:#06281b"></div>
+          <div style="position:absolute;bottom:34px;left:50%;transform:translateX(-50%);width:36px;height:18px;border:3px solid #06281b;border-top:none;border-radius:0 0 32px 32px"></div>
+        </div>
+        <div style="font:700 27px 'Space Grotesk';color:#f4f1ff;text-align:center;margin-top:34px;line-height:1.15;letter-spacing:-.02em">Hey, I'm&nbsp;Sol 👋</div>
+        <div style="font:400 15px Inter;color:#b9b2d0;text-align:center;margin-top:10px;line-height:1.5">Connect a wallet and I'll set up your whole week — agenda, payments, and badges in one place.</div>
+      </div>
+      <div style="position:absolute;left:20px;right:20px;bottom:30px;display:flex;flex-direction:column;gap:12px">
+        <div style="height:54px;border-radius:16px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center;font:600 15px Inter;color:#fff;box-shadow:0 12px 30px rgba(153,69,255,.45)">Connect Wallet</div>
+        <div style="text-align:center;font:500 13px Inter;color:#8b84a3">I don't have a wallet yet</div>
+      </div>
+    </div>
+
+    <!-- A2 connect sheet -->
+    <div class="scr" style="background:#0e0b18">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <!-- dimmed bg -->
+      <div style="position:absolute;inset:0;background:radial-gradient(420px 380px at 50% 24%,#211443,#0b0913 70%);opacity:.5"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#15111f;border-radius:28px 28px 0 0;border-top:1px solid rgba(255,255,255,.07);padding:18px 20px 28px;box-shadow:0 -20px 50px rgba(0,0,0,.5)">
+        <div style="width:42px;height:5px;border-radius:4px;background:rgba(255,255,255,.18);margin:0 auto 18px"></div>
+        <div style="font:700 19px 'Space Grotesk';color:#f4f1ff">Choose a wallet</div>
+        <div style="font:400 13px Inter;color:#8b84a3;margin-top:4px;margin-bottom:18px">You'll approve a quick signature — no gas, no fees.</div>
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div style="display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08);background:#1c1726;border-radius:16px;padding:14px"><div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ab9ff2,#5346b0)"></div><div style="flex:1"><div style="font:600 15px Inter;color:#f4f1ff">Phantom</div><div style="font:400 12px Inter;color:#8b84a3">Detected</div></div><div style="font:600 12px Inter;color:#14F195">Connect</div></div>
+          <div style="display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08);background:#1c1726;border-radius:16px;padding:14px"><div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ffd24c,#ff8a3d)"></div><div style="flex:1"><div style="font:600 15px Inter;color:#f4f1ff">Solflare</div></div><div style="font:600 12px Inter;color:#8b84a3">Open</div></div>
+          <div style="display:flex;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08);background:#1c1726;border-radius:16px;padding:14px"><div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ff6b6b,#c1352f)"></div><div style="flex:1"><div style="font:600 15px Inter;color:#f4f1ff">Backpack</div></div><div style="font:600 12px Inter;color:#8b84a3">Open</div></div>
+        </div>
+        <div style="text-align:center;font:500 13px Inter;color:#8b84a3;margin-top:18px">Continue with email instead</div>
+      </div>
+    </div>
+
+    <!-- A3 success -->
+    <div class="scr" style="background:radial-gradient(420px 420px at 50% 40%,#0c3a28,#0b0913 72%)">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px">
+        <div style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#14F195,#0b9c62);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(20,241,149,.1),0 16px 44px rgba(20,241,149,.4)"><div style="width:34px;height:20px;border-left:5px solid #06281b;border-bottom:5px solid #06281b;transform:rotate(-45deg);margin-top:-7px"></div></div>
+        <div style="font:700 24px 'Space Grotesk';color:#f4f1ff;margin-top:28px;letter-spacing:-.02em">You're in</div>
+        <div style="font:400 14px Inter;color:#b9b2d0;text-align:center;margin-top:8px">Wallet linked. Sol pulled in the events you're registered for.</div>
+        <div style="margin-top:20px;display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.1);background:#16121f;border-radius:14px;padding:11px 15px"><span style="width:8px;height:8px;border-radius:50%;background:#14F195;box-shadow:0 0 8px #14F195"></span><span style="font:600 13px Inter;color:#cfc9e0;font-family:'Space Grotesk'">7xKn…3pQ</span><span style="font:400 12px Inter;color:#8b84a3">connected</span></div>
+      </div>
+      <div style="position:absolute;left:20px;right:20px;bottom:30px;height:54px;border-radius:16px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center;font:600 15px Inter;color:#fff;box-shadow:0 12px 30px rgba(153,69,255,.45)">See my events</div>
+    </div>
+  </div>
+
+  <!-- ============ B · HOME / EVENTS FEED ============ -->
+  <div style="margin:56px 0 22px"><div style="font:700 13px 'Space Grotesk';letter-spacing:.16em;color:#9945FF">B · HOME</div><div style="font:600 24px 'Space Grotesk';color:#f4f1ff;margin-top:3px">Your events</div></div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start">
+
+    <!-- B1 feed -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:52px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+        <div><div style="font:400 13px Inter;color:#8b84a3">Welcome back</div><div style="font:700 22px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Berlin 2026</div></div>
+        <div style="display:flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 11px"><span style="width:7px;height:7px;border-radius:50%;background:#14F195"></span><span style="font:600 11px 'Space Grotesk';color:#cfc9e0">7xKn…3pQ</span></div>
+      </div>
+      <div style="position:absolute;top:108px;left:0;right:0;bottom:74px;overflow:hidden;padding:6px 20px 0">
+        <!-- featured live card -->
+        <div style="position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.07);margin-bottom:14px">
+          <div style="height:158px;background:linear-gradient(135deg,#9945FF 0%,#5a2db0 45%,#14233f 100%);position:relative">
+            <div style="position:absolute;top:13px;left:13px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.3);backdrop-filter:blur(6px);border-radius:20px;padding:5px 11px"><span style="width:7px;height:7px;border-radius:50%;background:#ff5b5b;box-shadow:0 0 8px #ff5b5b"></span><span style="font:700 10px Inter;color:#fff;letter-spacing:.05em">LIVE · DAY 2</span></div>
+            <div style="position:absolute;top:13px;right:13px;background:rgba(20,241,149,.16);border:1px solid rgba(20,241,149,.5);border-radius:20px;padding:5px 11px;font:700 11px 'Space Grotesk';color:#14F195">120 BRK</div>
+          </div>
+          <div style="padding:13px 15px;background:#16121f"><div style="font:700 17px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.01em">Solana Breakpoint</div><div style="font:400 12px Inter;color:#8b84a3;margin-top:3px">Funkhaus · Berlin · 18–20 Jun</div></div>
+        </div>
+        <!-- secondary card -->
+        <div style="display:flex;gap:13px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:#16121f;padding:11px;margin-bottom:12px">
+          <div style="width:64px;height:64px;border-radius:13px;background:linear-gradient(135deg,#14F195,#0b7a52)"></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center"><div style="font:700 14px 'Space Grotesk';color:#f4f1ff">Superteam Side Event</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">Tue · 19:00 · Kreuzberg</div></div>
+          <div style="align-self:center;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:5px 10px;font:600 10px 'Space Grotesk';color:#8b84a3">0 BRK</div>
+        </div>
+        <div style="display:flex;gap:13px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:#16121f;padding:11px">
+          <div style="width:64px;height:64px;border-radius:13px;background:linear-gradient(135deg,#ff8a3d,#c1352f)"></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center"><div style="font:700 14px 'Space Grotesk';color:#f4f1ff">W3 Hub Mixer</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">Wed · 20:00 · Mitte</div></div>
+          <div style="align-self:center;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:5px 10px;font:600 10px 'Space Grotesk';color:#8b84a3">0 BRK</div>
+        </div>
+      </div>
+      <!-- tab bar -->
+      <div style="position:absolute;left:0;right:0;bottom:0;height:74px;background:rgba(11,9,19,.85);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-start;justify-content:space-around;padding:12px 14px 0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#9945FF,#14F195)"></div><span style="font:600 9px Inter;color:#f4f1ff">Events</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:22px;height:22px;border-radius:6px;border:2px solid #4b4560"></div><span style="font:600 9px Inter;color:#6f6889">Wallet</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;margin-top:-16px"><div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#9945FF,#7a33e0);border:4px solid #0b0913;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(153,69,255,.5)"><div style="width:18px;height:18px;border:2.5px solid #fff;border-radius:5px"></div></div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:22px;height:22px;border-radius:50%;border:2px solid #4b4560"></div><span style="font:600 9px Inter;color:#6f6889">POAPs</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:22px;height:22px;border-radius:50%;border:2px solid #14F195"></div><span style="font:600 9px Inter;color:#14F195">Sol</span></div>
+      </div>
+    </div>
+
+    <!-- C1 event detail -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:268px;background:linear-gradient(160deg,#9945FF 0%,#5a2db0 50%,#14233f 100%)">
+        <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+        <div style="position:absolute;top:50px;left:16px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.3);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center"><div style="width:9px;height:9px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);margin-left:3px"></div></div>
+        <div style="position:absolute;left:18px;bottom:48px;right:18px"><div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.3);backdrop-filter:blur(6px);border-radius:20px;padding:5px 11px;margin-bottom:9px"><span style="width:7px;height:7px;border-radius:50%;background:#ff5b5b"></span><span style="font:700 10px Inter;color:#fff">LIVE · DAY 2</span></div><div style="font:700 23px 'Space Grotesk';color:#fff;letter-spacing:-.02em">Solana Breakpoint</div><div style="font:400 13px Inter;color:rgba(255,255,255,.8);margin-top:3px">Funkhaus · Berlin</div></div>
+      </div>
+      <!-- sheet -->
+      <div style="position:absolute;top:248px;left:0;right:0;bottom:0;background:#0b0913;border-radius:26px 26px 0 0;padding:16px 18px 0">
+        <div style="display:flex;background:#16121f;border-radius:13px;padding:4px;margin-bottom:15px">
+          <div style="flex:1;text-align:center;background:linear-gradient(135deg,#9945FF,#7a33e0);border-radius:10px;padding:9px;font:600 12px Inter;color:#fff">Agenda</div>
+          <div style="flex:1;text-align:center;padding:9px;font:600 12px Inter;color:#8b84a3">Wallet</div>
+          <div style="flex:1;text-align:center;padding:9px;font:600 12px Inter;color:#8b84a3">POAPs</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px"><div style="background:#1c1726;border:1px solid #9945FF;border-radius:18px;padding:6px 14px;font:600 11px 'Space Grotesk';color:#fff">Day 2</div><div style="border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:6px 14px;font:600 11px 'Space Grotesk';color:#8b84a3">Day 3</div></div>
+        <div style="display:flex;gap:13px;margin-bottom:14px"><div style="font:700 12px 'Space Grotesk';color:#9945FF;padding-top:2px;width:38px">10:00</div><div style="flex:1;border-left:2px solid rgba(255,255,255,.08);padding-left:13px"><div style="font:600 14px Inter;color:#f4f1ff">Scaling Solana to a billion users</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">Main Stage · Anatoly Y.</div></div><div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center"><div style="width:9px;height:9px;border:2px solid #fff;border-radius:2px"></div></div></div>
+        <div style="display:flex;gap:13px;margin-bottom:14px"><div style="font:700 12px 'Space Grotesk';color:#9945FF;padding-top:2px;width:38px">11:30</div><div style="flex:1;border-left:2px solid rgba(255,255,255,.08);padding-left:13px"><div style="font:600 14px Inter;color:#f4f1ff">Solana Pay in the real world</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">Stage B · Panel</div></div><div style="width:26px;height:26px;border-radius:8px;border:1px solid rgba(255,255,255,.14)"></div></div>
+        <div style="display:flex;gap:13px"><div style="font:700 12px 'Space Grotesk';color:#9945FF;padding-top:2px;width:38px">14:00</div><div style="flex:1;border-left:2px solid rgba(255,255,255,.08);padding-left:13px"><div style="font:600 14px Inter;color:#f4f1ff">Workshop: mint your first cNFT</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">Lab · Hands-on</div></div><div style="width:26px;height:26px;border-radius:8px;border:1px solid rgba(255,255,255,.14)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ C · WALLET & PAY ============ -->
+  <div style="margin:56px 0 22px"><div style="font:700 13px 'Space Grotesk';letter-spacing:.16em;color:#9945FF">C · WALLET &amp; PAY</div><div style="font:600 24px 'Space Grotesk';color:#f4f1ff;margin-top:3px">The cashless loop</div></div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- wallet -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:60px;left:20px;right:20px">
+        <div style="font:700 20px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Wallet</div>
+        <!-- balance card -->
+        <div style="position:relative;margin-top:14px;border-radius:22px;padding:20px;background:linear-gradient(135deg,#9945FF 0%,#6a2db8 55%,#14233f 100%);overflow:hidden">
+          <div style="position:absolute;top:-30px;right:-20px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(20,241,149,.35),transparent 70%)"></div>
+          <div style="font:600 11px Inter;color:rgba(255,255,255,.7);letter-spacing:.05em">BREAKPOINT BALANCE</div>
+          <div style="font:700 40px 'Space Grotesk';color:#fff;margin-top:6px;letter-spacing:-.02em">120 <span style="font-size:18px;opacity:.8">BRK</span></div>
+          <div style="font:400 13px Inter;color:rgba(255,255,255,.75);margin-top:2px">≈ $120.00 · 1 BRK = $1 USDC</div>
+        </div>
+        <div style="display:flex;gap:11px;margin-top:14px">
+          <div style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#14F195,#0b9c62);display:flex;align-items:center;justify-content:center;font:600 14px Inter;color:#06281b">Top Up</div>
+          <div style="flex:1;height:48px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#16121f;display:flex;align-items:center;justify-content:center;font:600 14px Inter;color:#f4f1ff">Pay</div>
+        </div>
+        <div style="font:600 12px 'Space Grotesk';color:#8b84a3;margin-top:22px;letter-spacing:.04em">RECENT</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px"><div style="width:38px;height:38px;border-radius:11px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:15px">🥨</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">Brezel Bar</div><div style="font:400 11px Inter;color:#8b84a3">12:14 · finalized</div></div><div style="font:700 14px 'Space Grotesk';color:#f4f1ff">−12</div></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:14px"><div style="width:38px;height:38px;border-radius:11px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:15px">⬆</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">Top up · USDC</div><div style="font:400 11px Inter;color:#8b84a3">09:40 · finalized</div></div><div style="font:700 14px 'Space Grotesk';color:#14F195">+50</div></div>
+      </div>
+    </div>
+
+    <!-- top up sheet -->
+    <div class="scr" style="background:#0e0b18">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(380px 320px at 50% 20%,#1c1240,#0b0913 70%);opacity:.6"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#15111f;border-radius:28px 28px 0 0;border-top:1px solid rgba(255,255,255,.07);padding:18px 20px 26px">
+        <div style="width:42px;height:5px;border-radius:4px;background:rgba(255,255,255,.18);margin:0 auto 18px"></div>
+        <div style="font:700 19px 'Space Grotesk';color:#f4f1ff">Add credits</div>
+        <div style="text-align:center;margin:22px 0 6px"><span style="font:700 52px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.03em">50</span><span style="font:600 18px Inter;color:#8b84a3"> BRK</span></div>
+        <div style="text-align:center;font:400 12px Inter;color:#8b84a3;margin-bottom:18px">≈ $50.00</div>
+        <div style="display:flex;gap:9px;margin-bottom:20px">
+          <div style="flex:1;height:42px;border-radius:13px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font:600 14px 'Space Grotesk';color:#8b84a3">25</div>
+          <div style="flex:1;height:42px;border-radius:13px;border:1.5px solid #9945FF;background:rgba(153,69,255,.12);display:flex;align-items:center;justify-content:center;font:600 14px 'Space Grotesk';color:#fff">50</div>
+          <div style="flex:1;height:42px;border-radius:13px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font:600 14px 'Space Grotesk';color:#8b84a3">100</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;border:1.5px solid #9945FF;border-radius:15px;padding:13px;margin-bottom:10px"><div style="width:34px;height:34px;border-radius:10px;background:#2775ca"></div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">USDC balance</div><div style="font:400 11px Inter;color:#8b84a3">$340.00 available</div></div><div style="width:18px;height:18px;border-radius:50%;border:5px solid #9945FF"></div></div>
+        <div style="display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:13px;margin-bottom:18px"><div style="width:34px;height:34px;border-radius:10px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:15px">💳</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">Card · Kado</div></div><div style="width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2)"></div></div>
+        <div style="height:54px;border-radius:16px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center;font:600 15px Inter;color:#fff;box-shadow:0 12px 30px rgba(153,69,255,.4)">Add 50 BRK</div>
+      </div>
+    </div>
+
+    <!-- scan -->
+    <div class="scr" style="background:#060409">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:54px;left:0;right:0;display:flex;justify-content:center"><div style="display:flex;background:rgba(255,255,255,.08);border-radius:12px;padding:4px"><div style="background:#9945FF;border-radius:9px;padding:7px 20px;font:600 12px Inter;color:#fff">Scan</div><div style="padding:7px 20px;font:600 12px Inter;color:#8b84a3">My QR</div></div></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+        <div style="width:210px;height:210px;position:relative">
+          <div style="position:absolute;top:0;left:0;width:46px;height:46px;border-top:4px solid #14F195;border-left:4px solid #14F195;border-radius:12px 0 0 0"></div>
+          <div style="position:absolute;top:0;right:0;width:46px;height:46px;border-top:4px solid #14F195;border-right:4px solid #14F195;border-radius:0 12px 0 0"></div>
+          <div style="position:absolute;bottom:0;left:0;width:46px;height:46px;border-bottom:4px solid #14F195;border-left:4px solid #14F195;border-radius:0 0 0 12px"></div>
+          <div style="position:absolute;bottom:0;right:0;width:46px;height:46px;border-bottom:4px solid #14F195;border-right:4px solid #14F195;border-radius:0 0 12px 0"></div>
+          <div style="position:absolute;left:10px;right:10px;top:50%;height:2px;background:#14F195;box-shadow:0 0 14px #14F195"></div>
+        </div>
+      </div>
+      <div style="position:absolute;left:30px;right:30px;bottom:48px;text-align:center"><div style="font:600 15px Inter;color:#f4f1ff">Scan to pay</div><div style="font:400 13px Inter;color:#8b84a3;margin-top:5px">Point at the vendor's Solana Pay QR</div></div>
+    </div>
+
+    <!-- confirm -->
+    <div class="scr" style="background:#0e0b18">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(45deg,#100c1d,#100c1d 10px,#130f20 10px,#130f20 20px);opacity:.5"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#15111f;border-radius:28px 28px 0 0;border-top:1px solid rgba(255,255,255,.07);padding:18px 20px 26px">
+        <div style="width:42px;height:5px;border-radius:4px;background:rgba(255,255,255,.18);margin:0 auto 16px"></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px"><div style="width:46px;height:46px;border-radius:13px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:20px">🥨</div><div><div style="font:600 15px Inter;color:#f4f1ff">Brezel Bar</div><div style="font:400 12px Inter;color:#8b84a3">Vendor #14 · verified</div></div></div>
+        <div style="text-align:center;margin:6px 0 18px"><div style="font:700 54px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.03em">12 <span style="font-size:20px;color:#8b84a3">BRK</span></div><div style="font:400 13px Inter;color:#8b84a3;margin-top:2px">≈ $12.00</div></div>
+        <div style="display:flex;align-items:center;gap:9px;justify-content:center;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;margin-bottom:18px"><span style="width:8px;height:8px;border-radius:50%;background:#e0a32e"></span><span style="font:500 11px Inter;color:#b9b2d0">pending → confirmed → finalized</span></div>
+        <div style="height:56px;border-radius:30px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center;gap:8px;font:600 15px Inter;color:#fff;box-shadow:0 12px 30px rgba(153,69,255,.4)">Slide to pay →</div>
+      </div>
+    </div>
+
+    <!-- success -->
+    <div class="scr" style="background:radial-gradient(420px 420px at 50% 38%,#0c3a28,#0b0913 72%)">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px">
+        <div style="width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,#14F195,#0b9c62);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 12px rgba(20,241,149,.1),0 18px 50px rgba(20,241,149,.4)"><div style="width:38px;height:22px;border-left:5px solid #06281b;border-bottom:5px solid #06281b;transform:rotate(-45deg);margin-top:-8px"></div></div>
+        <div style="font:700 26px 'Space Grotesk';color:#fff;margin-top:28px;letter-spacing:-.02em">Paid 12 BRK</div>
+        <div style="font:400 13px Inter;color:#9fe8c6;margin-top:8px">Finalized in 0.4s · fee &lt; $0.001</div>
+        <div style="margin-top:22px;display:flex;align-items:center;gap:11px;border:1px solid rgba(20,241,149,.4);background:rgba(20,241,149,.07);border-radius:16px;padding:13px 16px"><div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#9945FF,#5a2db0);border:2px solid rgba(255,255,255,.3)"></div><div><div style="font:600 13px Inter;color:#f4f1ff">POAP unlocked!</div><div style="font:400 11px Inter;color:#9fe8c6">Tap to view your new badge</div></div></div>
+      </div>
+      <div style="position:absolute;left:20px;right:20px;bottom:30px;text-align:center;font:500 12px Inter;color:#6f8a7e">View on Solscan ↗</div>
+    </div>
+  </div>
+
+  <!-- ============ D · AI ASSISTANT ============ -->
+  <div style="margin:56px 0 22px"><div style="font:700 13px 'Space Grotesk';letter-spacing:.16em;color:#9945FF">D · ASSISTANT</div><div style="font:600 24px 'Space Grotesk';color:#f4f1ff;margin-top:3px">Sol — your event AI</div></div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- orb idle -->
+    <div class="scr" style="background:radial-gradient(460px 440px at 50% 36%,#2a1860,#0b0913 68%)">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:52px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 20px"><div style="width:30px;height:30px;border-radius:9px;border:1px solid rgba(255,255,255,.12)"></div><div style="font:600 13px 'Space Grotesk';color:#cfc9e0">Sol</div><div style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.12)"></div></div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px">
+        <div style="width:168px;height:168px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#cba6ff,#9945FF 44%,#3a1d80 100%);animation:pulseGlow 3.4s ease-in-out infinite"></div>
+        <div style="font:700 24px 'Space Grotesk';color:#f4f1ff;text-align:center;margin-top:34px;letter-spacing:-.02em">What can I help<br>you find?</div>
+      </div>
+      <div style="position:absolute;left:18px;right:18px;bottom:90px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        <div style="border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:8px 14px;font:500 12px Inter;color:#cfc9e0">What's on now?</div>
+        <div style="border:1px solid rgba(20,241,149,.4);background:rgba(20,241,149,.08);border-radius:18px;padding:8px 14px;font:500 12px Inter;color:#14F195">Plan my day</div>
+        <div style="border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:8px 14px;font:500 12px Inter;color:#cfc9e0">Top up 50</div>
+      </div>
+      <div style="position:absolute;left:18px;right:18px;bottom:30px;height:50px;border-radius:26px;border:1px solid rgba(255,255,255,.14);background:rgba(22,18,31,.8);backdrop-filter:blur(10px);display:flex;align-items:center;padding:0 8px 0 18px"><span style="flex:1;font:400 14px Inter;color:#6f6889">Ask Sol anything…</span><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9945FF,#14F195);display:flex;align-items:center;justify-content:center"><div style="width:11px;height:11px;border-top:2.5px solid #fff;border-right:2.5px solid #fff;transform:rotate(-45deg);margin-top:3px"></div></div></div>
+    </div>
+
+    <!-- orb conversation -->
+    <div class="scr" style="background:radial-gradient(460px 300px at 50% 0%,#1e1448,#0b0913 60%)">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:52px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:9px"><div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#cba6ff,#9945FF 50%,#3a1d80)"></div><div style="font:600 13px 'Space Grotesk';color:#cfc9e0">Sol</div></div>
+      <div style="position:absolute;top:104px;left:18px;right:18px;bottom:80px;display:flex;flex-direction:column;gap:12px">
+        <div style="align-self:flex-end;max-width:78%;background:linear-gradient(135deg,#9945FF,#7a33e0);border-radius:18px 18px 5px 18px;padding:12px 15px;font:400 13px Inter;color:#fff">What's my afternoon look like across both events?</div>
+        <div style="align-self:flex-start;max-width:84%;background:#16121f;border:1px solid rgba(255,255,255,.07);border-radius:18px 18px 18px 5px;padding:13px 15px"><div style="font:400 13px Inter;color:#e4e0f0;line-height:1.5">You've got 3 things lined up:</div>
+          <div style="margin-top:11px;display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;gap:10px;align-items:center;background:#1c1726;border-radius:12px;padding:9px"><div style="font:700 11px 'Space Grotesk';color:#9945FF;width:34px">14:00</div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">cNFT workshop</div><div style="width:18px;height:18px;border-radius:6px;background:linear-gradient(135deg,#9945FF,#7a33e0)"></div></div>
+            <div style="display:flex;gap:10px;align-items:center;background:#1c1726;border-radius:12px;padding:9px"><div style="font:700 11px 'Space Grotesk';color:#14F195;width:34px">17:00</div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">Superteam side event</div><div style="width:18px;height:18px;border-radius:6px;background:#14233f"></div></div>
+          </div>
+          <div style="font:400 12px Inter;color:#8b84a3;line-height:1.5;margin-top:10px">Want me to set reminders &amp; top up for the side event?</div>
+        </div>
+        <div style="align-self:flex-start;display:flex;gap:8px"><div style="border:1px solid rgba(20,241,149,.4);background:rgba(20,241,149,.08);border-radius:16px;padding:7px 13px;font:500 12px Inter;color:#14F195">Yes, do it</div><div style="border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:7px 13px;font:500 12px Inter;color:#cfc9e0">Not now</div></div>
+      </div>
+      <div style="position:absolute;left:18px;right:18px;bottom:26px;height:48px;border-radius:24px;border:1px solid rgba(255,255,255,.12);background:rgba(22,18,31,.85);display:flex;align-items:center;padding:0 8px 0 18px"><span style="flex:1;font:400 13px Inter;color:#6f6889">Reply…</span><div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#9945FF,#14F195)"></div></div>
+    </div>
+
+    <!-- city map -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat" style="color:#0b0913"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;inset:0;background:#11131a">
+        <!-- map base -->
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,#181b24,#181b24 1px,transparent 1px,transparent 46px),repeating-linear-gradient(90deg,#181b24,#181b24 1px,transparent 1px,transparent 46px),#0f1118"></div>
+        <div style="position:absolute;top:0;left:38%;width:46px;height:100%;background:#152a33;transform:skewX(-10deg)"></div>
+        <div style="position:absolute;top:36%;left:0;width:100%;height:10px;background:#1c1f29"></div>
+        <div style="position:absolute;top:0;left:64%;width:10px;height:100%;background:#1c1f29"></div>
+        <!-- pins -->
+        <div style="position:absolute;top:30%;left:24%;width:36px;height:36px;border-radius:50% 50% 50% 2px;background:linear-gradient(135deg,#9945FF,#7a33e0);transform:rotate(-45deg);box-shadow:0 8px 20px rgba(153,69,255,.5);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);font-size:13px">🎤</div></div>
+        <div style="position:absolute;top:52%;left:60%;width:32px;height:32px;border-radius:50% 50% 50% 2px;background:linear-gradient(135deg,#14F195,#0b9c62);transform:rotate(-45deg);box-shadow:0 8px 20px rgba(20,241,149,.4);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);font-size:12px">🥨</div></div>
+        <div style="position:absolute;top:26%;left:70%;width:28px;height:28px;border-radius:50% 50% 50% 2px;background:linear-gradient(135deg,#14F195,#0b9c62);transform:rotate(-45deg)"></div>
+        <div style="position:absolute;top:62%;left:30%;width:28px;height:28px;border-radius:50% 50% 50% 2px;background:#2a2f3d;border:1.5px solid #4b5160;transform:rotate(-45deg)"></div>
+        <div style="position:absolute;top:46%;left:46%;width:16px;height:16px;border-radius:50%;background:#2775ca;border:3px solid #fff;box-shadow:0 0 0 5px rgba(39,117,202,.3)"></div>
+      </div>
+      <!-- search -->
+      <div style="position:absolute;top:54px;left:16px;right:16px;background:rgba(11,9,19,.9);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:9px"><div style="width:14px;height:14px;border:2px solid #8b84a3;border-radius:50%"></div><span style="font:400 13px Inter;color:#8b84a3">Search Berlin · events, food, deals</span></div>
+      <div style="position:absolute;top:104px;left:16px;display:flex;gap:7px"><div style="background:linear-gradient(135deg,#9945FF,#7a33e0);border-radius:16px;padding:6px 13px;font:600 11px Inter;color:#fff">Events</div><div style="background:rgba(11,9,19,.85);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:6px 13px;font:600 11px Inter;color:#cfc9e0">Food</div><div style="background:rgba(11,9,19,.85);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:6px 13px;font:600 11px Inter;color:#cfc9e0">Deals</div></div>
+      <!-- card peek -->
+      <div style="position:absolute;left:14px;right:14px;bottom:24px;background:#16121f;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:13px;display:flex;gap:12px;align-items:center;box-shadow:0 16px 40px rgba(0,0,0,.5)"><div style="width:54px;height:54px;border-radius:13px;background:linear-gradient(135deg,#9945FF,#5a2db0)"></div><div style="flex:1"><div style="font:700 14px 'Space Grotesk';color:#f4f1ff">Main Stage · Funkhaus</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">320m · 4 min walk</div></div><div style="background:linear-gradient(135deg,#9945FF,#7a33e0);border-radius:12px;padding:9px 13px;font:600 11px Inter;color:#fff">Route</div></div>
+    </div>
+
+    <!-- checkpoint / badge detail -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:230px;background:linear-gradient(160deg,#14F195 0%,#0b9c62 55%,#0c3a28 100%)">
+        <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+        <div style="position:absolute;top:50px;left:16px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center"><div style="width:9px;height:9px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);margin-left:3px"></div></div>
+        <div style="position:absolute;left:0;right:0;top:74px;display:flex;justify-content:center"><div style="width:108px;height:108px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#cba6ff,#9945FF 52%,#4a2090);border:4px solid rgba(255,255,255,.25);box-shadow:0 16px 40px rgba(0,0,0,.35)"></div></div>
+      </div>
+      <div style="position:absolute;top:212px;left:0;right:0;bottom:0;background:#0b0913;border-radius:26px 26px 0 0;padding:18px 20px 0">
+        <div style="display:flex;align-items:center;gap:8px"><div style="font:700 19px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.01em">Brezel Bar Badge</div><div style="background:rgba(153,69,255,.16);border:1px solid rgba(153,69,255,.5);border-radius:10px;padding:3px 9px;font:700 10px 'Space Grotesk';color:#bd95ff">RARE</div></div>
+        <div style="font:400 12px Inter;color:#8b84a3;margin-top:5px">Checkpoint #3 · 142 collected · Breakpoint 2026</div>
+        <!-- discount -->
+        <div style="margin-top:16px;border:1px dashed rgba(153,69,255,.5);background:rgba(153,69,255,.08);border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px"><div style="font-size:24px">🎟️</div><div style="flex:1"><div style="font:600 14px Inter;color:#f4f1ff">15% off for attendees</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:2px">Show this badge at the counter</div></div></div>
+        <div style="font:400 12px Inter;color:#8b84a3;line-height:1.6;margin-top:16px">Check in at the cart to mint this badge to your wallet and unlock the partner discount.</div>
+        <div style="position:absolute;left:20px;right:20px;bottom:28px;display:flex;gap:11px">
+          <div style="flex:1;height:52px;border-radius:15px;border:1px solid rgba(255,255,255,.14);background:#16121f;display:flex;align-items:center;justify-content:center;font:600 14px Inter;color:#f4f1ff">Directions</div>
+          <div style="flex:1.3;height:52px;border-radius:15px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center;font:600 14px Inter;color:#fff;box-shadow:0 12px 28px rgba(153,69,255,.4)">Check in</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POAP grid -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:58px;left:20px;right:20px">
+        <div style="font:700 20px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Your POAPs</div>
+        <div style="font:400 12px Inter;color:#8b84a3;margin-top:3px">4 of 9 collected at Breakpoint</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px">
+          <div style="aspect-ratio:1;border-radius:18px;background:radial-gradient(circle at 36% 30%,#cba6ff,#9945FF 55%,#4a2090);box-shadow:0 8px 20px rgba(153,69,255,.35)"></div>
+          <div style="aspect-ratio:1;border-radius:18px;background:radial-gradient(circle at 36% 30%,#7be0c0,#14F195 55%,#0b7a52);box-shadow:0 8px 20px rgba(20,241,149,.3)"></div>
+          <div style="aspect-ratio:1;border-radius:18px;background:radial-gradient(circle at 36% 30%,#ffd24c,#ff8a3d 55%,#c1352f)"></div>
+          <div style="aspect-ratio:1;border-radius:18px;background:linear-gradient(135deg,#2775ca,#16407a)"></div>
+          <div style="aspect-ratio:1;border-radius:18px;border:1.5px dashed rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.5">🔒</div>
+          <div style="aspect-ratio:1;border-radius:18px;border:1.5px dashed rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.5">🔒</div>
+          <div style="aspect-ratio:1;border-radius:18px;border:1.5px dashed rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.5">🔒</div>
+          <div style="aspect-ratio:1;border-radius:18px;border:1.5px dashed rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.5">🔒</div>
+          <div style="aspect-ratio:1;border-radius:18px;border:1.5px dashed rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:18px;opacity:.5">🔒</div>
+        </div>
+        <div style="margin-top:20px;border:1px solid rgba(255,255,255,.08);background:#16121f;border-radius:16px;padding:13px;display:flex;gap:11px;align-items:center"><div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#9945FF,#14F195)"></div><div style="font:400 12px Inter;color:#cfc9e0;line-height:1.4">Pay or check in to earn your next badge</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ E · EXPLORE & DISCOVERY ============ -->
+  <div style="margin:56px 0 22px"><div style="font:700 13px 'Space Grotesk';letter-spacing:.16em;color:#9945FF">E · EXPLORE</div><div style="font:600 24px 'Space Grotesk';color:#f4f1ff;margin-top:3px">Find your way around the city</div></div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- explore categories -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:56px;left:20px;right:20px;bottom:0;overflow:hidden">
+        <div style="font:700 20px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Explore</div>
+        <div style="font:400 12px Inter;color:#8b84a3;margin-top:2px">Berlin · around Funkhaus</div>
+        <!-- category grid -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:16px">
+          <div style="border-radius:16px;padding:13px;background:linear-gradient(135deg,rgba(153,69,255,.22),rgba(153,69,255,.06));border:1px solid rgba(153,69,255,.3)"><div style="font-size:20px">🎤</div><div style="font:600 13px Inter;color:#f4f1ff;margin-top:8px">Stages</div><div style="font:400 10px Inter;color:#8b84a3">6 live now</div></div>
+          <div style="border-radius:16px;padding:13px;background:linear-gradient(135deg,rgba(20,241,149,.2),rgba(20,241,149,.05));border:1px solid rgba(20,241,149,.3)"><div style="font-size:20px">🍜</div><div style="font:600 13px Inter;color:#f4f1ff;margin-top:8px">Food &amp; Drink</div><div style="font:400 10px Inter;color:#8b84a3">pay with BRK</div></div>
+          <div style="border-radius:16px;padding:13px;background:#16121f;border:1px solid rgba(255,255,255,.07)"><div style="font-size:20px">🛍️</div><div style="font:600 13px Inter;color:#f4f1ff;margin-top:8px">Partner Shops</div><div style="font:400 10px Inter;color:#14F195">offers inside</div></div>
+          <div style="border-radius:16px;padding:13px;background:#16121f;border:1px solid rgba(255,255,255,.07)"><div style="font-size:20px">🎉</div><div style="font:600 13px Inter;color:#f4f1ff;margin-top:8px">Side Events</div><div style="font:400 10px Inter;color:#8b84a3">you're invited</div></div>
+        </div>
+        <!-- auto-invite banner -->
+        <div style="margin-top:14px;border-radius:16px;padding:13px;background:linear-gradient(120deg,#9945FF,#5a2db0);position:relative;overflow:hidden">
+          <div style="position:absolute;top:-20px;right:-10px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(20,241,149,.4),transparent 70%)"></div>
+          <div style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#14F195"></span><span style="font:700 9px Inter;color:#d9ffee;letter-spacing:.06em">AUTO-INVITED · MAIN EVENT PERK</span></div>
+          <div style="font:700 15px 'Space Grotesk';color:#fff;margin-top:6px">Superteam After-Hours</div>
+          <div style="font:400 11px Inter;color:rgba(255,255,255,.8);margin-top:2px">Tonight 19:00 · Kreuzberg · free entry with your pass</div>
+        </div>
+        <div style="font:600 12px 'Space Grotesk';color:#8b84a3;margin-top:18px;letter-spacing:.04em">RECOMMENDED FOR YOU</div>
+        <div style="display:flex;gap:11px;margin-top:11px;align-items:center"><div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ff8a3d,#c1352f)"></div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">Sunrise Coffee Cart</div><div style="font:400 10px Inter;color:#8b84a3">120m · open · pays BRK</div></div><div style="background:rgba(20,241,149,.14);border:1px solid rgba(20,241,149,.4);border-radius:11px;padding:5px 9px;font:700 10px Inter;color:#14F195">-15%</div></div>
+      </div>
+    </div>
+
+    <!-- partner offer detail -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:200px;background:linear-gradient(135deg,#ff8a3d 0%,#c1352f 60%,#5a1a17 100%)">
+        <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+        <div style="position:absolute;top:50px;left:16px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center"><div style="width:9px;height:9px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);margin-left:3px"></div></div>
+        <div style="position:absolute;bottom:18px;left:18px;right:18px"><div style="display:inline-block;background:rgba(255,255,255,.2);border-radius:10px;padding:4px 9px;font:700 10px Inter;color:#fff;margin-bottom:8px">PARTNER · FOOD</div><div style="font:700 21px 'Space Grotesk';color:#fff;letter-spacing:-.01em">Sunrise Coffee Cart</div></div>
+      </div>
+      <div style="position:absolute;top:182px;left:0;right:0;bottom:0;background:#0b0913;border-radius:26px 26px 0 0;padding:18px 20px 0">
+        <div style="border-radius:16px;padding:16px;background:linear-gradient(120deg,rgba(20,241,149,.16),rgba(20,241,149,.04));border:1px dashed rgba(20,241,149,.5);text-align:center"><div style="font:700 28px 'Space Grotesk';color:#14F195;letter-spacing:-.01em">15% OFF</div><div style="font:400 11px Inter;color:#9fe8c6;margin-top:2px">for Breakpoint pass holders · pay in BRK</div></div>
+        <div style="display:flex;gap:18px;margin-top:18px">
+          <div><div style="font:700 16px 'Space Grotesk';color:#f4f1ff">120m</div><div style="font:400 10px Inter;color:#8b84a3">2 min walk</div></div>
+          <div><div style="font:700 16px 'Space Grotesk';color:#14F195">Open</div><div style="font:400 10px Inter;color:#8b84a3">until 18:00</div></div>
+          <div><div style="font:700 16px 'Space Grotesk';color:#f4f1ff">4.8★</div><div style="font:400 10px Inter;color:#8b84a3">86 reviews</div></div>
+        </div>
+        <div style="font:400 13px Inter;color:#b9b2d0;line-height:1.6;margin-top:16px">Specialty espresso &amp; pastries, two minutes from the main stage. Show your pass at the counter or pay in BRK for the discount to apply automatically.</div>
+        <div style="position:absolute;left:20px;right:20px;bottom:28px;display:flex;gap:11px">
+          <div style="flex:1;height:52px;border-radius:15px;border:1px solid rgba(255,255,255,.14);background:#16121f;display:flex;align-items:center;justify-content:center;font:600 14px Inter;color:#f4f1ff">Directions</div>
+          <div style="flex:1.3;height:52px;border-radius:15px;background:linear-gradient(135deg,#14F195,#0b9c62);display:flex;align-items:center;justify-content:center;font:600 14px Inter;color:#06281b;box-shadow:0 12px 28px rgba(20,241,149,.35)">Pay 12 BRK</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- live side events -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:56px;left:20px;right:20px;bottom:0;overflow:hidden">
+        <div style="font:700 20px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Side events</div>
+        <div style="font:400 12px Inter;color:#8b84a3;margin-top:2px">Auto-invited as a main-event attendee</div>
+        <!-- happening now -->
+        <div style="font:600 11px 'Space Grotesk';color:#14F195;margin-top:18px;letter-spacing:.06em;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#14F195;box-shadow:0 0 8px #14F195"></span>HAPPENING NOW</div>
+        <div style="margin-top:11px;border-radius:18px;overflow:hidden;border:1px solid rgba(20,241,149,.3)">
+          <div style="height:96px;background:linear-gradient(135deg,#14F195,#0b7a52);position:relative"><div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.3);border-radius:14px;padding:4px 10px;font:700 10px Inter;color:#fff">62 going</div></div>
+          <div style="padding:12px 13px;background:#16121f"><div style="font:700 15px 'Space Grotesk';color:#f4f1ff">DeFi Builders Mixer</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:3px">Now · Hall C · 320m away</div></div>
+        </div>
+        <div style="font:600 11px 'Space Grotesk';color:#8b84a3;margin-top:20px;letter-spacing:.06em">LATER TODAY</div>
+        <div style="margin-top:11px;display:flex;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.07);background:#16121f;border-radius:16px;padding:11px"><div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#9945FF,#5a2db0);display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font:700 15px 'Space Grotesk';color:#fff;line-height:1">19</div><div style="font:600 8px Inter;color:rgba(255,255,255,.7)">JUN</div></div><div style="flex:1"><div style="font:700 14px 'Space Grotesk';color:#f4f1ff">Superteam After-Hours</div><div style="font:400 10px Inter;color:#8b84a3;margin-top:2px">19:00 · Kreuzberg · free</div></div><div style="border:1px solid rgba(255,255,255,.16);border-radius:11px;padding:6px 11px;font:600 10px Inter;color:#cfc9e0">RSVP</div></div>
+        <div style="margin-top:11px;display:flex;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.07);background:#16121f;border-radius:16px;padding:11px"><div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#ff8a3d,#c1352f);display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font:700 15px 'Space Grotesk';color:#fff;line-height:1">20</div><div style="font:600 8px Inter;color:rgba(255,255,255,.7)">JUN</div></div><div style="flex:1"><div style="font:700 14px 'Space Grotesk';color:#f4f1ff">W3 Hub Closing Party</div><div style="font:400 10px Inter;color:#8b84a3;margin-top:2px">22:00 · Mitte · pass only</div></div><div style="border:1px solid rgba(255,255,255,.16);border-radius:11px;padding:6px 11px;font:600 10px Inter;color:#cfc9e0">RSVP</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ F · GAMIFICATION ============ -->
+  <div style="margin:56px 0 22px"><div style="font:700 13px 'Space Grotesk';letter-spacing:.16em;color:#9945FF">F · GAMIFICATION</div><div style="font:600 24px 'Space Grotesk';color:#f4f1ff;margin-top:3px">Quests, leaderboard &amp; the reward pool</div></div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- quests -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:56px;left:20px;right:20px;bottom:0;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 20px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Quests</div><div style="font:400 12px Inter;color:#8b84a3;margin-top:2px">Earn XP &amp; badges all week</div></div><div style="text-align:right"><div style="font:700 20px 'Space Grotesk';color:#14F195">1,240</div><div style="font:400 10px Inter;color:#8b84a3">your XP</div></div></div>
+        <!-- progress to next reward -->
+        <div style="margin-top:16px;border-radius:16px;padding:14px;background:#16121f;border:1px solid rgba(255,255,255,.07)">
+          <div style="display:flex;justify-content:space-between;font:600 11px Inter;color:#cfc9e0"><span>Level 4 · Explorer</span><span style="color:#8b84a3">1,240 / 1,500</span></div>
+          <div style="height:8px;border-radius:5px;background:#0b0913;margin-top:9px;overflow:hidden"><div style="width:82%;height:100%;background:linear-gradient(90deg,#9945FF,#14F195)"></div></div>
+          <div style="font:400 10px Inter;color:#8b84a3;margin-top:8px">260 XP to unlock the next chest drop 🎁</div>
+        </div>
+        <!-- quest list -->
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:11px">
+          <div style="display:flex;gap:12px;align-items:center;border:1px solid rgba(20,241,149,.25);background:rgba(20,241,149,.05);border-radius:15px;padding:12px"><div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#14F195,#0b9c62);display:flex;align-items:center;justify-content:center;font-size:15px">✓</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">First payment in BRK</div><div style="font:400 10px Inter;color:#14F195">Completed</div></div><div style="font:700 12px 'Space Grotesk';color:#14F195">+200</div></div>
+          <div style="display:flex;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.08);background:#16121f;border-radius:15px;padding:12px"><div style="width:38px;height:38px;border-radius:11px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:15px">📍</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">Check in at 3 checkpoints</div><div style="font:400 10px Inter;color:#8b84a3">2 / 3 done</div></div><div style="font:700 12px 'Space Grotesk';color:#cfc9e0">+300</div></div>
+          <div style="display:flex;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.08);background:#16121f;border-radius:15px;padding:12px"><div style="width:38px;height:38px;border-radius:11px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:15px">🎤</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">Attend a main-stage talk</div><div style="font:400 10px Inter;color:#8b84a3">Not started</div></div><div style="font:700 12px 'Space Grotesk';color:#cfc9e0">+250</div></div>
+          <div style="display:flex;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.08);background:#16121f;border-radius:15px;padding:12px"><div style="width:38px;height:38px;border-radius:11px;background:#1c1726;display:flex;align-items:center;justify-content:center;font-size:15px">🎉</div><div style="flex:1"><div style="font:600 13px Inter;color:#f4f1ff">RSVP a side event</div><div style="font:400 10px Inter;color:#8b84a3">Not started</div></div><div style="font:700 12px 'Space Grotesk';color:#cfc9e0">+150</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- leaderboard -->
+    <div class="scr" style="background:#0b0913">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:56px;left:0;right:0;bottom:0">
+        <div style="padding:0 20px"><div style="font:700 20px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Leaderboard</div><div style="font:400 12px Inter;color:#8b84a3;margin-top:2px">Breakpoint 2026 · top explorers</div></div>
+        <!-- podium -->
+        <div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:20px;padding:0 20px">
+          <div style="text-align:center;flex:1"><div style="width:50px;height:50px;border-radius:50%;margin:0 auto;background:linear-gradient(135deg,#9945FF,#5a2db0);border:2px solid #c0c0d0"></div><div style="font:600 11px Inter;color:#f4f1ff;margin-top:6px">mara.sol</div><div style="font:400 9px Inter;color:#8b84a3">2,980</div><div style="height:52px;margin-top:7px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#2a2435,#16121f);display:flex;align-items:flex-start;justify-content:center;padding-top:7px;font:700 16px 'Space Grotesk';color:#c0c0d0">2</div></div>
+          <div style="text-align:center;flex:1"><div style="font-size:16px">👑</div><div style="width:58px;height:58px;border-radius:50%;margin:2px auto 0;background:linear-gradient(135deg,#14F195,#0b9c62);border:2px solid #ffd24c;box-shadow:0 0 24px rgba(255,210,76,.4)"></div><div style="font:600 12px Inter;color:#f4f1ff;margin-top:6px">d.eth</div><div style="font:400 9px Inter;color:#14F195">3,410</div><div style="height:70px;margin-top:7px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#3a2f1a,#16121f);display:flex;align-items:flex-start;justify-content:center;padding-top:7px;font:700 18px 'Space Grotesk';color:#ffd24c">1</div></div>
+          <div style="text-align:center;flex:1"><div style="width:50px;height:50px;border-radius:50%;margin:0 auto;background:linear-gradient(135deg,#ff8a3d,#c1352f);border:2px solid #cd7f32"></div><div style="font:600 11px Inter;color:#f4f1ff;margin-top:6px">yuki.sol</div><div style="font:400 9px Inter;color:#8b84a3">2,640</div><div style="height:40px;margin-top:7px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#2a2435,#16121f);display:flex;align-items:flex-start;justify-content:center;padding-top:7px;font:700 16px 'Space Grotesk';color:#cd7f32">3</div></div>
+        </div>
+        <!-- rows -->
+        <div style="padding:14px 20px 0;display:flex;flex-direction:column;gap:9px">
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)"><div style="font:700 12px 'Space Grotesk';color:#8b84a3;width:20px">4</div><div style="width:32px;height:32px;border-radius:50%;background:#2775ca"></div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">leo.sol</div><div style="font:600 12px 'Space Grotesk';color:#cfc9e0">2,210</div></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)"><div style="font:700 12px 'Space Grotesk';color:#8b84a3;width:20px">5</div><div style="width:32px;height:32px;border-radius:50%;background:#7a33e0"></div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">anya.eth</div><div style="font:600 12px 'Space Grotesk';color:#cfc9e0">1,870</div></div>
+        </div>
+        <!-- your rank -->
+        <div style="position:absolute;left:14px;right:14px;bottom:22px;display:flex;align-items:center;gap:12px;border-radius:16px;padding:12px;background:linear-gradient(120deg,#9945FF,#5a2db0);box-shadow:0 12px 30px rgba(153,69,255,.35)"><div style="font:700 13px 'Space Grotesk';color:#fff;width:20px">12</div><div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#14F195,#0b9c62);border:2px solid rgba(255,255,255,.4)"></div><div style="flex:1"><div style="font:700 13px Inter;color:#fff">You · 7xKn…3pQ</div><div style="font:400 10px Inter;color:rgba(255,255,255,.75)">Climb 2 spots to reach the reward tier</div></div><div style="font:700 14px 'Space Grotesk';color:#fff">1,240</div></div>
+      </div>
+    </div>
+
+    <!-- reward pool / sphere -->
+    <div class="scr" style="background:radial-gradient(500px 460px at 50% 34%,#241646,#0b0913 66%)">
+      <div class="notch"></div>
+      <div class="stat"><span>9:41</span><span>5G ▮</span></div>
+      <div style="position:absolute;top:54px;left:0;right:0;text-align:center"><div style="font:700 19px 'Space Grotesk';color:#f4f1ff;letter-spacing:-.02em">Reward Pool</div><div style="font:400 11px Inter;color:#8b84a3;margin-top:2px">Breakpoint 2026 · ends in 2d 14h</div></div>
+      <!-- the sphere -->
+      <div style="position:absolute;top:108px;left:0;right:0;display:flex;justify-content:center">
+        <div style="position:relative;width:184px;height:184px;border-radius:50%;background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.55),rgba(153,69,255,.35) 38%,rgba(20,30,60,.6) 70%,rgba(8,6,16,.85));border:1px solid rgba(255,255,255,.25);box-shadow:0 0 60px rgba(153,69,255,.5),inset 0 0 50px rgba(20,241,149,.2);animation:pulseGlow 3.6s ease-in-out infinite">
+          <!-- inner solana mark -->
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;gap:5px">
+            <div style="width:58px;height:11px;border-radius:3px;background:linear-gradient(90deg,#9945FF,#14F195);transform:skewX(-22deg);box-shadow:0 0 12px rgba(20,241,149,.6)"></div>
+            <div style="width:58px;height:11px;border-radius:3px;background:linear-gradient(90deg,#14F195,#9945FF);transform:skewX(-22deg);box-shadow:0 0 12px rgba(153,69,255,.6)"></div>
+            <div style="width:58px;height:11px;border-radius:3px;background:linear-gradient(90deg,#9945FF,#14F195);transform:skewX(-22deg);box-shadow:0 0 12px rgba(20,241,149,.6)"></div>
+          </div>
+          <!-- highlight -->
+          <div style="position:absolute;top:20px;left:34px;width:40px;height:24px;border-radius:50%;background:rgba(255,255,255,.4);filter:blur(6px)"></div>
+        </div>
+      </div>
+      <div style="position:absolute;top:312px;left:0;right:0;text-align:center"><div style="font:700 34px 'Space Grotesk';color:#fff;letter-spacing:-.02em">12,500 <span style="font-size:16px;color:#14F195">USDC</span></div><div style="font:400 11px Inter;color:#8b84a3;margin-top:2px">+ 50 exclusive POAPs · 3 hardware wallets</div></div>
+      <!-- reward tiers -->
+      <div style="position:absolute;left:20px;right:20px;bottom:96px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:11px;border-radius:13px;padding:10px 12px;background:rgba(255,210,76,.1);border:1px solid rgba(255,210,76,.35)"><div style="font-size:15px">🥇</div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">Top 1–3</div><div style="font:700 11px 'Space Grotesk';color:#ffd24c">1,500 USDC + Ledger</div></div>
+        <div style="display:flex;align-items:center;gap:11px;border-radius:13px;padding:10px 12px;background:#16121f;border:1px solid rgba(255,255,255,.08)"><div style="font-size:15px">🎖️</div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">Top 4–25</div><div style="font:700 11px 'Space Grotesk';color:#cfc9e0">200 USDC + POAP</div></div>
+        <div style="display:flex;align-items:center;gap:11px;border-radius:13px;padding:10px 12px;background:#16121f;border:1px solid rgba(255,255,255,.08)"><div style="font-size:15px">✨</div><div style="flex:1;font:600 12px Inter;color:#f4f1ff">Everyone who plays</div><div style="font:700 11px 'Space Grotesk';color:#cfc9e0">Collector POAP</div></div>
+      </div>
+      <div style="position:absolute;left:20px;right:20px;bottom:30px;height:52px;border-radius:16px;background:linear-gradient(135deg,#9945FF,#7a33e0);display:flex;align-items:center;justify-content:center;font:600 15px Inter;color:#fff;box-shadow:0 12px 30px rgba(153,69,255,.45)">View my quests →</div>
+    </div>
+  </div>
+
+  <div style="margin:54px 0 8px;max-width:780px;border-top:1px solid rgba(255,255,255,.1);padding-top:22px">
+    <div style="font:600 20px 'Space Grotesk';color:#f4f1ff">Full experience, end to end</div>
+    <div style="font:400 15px Inter;color:#8b84a3;line-height:1.5;margin-top:6px">Onboarding → events → detail → wallet → pay → assistant → explore (categories, partner offers, auto-invited side events) → quests → leaderboard → reward pool. The Solana sphere is a CSS stand-in — we can swap a real 3D glTF render in later. Next: clickable prototype, desktop layout, or make palette/density tweakable.</div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:860}}">
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+
+
+</body></html>

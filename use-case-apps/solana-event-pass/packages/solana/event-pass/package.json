@@ -1,0 +1,22 @@
+{
+  "name": "@solana-event-pass/solana",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "anchor build",
+    "test": "anchor test",
+    "deploy:devnet": "anchor deploy --provider.cluster devnet",
+    "idl": "anchor idl init --filepath target/idl/event_pass.json Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS || anchor idl write --filepath target/idl/event_pass.json Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+  },
+  "devDependencies": {
+    "@coral-xyz/anchor": "^0.30.1",
+    "@solana/spl-token": "^0.4.0",
+    "@solana/web3.js": "^1.98.0",
+    "@types/mocha": "^10.0.10",
+    "@types/chai": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "chai": "^5.0.0",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.7.0"
+  }
+}

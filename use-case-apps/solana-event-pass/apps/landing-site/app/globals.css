@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0913;
+  --foreground: #f4f1ff;
+  --purple: #9945ff;
+  --green: #14f195;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-purple: var(--purple);
+  --color-green: var(--green);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+::selection {
+  background: rgba(153, 69, 255, 0.35);
+}
