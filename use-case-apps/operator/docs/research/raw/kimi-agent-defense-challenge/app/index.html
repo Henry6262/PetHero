@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCOUT C2 — The Map Has State</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+
+:root {
+  --bg: #050508;
+  --bg-card: #0a0a12;
+  --accent: #00d4ff;
+  --accent-glow: rgba(0,212,255,0.15);
+  --text: #e8e8ec;
+  --text-dim: #888;
+  --red: #ff453a;
+  --orange: #ff9f0a;
+  --green: #32d74b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* === HERO === */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 2rem;
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% 50%, rgba(0,212,255,0.06) 0%, transparent 70%),
+    var(--bg);
+}
+.hero-badge {
+  display: inline-block;
+  border: 1px solid rgba(0,212,255,0.3);
+  color: var(--accent);
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 30px;
+  margin-bottom: 2rem;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 1rem;
+}
+.hero h1 span { color: var(--accent); }
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  color: var(--text-dim);
+  font-weight: 300;
+  max-width: 500px;
+  margin-bottom: 2.5rem;
+}
+.hero-img {
+  max-width: 700px;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 0 80px rgba(0,212,255,0.1);
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce { 0%,100%{opacity:0.5;transform:translateY(0)} 50%{opacity:1;transform:translateY(6px)} }
+
+/* === SECTIONS === */
+section { padding: 5rem 1.5rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  color: var(--accent);
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+.section-text {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* === PROBLEM === */
+.problem {
+  background: linear-gradient(180deg, var(--bg) 0%, #0d0d14 50%, var(--bg) 100%);
+  text-align: center;
+}
+.problem .stat {
+  font-size: clamp(5rem, 12vw, 9rem);
+  font-weight: 900;
+  color: var(--red);
+  line-height: 1;
+  text-shadow: 0 0 60px rgba(255,69,58,0.2);
+}
+.problem .stat-label {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+}
+.problem-img {
+  max-width: 800px;
+  width: 100%;
+  border-radius: 12px;
+  opacity: 0.85;
+  margin-top: 1rem;
+}
+
+/* === ROBOT === */
+.robot-section { text-align: center; }
+.robot-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  align-items: center;
+}
+@media(min-width: 768px) {
+  .robot-grid { grid-template-columns: 1fr 1fr; }
+}
+.robot-img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(0,212,255,0.08);
+}
+.robot-features {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.feature-pill {
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.15);
+  border-radius: 30px;
+  padding: 10px 24px;
+  font-size: 0.85rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.feature-pill svg { width: 16px; height: 16px; }
+
+/* === DASHBOARD === */
+.dashboard-section {
+  background: var(--bg-card);
+  border-top: 1px solid #1a1a28;
+  border-bottom: 1px solid #1a1a28;
+  text-align: center;
+  padding: 0;
+}
+.dashboard-header {
+  padding: 3rem 1.5rem 1rem;
+}
+#map-canvas-container {
+  width: 100%;
+  height: 60vh;
+  min-height: 400px;
+  position: relative;
+}
+#map-ui {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: rgba(10,10,15,0.92);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 180px;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  text-align: left;
+}
+#map-ui h2 { font-size: 12px; color: var(--accent); margin-bottom: 8px; letter-spacing: 1px; }
+#map-ui .room-item { 
+  padding: 5px 8px; margin: 3px 0; border-radius: 4px; font-size: 10px;
+  cursor: pointer; transition: all 0.2s; border-left: 2px solid;
+}
+#map-ui .room-item:hover { opacity: 0.8; }
+#map-ui .room-item.unknown { background: rgba(136,136,136,0.12); border-color: #888; color: #aaa; }
+#map-ui .room-item.in-progress { background: rgba(255,159,10,0.12); border-color: var(--orange); color: var(--orange); }
+#map-ui .room-item.cleared { background: rgba(50,215,75,0.12); border-color: var(--green); color: var(--green); }
+#map-ui .room-item.threat { background: rgba(255,69,58,0.12); border-color: var(--red); color: var(--red); }
+#map-ui .map-status { font-size: 9px; color: #666; margin-top: 8px; }
+#map-alert {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: rgba(255,69,58,0.9);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 11px;
+  display: none;
+  z-index: 10;
+  animation: pulse 1s infinite;
+}
+#map-legend {
+  position: absolute;
+  bottom: 12px; left: 12px;
+  background: rgba(10,10,15,0.92);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 9px;
+  z-index: 10;
+  text-align: left;
+}
+#map-legend span { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+
+/* === VISION === */
+.vision-section { text-align: center; }
+.vision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.vision-card {
+  background: var(--bg-card);
+  border: 1px solid #1a1a28;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.vision-card:hover { transform: translateY(-4px); border-color: rgba(0,212,255,0.2); }
+.vision-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.vision-card-body { padding: 1.2rem; text-align: left; }
+.vision-card h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+.vision-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+.vision-card .tag {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(0,212,255,0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 0.6rem;
+}
+
+/* === ASK === */
+.ask-section {
+  text-align: center;
+  background: 
+    radial-gradient(ellipse 60% 40% at 50% 80%, rgba(0,212,255,0.05) 0%, transparent 70%),
+    var(--bg);
+}
+.ask-img {
+  max-width: 500px;
+  width: 100%;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  opacity: 0.9;
+}
+.ask-price {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+}
+.ask-label {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border-top: 1px solid #1a1a28;
+}
+footer .logo { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin-bottom: 0.5rem; }
+footer .tagline { color: var(--text-dim); font-size: 0.9rem; }
+
+/* === RESPONSIVE === */
+@media(max-width: 640px) {
+  section { padding: 3rem 1rem; }
+  .robot-grid { grid-template-columns: 1fr; }
+  .vision-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-badge">Tactical Command & Control</div>
+  <h1>SCOUT <span>C2</span></h1>
+  <p class="hero-sub">The map has state. Your team has context.</p>
+  <img src="SCOUT_V1_Mini_6legs_hexapod.png" alt="SCOUT Mini Hexapod" class="hero-img">
+  <div class="scroll-hint">SCROLL</div>
+</section>
+
+<!-- ===== THE PROBLEM ===== -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="section-label">The Problem</div>
+    <div class="stat">4.5%</div>
+    <p class="stat-label">of soldiers who enter a building in Ukraine don't come back</p>
+    <p class="section-text" style="margin:0 auto;">
+      Soldiers walk in blind. No intel. Comms jammed. The soldier is the probe.
+      Both sides have thousands of drones — but zero coordination.
+    </p>
+    <img src="SCOUT_PiCrawler_building_entry.png" alt="Robot entering building" class="problem-img">
+  </div>
+</section>
+
+<!-- ===== THE ROBOT ===== -->
+<section class="robot-section" id="robot">
+  <div class="container">
+    <div class="section-label">The Robot</div>
+    <h2 class="section-title">Walk. Fly. Clear.</h2>
+    <p class="section-text" style="margin:0 auto;">
+      SCOUT-Mini. Six legs. 1.1 kg. $567. Static stability — three legs on the ground at all times.
+      When rubble blocks the path, legs fold and rotors deploy.
+    </p>
+    <div class="robot-grid">
+      <img src="SCOUT_PiCrawler_4leg_vs_6leg_upgrade.png" alt="4-leg vs 6-leg upgrade" class="robot-img">
+      <img src="SCOUT_leg_folding_mechanism.png" alt="Leg folding mechanism" class="robot-img">
+    </div>
+    <div class="robot-features">
+      <div class="feature-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Walk
+      </div>
+      <div class="feature-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 6 18 3-9h4"/></svg>
+        Fly
+      </div>
+      <div class="feature-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Clear
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE DASHBOARD ===== -->
+<section class="dashboard-section" id="dashboard">
+  <div class="dashboard-header">
+    <div class="container">
+      <div class="section-label">The Product</div>
+      <h2 class="section-title">The Map Has State</h2>
+      <p class="section-text" style="margin:0 auto;">
+        Every room has a state. Gray: unknown. Yellow: in progress. Green: cleared. Red: person detected.
+        Click a room below to see it change.
+      </p>
+    </div>
+  </div>
+  <div id="map-canvas-container">
+    <div id="map-ui">
+      <h2>BUILDING A — Floor 1</h2>
+      <div class="room-item unknown" onclick="setRoomState(0,'in_progress')">Room 101 — Unknown</div>
+      <div class="room-item in-progress" onclick="setRoomState(1,'cleared')">Room 102 — In Progress</div>
+      <div class="room-item threat" onclick="setRoomState(2,'evacuated')">Room 103 — Person Detected</div>
+      <div class="room-item unknown" onclick="setRoomState(3,'in_progress')">Room 104 — Unknown</div>
+      <div class="room-item unknown" onclick="setRoomState(4,'cleared')">Corridor — Unknown</div>
+      <div class="map-status">Click to change state &middot; Drag to rotate</div>
+    </div>
+    <div id="map-alert">PERSON DETECTED — Room 103</div>
+    <div id="map-legend">
+      <div><span style="background:#888"></span> Unknown</div>
+      <div><span style="background:var(--orange)"></span> In Progress</div>
+      <div><span style="background:var(--green)"></span> Cleared</div>
+      <div><span style="background:var(--red)"></span> Person Detected</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE VISION ===== -->
+<section class="vision-section" id="vision">
+  <div class="container">
+    <div class="section-label">The Vision</div>
+    <h2 class="section-title">One Platform. Every Mission.</h2>
+    <div class="vision-grid">
+      <div class="vision-card">
+        <img src="SCOUT_mobile_drone_station_concept.png" alt="Mobile drone station">
+        <div class="vision-card-body">
+          <div class="tag">Mothership</div>
+          <h3>Mobile Drone Station</h3>
+          <p>6-drone docking platform with wireless charging and solar panels. Drones scout, return, recharge.</p>
+        </div>
+      </div>
+      <div class="vision-card">
+        <img src="SCOUT_mini_hexapod_flying.png" alt="VTOL flight">
+        <div class="vision-card-body">
+          <div class="tag">VTOL</div>
+          <h3>Legs Fold. Rotors Deploy.</h3>
+          <p>5.94:1 thrust-to-weight ratio. Walk over rubble. Fly over walls. One body, two modes.</p>
+        </div>
+      </div>
+      <div class="vision-card">
+        <img src="SCOUT_hexapod_6leg_gripper.png" alt="Robot with gripper">
+        <div class="vision-card-body">
+          <div class="tag">Payload</div>
+          <h3>Hot-Swappable Configs</h3>
+          <p>Recon. Rescue. Marker. Swap payloads in seconds. No tools needed.</p>
+        </div>
+      </div>
+      <div class="vision-card">
+        <img src="SCOUT_family_portrait_all_versions.png" alt="All SCOUT versions">
+        <div class="vision-card-body">
+          <div class="tag">Evolution</div>
+          <h3>V0 &rarr; V1 &rarr; V2</h3>
+          <p>$280 kit to $567 tactical unit to $3,900 heavy-duty platform. 3D printed. Iterated in days.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE ASK ===== -->
+<section class="ask-section" id="ask">
+  <div class="container">
+    <div class="section-label">What We Need</div>
+    <h2 class="section-title">The 3D Printer Is Our<br>Manufacturing Line</h2>
+    <img src="SCOUT_before_after_3dprinted.png" alt="Before and after 3D printing" class="ask-img">
+    <p class="ask-label">Print. Test. Improve. Hours, not weeks.</p>
+    <div class="ask-price">$549</div>
+    <p class="section-text" style="margin:1rem auto 0;">
+      Bambu Lab A1. The tool that turns a $280 kit into a $567 tactical robot.
+      Print the body. Print the legs. Print the rotor arms. Six iterations in a week.
+    </p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="logo">SCOUT C2</div>
+  <p class="tagline">EDTH Munich 2026 &middot; The map has state. Your team has context.</p>
+</footer>
+
+<!-- ===== THREE.JS MAP ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const container = document.getElementById('map-canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a12);
+scene.fog = new THREE.FogExp2(0x0a0a12, 0.025);
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth/container.clientHeight, 0.1, 200);
+camera.position.set(15, 12, 15);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+container.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(5, 1, 5);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.4));
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+dirLight.position.set(10, 20, 10); dirLight.castShadow = true; scene.add(dirLight);
+scene.add(new THREE.DirectionalLight(0x0044ff, 0.2).position.set(-10,5,-10));
+scene.add(new THREE.DirectionalLight(0xff6600, 0.1).position.set(5,2,-10));
+
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(50, 50),
+  new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.95 })
+);
+ground.rotation.x = -Math.PI/2; ground.position.y = -0.05; scene.add(ground);
+scene.add(new THREE.GridHelper(50, 50, 0x333344, 0x1a1a2e));
+
+function createPointCloud() {
+  const count = 15000;
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const rooms = [
+    { x: 0, z: 0, w: 4, d: 3.5, h: 2.8 }, { x: 5, z: 0, w: 3.5, d: 3.5, h: 2.8 },
+    { x: 0, z: 4, w: 4, d: 3, h: 2.8 }, { x: 5, z: 4, w: 3.5, d: 3, h: 2.8 },
+    { x: 0, z: -1, w: 8.5, d: 1, h: 2.5 },
+  ];
+  let idx = 0;
+  for (let r of rooms) {
+    const ppr = Math.floor(count / rooms.length);
+    for (let i = 0; i < ppr && idx < count; i++) {
+      positions[idx*3] = r.x + (Math.random()-0.5)*r.w;
+      positions[idx*3+1] = Math.random()*r.h;
+      positions[idx*3+2] = r.z + (Math.random()-0.5)*r.d;
+      if (positions[idx*3+1] < 0.3) { colors[idx*3]=0.1; colors[idx*3+1]=0.3; colors[idx*3+2]=0.7; }
+      else if (positions[idx*3+1] < 2.0) { colors[idx*3]=0.25; colors[idx*3+1]=0.5; colors[idx*3+2]=0.3; }
+      else { colors[idx*3]=0.6; colors[idx*3+1]=0.35; colors[idx*3+2]=0.15; }
+      idx++;
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const mat = new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.7, sizeAttenuation: true });
+  return new THREE.Points(geo, mat);
+}
+scene.add(createPointCloud());
+
+const roomMeshes = [];
+const roomStates = ['unknown','in-progress','threat','unknown','unknown'];
+const stateColors = { 'unknown':0x888888, 'in-progress':0xFF9F0A, 'cleared':0x32D74B, 'threat':0xFF453A, 'evacuated':0x0A84FF };
+
+function createRoom(x,z,w,d,h,label,index) {
+  const geo = new THREE.BoxGeometry(w,h,d);
+  const mat = new THREE.MeshStandardMaterial({ color: stateColors['unknown'], transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false });
+  const mesh = new THREE.Mesh(geo, mat); mesh.position.set(x,h/2,z); scene.add(mesh);
+  const edges = new THREE.EdgesGeometry(geo);
+  const lineMat = new THREE.LineBasicMaterial({ color: stateColors['unknown'], transparent: true, opacity: 0.5 });
+  const wire = new THREE.LineSegments(edges, lineMat); wire.position.copy(mesh.position); scene.add(wire);
+  roomMeshes.push({ mesh, wire, label, index });
+}
+[
+  { x:0, z:0, w:4, d:3.5, h:2.8, label:'Room 101' }, { x:5, z:0, w:3.5, d:3.5, h:2.8, label:'Room 102' },
+  { x:0, z:4, w:4, d:3, h:2.8, label:'Room 103' }, { x:5, z:4, w:3.5, d:3, h:2.8, label:'Room 104' },
+  { x:4, z:-2.2, w:8.5, d:1, h:2.5, label:'Corridor' },
+].forEach((r,i) => createRoom(r.x,r.z,r.w,r.d,r.h,r.label,i));
+
+function createRobotIcon(x,z) {
+  const group = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.4,0.2,0.5), new THREE.MeshStandardMaterial({ color:0x00d4ff, emissive:0x00d4ff, emissiveIntensity:0.3 }));
+  body.position.y = 0.15; group.add(body);
+  for (let i=0;i<6;i++) {
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.06,0.15,0.06), new THREE.MeshStandardMaterial({ color:0x666666 }));
+    const side = i < 3 ? -1 : 1;
+    const pos = i % 3;
+    leg.position.set(side * 0.22, 0, -0.2 + pos * 0.2);
+    group.add(leg);
+  }
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.3,0.35,32), new THREE.MeshBasicMaterial({ color:0x00d4ff, transparent:true, opacity:0.3, side:THREE.DoubleSide }));
+  ring.rotation.x = -Math.PI/2; ring.position.y = 0.02; group.add(ring);
+  group.position.set(x,0,z); scene.add(group); return group;
+}
+const robot = createRobotIcon(2,2);
+
+let t = 0;
+function animateRobot() {
+  t += 0.02;
+  robot.position.x = 2 + Math.sin(t*0.3)*1.5;
+  robot.position.z = 2 + Math.cos(t*0.3)*1;
+  robot.rotation.y = Math.atan2(Math.cos(t*0.3+0.1)-Math.cos(t*0.3), Math.sin(t*0.3+0.1)-Math.sin(t*0.3));
+  robot.children[6].scale.setScalar(1 + Math.sin(t*3)*0.2);
+}
+
+window.setRoomState = function(index, state) {
+  const c = stateColors[state];
+  roomMeshes[index].mesh.material.color.setHex(c);
+  roomMeshes[index].mesh.material.opacity = state === 'cleared' ? 0.08 : 0.15;
+  roomMeshes[index].wire.material.color.setHex(c);
+  const uiRoom = document.querySelectorAll('#map-ui .room-item')[index];
+  uiRoom.className = 'room-item ' + state;
+  const names = ['Room 101','Room 102','Room 103','Room 104','Corridor'];
+  const labels = { 'unknown':'Unknown','in-progress':'In Progress','cleared':'Cleared','threat':'Person Detected','evacuated':'Evacuated' };
+  uiRoom.textContent = names[index] + ' \u2014 ' + labels[state];
+  if (state === 'threat') {
+    document.getElementById('map-alert').style.display = 'block';
+    setTimeout(() => document.getElementById('map-alert').style.display = 'none', 4000);
+  }
+};
+
+function animate() {
+  requestAnimationFrame(animate);
+  animateRobot(); controls.update(); renderer.render(scene, camera);
+}
+animate();
+
+const resizeObserver = new ResizeObserver(() => {
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+});
+resizeObserver.observe(container);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCOUT C2 — Command Console</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg: #070709;
+  --bg-panel: #0e0e14;
+  --bg-panel-hover: #14141c;
+  --border: #1e1e2e;
+  --border-light: #2a2a3e;
+  --accent: #00d4ff;
+  --accent-dim: rgba(0,212,255,0.1);
+  --green: #00e676;
+  --green-dim: rgba(0,230,118,0.1);
+  --red: #ff5252;
+  --red-dim: rgba(255,82,82,0.1);
+  --orange: #ffab40;
+  --orange-dim: rgba(255,171,64,0.1);
+  --yellow: #ffd740;
+  --purple: #e040fb;
+  --text: #e0e0e6;
+  --text-dim: #6b6b7b;
+  --text-faint: #3a3a4e;
+  --font-ui: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  height: 48px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 20px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.logo {
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-icon { width: 20px; height: 20px; }
+.topbar-sep { width: 1px; height: 24px; background: var(--border); }
+.mission-info {
+  display: flex;
+  gap: 24px;
+  font-size: 11px;
+}
+.mission-info div { text-align: center; }
+.mission-info .label { color: var(--text-faint); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
+.mission-info .value { color: var(--text); font-weight: 600; font-family: var(--font-mono); }
+.mission-info .value.accent { color: var(--accent); }
+.mission-info .value.green { color: var(--green); }
+.coverage-bar {
+  flex: 1;
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.coverage-track {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.coverage-fill {
+  height: 100%;
+  width: 73%;
+  background: linear-gradient(90deg, var(--green), var(--accent));
+  border-radius: 3px;
+  transition: width 0.5s;
+}
+.coverage-label { font-size: 10px; color: var(--green); font-weight: 700; font-family: var(--font-mono); }
+.topbar-actions { display: flex; gap: 8px; margin-left: auto; }
+.btn-top {
+  background: var(--border);
+  border: 1px solid var(--border-light);
+  color: var(--text-dim);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
+}
+.btn-top:hover { background: var(--border-light); color: var(--text); }
+.btn-top.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* ===== MAIN LAYOUT ===== */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+/* ===== SIDEBAR (collapsible) ===== */
+.sidebar {
+  width: 280px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease, margin-left 0.25s ease;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.sidebar.collapsed { width: 36px; }
+.sidebar-toggle {
+  width: 36px; height: 36px;
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: color 0.15s; flex-shrink: 0;
+}
+.sidebar-toggle:hover { color: var(--text); }
+.sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.sidebar.collapsed .sidebar-header { justify-content: center; padding: 8px 0; }
+.sidebar-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.sidebar.collapsed .sidebar-title { display: none; }
+.sidebar-content { flex: 1; overflow-y: auto; padding: 8px; }
+.sidebar.collapsed .sidebar-content { display: none; }
+
+/* Unit card */
+.unit-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.unit-card:hover { border-color: var(--border-light); background: var(--bg-panel-hover); }
+.unit-card.active { border-color: var(--accent); background: var(--accent-dim); }
+.unit-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.unit-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.unit-icon.ground { background: var(--green-dim); }
+.unit-icon.drone { background: var(--accent-dim); }
+.unit-icon.station { background: var(--orange-dim); }
+.unit-icon svg { width: 16px; height: 16px; }
+.unit-icon.ground svg { stroke: var(--green); }
+.unit-icon.drone svg { stroke: var(--accent); }
+.unit-icon.station svg { stroke: var(--orange); }
+.unit-name { font-size: 12px; font-weight: 700; }
+.unit-id { font-size: 9px; color: var(--text-faint); font-family: var(--font-mono); }
+.unit-status { display: flex; gap: 12px; font-size: 10px; }
+.unit-status span { display: flex; align-items: center; gap: 4px; color: var(--text-dim); }
+.unit-status .dot { width: 5px; height: 5px; border-radius: 50%; }
+.unit-status .dot.green { background: var(--green); box-shadow: 0 0 4px var(--green); }
+.unit-status .dot.yellow { background: var(--yellow); box-shadow: 0 0 4px var(--yellow); }
+.unit-status .dot.red { background: var(--red); box-shadow: 0 0 4px var(--red); }
+.battery-bar { width: 30px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.battery-bar .fill { height: 100%; border-radius: 2px; }
+
+/* ===== MAP AREA ===== */
+.map-wrap { flex: 1; position: relative; overflow: hidden; background: #0a0f14; }
+#tacticalMap {
+  width: 100%; height: 100%;
+  cursor: grab;
+}
+#tacticalMap:active { cursor: grabbing; }
+
+/* Map controls */
+.map-controls {
+  position: absolute;
+  bottom: 16px; right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 50;
+}
+.map-btn {
+  width: 36px; height: 36px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; font-weight: 700;
+  transition: all 0.15s;
+}
+.map-btn:hover { background: var(--border-light); color: var(--text); }
+
+/* ===== RIGHT PANEL (Commands) ===== */
+.right-panel {
+  width: 300px;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.right-panel.collapsed { width: 36px; }
+.right-panel .sidebar-header { border-bottom: 1px solid var(--border); }
+.right-panel .sidebar-content { padding: 10px; }
+
+/* Command buttons */
+.cmd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.cmd-btn {
+  padding: 14px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+}
+.cmd-btn:hover { border-color: var(--border-light); background: var(--bg-panel-hover); }
+.cmd-btn:active { transform: scale(0.97); }
+.cmd-btn svg { width: 20px; height: 20px; }
+.cmd-btn.drone { border-color: rgba(0,212,255,0.2); }
+.cmd-btn.drone:hover { background: var(--accent-dim); border-color: var(--accent); }
+.cmd-btn.support { border-color: rgba(0,230,118,0.2); }
+.cmd-btn.support:hover { background: var(--green-dim); border-color: var(--green); }
+.cmd-btn.attack { border-color: rgba(255,82,82,0.2); }
+.cmd-btn.attack:hover { background: var(--red-dim); border-color: var(--red); }
+.cmd-btn.mark { border-color: rgba(255,171,64,0.2); }
+.cmd-btn.mark:hover { background: var(--orange-dim); border-color: var(--orange); }
+
+/* Alert feed */
+.alert-feed { margin-top: 8px; }
+.alert-feed-title {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+}
+.alert-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  font-size: 10px;
+  animation: alertIn 0.3s ease;
+}
+@keyframes alertIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+.alert-item .alert-time { color: var(--text-faint); font-family: var(--font-mono); font-size: 9px; }
+.alert-item .alert-text { color: var(--text); margin-top: 2px; }
+.alert-item.threat { border-color: rgba(255,82,82,0.3); background: var(--red-dim); }
+.alert-item.info { border-color: rgba(0,212,255,0.2); }
+.alert-item.success { border-color: rgba(0,230,118,0.2); background: var(--green-dim); }
+
+/* ===== BOTTOM VIDEO BAR ===== */
+.video-bar {
+  height: 160px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: height 0.25s ease;
+  flex-shrink: 0;
+}
+.video-bar.collapsed { height: 32px; }
+.video-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.video-title { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-faint); }
+.video-toggle { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 12px; transition: color 0.15s; }
+.video-toggle:hover { color: var(--text); }
+.video-grid {
+  display: flex; gap: 6px; padding: 8px; flex: 1; overflow-x: auto;
+}
+.video-bar.collapsed .video-grid { display: none; }
+.video-feed {
+  min-width: 220px; flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-feed .feed-label {
+  position: absolute; top: 6px; left: 8px;
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px;
+  color: var(--text); z-index: 2;
+}
+.video-feed .feed-status {
+  position: absolute; top: 6px; right: 8px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--red);
+  box-shadow: 0 0 4px var(--red); z-index: 2;
+}
+.video-feed .feed-status.live { background: var(--red); animation: livePulse 1.5s infinite; }
+@keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.video-feed img, .video-feed video {
+  width: 100%; height: 100%; object-fit: cover; opacity: 0.6;
+}
+.video-feed .no-signal {
+  color: var(--text-faint); font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* ===== TOOLTIP ===== */
+#mapTooltip {
+  position: fixed;
+  background: rgba(14,14,20,0.95);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  min-width: 160px;
+}
+#mapTooltip .tt-name { font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+#mapTooltip .tt-row { display: flex; justify-content: space-between; color: var(--text-dim); font-size: 10px; margin-bottom: 2px; }
+#mapTooltip .tt-row span:last-child { color: var(--text); font-family: var(--font-mono); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+    </svg>
+    SCOUT C2
+  </div>
+  <div class="topbar-sep"></div>
+  <div class="mission-info">
+    <div><div class="label">Sector</div><div class="value accent">Bakhmut North</div></div>
+    <div><div class="label">Operation</div><div class="value">CLEARING</div></div>
+    <div><div class="label">Mission Time</div><div class="value" id="missionClock">00:14:32</div></div>
+    <div><div class="label">Units</div><div class="value green" id="unitCount">8 Active</div></div>
+  </div>
+  <div class="coverage-bar">
+    <div class="coverage-track"><div class="coverage-fill" id="coverageFill"></div></div>
+    <span class="coverage-label" id="coverageLabel">73%</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn-top active" onclick="setMapMode('satellite')">SAT</button>
+    <button class="btn-top" onclick="setMapMode('tactical')">TAC</button>
+    <button class="btn-top" onclick="toggleHeatmap()">HEAT</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar" id="leftSidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Squad Status</span>
+      <button class="sidebar-toggle" onclick="toggleSidebar('leftSidebar')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+    <div class="sidebar-content" id="unitList"></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-wrap">
+    <svg id="tacticalMap" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Patterns -->
+        <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#111118" stroke-width="0.5"/>
+        </pattern>
+        <pattern id="fieldPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+          <rect width="20" height="20" fill="#0d1208"/>
+          <circle cx="10" cy="10" r="1" fill="#1a2510"/>
+        </pattern>
+        <radialGradient id="fovGrad" cx="0" cy="0" r="1">
+          <stop offset="0%" stop-color="rgba(0,212,255,0.15)"/>
+          <stop offset="100%" stop-color="rgba(0,212,255,0)"/>
+        </radialGradient>
+        <radialGradient id="fovGradGreen" cx="0" cy="0" r="1">
+          <stop offset="0%" stop-color="rgba(0,230,118,0.12)"/>
+          <stop offset="100%" stop-color="rgba(0,230,118,0)"/>
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowStrong">
+          <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- Icons -->
+        <g id="iconRobot">
+          <rect x="-6" y="-6" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="0" cy="0" r="2" fill="currentColor"/>
+          <line x1="-8" y1="-4" x2="-6" y2="-4" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="-8" y1="0" x2="-6" y2="0" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="-8" y1="4" x2="-6" y2="4" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="6" y1="-4" x2="8" y2="-4" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="6" y1="0" x2="8" y2="0" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="6" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="1.5"/>
+        </g>
+        <g id="iconDrone">
+          <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="-7" cy="-7" r="2" fill="currentColor"/>
+          <circle cx="7" cy="-7" r="2" fill="currentColor"/>
+          <circle cx="-7" cy="7" r="2" fill="currentColor"/>
+          <circle cx="7" cy="7" r="2" fill="currentColor"/>
+          <line x1="0" y1="0" x2="-7" y2="-7" stroke="currentColor" stroke-width="1"/>
+          <line x1="0" y1="0" x2="7" y2="-7" stroke="currentColor" stroke-width="1"/>
+          <line x1="0" y1="0" x2="-7" y2="7" stroke="currentColor" stroke-width="1"/>
+          <line x1="0" y1="0" x2="7" y2="7" stroke="currentColor" stroke-width="1"/>
+        </g>
+        <g id="iconStation">
+          <rect x="-10" y="-10" width="20" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="-5" cy="-5" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="5" cy="-5" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="-5" cy="5" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="5" cy="5" r="2.5" fill="currentColor" opacity="0.5"/>
+          <circle cx="0" cy="0" r="3" fill="none" stroke="currentColor" stroke-width="1"/>
+        </g>
+        <g id="iconSoldier">
+          <circle cx="0" cy="-4" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="0" y1="-1" x2="0" y2="6" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="-4" y1="1" x2="4" y2="1" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="0" y1="6" x2="-3" y2="10" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="0" y1="6" x2="3" y2="10" stroke="currentColor" stroke-width="1.5"/>
+        </g>
+      </defs>
+      <!-- Background -->
+      <rect id="mapBg" width="100%" height="100%" fill="#0a0f14"/>
+      <rect id="mapGrid" width="100%" height="100%" fill="url(#gridPattern)"/>
+      <!-- Map content groups -->
+      <g id="mapFields"></g>
+      <g id="mapRoads"></g>
+      <g id="mapBuildings"></g>
+      <g id="mapTrees"></g>
+      <g id="mapCoverage"></g>
+      <g id="mapUnits"></g>
+      <g id="mapLabels"></g>
+    </svg>
+
+    <!-- Map controls -->
+    <div class="map-controls">
+      <button class="map-btn" onclick="mapZoom(1.2)">+</button>
+      <button class="map-btn" onclick="mapZoom(0.83)">-</button>
+      <button class="map-btn" onclick="mapReset()" style="font-size:10px;">R</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Command</span>
+      <button class="sidebar-toggle" onclick="toggleSidebar('rightPanel')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+    <div class="sidebar-content">
+      <div class="cmd-grid">
+        <button class="cmd-btn drone" onclick="sendCmd('DRONE')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          DEPLOY DRONE
+        </button>
+        <button class="cmd-btn support" onclick="sendCmd('SUPPORT')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          REQUEST SUPPORT
+        </button>
+        <button class="cmd-btn attack" onclick="sendCmd('AIRSTRIKE')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3l18 18M12 12l4-10M12 12L8 2M12 12l10 4M12 12L2 16"/></svg>
+          AIRSTRIKE
+        </button>
+        <button class="cmd-btn mark" onclick="sendCmd('MARK')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          MARK TARGET
+        </button>
+        <button class="cmd-btn" style="border-color:rgba(224,64,251,0.2);" onclick="sendCmd('EVAC')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e040fb" stroke-width="1.5"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 11 3.8 11 8c0 1.25-.97 2.33-1 3.5-.03 1.17 1 2.17 1 3.5A5 5 0 016 22H4z"/><path d="M13 21h6a2 2 0 002-2v-2.5a2.5 2.5 0 00-5 0V19"/></svg>
+          <span style="color:#e040fb;">EVAC</span>
+        </button>
+        <button class="cmd-btn" style="border-color:rgba(255,217,64,0.2);" onclick="sendCmd('RECALL')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffd740" stroke-width="1.5"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 015.5 5.5v0a5.5 5.5 0 01-5.5 5.5H11"/></svg>
+          <span style="color:#ffd740;">RECALL ALL</span>
+        </button>
+      </div>
+
+      <div class="alert-feed" id="alertFeed">
+        <div class="alert-feed-title">
+          <span>Alert Feed</span>
+          <span style="color:var(--red); font-size:9px;" id="alertCount">3</span>
+        </div>
+        <div id="alertList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM VIDEO BAR -->
+<div class="video-bar" id="videoBar">
+  <div class="video-header">
+    <span class="video-title">Live Feeds</span>
+    <button class="video-toggle" onclick="toggleVideoBar()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 15 12 9 18 15"/></svg>
+    </button>
+  </div>
+  <div class="video-grid" id="videoGrid">
+    <div class="video-feed">
+      <span class="feed-label">ALPHA CAM-1</span>
+      <span class="feed-status live"></span>
+      <img src="SCOUT_V1_Mini_6legs_hexapod.png" alt="Alpha feed">
+    </div>
+    <div class="video-feed">
+      <span class="feed-label">DRONE-1 FPV</span>
+      <span class="feed-status live"></span>
+      <img src="SCOUT_mini_hexapod_flying.png" alt="Drone feed">
+    </div>
+    <div class="video-feed">
+      <span class="feed-label">STATION CAM</span>
+      <span class="feed-status live"></span>
+      <img src="SCOUT_mobile_drone_station_concept.png" alt="Station feed">
+    </div>
+    <div class="video-feed">
+      <span class="feed-label">RECON FEED</span>
+      <span class="feed-status live"></span>
+      <img src="SCOUT_hexapod_6leg_gripper.png" alt="Recon feed">
+    </div>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+<div id="mapTooltip"></div>
+
+<script>
+// ===================== MAP CONFIGURATION =====================
+const MAP_WIDTH = 2400;
+const MAP_HEIGHT = 1600;
+const svg = document.getElementById('tacticalMap');
+svg.setAttribute('viewBox', `0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`);
+
+let viewBox = { x: 0, y: 0, w: MAP_WIDTH, h: MAP_HEIGHT };
+let isDragging = false, dragStart = { x: 0, y: 0 };
+let selectedUnit = null;
+
+// ===================== UKRAINE VILLAGE DATA =====================
+const ROADS = [
+  // Main east-west highway
+  { x1: 0, y1: 500, x2: 2400, y2: 500, w: 12, label: 'M-03 Highway' },
+  // North-south roads
+  { x1: 400, y1: 0, x2: 400, y2: 1600, w: 8 },
+  { x1: 900, y1: 0, x2: 900, y2: 1600, w: 8 },
+  { x1: 1500, y1: 0, x2: 1500, y2: 1600, w: 8 },
+  { x1: 2000, y1: 0, x2: 2000, y2: 1600, w: 8 },
+  // Cross roads
+  { x1: 0, y1: 200, x2: 2400, y2: 200, w: 6 },
+  { x1: 0, y1: 800, x2: 2400, y2: 800, w: 6 },
+  { x1: 0, y1: 1100, x2: 2400, y2: 1100, w: 6 },
+  { x1: 0, y1: 1400, x2: 2400, y2: 1400, w: 6 },
+];
+
+const BUILDINGS = [
+  // Residential blocks (north-west sector)
+  { x: 120, y: 60, w: 180, h: 100, type: 'residential', label: 'Block A' },
+  { x: 120, y: 240, w: 180, h: 100, type: 'residential', label: 'Block B' },
+  { x: 320, y: 60, w: 160, h: 100, type: 'residential', label: 'Block C' },
+  { x: 320, y: 240, w: 160, h: 100, type: 'residential', label: 'Block D' },
+  { x: 120, y: 580, w: 200, h: 140, type: 'industrial', label: 'Factory' },
+  { x: 420, y: 580, w: 160, h: 120, type: 'warehouse', label: 'Warehouse' },
+  // Central village
+  { x: 620, y: 60, w: 200, h: 120, type: 'school', label: 'School' },
+  { x: 620, y: 240, w: 150, h: 100, type: 'residential', label: 'Houses' },
+  { x: 620, y: 580, w: 180, h: 140, type: 'industrial', label: 'Plant' },
+  { x: 940, y: 60, w: 220, h: 120, type: 'admin', label: 'Town Hall' },
+  { x: 940, y: 240, w: 160, h: 100, type: 'residential', label: 'Block E' },
+  { x: 940, y: 580, w: 200, h: 140, type: 'warehouse', label: 'Depot' },
+  // East sector
+  { x: 1540, y: 60, w: 180, h: 100, type: 'residential', label: 'Block F' },
+  { x: 1540, y: 240, w: 180, h: 100, type: 'residential', label: 'Block G' },
+  { x: 1540, y: 580, w: 200, h: 140, type: 'industrial', label: 'Refinery' },
+  { x: 2020, y: 60, w: 160, h: 100, type: 'residential', label: 'Block H' },
+  { x: 2020, y: 240, w: 160, h: 100, type: 'residential', label: 'Block I' },
+  { x: 2020, y: 580, w: 180, h: 140, type: 'warehouse', label: 'Storage' },
+  // South sector
+  { x: 120, y: 860, w: 200, h: 140, type: 'residential', label: 'Block J' },
+  { x: 420, y: 860, w: 180, h: 140, type: 'residential', label: 'Block K' },
+  { x: 620, y: 860, w: 200, h: 160, type: 'hospital', label: 'Hospital' },
+  { x: 940, y: 860, w: 180, h: 140, type: 'residential', label: 'Block L' },
+  { x: 120, y: 1160, w: 220, h: 140, type: 'residential', label: 'Block M' },
+  { x: 420, y: 1160, w: 200, h: 140, type: 'residential', label: 'Block N' },
+  { x: 1540, y: 860, w: 200, h: 140, type: 'military', label: 'Barracks' },
+  { x: 1540, y: 1160, w: 180, h: 140, type: 'residential', label: 'Block O' },
+  { x: 2020, y: 860, w: 180, h: 140, type: 'residential', label: 'Block P' },
+  { x: 2020, y: 1160, w: 160, h: 140, type: 'residential', label: 'Block Q' },
+];
+
+const FIELDS = [
+  { x: 0, y: 360, w: 2400, h: 120 },
+  { x: 0, y: 720, w: 2400, h: 80 },
+  { x: 0, y: 1000, w: 2400, h: 100 },
+  { x: 0, y: 1300, w: 2400, h: 100 },
+  { x: 0, y: 1500, w: 2400, h: 100 },
+];
+
+// ===================== UNITS =====================
+let units = [
+  { id: 'A-1', name: 'ALPHA', type: 'ground', x: 680, y: 680, angle: 45, battery: 87, signal: 95, status: 'active', color: '#00e676', path: [] },
+  { id: 'A-2', name: 'BRAVO', type: 'ground', x: 500, y: 450, angle: 90, battery: 64, signal: 88, status: 'active', color: '#00e676', path: [] },
+  { id: 'A-3', name: 'CHARLIE', type: 'ground', x: 1200, y: 600, angle: 135, battery: 92, signal: 76, status: 'moving', color: '#ffd740', path: [] },
+  { id: 'D-1', name: 'HAWK-1', type: 'drone', x: 800, y: 350, angle: 0, battery: 45, signal: 98, status: 'recon', color: '#00d4ff', path: [] },
+  { id: 'D-2', name: 'HAWK-2', type: 'drone', x: 1600, y: 400, angle: 180, battery: 72, signal: 91, status: 'loiter', color: '#00d4ff', path: [] },
+  { id: 'D-3', name: 'HAWK-3', type: 'drone', x: 1100, y: 950, angle: 270, battery: 58, signal: 82, status: 'active', color: '#00d4ff', path: [] },
+  { id: 'S-1', name: 'NEST', type: 'station', x: 350, y: 950, angle: 0, battery: 100, signal: 100, status: 'online', color: '#ffab40', path: [] },
+  { id: 'I-1', name: 'KOWALSKI', type: 'infantry', x: 1050, y: 700, angle: 60, battery: 100, signal: 85, status: 'active', color: '#e040fb', path: [] },
+];
+
+const FOV_RANGE = 120;
+const FOV_ANGLE = 90;
+
+// ===================== RENDER MAP =====================
+function renderMap() {
+  // Fields
+  const fieldsG = document.getElementById('mapFields');
+  fieldsG.innerHTML = FIELDS.map(f =>
+    `<rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}" fill="url(#fieldPattern)" opacity="0.4"/>`
+  ).join('');
+
+  // Roads
+  const roadsG = document.getElementById('mapRoads');
+  roadsG.innerHTML = ROADS.map(r =>
+    `<line x1="${r.x1}" y1="${r.y1}" x2="${r.x2}" y2="${r.y2}" stroke="#1a1a28" stroke-width="${r.w}" stroke-linecap="round"/>
+     <line x1="${r.x1}" y1="${r.y1}" x2="${r.x2}" y2="${r.y2}" stroke="#252535" stroke-width="${r.w - 4}" stroke-linecap="round"/>`
+  ).join('');
+
+  // Buildings
+  const bldgG = document.getElementById('mapBuildings');
+  const bColors = {
+    residential: '#151520',
+    industrial: '#1a1510',
+    warehouse: '#18151a',
+    school: '#10151a',
+    admin: '#1a1010',
+    hospital: '#101a15',
+    military: '#1a1810',
+  };
+  bldgG.innerHTML = BUILDINGS.map(b => {
+    const bc = bColors[b.type] || '#151520';
+    return `<rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="2" fill="${bc}" stroke="#2a2a3e" stroke-width="1"/>
+            <rect x="${b.x+4}" y="${b.y+4}" width="${b.w-8}" height="${b.h-8}" rx="1" fill="none" stroke="#1e1e2e" stroke-width="0.5" stroke-dasharray="4 4"/>
+            ${b.label ? `<text x="${b.x + b.w/2}" y="${b.y + b.h/2}" text-anchor="middle" dominant-baseline="middle" fill="#3a3a4e" font-size="10" font-family="JetBrains Mono" font-weight="500">${b.label}</text>` : ''}`;
+  }).join('');
+
+  // Trees (scattered)
+  const treesG = document.getElementById('mapTrees');
+  let treesHtml = '';
+  for (let i = 0; i < 120; i++) {
+    const tx = Math.random() * MAP_WIDTH;
+    const ty = Math.random() * MAP_HEIGHT;
+    // Don't place on roads or buildings
+    const onRoad = ROADS.some(r => Math.abs(ty - r.y1) < 15 || Math.abs(tx - r.x1) < 15);
+    const onBuilding = BUILDINGS.some(b => tx > b.x-20 && tx < b.x+b.w+20 && ty > b.y-20 && ty < b.y+b.h+20);
+    if (!onRoad && !onBuilding) {
+      const size = 4 + Math.random() * 6;
+      treesHtml += `<circle cx="${tx}" cy="${ty}" r="${size}" fill="#0f1a0f" opacity="0.5"/>
+                    <circle cx="${tx}" cy="${ty}" r="${size*0.5}" fill="#1a2a1a" opacity="0.7"/>`;
+    }
+  }
+  treesG.innerHTML = treesHtml;
+
+  renderUnits();
+}
+
+function renderUnits() {
+  const covG = document.getElementById('mapCoverage');
+  const unitG = document.getElementById('mapUnits');
+  const labelG = document.getElementById('mapLabels');
+
+  let covHtml = '';
+  let unitHtml = '';
+  let labelHtml = '';
+
+  units.forEach((u, i) => {
+    // FOV cone
+    if (u.type !== 'station') {
+      const rad = (u.angle - FOV_ANGLE/2) * Math.PI / 180;
+      const endRad = (u.angle + FOV_ANGLE/2) * Math.PI / 180;
+      const x1 = u.x + Math.cos(rad) * FOV_RANGE;
+      const y1 = u.y + Math.sin(rad) * FOV_RANGE;
+      const x2 = u.x + Math.cos(endRad) * FOV_RANGE;
+      const y2 = u.y + Math.sin(endRad) * FOV_RANGE;
+      const gradId = u.type === 'ground' ? 'url(#fovGradGreen)' : 'url(#fovGrad)';
+      covHtml += `<path d="M${u.x},${u.y} L${x1},${y1} A${FOV_RANGE},${FOV_RANGE} 0 0,1 ${x2},${y2} Z" fill="${gradId}" opacity="0.4"/>`;
+    }
+
+    // Selection ring
+    if (selectedUnit === i) {
+      unitHtml += `<circle cx="${u.x}" cy="${u.y}" r="22" fill="none" stroke="${u.color}" stroke-width="1.5" opacity="0.6" filter="url(#glow)"/>
+                   <circle cx="${u.x}" cy="${u.y}" r="28" fill="none" stroke="${u.color}" stroke-width="0.5" opacity="0.3"/>`;
+    }
+
+    // Unit icon
+    const iconRef = u.type === 'drone' ? '#iconDrone' : u.type === 'station' ? '#iconStation' : u.type === 'infantry' ? '#iconSoldier' : '#iconRobot';
+    const scale = u.type === 'station' ? 1.4 : 1;
+    unitHtml += `<g transform="translate(${u.x},${u.y}) scale(${scale})" class="unit-marker" data-index="${i}" style="cursor:pointer">
+      <use href="${iconRef}" color="${u.color}" filter="url(#glow)"/>
+    </g>`;
+
+    // Label
+    const labelY = u.type === 'station' ? u.y + 25 : u.y + 18;
+    labelHtml += `<text x="${u.x}" y="${labelY}" text-anchor="middle" fill="${u.color}" font-size="9" font-family="JetBrains Mono" font-weight="600" opacity="0.8">${u.id}</text>`;
+  });
+
+  covG.innerHTML = covHtml;
+  unitG.innerHTML = unitHtml;
+  labelG.innerHTML = labelHtml;
+
+  // Click handlers
+  document.querySelectorAll('.unit-marker').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedUnit = parseInt(el.dataset.index);
+      renderUnits();
+      updateUnitList();
+    });
+    el.addEventListener('mouseenter', (e) => showTooltip(e, parseInt(el.dataset.index)));
+    el.addEventListener('mouseleave', hideTooltip);
+  });
+}
+
+// ===================== SIDEBAR UNITS =====================
+function updateUnitList() {
+  const container = document.getElementById('unitList');
+  const icons = {
+    ground: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="8" x2="4" y2="8"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="2" y1="16" x2="4" y2="16"/><line x1="20" y1="8" x2="22" y2="8"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="20" y1="16" x2="22" y2="16"/></svg>`,
+    drone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><circle cx="4" cy="4" r="2" fill="currentColor"/><circle cx="20" cy="4" r="2" fill="currentColor"/><circle cx="4" cy="20" r="2" fill="currentColor"/><circle cx="20" cy="20" r="2" fill="currentColor"/><line x1="12" y1="12" x2="4" y2="4"/><line x1="12" y1="12" x2="20" y2="4"/><line x1="12" y1="12" x2="4" y2="20"/><line x1="12" y1="12" x2="20" y2="20"/></svg>`,
+    station: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5" fill="currentColor" opacity="0.5"/><circle cx="16" cy="8" r="1.5" fill="currentColor" opacity="0.5"/><circle cx="8" cy="16" r="1.5" fill="currentColor" opacity="0.5"/><circle cx="16" cy="16" r="1.5" fill="currentColor" opacity="0.5"/><circle cx="12" cy="12" r="3" fill="none"/></svg>`,
+    infantry: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="3"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="16" x2="9" y2="21"/><line x1="12" y1="16" x2="15" y2="21"/></svg>`,
+  };
+  const statusDot = {
+    active: 'green', moving: 'yellow', recon: 'green', loiter: 'yellow', online: 'green',
+  };
+
+  container.innerHTML = units.map((u, i) => {
+    const isSelected = selectedUnit === i;
+    const battColor = u.battery > 60 ? 'var(--green)' : u.battery > 30 ? 'var(--orange)' : 'var(--red)';
+    return `<div class="unit-card ${isSelected ? 'active' : ''}" onclick="selectUnit(${i})">
+      <div class="unit-header">
+        <div class="unit-icon ${u.type}">${icons[u.type] || icons.ground}</div>
+        <div>
+          <div class="unit-name">${u.name}</div>
+          <div class="unit-id">${u.id} \u2022 ${u.type.toUpperCase()}</div>
+        </div>
+      </div>
+      <div class="unit-status">
+        <span><span class="dot ${statusDot[u.status] || 'yellow'}"></span>${u.status.toUpperCase()}</span>
+        <span>BAT <div class="battery-bar"><div class="fill" style="width:${u.battery}%;background:${battColor}"></div></div></span>
+        <span>SIG ${u.signal}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectUnit(i) {
+  selectedUnit = i;
+  renderUnits();
+  updateUnitList();
+  // Center map on unit
+  const u = units[i];
+  const container = document.querySelector('.map-wrap');
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  viewBox.x = u.x - cw/2;
+  viewBox.y = u.y - ch/2;
+  viewBox.w = cw;
+  viewBox.h = ch;
+  updateViewBox();
+}
+
+// ===================== TOOLTIP =====================
+function showTooltip(e, i) {
+  const u = units[i];
+  const tt = document.getElementById('mapTooltip');
+  tt.innerHTML = `
+    <div class="tt-name" style="color:${u.color}">${u.name} (${u.id})</div>
+    <div class="tt-row"><span>Type</span><span>${u.type.toUpperCase()}</span></div>
+    <div class="tt-row"><span>Status</span><span>${u.status.toUpperCase()}</span></div>
+    <div class="tt-row"><span>Battery</span><span>${u.battery}%</span></div>
+    <div class="tt-row"><span>Signal</span><span>${u.signal}%</span></div>
+    <div class="tt-row"><span>Position</span><span>${Math.round(u.x)},${Math.round(u.y)}</span></div>
+  `;
+  tt.style.display = 'block';
+  tt.style.left = (e.clientX + 15) + 'px';
+  tt.style.top = (e.clientY + 15) + 'px';
+}
+function hideTooltip() {
+  document.getElementById('mapTooltip').style.display = 'none';
+}
+
+// ===================== MAP INTERACTIONS =====================
+function updateViewBox() {
+  svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+}
+
+function mapZoom(factor) {
+  const cx = viewBox.x + viewBox.w / 2;
+  const cy = viewBox.y + viewBox.h / 2;
+  viewBox.w /= factor;
+  viewBox.h /= factor;
+  viewBox.x = cx - viewBox.w / 2;
+  viewBox.y = cy - viewBox.h / 2;
+  updateViewBox();
+}
+
+function mapReset() {
+  const container = document.querySelector('.map-wrap');
+  viewBox = { x: 0, y: 0, w: MAP_WIDTH, h: MAP_HEIGHT };
+  // Scale to fit
+  const scale = Math.min(container.clientWidth / MAP_WIDTH, container.clientHeight / MAP_HEIGHT);
+  viewBox.w = container.clientWidth / scale;
+  viewBox.h = container.clientHeight / scale;
+  viewBox.x = (MAP_WIDTH - viewBox.w) / 2;
+  viewBox.y = (MAP_HEIGHT - viewBox.h) / 2;
+  updateViewBox();
+}
+
+// Pan
+svg.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  dragStart = { x: e.clientX, y: e.clientY };
+});
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - dragStart.x;
+  const dy = e.clientY - dragStart.y;
+  dragStart = { x: e.clientX, y: e.clientY };
+  viewBox.x -= dx * (viewBox.w / svg.clientWidth);
+  viewBox.y -= dy * (viewBox.h / svg.clientHeight);
+  updateViewBox();
+});
+window.addEventListener('mouseup', () => isDragging = false);
+
+// Wheel zoom
+svg.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const factor = e.deltaY > 0 ? 0.9 : 1.1;
+  const rect = svg.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const wx = viewBox.x + mx * (viewBox.w / rect.width);
+  const wy = viewBox.y + my * (viewBox.h / rect.height);
+  viewBox.w /= factor;
+  viewBox.h /= factor;
+  viewBox.x = wx - mx * (viewBox.w / rect.width);
+  viewBox.y = wy - my * (viewBox.h / rect.height);
+  updateViewBox();
+}, { passive: false });
+
+// ===================== COMMANDS =====================
+const alerts = [
+  { type: 'threat', text: 'HAWK-1: Contact at Grid 084-592', time: '14:32:10' },
+  { type: 'info', text: 'ALPHA: Building 7 cleared', time: '14:28:45' },
+  { type: 'success', text: 'BRAVO: Route secured to M-03', time: '14:25:22' },
+];
+
+function renderAlerts() {
+  document.getElementById('alertCount').textContent = alerts.length;
+  document.getElementById('alertList').innerHTML = alerts.map(a =>
+    `<div class="alert-item ${a.type}">
+      <div class="alert-time">${a.time}</div>
+      <div class="alert-text">${a.text}</div>
+    </div>`
+  ).join('');
+}
+
+function sendCmd(cmd) {
+  const now = new Date();
+  const time = now.toTimeString().slice(0, 8);
+  const agent = selectedUnit !== null ? units[selectedUnit].id : 'C2';
+  let text = '';
+  switch(cmd) {
+    case 'DRONE': text = `DRONE recon deployed — ${agent}`; break;
+    case 'SUPPORT': text = `Logistics support requested — ${agent}`; break;
+    case 'AIRSTRIKE': text = `AIRSTRIKE authorized — Grid near ${agent}`; break;
+    case 'MARK': text = `Target marked — ${agent} position`; break;
+    case 'EVAC': text = `EVACuation requested — ${agent}`; break;
+    case 'RECALL': text = `All units RECALL to staging`; break;
+  }
+  alerts.unshift({ type: cmd === 'AIRSTRIKE' ? 'threat' : 'info', text, time });
+  if (alerts.length > 8) alerts.pop();
+  renderAlerts();
+}
+
+// ===================== UI TOGGLES =====================
+function toggleSidebar(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+function toggleVideoBar() {
+  document.getElementById('videoBar').classList.toggle('collapsed');
+}
+function setMapMode(mode) {
+  document.querySelectorAll('.btn-top').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+function toggleHeatmap() {
+  event.target.classList.toggle('active');
+}
+
+// ===================== CLOCK =====================
+let missionSeconds = 14*60 + 32;
+setInterval(() => {
+  missionSeconds++;
+  const h = String(Math.floor(missionSeconds/3600)).padStart(2,'0');
+  const m = String(Math.floor((missionSeconds%3600)/60)).padStart(2,'0');
+  const s = String(missionSeconds%60).padStart(2,'0');
+  document.getElementById('missionClock').textContent = `${h}:${m}:${s}`;
+}, 1000);
+
+// ===================== INIT =====================
+renderMap();
+updateUnitList();
+renderAlerts();
+mapReset();
+
+// Animate units
+setInterval(() => {
+  units.forEach(u => {
+    if (u.status === 'moving' || u.status === 'recon') {
+      u.x += (Math.random() - 0.5) * 8;
+      u.y += (Math.random() - 0.5) * 8;
+      u.angle = (u.angle + (Math.random() - 0.5) * 10) % 360;
+      u.battery = Math.max(0, u.battery - 0.1);
+    }
+  });
+  renderUnits();
+  if (selectedUnit !== null) updateUnitList();
+}, 2000);
+</script>
+</body>
+</html>

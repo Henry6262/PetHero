@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCOUT C2 — Tactical Map</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    background: #0a0a0f; 
+    overflow: hidden; 
+    font-family: 'SF Mono', 'Courier New', monospace;
+    color: white;
+}
+#canvas-container { width: 100vw; height: 100vh; }
+#ui {
+    position: fixed;
+    top: 20px; left: 20px;
+    background: rgba(10,10,15,0.9);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 16px;
+    min-width: 220px;
+    backdrop-filter: blur(10px);
+}
+#ui h2 { font-size: 14px; color: #00d4ff; margin-bottom: 12px; letter-spacing: 1px; }
+#ui .room { 
+    padding: 6px 10px; 
+    margin: 4px 0; 
+    border-radius: 4px; 
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid;
+}
+#ui .room:hover { opacity: 0.8; }
+#ui .room.unknown { background: rgba(136,136,136,0.15); border-color: #888; }
+#ui .room.in-progress { background: rgba(255,159,10,0.15); border-color: #ff9f0a; }
+#ui .room.cleared { background: rgba(50,215,75,0.15); border-color: #32d74b; }
+#ui .room.threat { background: rgba(255,69,58,0.15); border-color: #ff453a; }
+#ui .status { font-size: 10px; color: #888; margin-top: 12px; }
+#alert {
+    position: fixed;
+    top: 20px; right: 20px;
+    background: rgba(255,69,58,0.9);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: none;
+    animation: pulse 1s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+#legend {
+    position: fixed;
+    bottom: 20px; left: 20px;
+    background: rgba(10,10,15,0.9);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 10px;
+}
+#legend span { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+
+<div id="ui">
+    <h2>▼ BUILDING A — Floor 1</h2>
+    <div class="room unknown" onclick="setRoomState(0,'in_progress')">Room 101 — Unknown</div>
+    <div class="room in-progress" onclick="setRoomState(1,'cleared')">Room 102 — In Progress</div>
+    <div class="room threat" onclick="setRoomState(2,'evacuated')">Room 103 — Person Detected</div>
+    <div class="room unknown" onclick="setRoomState(3,'in_progress')">Room 104 — Unknown</div>
+    <div class="room unknown" onclick="setRoomState(4,'cleared')">Corridor — Unknown</div>
+    <div class="status">Click a room to change state<br>Drag to rotate • Scroll to zoom</div>
+</div>
+
+<div id="alert">⚠ PERSON DETECTED — Room 103</div>
+
+<div id="legend">
+    <div><span style="background:#1a4a8a"></span> Floor level points</div>
+    <div><span style="background:#2a6a3a"></span> Wall/object points</div>
+    <div><span style="background:#8a4a1a"></span> Ceiling/high points</div>
+    <div style="margin-top:6px"><span style="background:#888"></span> Unknown room</div>
+    <div><span style="background:#ff9f0a"></span> In progress</div>
+    <div><span style="background:#32d74b"></span> Cleared</div>
+    <div><span style="background:#ff453a"></span> Person detected</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+// ─── SCENE SETUP ───
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a0f);
+scene.fog = new THREE.FogExp2(0x0a0a0f, 0.025);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 200);
+camera.position.set(15, 12, 15);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(5, 1, 5);
+
+// ─── LIGHTING ───
+scene.add(new THREE.AmbientLight(0x404060, 0.4));
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+dirLight.position.set(10, 20, 10);
+dirLight.castShadow = true;
+scene.add(dirLight);
+
+const rimLight = new THREE.DirectionalLight(0x0044ff, 0.25);
+rimLight.position.set(-10, 5, -10);
+scene.add(rimLight);
+
+const fillLight = new THREE.DirectionalLight(0xff6600, 0.15);
+fillLight.position.set(5, 2, -10);
+scene.add(fillLight);
+
+// ─── GROUND PLANE ───
+const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 50),
+    new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.95 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -0.05;
+scene.add(ground);
+
+// Grid
+scene.add(new THREE.GridHelper(50, 50, 0x333344, 0x1a1a2e));
+
+// ─── SIMULATED POINT CLOUD (SE3-style data) ───
+// In production, load your .ply file here
+function createPointCloud() {
+    const count = 15000;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    
+    // Create room-like point clusters
+    const rooms = [
+        { x: 0, z: 0, w: 4, d: 3.5, h: 2.8 },   // Room 101
+        { x: 5, z: 0, w: 3.5, d: 3.5, h: 2.8 },  // Room 102
+        { x: 0, z: 4, w: 4, d: 3, h: 2.8 },      // Room 103
+        { x: 5, z: 4, w: 3.5, d: 3, h: 2.8 },    // Room 104
+        { x: 0, z: -1, w: 8.5, d: 1, h: 2.5 },   // Corridor
+    ];
+    
+    let idx = 0;
+    for (let r of rooms) {
+        const pointsPerRoom = Math.floor(count / rooms.length);
+        for (let i = 0; i < pointsPerRoom && idx < count; i++) {
+            // Random point within room bounds
+            const px = r.x + (Math.random() - 0.5) * r.w;
+            const py = Math.random() * r.h;
+            const pz = r.z + (Math.random() - 0.5) * r.d;
+            
+            positions[idx*3] = px;
+            positions[idx*3+1] = py;
+            positions[idx*3+2] = pz;
+            
+            // Color by height
+            if (py < 0.3) {
+                colors[idx*3] = 0.1; colors[idx*3+1] = 0.3; colors[idx*3+2] = 0.7; // Blue floor
+            } else if (py < 2.0) {
+                colors[idx*3] = 0.25; colors[idx*3+1] = 0.5; colors[idx*3+2] = 0.3; // Green walls
+            } else {
+                colors[idx*3] = 0.6; colors[idx*3+1] = 0.35; colors[idx*3+2] = 0.15; // Orange ceiling
+            }
+            idx++;
+        }
+    }
+    
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    
+    const mat = new THREE.PointsMaterial({
+        size: 0.05,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.7,
+        sizeAttenuation: true
+    });
+    
+    return new THREE.Points(geo, mat);
+}
+scene.add(createPointCloud());
+
+// ─── ROOM BOXES (the readable layer) ───
+const roomMeshes = [];
+const roomStates = ['unknown', 'in-progress', 'threat', 'unknown', 'unknown'];
+const stateColors = {
+    'unknown': 0x888888,
+    'in-progress': 0xFF9F0A,
+    'cleared': 0x32D74B,
+    'threat': 0xFF453A,
+    'evacuated': 0x0A84FF
+};
+
+function createRoom(x, z, w, d, h, label, index) {
+    const geo = new THREE.BoxGeometry(w, h, d);
+    const mat = new THREE.MeshStandardMaterial({
+        color: stateColors['unknown'],
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.DoubleSide,
+        depthWrite: false
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x, h/2, z);
+    scene.add(mesh);
+    
+    // Wireframe
+    const edges = new THREE.EdgesGeometry(geo);
+    const lineMat = new THREE.LineBasicMaterial({ 
+        color: stateColors['unknown'], 
+        transparent: true, 
+        opacity: 0.5 
+    });
+    const wire = new THREE.LineSegments(edges, lineMat);
+    wire.position.copy(mesh.position);
+    scene.add(wire);
+    
+    roomMeshes.push({ mesh, wire, label, index });
+    return mesh;
+}
+
+// Create 5 rooms
+const rooms = [
+    { x: 0, z: 0, w: 4, d: 3.5, h: 2.8, label: 'Room 101' },
+    { x: 5, z: 0, w: 3.5, d: 3.5, h: 2.8, label: 'Room 102' },
+    { x: 0, z: 4, w: 4, d: 3, h: 2.8, label: 'Room 103' },
+    { x: 5, z: 4, w: 3.5, d: 3, h: 2.8, label: 'Room 104' },
+    { x: 4, z: -2.2, w: 8.5, d: 1, h: 2.5, label: 'Corridor' },
+];
+rooms.forEach((r, i) => createRoom(r.x, r.z, r.w, r.d, r.h, r.label, i));
+
+// ─── ROBOT ICON ───
+function createRobotIcon(x, z) {
+    const group = new THREE.Group();
+    
+    // Body
+    const body = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.2, 0.5),
+        new THREE.MeshStandardMaterial({ color: 0x00d4ff, emissive: 0x00d4ff, emissiveIntensity: 0.3 })
+    );
+    body.position.y = 0.15;
+    group.add(body);
+    
+    // 4 legs
+    for (let i = 0; i < 4; i++) {
+        const leg = new THREE.Mesh(
+            new THREE.BoxGeometry(0.06, 0.15, 0.06),
+            new THREE.MeshStandardMaterial({ color: 0x666666 })
+        );
+        leg.position.set(
+            i < 2 ? -0.2 : 0.2,
+            0,
+            i % 2 === 0 ? -0.25 : 0.25
+        );
+        group.add(leg);
+    }
+    
+    // Glowing ring
+    const ring = new THREE.Mesh(
+        new THREE.RingGeometry(0.3, 0.35, 32),
+        new THREE.MeshBasicMaterial({ color: 0x00d4ff, transparent: true, opacity: 0.3, side: THREE.DoubleSide })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.02;
+    group.add(ring);
+    
+    group.position.set(x, 0, z);
+    scene.add(group);
+    return group;
+}
+
+const robot = createRobotIcon(2, 2);
+
+// ─── ANIMATE ROBOT ───
+let time = 0;
+function animateRobot() {
+    time += 0.02;
+    robot.position.x = 2 + Math.sin(time * 0.3) * 1.5;
+    robot.position.z = 2 + Math.cos(time * 0.3) * 1;
+    robot.rotation.y = Math.atan2(
+        Math.cos(time * 0.3 + 0.1) - Math.cos(time * 0.3),
+        Math.sin(time * 0.3 + 0.1) - Math.sin(time * 0.3)
+    );
+    // Pulse the ring
+    robot.children[5].scale.setScalar(1 + Math.sin(time * 3) * 0.2);
+}
+
+// ─── STATE CHANGE FUNCTION ───
+window.setRoomState = function(index, state) {
+    const color = stateColors[state];
+    roomMeshes[index].mesh.material.color.setHex(color);
+    roomMeshes[index].mesh.material.opacity = state === 'cleared' ? 0.08 : 0.15;
+    roomMeshes[index].wire.material.color.setHex(color);
+    
+    // Update UI
+    const uiRoom = document.querySelectorAll('#ui .room')[index];
+    uiRoom.className = 'room ' + state;
+    const names = ['Room 101', 'Room 102', 'Room 103', 'Room 104', 'Corridor'];
+    const labels = {
+        'unknown': 'Unknown',
+        'in-progress': 'In Progress',
+        'cleared': 'Cleared',
+        'threat': 'Person Detected',
+        'evacuated': 'Evacuated'
+    };
+    uiRoom.textContent = names[index] + ' — ' + labels[state];
+    
+    // Show alert for threat
+    if (state === 'threat') {
+        document.getElementById('alert').style.display = 'block';
+        setTimeout(() => document.getElementById('alert').style.display = 'none', 4000);
+    }
+};
+
+// ─── RENDER LOOP ───
+function animate() {
+    requestAnimationFrame(animate);
+    animateRobot();
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
+
+// Resize handler
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

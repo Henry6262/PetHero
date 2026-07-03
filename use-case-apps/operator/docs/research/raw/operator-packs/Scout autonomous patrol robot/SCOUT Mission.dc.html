@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@keyframes scoutBreathe { 0%,100% { transform: scale(1); opacity:.78 } 50% { transform: scale(1.08); opacity:1 } }
+@keyframes scoutPulse { 0% { box-shadow: 0 0 0 0 var(--pulseCol) } 70% { box-shadow: 0 0 0 11px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+@keyframes scoutScan { 0% { transform: translateY(-4px); opacity:0 } 12% { opacity:1 } 88% { opacity:1 } 100% { transform: translateY(258px); opacity:0 } }
+@keyframes scoutBlip { 0%,100% { opacity:.5; transform:scale(1) } 50% { opacity:1; transform:scale(1.3) } }
+@keyframes scoutCount { 0% { transform:scale(1.5); opacity:0 } 30% { transform:scale(1); opacity:1 } 100% { transform:scale(.7); opacity:0 } }
+</style>
+</helmet>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#15161a;background-image:radial-gradient(circle at 50% 30%, #20222a, #121317 75%);font-family:Inter,system-ui,sans-serif">
+
+<div style="width:402px;height:874px;border-radius:54px;background:#05070a;padding:13px;box-sizing:border-box;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6);-webkit-font-smoothing:antialiased;--bg:{{ c.bg }};--surf:{{ c.surf }};--surf2:{{ c.surf2 }};--line:{{ c.line }};--hair:{{ c.hair }};--text:{{ c.text }};--muted:{{ c.muted }};--faint:{{ c.faint }};--accent:{{ c.accent }};--onAccent:{{ c.onAccent }};--alert:{{ c.alert }};--scrim:{{ c.scrim }};--pulseCol:{{ c.pulse }};--mode:{{ m.col }};--onMode:{{ m.on }};--modeSoft:{{ m.soft }};--modeLine:{{ m.lineCol }}">
+<div style="position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);color:var(--text)">
+
+<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:60"></div>
+<div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:19px 32px 0;z-index:45;pointer-events:none">
+<span style="font:600 15px Inter;color:var(--text)">9:41</span>
+<div style="display:flex;align-items:center;gap:8px">
+<svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".6" fill="var(--text)"/><rect x="5" y="4.5" width="3" height="6.5" rx=".6" fill="var(--text)"/><rect x="10" y="2" width="3" height="9" rx=".6" fill="var(--text)"/><rect x="15" y="0" width="3" height="11" rx=".6" fill="var(--text)" opacity=".4"/></svg>
+<span style="font:600 11px Inter;color:var(--text)">MESH</span>
+<svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="var(--text)" stroke-opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="var(--text)"/><rect x="24" y="4" width="2" height="4" rx="1" fill="var(--text)" opacity=".5"/></svg>
+</div>
+</div>
+
+<!-- top bar -->
+<div style="position:absolute;top:56px;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:14">
+<div style="display:flex;align-items:center;gap:6px;background:var(--surf);border:1px solid var(--line);padding:7px 12px;border-radius:999px">
+<svg width="16" height="13" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="20" height="11" rx="3" fill="none" stroke="var(--muted)"/><rect x="2" y="2" width="14" height="8" rx="1.4" fill="var(--accent)"/><rect x="22" y="4" width="2.5" height="4" rx="1" fill="var(--muted)"/></svg>
+<span style="font:600 12px 'Space Grotesk';color:var(--text)">78%</span>
+</div>
+<div style="display:flex;align-items:center;gap:9px">
+<sc-if value="{{ screenLive }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ goSelect }}" style="display:flex;align-items:center;gap:7px;background:var(--modeSoft);border:1px solid var(--modeLine);padding:7px 12px;border-radius:999px;cursor:pointer"><span style="width:7px;height:7px;border-radius:50%;background:var(--mode)"></span><span style="font:700 11px 'Space Grotesk';color:var(--text);letter-spacing:.08em">{{ missionLabel }}</span></div>
+</sc-if>
+<div onClick="{{ toggleTheme }}" style="width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer">
+<sc-if value="{{ themeDark }}" hint-placeholder-val="{{ true }}"><svg width="17" height="17" viewBox="0 0 18 18"><path d="M15 11.5A6.5 6.5 0 0 1 6.5 3 6.5 6.5 0 1 0 15 11.5z" fill="none" stroke="var(--text)" stroke-width="1.5" stroke-linejoin="round"/></svg></sc-if>
+<sc-if value="{{ themeLight }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.6" fill="none" stroke="var(--text)" stroke-width="1.5"/><g stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"><line x1="10" y1="2" x2="10" y2="4"/><line x1="10" y1="16" x2="10" y2="18"/><line x1="2" y1="10" x2="4" y2="10"/><line x1="16" y1="10" x2="18" y2="10"/><line x1="4.3" y1="4.3" x2="5.7" y2="5.7"/><line x1="14.3" y1="14.3" x2="15.7" y2="15.7"/><line x1="4.3" y1="15.7" x2="5.7" y2="14.3"/><line x1="14.3" y1="5.7" x2="15.7" y2="4.3"/></g></svg></sc-if>
+</div>
+<div onClick="{{ openSystem }}" style="width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.7" fill="none" stroke="var(--text)" stroke-width="1.5"/><path d="M10 2.2v2.3M10 15.5v2.3M2.2 10h2.3M15.5 10h2.3M4.4 4.4l1.7 1.7M13.9 13.9l1.7 1.7M4.4 15.6l1.7-1.7M13.9 6.1l1.7-1.7" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+</div>
+</div>
+
+<!-- =================== SCREEN: LAUNCH =================== -->
+<sc-if value="{{ screenLaunch }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:20;background:var(--bg);background-image:radial-gradient(circle at 50% 32%, color-mix(in srgb,var(--accent) 9%,transparent), transparent 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px">
+<div style="position:relative;width:128px;height:128px;display:flex;align-items:center;justify-content:center;margin-bottom:30px">
+<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%, color-mix(in srgb,var(--accent) 34%,transparent), transparent 68%);animation:scoutBreathe 4.5s ease-in-out infinite"></div>
+<div style="position:absolute;width:104px;height:104px;border-radius:50%;border:2px solid var(--line)"></div>
+<div style="position:relative;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 42% 36%,#20242c,#07090d 78%);box-shadow:inset 0 2px 8px rgba(0,0,0,.55)"><div style="position:absolute;inset:13px;border-radius:50%;border:6px solid var(--accent);box-shadow:0 0 16px color-mix(in srgb,var(--accent) 55%,transparent)"></div><div style="position:absolute;inset:29px;border-radius:50%;background:#05070a"></div><div style="position:absolute;top:24px;left:27px;width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(.5px)"></div></div>
+</div>
+<div style="font:800 38px Inter;color:var(--text);letter-spacing:.16em">SCOUT</div>
+<div style="font:600 12px 'Space Grotesk';color:var(--muted);letter-spacing:.28em;margin-top:8px">AUTONOMOUS GROUND NODE</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:22px;background:var(--surf);border:1px solid var(--line);padding:9px 15px;border-radius:999px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:scoutPulse 2.2s infinite"></span><span style="font:700 11px 'Space Grotesk';color:var(--text);letter-spacing:.1em">NODE-01 · READY</span></div>
+<div onClick="{{ beginMission }}" style="position:absolute;left:32px;right:32px;bottom:54px;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:var(--onAccent);font:800 17px Inter;padding:19px;border-radius:18px;cursor:pointer;box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 28%,transparent)">Begin mission<svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8h12M9 3l5 5-5 5" fill="none" stroke="var(--onAccent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div style="position:absolute;left:0;right:0;bottom:24px;text-align:center;font:500 10px 'JetBrains Mono';color:var(--faint);letter-spacing:.06em">on-device AI · no cloud · human-in-the-loop</div>
+</div>
+</sc-if>
+
+<!-- =================== SCREEN: SELECT =================== -->
+<sc-if value="{{ screenSelect }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:116px;left:0;right:0;bottom:0;padding:6px 20px 24px;overflow-y:auto">
+<div style="font:600 12px 'Space Grotesk';color:var(--muted);letter-spacing:.1em;padding:4px 2px 6px">SELECT MISSION</div>
+<div style="font:800 26px Inter;color:var(--text);letter-spacing:-.02em;margin-bottom:18px;line-height:1.12">Same robot.<br>Swap the payload.</div>
+
+<!-- RECON (big, full width) -->
+<div onClick="{{ pickSurveil }}" style="position:relative;display:flex;align-items:center;gap:16px;background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:22px;margin-bottom:13px;cursor:pointer;overflow:hidden">
+<div style="position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:color-mix(in srgb,#FFAB00 8%,transparent)"></div>
+<div style="width:58px;height:58px;border-radius:16px;flex-shrink:0;background:color-mix(in srgb,#FFAB00 16%,transparent);display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#FFAB00" stroke-width="1.7"/><circle cx="12" cy="12" r="3.2" fill="#FFAB00"/><path d="M12 1v2.5M12 20.5V23M1 12h2.5M20.5 12H23" stroke="#FFAB00" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+<div style="flex:1;position:relative"><div style="display:flex;align-items:center;gap:9px"><span style="font:800 21px Inter;color:var(--text);letter-spacing:-.01em">Recon</span><span style="font:600 9px 'Space Grotesk';color:#FFAB00;letter-spacing:.1em;border:1px solid color-mix(in srgb,#FFAB00 40%,transparent);padding:2px 7px;border-radius:6px">CAMERA ONLY</span></div><div style="font:500 13px Inter;color:var(--muted);margin-top:4px">Patrol, map, and flag what changed between passes.</div></div>
+<svg width="9" height="16" viewBox="0 0 9 16" style="position:relative"><path d="M1 1l7 7-7 7" fill="none" stroke="var(--faint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+
+<!-- two per row -->
+<div style="display:flex;gap:13px">
+<div onClick="{{ pickClearing }}" style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:18px;cursor:pointer">
+<div style="width:48px;height:48px;border-radius:14px;background:color-mix(in srgb,#FF4D4D 14%,transparent);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="#FF4D4D" stroke-width="1.6"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4" stroke="#FF4D4D" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="#FF4D4D"/></svg></div>
+<div style="font:800 18px Inter;color:var(--text)">Clearing</div>
+<div style="font:500 12px Inter;color:var(--muted);margin-top:3px;line-height:1.4">Find &amp; neutralise armed threats.</div>
+</div>
+<div onClick="{{ pickRescue }}" style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:18px;cursor:pointer">
+<div style="width:48px;height:48px;border-radius:14px;background:color-mix(in srgb,#25C26A 15%,transparent);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z" fill="none" stroke="#25C26A" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8.5v4M10 10.5h4" stroke="#25C26A" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+<div style="font:800 18px Inter;color:var(--text)">Rescue</div>
+<div style="font:500 12px Inter;color:var(--muted);margin-top:3px;line-height:1.4">Find &amp; mark civilians for extraction.</div>
+</div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em;margin-top:18px">€200 quadruped · on-device AI · human-in-the-loop</div>
+</div>
+</sc-if>
+
+<!-- =================== SCREEN: DEPLOY =================== -->
+<sc-if value="{{ screenDeploy }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:116px;left:0;right:0;bottom:0;padding:6px 20px 24px;overflow-y:auto;display:flex;flex-direction:column">
+<div onClick="{{ goSelect }}" style="display:flex;align-items:center;gap:7px;font:600 13px Inter;color:var(--muted);cursor:pointer;padding:4px 2px 14px"><svg width="7" height="12" viewBox="0 0 7 12"><path d="M6 1L1 6l5 5" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Change mission</div>
+<div style="display:flex;align-items:center;gap:15px;background:var(--surf);border:1px solid var(--modeLine);border-radius:20px;padding:18px;margin-bottom:14px">
+<div style="width:54px;height:54px;border-radius:15px;flex-shrink:0;background:var(--modeSoft);display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:3px solid var(--mode)"></span></div>
+<div style="flex:1"><div style="font:800 20px Inter;color:var(--text)">{{ missionName }}</div><div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:2px">Payload · {{ payloadName }}</div></div>
+</div>
+<div style="background:var(--surf);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:14px">
+<div style="display:flex;align-items:center;gap:11px;padding:14px 16px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:scoutPulse 2.2s infinite"></span><span style="flex:1;font:600 14px Inter;color:var(--text)">Robot link · Wi-Fi direct</span><span style="font:600 12px 'Space Grotesk';color:var(--accent)">Connected</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:14px 16px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Optical · IMX500</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">30 fps</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:14px 16px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Servos · 12 / 12</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">ready</span></div>
+</div>
+<div style="flex:1"></div>
+<div style="text-align:center;font:500 13px Inter;color:var(--muted);margin-bottom:14px">Place SCOUT at the entry point.</div>
+<div onClick="{{ deploy }}" style="display:flex;align-items:center;justify-content:center;gap:10px;background:var(--mode);color:var(--onMode);font:800 18px Inter;padding:19px;border-radius:18px;cursor:pointer;box-shadow:0 10px 26px var(--modeSoft)"><svg width="18" height="18" viewBox="0 0 16 16"><path d="M4 3l9 5-9 5z" fill="var(--onMode)"/></svg>Deploy</div>
+</div>
+</sc-if>
+
+<!-- =================== SCREEN: LIVE =================== -->
+<sc-if value="{{ screenLive }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:106px;left:0;right:0;bottom:74px;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:9px;padding:6px 20px 12px">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--mode);animation:scoutPulse 2.2s infinite"></span>
+<span style="font:700 12px 'Space Grotesk';color:var(--text);letter-spacing:.06em">{{ missionLabel }} · SECTOR 2</span>
+<span style="margin-left:auto;font:500 11px 'Space Grotesk';color:var(--faint)">02:34</span>
+</div>
+
+<div style="margin:0 20px;height:248px;border-radius:22px;overflow:hidden;position:relative;border:1px solid var(--line);background:repeating-linear-gradient(135deg, var(--surf2), var(--surf2) 12px, var(--surf) 12px, var(--surf) 24px)">
+<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%, transparent 35%, rgba(0,0,0,.35))"></div>
+<div style="position:absolute;left:50%;top:50%;width:1px;height:74%;transform:translate(-50%,-50%);background:color-mix(in srgb,var(--mode) 35%,transparent)"></div>
+<div style="position:absolute;left:50%;top:50%;width:74%;height:1px;transform:translate(-50%,-50%);background:color-mix(in srgb,var(--mode) 35%,transparent)"></div>
+<div style="position:absolute;left:50%;top:50%;width:70px;height:70px;transform:translate(-50%,-50%);border:1.5px solid color-mix(in srgb,var(--mode) 70%,transparent);border-radius:3px"></div>
+<div style="position:absolute;left:14px;top:14px;width:16px;height:16px;border-left:2px solid var(--mode);border-top:2px solid var(--mode)"></div>
+<div style="position:absolute;right:14px;top:14px;width:16px;height:16px;border-right:2px solid var(--mode);border-top:2px solid var(--mode)"></div>
+<div style="position:absolute;left:14px;bottom:14px;width:16px;height:16px;border-left:2px solid var(--mode);border-bottom:2px solid var(--mode)"></div>
+<div style="position:absolute;right:14px;bottom:14px;width:16px;height:16px;border-right:2px solid var(--mode);border-bottom:2px solid var(--mode)"></div>
+<sc-if value="{{ dScanning }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:8px;right:8px;top:20px;height:2px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--mode) 75%,transparent),transparent);animation:scoutScan 3s ease-in-out infinite"></div></sc-if>
+<sc-if value="{{ dChange }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:58%;top:42%;width:64px;height:80px;border:2px solid var(--mode);border-radius:4px;box-shadow:0 0 0 3px color-mix(in srgb,var(--mode) 22%,transparent)"><div style="position:absolute;top:-22px;left:-2px;background:var(--mode);color:var(--onMode);font:700 9px 'Space Grotesk';letter-spacing:.08em;padding:2px 6px;border-radius:4px;white-space:nowrap">Δ NEW</div></div><div style="position:absolute;right:13px;top:13px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px;font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.06em">DELTA 38%</div></sc-if>
+<div style="position:absolute;top:13px;left:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px"><span style="width:7px;height:7px;border-radius:50%;background:var(--mode);animation:scoutPulse 1.6s infinite"></span><span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.12em">OPTICAL · IMX500</span></div>
+<div style="position:absolute;left:14px;bottom:14px;font:500 10px 'JetBrains Mono';color:#fff;opacity:.72">on-device · 30 fps</div>
+</div>
+
+<!-- banner -->
+<div style="padding:14px 20px 2px">
+<sc-if value="{{ dScanning }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:11px;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:15px 16px"><span style="width:9px;height:9px;border-radius:50%;background:var(--muted)"></span><div style="flex:1"><div style="font:700 14px Inter;color:var(--text)">Scanning sector…</div><div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:2px">Autonomous patrol · no contacts yet</div></div></div></sc-if>
+<sc-if value="{{ dContact }}" hint-placeholder-val="{{ false }}"><div style="background:var(--modeSoft);border:1px solid var(--modeLine);border-radius:16px;padding:15px 16px"><div style="display:flex;align-items:center;gap:11px"><span style="width:9px;height:9px;border-radius:50%;background:var(--mode);animation:scoutPulse 1.5s infinite"></span><div style="flex:1"><div style="font:800 15px Inter;color:var(--text)">{{ contactTitle }}</div><div style="font:600 12px 'Space Grotesk';color:var(--muted);margin-top:2px">{{ contactSub }}</div></div></div><sc-if value="{{ dChange }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid var(--modeLine)"><div style="flex:1"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;margin-bottom:5px">PRIOR PASS · 02:10</div><div style="height:54px;border-radius:9px;background:repeating-linear-gradient(135deg,var(--surf),var(--surf) 7px,var(--surf2) 7px,var(--surf2) 14px);border:1px solid var(--line)"></div></div><div style="display:flex;align-items:center;font:700 16px 'Space Grotesk';color:var(--mode)">→</div><div style="flex:1"><div style="font:600 9px 'Space Grotesk';color:var(--mode);letter-spacing:.08em;margin-bottom:5px">NOW · 02:34</div><div style="height:54px;border-radius:9px;background:repeating-linear-gradient(135deg,var(--surf),var(--surf) 7px,var(--surf2) 7px,var(--surf2) 14px);border:1px solid var(--modeLine);position:relative"><div style="position:absolute;right:9px;top:9px;width:20px;height:30px;border:1.5px solid var(--mode);border-radius:3px;background:color-mix(in srgb,var(--mode) 20%,transparent)"></div></div></div></div></sc-if><sc-if value="{{ mClearing }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:7px;margin-top:11px;padding-top:11px;border-top:1px solid var(--modeLine)"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 1L15 14H1z" fill="none" stroke="var(--mode)" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v3.5M8 11.5v.3" stroke="var(--mode)" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font:700 11px 'Space Grotesk';color:var(--mode);letter-spacing:.06em">POSITIVE ID REQUIRED · OPERATOR MUST CONFIRM</span></div></sc-if></div></sc-if>
+<sc-if value="{{ dResolved }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:11px;background:var(--modeSoft);border:1px solid var(--modeLine);border-radius:16px;padding:15px 16px"><div style="width:26px;height:26px;border-radius:50%;background:var(--mode);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2.5 7l2.5 2.5L11 4" fill="none" stroke="var(--onMode)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="flex:1"><div style="font:800 15px Inter;color:var(--text)">{{ resolvedTitle }}</div><div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:2px">Logged to mission record</div></div></div></sc-if>
+<sc-if value="{{ dClear }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:11px;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:15px 16px"><span style="width:9px;height:9px;border-radius:50%;background:var(--muted)"></span><div style="flex:1"><div style="font:700 14px Inter;color:var(--text)">Clear · no contacts</div><div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:2px">Sector 2 swept</div></div></div></sc-if>
+</div>
+
+<!-- actions -->
+<div style="padding:12px 20px 18px">
+<sc-if value="{{ aScanning }}" hint-placeholder-val="{{ true }}"><div onClick="{{ endMission }}" style="display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--line);color:var(--muted);font:700 15px Inter;padding:16px;border-radius:15px;cursor:pointer">End mission</div></sc-if>
+
+<sc-if value="{{ aSurveil }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ resolveAct }}" style="display:flex;align-items:center;justify-content:center;gap:9px;background:var(--mode);color:var(--onMode);font:800 16px Inter;padding:17px;border-radius:15px;cursor:pointer;margin-bottom:10px">Log observation</div>
+<div style="display:flex;gap:10px"><div onClick="{{ rescan }}" style="flex:1;text-align:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:14px;cursor:pointer">Raise alert</div><div onClick="{{ rescan }}" style="flex:1;text-align:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:14px;cursor:pointer">Skip</div></div>
+</sc-if>
+
+<sc-if value="{{ aRescue }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ resolveAct }}" style="display:flex;align-items:center;justify-content:center;gap:9px;background:var(--mode);color:var(--onMode);font:800 16px Inter;padding:17px;border-radius:15px;cursor:pointer;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M9 16s-6-4-6-9a3.4 3.4 0 0 1 6-2.2A3.4 3.4 0 0 1 15 7c0 5-6 9-6 9z" fill="var(--onMode)"/></svg>Mark for extraction</div>
+<div style="display:flex;gap:10px"><div onClick="{{ rescan }}" style="flex:1;text-align:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:14px;cursor:pointer">Play message</div><div onClick="{{ rescan }}" style="flex:1;text-align:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:14px;cursor:pointer">Continue</div></div>
+</sc-if>
+
+<sc-if value="{{ aArm }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ arm }}" style="display:flex;align-items:center;justify-content:center;gap:9px;background:var(--mode);color:var(--onMode);font:800 16px Inter;padding:17px;border-radius:15px;cursor:pointer;margin-bottom:10px"><svg width="16" height="16" viewBox="0 0 18 18"><rect x="3" y="7" width="12" height="9" rx="2" fill="none" stroke="var(--onMode)" stroke-width="1.6"/><path d="M6 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="var(--onMode)" stroke-width="1.6"/></svg>Arm strike</div>
+<div style="display:flex;gap:10px"><div onClick="{{ rescan }}" style="flex:1;text-align:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:14px;cursor:pointer">Hold</div><div onClick="{{ rescan }}" style="flex:1;text-align:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:14px;cursor:pointer">No threat</div></div>
+</sc-if>
+
+<sc-if value="{{ aConfirm }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ strike }}" style="display:flex;align-items:center;justify-content:center;gap:9px;background:var(--mode);color:var(--onMode);font:800 16px Inter;padding:17px;border-radius:15px;cursor:pointer;margin-bottom:10px;box-shadow:0 0 0 4px var(--modeSoft)"><svg width="16" height="16" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="var(--onMode)" stroke-width="1.6"/><path d="M9 3v3.5M9 11.5V15M3 9h3.5M11.5 9H15" stroke="var(--onMode)" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="9" r="1.6" fill="var(--onMode)"/></svg>Confirm strike</div>
+<div onClick="{{ disarm }}" style="display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:14px;cursor:pointer">Disarm</div>
+</sc-if>
+
+<sc-if value="{{ aDone }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ rescan }}" style="display:flex;align-items:center;justify-content:center;background:var(--mode);color:var(--onMode);font:800 16px Inter;padding:17px;border-radius:15px;cursor:pointer;margin-bottom:10px">Continue patrol</div>
+<div onClick="{{ endMission }}" style="display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--line);color:var(--muted);font:700 15px Inter;padding:15px;border-radius:14px;cursor:pointer">End mission</div>
+</sc-if>
+</div>
+</div>
+
+<!-- bottom bar -->
+<div style="position:absolute;bottom:0;left:0;right:0;height:74px;display:flex;align-items:flex-start;justify-content:space-around;padding:11px 28px 0;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:13">
+<div onClick="{{ openMap }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M8 4L3 6v12l5-2 6 2 5-2V4l-5 2-6-2z" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 4v12M14 6v12" stroke="var(--muted)" stroke-width="1.5"/></svg><span style="font:600 10px Inter;color:var(--muted)">Map</span></div>
+<div onClick="{{ openNodes }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="8" cy="8" r="3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><path d="M3 18c0-2.8 2.2-5 5-5s5 2.2 5 5" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="15.5" cy="9" r="2.3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><path d="M14.2 13.5c2.1.3 3.8 1.9 3.8 4.5" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/></svg><span style="font:600 10px Inter;color:var(--muted)">Nodes</span></div>
+<div onClick="{{ openLog }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer"><svg width="22" height="22" viewBox="0 0 22 22"><line x1="7" y1="6" x2="17" y2="6" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><line x1="7" y1="11" x2="17" y2="11" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><line x1="7" y1="16" x2="13" y2="16" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="4" cy="6" r="1.2" fill="var(--muted)"/><circle cx="4" cy="11" r="1.2" fill="var(--muted)"/><circle cx="4" cy="16" r="1.2" fill="var(--muted)"/></svg><span style="font:600 10px Inter;color:var(--muted)">Log</span></div>
+</div>
+
+<!-- countdown overlay -->
+<sc-if value="{{ counting }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:48;background:rgba(5,7,10,.82);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center">
+<div style="font:600 12px 'Space Grotesk';color:var(--muted);letter-spacing:.16em;margin-bottom:18px">DEPLOYING · {{ missionLabel }}</div>
+<div style="font:800 120px 'Space Grotesk';color:var(--mode);line-height:1;animation:scoutCount .75s ease-out">{{ count }}</div>
+<div style="font:500 13px Inter;color:var(--muted);margin-top:18px">SCOUT is moving to entry point…</div>
+</div>
+</sc-if>
+
+<!-- scrim + drawer -->
+<div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:var(--scrim);z-index:30;transition:opacity .3s ease;opacity:{{ scrimO }};pointer-events:{{ scrimPe }}"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;max-height:80%;background:var(--surf);border-top:1px solid var(--line);border-radius:28px 28px 0 0;box-shadow:0 -16px 44px rgba(0,0,0,.4);z-index:35;transition:transform .36s cubic-bezier(.32,.72,0,1);transform:translateY({{ drawerY }});display:flex;flex-direction:column">
+<div style="display:flex;justify-content:center;padding:10px 0 2px;flex-shrink:0"><div style="width:40px;height:5px;border-radius:3px;background:var(--line)"></div></div>
+<div style="overflow-y:auto;padding:8px 22px 30px">
+
+<sc-if value="{{ dNodes }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px"><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Squad</span><div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div></div>
+<div style="display:flex;gap:9px;margin:0 0 16px">
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:12px 14px"><div style="display:flex;align-items:baseline;gap:5px"><span style="font:700 22px 'Space Grotesk';color:var(--accent)">{{ deployedCount }}</span><span style="font:600 11px Inter;color:var(--muted)">deployed</span></div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:12px 14px"><div style="display:flex;align-items:baseline;gap:5px"><span style="font:700 22px 'Space Grotesk';color:var(--text)">{{ standbyCount }}</span><span style="font:600 11px Inter;color:var(--muted)">standby</span></div></div>
+</div>
+<sc-for list="{{ units }}" as="u" hint-placeholder-count="4">
+<div onClick="{{ u.onClick }}" style="display:flex;align-items:center;gap:13px;background:var(--surf2);border:1px solid {{ u.border }};border-radius:16px;padding:13px;margin-bottom:10px;opacity:{{ u.cardOp }};cursor:pointer">
+<div style="width:44px;height:44px;border-radius:12px;flex-shrink:0;background:{{ u.tileBg }};display:flex;align-items:center;justify-content:center">
+<sc-if value="{{ u.isGround }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24"><rect x="6" y="8" width="12" height="8" rx="2" fill="none" stroke="{{ u.tileStroke }}" stroke-width="1.5"/><circle cx="10" cy="12" r="1.3" fill="{{ u.tileStroke }}"/><circle cx="14" cy="12" r="1.3" fill="{{ u.tileStroke }}"/><path d="M7 16l-2 4M17 16l2 4M10 16l-1 4M14 16l1 4" stroke="{{ u.tileStroke }}" stroke-width="1.4" stroke-linecap="round"/></svg></sc-if>
+<sc-if value="{{ u.isDrone }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="5.5" cy="6.5" r="2.5" fill="none" stroke="{{ u.tileStroke }}" stroke-width="1.4"/><circle cx="18.5" cy="6.5" r="2.5" fill="none" stroke="{{ u.tileStroke }}" stroke-width="1.4"/><circle cx="5.5" cy="17.5" r="2.5" fill="none" stroke="{{ u.tileStroke }}" stroke-width="1.4"/><circle cx="18.5" cy="17.5" r="2.5" fill="none" stroke="{{ u.tileStroke }}" stroke-width="1.4"/><rect x="9.5" y="9.5" width="5" height="5" rx="1.2" fill="{{ u.tileStroke }}"/><path d="M7.3 8.3l2.2 2.2M16.7 8.3l-2.2 2.2M7.3 15.7l2.2-2.2M16.7 15.7l-2.2-2.2" stroke="{{ u.tileStroke }}" stroke-width="1.3"/></svg></sc-if>
+</div>
+<div style="flex:1;min-width:0">
+<div style="display:flex;align-items:center;gap:8px"><span style="font:700 15px Inter;color:var(--text)">{{ u.call }}</span><span style="font:500 12px Inter;color:var(--muted)">{{ u.op }}</span></div>
+<div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:2px">{{ u.meta }}</div>
+</div>
+<div style="font:700 9px 'Space Grotesk';letter-spacing:.08em;padding:5px 9px;border-radius:7px;background:{{ u.pillBg }};color:{{ u.pillCol }};border:1px solid {{ u.pillBorder }};white-space:nowrap">{{ u.status }}</div>
+</div>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{ dMap }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px"><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Tactical map</span><div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div></div>
+<div style="position:relative;height:300px;border-radius:18px;border:1px solid var(--line);background:var(--surf2);background-image:linear-gradient(var(--hair) 1px,transparent 1px),linear-gradient(90deg,var(--hair) 1px,transparent 1px);background-size:30px 30px;overflow:hidden">
+<svg width="100%" height="100%" viewBox="0 0 330 300" preserveAspectRatio="none" style="position:absolute;inset:0"><polyline points="55,250 55,150 160,150 160,70 260,70" fill="none" stroke="var(--line)" stroke-width="2"/><polyline points="160,150 260,180" fill="none" stroke="var(--line)" stroke-width="2"/></svg>
+<div style="position:absolute;left:42px;bottom:38px;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="width:13px;height:13px;border-radius:50%;background:var(--muted)"></span><span style="font:500 8px 'JetBrains Mono';color:var(--muted)">ENTRY</span></div>
+<div style="position:absolute;left:42px;top:130px;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="width:13px;height:13px;border-radius:50%;background:var(--muted)"></span><span style="font:500 8px 'JetBrains Mono';color:var(--muted)">S1</span></div>
+<div style="position:absolute;left:148px;top:130px;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="width:15px;height:15px;border-radius:50%;background:var(--mode);box-shadow:0 0 0 5px var(--modeSoft);animation:scoutPulse 2.2s infinite"></span><span style="font:600 8px 'JetBrains Mono';color:var(--text)">S2 ◂ here</span></div>
+<div style="position:absolute;left:248px;top:54px;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="width:13px;height:13px;border-radius:50%;border:2px solid var(--faint);box-sizing:border-box"></span><span style="font:500 8px 'JetBrains Mono';color:var(--faint)">S3 ?</span></div>
+<div style="position:absolute;left:248px;top:166px;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="width:13px;height:13px;border-radius:50%;border:2px solid var(--faint);box-sizing:border-box"></span><span style="font:500 8px 'JetBrains Mono';color:var(--faint)">S4 ?</span></div>
+<div style="position:absolute;left:12px;top:12px;font:500 9px 'JetBrains Mono';color:var(--muted);opacity:.7">[ node graph · 2 / 4 explored ]</div>
+</div>
+<div style="display:flex;gap:18px;justify-content:center;margin-top:14px"><div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--muted)"></span><span style="font:500 11px Inter;color:var(--muted)">Explored</span></div><div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--mode)"></span><span style="font:500 11px Inter;color:var(--muted)">Robot</span></div><div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;border:2px solid var(--faint);box-sizing:border-box"></span><span style="font:500 11px Inter;color:var(--muted)">Unvisited</span></div></div>
+</sc-if>
+
+<sc-if value="{{ dLog }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px"><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Mission log</span><div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div></div>
+<div style="display:flex;gap:13px;align-items:flex-start;padding:2px 0 4px">
+<span style="width:10px;height:10px;border-radius:50%;background:{{ logLatest.dot }};margin-top:5px;flex-shrink:0;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)"></span>
+<div style="flex:1"><div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.04em">{{ logLatest.time }} · LATEST</div><div style="font:700 15px Inter;color:var(--text);margin-top:3px">{{ logLatest.text }}</div></div>
+</div>
+<sc-if value="{{ logCollapsed }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ expandLog }}" style="display:flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:13px;font:700 13px Inter;color:var(--text);cursor:pointer">Show {{ logRestCount }} earlier<svg width="11" height="7" viewBox="0 0 11 7"><path d="M1 1l4.5 4.5L10 1" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</sc-if>
+<sc-if value="{{ logExpandedShow }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ logRest }}" as="e" hint-placeholder-count="2">
+<div style="display:flex;gap:13px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--hair)">
+<span style="width:9px;height:9px;border-radius:50%;background:{{ e.dot }};margin-top:5px;flex-shrink:0"></span>
+<div style="flex:1"><div style="font:600 11px 'Space Grotesk';color:var(--muted)">{{ e.time }}</div><div style="font:600 14px Inter;color:var(--text);margin-top:2px">{{ e.text }}</div></div>
+</div>
+</sc-for>
+<div onClick="{{ collapseLog }}" style="display:flex;align-items:center;justify-content:center;margin-top:8px;font:700 13px Inter;color:var(--muted);cursor:pointer">Show less</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ dSystem }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 16px"><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Settings</span><div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div></div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:2px 2px 9px">APPEARANCE</div>
+<div style="display:flex;gap:6px;background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:20px">
+<div onClick="{{ setDark }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 14px Inter;background:{{ segDark.bg }};color:{{ segDark.col }};cursor:pointer">Dark</div>
+<div onClick="{{ setLight }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 14px Inter;background:{{ segLight.bg }};color:{{ segLight.col }};cursor:pointer">Light</div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:2px 2px 9px">DETECTION SENSITIVITY</div>
+<div style="display:flex;gap:6px;background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:20px">
+<div onClick="{{ setSensLow }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segLow.bg }};color:{{ segLow.col }};cursor:pointer">Low</div>
+<div onClick="{{ setSensMed }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segMed.bg }};color:{{ segMed.col }};cursor:pointer">Medium</div>
+<div onClick="{{ setSensHigh }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segHigh.bg }};color:{{ segHigh.col }};cursor:pointer">High</div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:2px 2px 9px">ALERT ROUTING</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:18px">
+<div style="display:flex;align-items:center;padding:14px 15px"><span style="flex:1;font:600 14px Inter;color:var(--text)">Threat detections</span><div onClick="{{ toggleThreat }}" style="width:46px;height:28px;border-radius:14px;background:{{ tThreat.bg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:{{ tThreat.x }};transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+<div style="display:flex;align-items:center;padding:14px 15px;border-top:1px solid var(--hair)"><span style="flex:1;font:600 14px Inter;color:var(--text)">Change &amp; recon alerts</span><div onClick="{{ toggleChange }}" style="width:46px;height:28px;border-radius:14px;background:{{ tChange.bg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:{{ tChange.x }};transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em">on-device AI · no cloud · human-in-the-loop</div>
+</sc-if>
+
+</div>
+</div>
+
+<div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:128px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--text) 30%,transparent);z-index:55"></div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:402,&quot;height&quot;:874},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: props.startTheme || 'dark',
+      screen: 'launch',            // launch | select | deploy | live
+      mission: 'surveil',          // surveil | clearing | rescue
+      drawer: null,                // map | log | system
+      detection: 'scanning',       // scanning | contact | resolved | clear
+      armed: false,
+      counting: false, count: 3,
+      sens: 'Medium',
+      alerts: { threat: true, change: true },
+      logExpanded: false,
+      units: [
+        { call:'ALPHA',   op:'You · CMD-01',   unit:'SCOUT-01', sector:'Sector 2',  batt:78,  deployed:true,  live:true,  kind:'ground' },
+        { call:'BRAVO',   op:'Cpl. Halvorsen', unit:'SCOUT-02', sector:'Sector 4',  batt:64,  deployed:true,  live:false, kind:'ground' },
+        { call:'CHARLIE', op:'Sgt. Okafor',    unit:'Recon UAV',sector:'Overwatch', batt:81,  deployed:true,  live:false, kind:'drone' },
+        { call:'DELTA',   op:'Pvt. Lindqvist', unit:'SCOUT-03', sector:'—',         batt:100, deployed:false, live:false, kind:'ground' },
+        { call:'ECHO',    op:'Pvt. Haddad',    unit:'SCOUT-04', sector:'—',         batt:92,  deployed:false, live:false, kind:'drone' }
+      ],
+      logs: [
+        { time: '02:32', text: 'Entered building · entry', dot: 'var(--muted)' },
+        { time: '02:33', text: 'Sector 1 · CLEAR', dot: 'var(--faint)' }
+      ]
+    };
+  }
+  componentWillUnmount() { this._clearAll(); }
+  _clearAll() { clearTimeout(this._t); clearInterval(this._iv); }
+
+  beginMission = () => this.setState({ screen: 'select' });
+  pick(mission) { this.setState({ mission, screen: 'deploy' }); }
+  goSelect = () => { this._clearAll(); this.setState({ screen: 'select', drawer: null, detection: 'scanning', armed: false, counting: false }); };
+
+  deploy = () => {
+    this._clearAll();
+    this.setState({ counting: true, count: 3 });
+    this._iv = setInterval(() => {
+      this.setState(s => {
+        if (s.count <= 1) {
+          clearInterval(this._iv);
+          this._t = setTimeout(() => this.setState({ detection: 'contact' }), 2000);
+          return { counting: false, screen: 'live', detection: 'scanning', armed: false };
+        }
+        return { count: s.count - 1 };
+      });
+    }, 750);
+  };
+
+  arm = () => this.setState({ armed: true });
+  disarm = () => this.setState({ armed: false });
+  _logEntry() {
+    const t = '02:34';
+    const map = {
+      clearing: { text: 'Sector 2 · THREAT · NEUTRALISED', dot: 'var(--mode)' },
+      rescue:   { text: 'Sector 2 · 4 civilians · EXTRACTION MARKED', dot: 'var(--mode)' },
+      surveil:  { text: 'Sector 2 · CHANGE LOGGED · 38%', dot: 'var(--mode)' }
+    };
+    return { time: t, ...map[this.state.mission] };
+  }
+  _resolve() {
+    this._clearAll();
+    this.setState(s => ({ detection: 'resolved', armed: false, logs: [...s.logs, this._logEntry()] }));
+    this._t = setTimeout(() => this.setState({ detection: 'clear' }), 1700);
+  }
+  strike = () => this._resolve();
+  resolveAct = () => this._resolve();
+  rescan = () => {
+    this._clearAll();
+    this.setState({ detection: 'scanning', armed: false });
+    this._t = setTimeout(() => this.setState({ detection: 'contact' }), 1900);
+  };
+  endMission = () => this.goSelect();
+
+  openMap = () => this.setState({ drawer: 'map' });
+  openNodes = () => this.setState({ drawer: 'nodes' });
+  openLog = () => this.setState({ drawer: 'log' });
+  openSystem = () => this.setState({ drawer: 'system' });
+  closeDrawer = () => this.setState({ drawer: null, logExpanded: false });
+  expandLog = () => this.setState({ logExpanded: true });
+  collapseLog = () => this.setState({ logExpanded: false });
+  setSens = (v) => this.setState({ sens: v });
+  toggleAlert = (k) => this.setState(s => ({ alerts: { ...s.alerts, [k]: !s.alerts[k] } }));
+
+  toggleTheme = () => this.setState(s => ({ theme: s.theme === 'dark' ? 'light' : 'dark' }));
+  setDark = () => this.setState({ theme: 'dark' });
+  setLight = () => this.setState({ theme: 'light' });
+
+  renderVals() {
+    const themes = {
+      dark: { bg:'#0D0E11', surf:'#16181D', surf2:'#1E2127', line:'rgba(255,255,255,0.09)', hair:'rgba(255,255,255,0.055)', text:'#ECEEF1', muted:'rgba(236,238,241,0.52)', faint:'rgba(236,238,241,0.30)', accent:'#FFAB00', onAccent:'#141414', alert:'#FF4D4D', scrim:'rgba(0,0,0,0.55)', pulse:'rgba(255,171,0,0.45)' },
+      light:{ bg:'#ECEEF1', surf:'#FFFFFF', surf2:'#F4F5F7', line:'rgba(20,22,27,0.11)', hair:'rgba(20,22,27,0.06)', text:'#16181D', muted:'rgba(20,22,27,0.55)', faint:'rgba(20,22,27,0.34)', accent:'#F2A100', onAccent:'#1A1206', alert:'#E03333', scrim:'rgba(0,0,0,0.32)', pulse:'rgba(242,161,0,0.40)' }
+    };
+    const modes = {
+      surveil:  { col:'#FFAB00', on:'#141414', soft:'color-mix(in srgb,#FFAB00 14%,transparent)', lineCol:'color-mix(in srgb,#FFAB00 40%,transparent)', name:'Recon', label:'RECON', payload:'Optical only', contact:['CHANGE DETECTED','Sector 2 · 38% delta vs. prior pass'], resolved:'Observation logged' },
+      clearing: { col:'#FF4D4D', on:'#FFFFFF', soft:'color-mix(in srgb,#FF4D4D 13%,transparent)', lineCol:'color-mix(in srgb,#FF4D4D 42%,transparent)', name:'Clearing', label:'CLEARING', payload:'Charge · armed by operator', contact:['THREAT DETECTED','Armed individual · 91% · no friendly IFF'], resolved:'Threat neutralised' },
+      rescue:   { col:'#25C26A', on:'#07210F', soft:'color-mix(in srgb,#25C26A 14%,transparent)', lineCol:'color-mix(in srgb,#25C26A 40%,transparent)', name:'Rescue', label:'RESCUE', payload:'Beacon · extraction relay', contact:['CIVILIANS DETECTED','4 unarmed · Sector 2 · hold position'], resolved:'Extraction marked' }
+    };
+    const s = this.state;
+    const c = themes[s.theme];
+    const m = modes[s.mission];
+    const open = !!s.drawer;
+    const seg = (on) => ({ bg: on ? c.accent : 'transparent', col: on ? c.onAccent : c.muted });
+    const tgl = (on) => ({ bg: on ? c.accent : c.line, x: on ? 'translateX(18px)' : 'translateX(0px)' });
+
+    const unitsView = s.units.map(u => {
+      const live = u.live, dep = u.deployed;
+      return {
+        call: u.call, op: u.op,
+        isDrone: u.kind === 'drone', isGround: u.kind === 'ground',
+        meta: dep ? (u.unit + ' · ' + u.sector + ' · ' + u.batt + '%') : (u.unit + ' · standby · ' + u.batt + '%'),
+        border: live ? 'color-mix(in srgb,var(--accent) 45%,transparent)' : 'var(--line)',
+        cardOp: dep ? '1' : '0.55',
+        tileBg: dep ? 'color-mix(in srgb,var(--accent) 14%,transparent)' : 'var(--surf)',
+        tileStroke: dep ? 'var(--accent)' : 'var(--muted)',
+        status: live ? 'LIVE' : (dep ? 'DEPLOYED' : 'STANDBY'),
+        pillBg: live ? 'var(--accent)' : 'transparent',
+        pillCol: live ? 'var(--onAccent)' : (dep ? 'var(--accent)' : 'var(--muted)'),
+        pillBorder: live ? 'var(--accent)' : (dep ? 'color-mix(in srgb,var(--accent) 40%,transparent)' : 'var(--line)'),
+        onClick: this.closeDrawer
+      };
+    });
+    const deployedCount = s.units.filter(u => u.deployed).length;
+    const standbyCount = s.units.length - deployedCount;
+    const logsRev = [...s.logs].reverse();
+    const logLatest = logsRev[0];
+    const logRest = logsRev.slice(1);
+    const logCollapsed = logRest.length > 0 && !s.logExpanded;
+    const logExpandedShow = logRest.length > 0 && s.logExpanded;
+
+    return {
+      c, m,
+      themeDark: s.theme === 'dark', themeLight: s.theme === 'light',
+      screenLaunch: s.screen === 'launch',
+      screenSelect: s.screen === 'select', screenDeploy: s.screen === 'deploy', screenLive: s.screen === 'live',
+      dChange: s.detection === 'contact' && s.mission === 'surveil',
+      mClearing: s.mission === 'clearing', mRescue: s.mission === 'rescue', mSurveil: s.mission === 'surveil',
+      missionName: m.name, missionLabel: m.label, payloadName: m.payload,
+      counting: s.counting, count: s.count,
+
+      dScanning: s.detection === 'scanning', dContact: s.detection === 'contact',
+      dResolved: s.detection === 'resolved', dClear: s.detection === 'clear',
+      contactTitle: m.contact[0], contactSub: m.contact[1], resolvedTitle: m.resolved,
+
+      aScanning: s.detection === 'scanning',
+      aSurveil: s.detection === 'contact' && s.mission === 'surveil',
+      aRescue: s.detection === 'contact' && s.mission === 'rescue',
+      aArm: s.detection === 'contact' && s.mission === 'clearing' && !s.armed,
+      aConfirm: s.detection === 'contact' && s.mission === 'clearing' && s.armed,
+      aDone: s.detection === 'resolved' || s.detection === 'clear',
+
+      drawer: s.drawer, dMap: s.drawer === 'map', dNodes: s.drawer === 'nodes', dLog: s.drawer === 'log', dSystem: s.drawer === 'system',
+      drawerY: open ? '0%' : '102%', scrimO: open ? '1' : '0', scrimPe: open ? 'auto' : 'none',
+      units: unitsView, deployedCount, standbyCount,
+      logLatest, logRest, logRestCount: logRest.length, logCollapsed, logExpandedShow,
+      segDark: seg(s.theme === 'dark'), segLight: seg(s.theme === 'light'),
+      segLow: seg(s.sens === 'Low'), segMed: seg(s.sens === 'Medium'), segHigh: seg(s.sens === 'High'),
+      tThreat: tgl(s.alerts.threat), tChange: tgl(s.alerts.change),
+
+      beginMission: this.beginMission,
+      pickSurveil: () => this.pick('surveil'), pickClearing: () => this.pick('clearing'), pickRescue: () => this.pick('rescue'),
+      goSelect: this.goSelect, deploy: this.deploy, arm: this.arm, disarm: this.disarm,
+      strike: this.strike, resolveAct: this.resolveAct, rescan: this.rescan, endMission: this.endMission,
+      openMap: this.openMap, openNodes: this.openNodes, openLog: this.openLog, openSystem: this.openSystem, closeDrawer: this.closeDrawer,
+      expandLog: this.expandLog, collapseLog: this.collapseLog,
+      setSensLow: () => this.setSens('Low'), setSensMed: () => this.setSens('Medium'), setSensHigh: () => this.setSens('High'),
+      toggleThreat: () => this.toggleAlert('threat'), toggleChange: () => this.toggleAlert('change'),
+      toggleTheme: this.toggleTheme, setDark: this.setDark, setLight: this.setLight
+    };
+  }
+}
+</script>
+</body>
+</html>

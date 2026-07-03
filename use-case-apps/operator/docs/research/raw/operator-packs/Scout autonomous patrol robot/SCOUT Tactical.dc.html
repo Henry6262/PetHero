@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@keyframes scoutBreathe { 0%,100% { transform: scale(1); opacity:.78 } 50% { transform: scale(1.08); opacity:1 } }
+@keyframes scoutPulse { 0% { box-shadow: 0 0 0 0 var(--pulseCol) } 70% { box-shadow: 0 0 0 11px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+@keyframes scoutSweep { to { transform: rotate(360deg) } }
+@keyframes scoutScan { 0% { transform: translateY(-4px); opacity:0 } 12% { opacity:1 } 88% { opacity:1 } 100% { transform: translateY(304px); opacity:0 } }
+@keyframes scoutBlip { 0%,100% { opacity:.5; transform:scale(1) } 50% { opacity:1; transform:scale(1.25) } }
+</style>
+</helmet>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#15161a;background-image:radial-gradient(circle at 50% 30%, #20222a, #121317 75%);font-family:Inter,system-ui,sans-serif">
+
+<div style="width:402px;height:874px;border-radius:54px;background:#05070a;padding:13px;box-sizing:border-box;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6);-webkit-font-smoothing:antialiased;--bg:{{ c.bg }};--surf:{{ c.surf }};--surf2:{{ c.surf2 }};--line:{{ c.line }};--hair:{{ c.hair }};--text:{{ c.text }};--muted:{{ c.muted }};--faint:{{ c.faint }};--accent:{{ c.accent }};--onAccent:{{ c.onAccent }};--alert:{{ c.alert }};--scrim:{{ c.scrim }};--pulseCol:{{ c.pulse }}">
+<div style="position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);color:var(--text)">
+
+<!-- dynamic island -->
+<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:60"></div>
+
+<!-- status bar -->
+<div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:19px 32px 0;z-index:45;pointer-events:none">
+<span style="font:600 15px Inter;color:var(--text)">9:41</span>
+<div style="display:flex;align-items:center;gap:8px">
+<svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".6" fill="var(--text)"/><rect x="5" y="4.5" width="3" height="6.5" rx=".6" fill="var(--text)"/><rect x="10" y="2" width="3" height="9" rx=".6" fill="var(--text)"/><rect x="15" y="0" width="3" height="11" rx=".6" fill="var(--text)" opacity=".4"/></svg>
+<span style="font:600 11px Inter;color:var(--text)">MESH</span>
+<svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="var(--text)" stroke-opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="var(--text)"/><rect x="24" y="4" width="2" height="4" rx="1" fill="var(--text)" opacity=".5"/></svg>
+</div>
+</div>
+
+<!-- app top bar -->
+<div style="position:absolute;top:56px;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:14">
+<div style="display:flex;align-items:center;gap:11px">
+<div style="position:relative;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 42% 36%, #20242c, #0a0c10 78%);box-shadow:inset 0 1px 3px rgba(0,0,0,.6)">
+<div style="position:absolute;inset:5px;border-radius:50%;border:2.5px solid var(--accent);box-shadow:0 0 8px color-mix(in srgb,var(--accent) 60%,transparent)"></div>
+<div style="position:absolute;inset:9px;border-radius:50%;background:#05070a"></div>
+</div>
+<div style="display:flex;flex-direction:column;line-height:1"><span style="font:800 16px Inter;color:var(--text);letter-spacing:.14em">SCOUT</span><span style="font:600 8px 'Space Grotesk';color:var(--muted);letter-spacing:.18em;margin-top:2px">NODE-01 · C-UAS</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:9px">
+<div onClick="{{ openNode }}" style="display:flex;align-items:center;gap:6px;background:var(--surf);border:1px solid var(--line);padding:7px 11px;border-radius:999px;cursor:pointer">
+<svg width="13" height="13" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="20" height="11" rx="3" fill="none" stroke="var(--muted)"/><rect x="2" y="2" width="14" height="8" rx="1.4" fill="var(--accent)"/><rect x="22" y="4" width="2.5" height="4" rx="1" fill="var(--muted)"/></svg>
+<span style="font:600 12px 'Space Grotesk';color:var(--text)">78%</span>
+</div>
+<div onClick="{{ toggleTheme }}" style="width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer">
+<sc-if value="{{ themeDark }}" hint-placeholder-val="{{ true }}"><svg width="17" height="17" viewBox="0 0 18 18"><path d="M15 11.5A6.5 6.5 0 0 1 6.5 3 6.5 6.5 0 1 0 15 11.5z" fill="none" stroke="var(--text)" stroke-width="1.5" stroke-linejoin="round"/></svg></sc-if>
+<sc-if value="{{ themeLight }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.6" fill="none" stroke="var(--text)" stroke-width="1.5"/><g stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"><line x1="10" y1="2" x2="10" y2="4"/><line x1="10" y1="16" x2="10" y2="18"/><line x1="2" y1="10" x2="4" y2="10"/><line x1="16" y1="10" x2="18" y2="10"/><line x1="4.3" y1="4.3" x2="5.7" y2="5.7"/><line x1="14.3" y1="14.3" x2="15.7" y2="15.7"/><line x1="4.3" y1="15.7" x2="5.7" y2="14.3"/><line x1="14.3" y1="5.7" x2="15.7" y2="4.3"/></g></svg></sc-if>
+</div>
+</div>
+</div>
+
+<!-- content -->
+<div style="position:absolute;top:106px;left:0;right:0;bottom:74px;overflow-y:auto">
+
+<!-- status + mode switch -->
+<div style="display:flex;align-items:center;gap:9px;padding:6px 20px 12px">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:scoutPulse 2.2s infinite"></span>
+<span style="font:700 12px 'Space Grotesk';color:var(--text);letter-spacing:.06em">PATROLLING · SECTOR 2</span>
+<div style="margin-left:auto;display:flex;gap:4px;background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:3px">
+<div onClick="{{ setFeed }}" style="display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;font:700 11px Inter;background:{{ segFeed.bg }};color:{{ segFeed.col }};cursor:pointer"><svg width="11" height="11" viewBox="0 0 12 12"><rect x="1" y="2" width="10" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="6" r="1.6" fill="currentColor"/></svg>Feed</div>
+<div onClick="{{ setRadar }}" style="display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;font:700 11px Inter;background:{{ segRadar.bg }};color:{{ segRadar.col }};cursor:pointer"><svg width="11" height="11" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 6L6 1.2" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="6" r="1" fill="currentColor"/></svg>Radar</div>
+</div>
+</div>
+
+<!-- ===== HOME: FEED ===== -->
+<sc-if value="{{ homeFeed }}" hint-placeholder-val="{{ true }}">
+<div style="margin:0 20px;height:344px;border-radius:22px;overflow:hidden;position:relative;border:1px solid var(--line);background:repeating-linear-gradient(135deg, var(--surf2), var(--surf2) 12px, var(--surf) 12px, var(--surf) 24px)">
+<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%, transparent 35%, rgba(0,0,0,.35))"></div>
+<!-- reticle -->
+<div style="position:absolute;left:50%;top:50%;width:1px;height:78%;transform:translate(-50%,-50%);background:color-mix(in srgb,var(--accent) 35%,transparent)"></div>
+<div style="position:absolute;left:50%;top:50%;width:78%;height:1px;transform:translate(-50%,-50%);background:color-mix(in srgb,var(--accent) 35%,transparent)"></div>
+<div style="position:absolute;left:50%;top:50%;width:74px;height:74px;transform:translate(-50%,-50%);border:1.5px solid color-mix(in srgb,var(--accent) 70%,transparent);border-radius:3px"></div>
+<div style="position:absolute;left:14px;top:14px;width:18px;height:18px;border-left:2px solid var(--accent);border-top:2px solid var(--accent)"></div>
+<div style="position:absolute;right:14px;top:14px;width:18px;height:18px;border-right:2px solid var(--accent);border-top:2px solid var(--accent)"></div>
+<div style="position:absolute;left:14px;bottom:14px;width:18px;height:18px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent)"></div>
+<div style="position:absolute;right:14px;bottom:14px;width:18px;height:18px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent)"></div>
+<div style="position:absolute;left:8px;right:8px;top:20px;height:2px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 75%,transparent),transparent);animation:scoutScan 3.4s ease-in-out infinite"></div>
+<div style="position:absolute;top:13px;left:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent);animation:scoutPulse 1.6s infinite"></span><span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.12em">OPTICAL · IMX500</span></div>
+<div style="position:absolute;top:13px;right:13px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px;font:600 11px 'Space Grotesk';color:#fff">AZ 142°</div>
+<div style="position:absolute;left:14px;bottom:14px;font:500 10px 'JetBrains Mono';color:#fff;opacity:.72;letter-spacing:.04em">scanning · on-device · 30 fps</div>
+<div style="position:absolute;right:14px;bottom:14px;font:600 10px 'Space Grotesk';color:#fff;opacity:.85">NO CONTACT</div>
+</div>
+</sc-if>
+
+<!-- ===== HOME: RADAR ===== -->
+<sc-if value="{{ homeRadar }}" hint-placeholder-val="{{ false }}">
+<div style="margin:0 20px;border-radius:22px;border:1px solid var(--line);background:var(--surf);padding:14px 14px 16px;position:relative">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font:700 11px 'Space Grotesk';color:var(--muted);letter-spacing:.1em">TACTICAL · SECTOR 2</span><span style="font:600 11px 'Space Grotesk';color:var(--text)">RANGE 40 m</span></div>
+<div style="position:relative;width:262px;height:262px;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 50% 50%, color-mix(in srgb,var(--accent) 7%,transparent), transparent 70%);overflow:hidden">
+<div style="position:absolute;inset:0;border-radius:50%;border:1px solid var(--line)"></div>
+<div style="position:absolute;inset:43px;border-radius:50%;border:1px solid var(--hair)"></div>
+<div style="position:absolute;inset:86px;border-radius:50%;border:1px solid var(--hair)"></div>
+<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%);background:var(--hair)"></div>
+<div style="position:absolute;top:50%;left:0;right:0;height:1px;transform:translateY(-50%);background:var(--hair)"></div>
+<div style="position:absolute;inset:0;animation:scoutSweep 3.6s linear infinite;background:conic-gradient(from 0deg, transparent 0deg, transparent 312deg, color-mix(in srgb,var(--accent) 30%,transparent) 358deg, color-mix(in srgb,var(--accent) 55%,transparent) 360deg)"></div>
+<span style="position:absolute;top:5px;left:50%;transform:translateX(-50%);font:600 9px 'JetBrains Mono';color:var(--muted)">N</span>
+<span style="position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font:600 9px 'JetBrains Mono';color:var(--faint)">S</span>
+<span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font:600 9px 'JetBrains Mono';color:var(--faint)">E</span>
+<span style="position:absolute;left:6px;top:50%;transform:translateY(-50%);font:600 9px 'JetBrains Mono';color:var(--faint)">W</span>
+<!-- node center -->
+<div style="position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);background:var(--accent);box-shadow:0 0 10px var(--accent);animation:scoutPulse 2.4s infinite"></div>
+<!-- friendly/neutral blips -->
+<div style="position:absolute;left:34%;top:64%;width:6px;height:6px;border-radius:50%;background:var(--faint)"></div>
+<div style="position:absolute;left:60%;top:70%;width:6px;height:6px;border-radius:50%;background:var(--faint)"></div>
+<!-- UAV track -->
+<div onClick="{{ openThreat }}" style="position:absolute;left:68%;top:30%;cursor:pointer">
+<div style="width:11px;height:11px;border-radius:50%;background:var(--alert);box-shadow:0 0 0 5px color-mix(in srgb,var(--alert) 22%,transparent);animation:scoutBlip 1.4s infinite"></div>
+<div style="position:absolute;left:16px;top:-3px;white-space:nowrap;font:600 9px 'JetBrains Mono';color:var(--alert)">UAV 142° 38m</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:18px;margin-top:14px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:var(--alert)"></span><span style="font:600 11px Inter;color:var(--text)">1 hostile track</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:var(--faint)"></span><span style="font:600 11px Inter;color:var(--muted)">2 contacts</span></div>
+</div>
+</div>
+</sc-if>
+
+<!-- primary actions -->
+<div style="display:flex;gap:11px;padding:15px 20px 4px">
+<div onClick="{{ startPatrol }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--accent);color:var(--onAccent);font:700 16px Inter;padding:18px;border-radius:16px;cursor:pointer">
+<svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 3l9 5-9 5z" fill="var(--onAccent)"/></svg>Start Patrol
+</div>
+<div onClick="{{ openTrack }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 16px Inter;padding:18px;border-radius:16px;cursor:pointer">
+<svg width="17" height="17" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="var(--text)" stroke-width="1.4"/><path d="M9 1v3M9 14v3M1 9h3M14 9h3" stroke="var(--text)" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="9" r="1.6" fill="var(--text)"/></svg>Designate
+</div>
+</div>
+
+<!-- threat log -->
+<div style="margin:12px 20px 16px;background:var(--surf);border:1px solid var(--line);border-radius:20px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+<span style="font:700 13px Inter;color:var(--text)">Threat log</span>
+<span style="font:600 11px 'Space Grotesk';color:var(--muted)">SECTOR 2</span>
+</div>
+<div style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-top:1px solid var(--hair)">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--faint)"></span>
+<div style="flex:1"><div style="font:600 15px Inter;color:var(--text)">Sector 1 · clear</div></div>
+<span style="font:600 12px 'Space Grotesk';color:var(--muted)">02:10</span>
+</div>
+<div onClick="{{ openThreat }}" style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-top:1px solid var(--hair);cursor:pointer">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--alert);box-shadow:0 0 0 4px color-mix(in srgb,var(--alert) 20%,transparent)"></span>
+<div style="flex:1"><div style="font:600 15px Inter;color:var(--text)">UAV detected · Sector 2 · 94%</div></div>
+<span style="display:flex;align-items:center;gap:5px;font:700 12px Inter;color:var(--alert)">Track<svg width="6" height="10" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4" fill="none" stroke="var(--alert)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+</div>
+<div style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-top:1px solid var(--hair)">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--accent)"></span>
+<div style="flex:1"><div style="font:600 15px Inter;color:var(--text)">Unknown contact · Sector 4 · 61%</div></div>
+<span style="font:600 12px 'Space Grotesk';color:var(--muted)">02:14</span>
+</div>
+<div style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-top:1px solid var(--hair)">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--faint)"></span>
+<div style="flex:1"><div style="font:600 15px Inter;color:var(--text)">Datalink · mesh nominal</div></div>
+<span style="font:600 12px 'Space Grotesk';color:var(--muted)">02:16</span>
+</div>
+</div>
+</div>
+
+<!-- bottom utility bar -->
+<div style="position:absolute;bottom:0;left:0;right:0;height:74px;display:flex;align-items:flex-start;justify-content:space-around;padding:11px 20px 0;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:13">
+<div onClick="{{ openThreat }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4L19 18H3z" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linejoin="round"/><line x1="11" y1="9" x2="11" y2="13" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="15.5" r="1" fill="var(--muted)"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Threats</span>
+</div>
+<div onClick="{{ openNode }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><rect x="4" y="7" width="14" height="11" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><line x1="11" y1="4" x2="11" y2="7" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="12.5" r="1.3" fill="var(--muted)"/><circle cx="13.5" cy="12.5" r="1.3" fill="var(--muted)"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Node</span>
+</div>
+<div onClick="{{ openSettings }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><line x1="4" y1="7" x2="18" y2="7" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><line x1="4" y1="15" x2="18" y2="15" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="14" cy="7" r="2.4" fill="var(--bg)" stroke="var(--muted)" stroke-width="1.6"/><circle cx="8" cy="15" r="2.4" fill="var(--bg)" stroke="var(--muted)" stroke-width="1.6"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Settings</span>
+</div>
+</div>
+
+<!-- scrim -->
+<div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:var(--scrim);z-index:30;transition:opacity .3s ease;opacity:{{ scrimO }};pointer-events:{{ scrimPe }}"></div>
+
+<!-- ============ DRAWER ============ -->
+<div style="position:absolute;left:0;right:0;bottom:0;max-height:82%;background:var(--surf);border-top:1px solid var(--line);border-radius:28px 28px 0 0;box-shadow:0 -16px 44px rgba(0,0,0,.4);z-index:35;transition:transform .36s cubic-bezier(.32,.72,0,1);transform:translateY({{ drawerY }});display:flex;flex-direction:column">
+<div style="display:flex;justify-content:center;padding:10px 0 2px;flex-shrink:0"><div style="width:40px;height:5px;border-radius:3px;background:var(--line)"></div></div>
+<div style="overflow-y:auto;padding:8px 22px 30px">
+
+<!-- TRACK / DESIGNATE -->
+<sc-if value="{{ dTrack }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Designate target</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+
+<sc-if value="{{ trackList }}" hint-placeholder-val="{{ true }}">
+<div style="font:500 13px Inter;color:var(--muted);padding:2px 0 14px">Select a contact to slew-to-cue.</div>
+<div onClick="{{ lockTarget }}" style="display:flex;align-items:center;gap:14px;background:var(--surf2);border:1px solid color-mix(in srgb,var(--alert) 40%,transparent);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer">
+<div style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:color-mix(in srgb,var(--alert) 14%,transparent);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="var(--alert)" stroke-width="1.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="var(--alert)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="var(--alert)"/></svg></div>
+<div style="flex:1"><div style="font:700 15px Inter;color:var(--text)">UAV · Quadcopter</div><div style="font:500 12px 'Space Grotesk';color:var(--muted)">Sector 2 · AZ 142° · 94%</div></div>
+<svg width="8" height="14" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="var(--faint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div style="display:flex;align-items:center;gap:14px;background:var(--surf2);border:1px solid var(--line);border-radius:16px;padding:14px;opacity:.9">
+<div style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:color-mix(in srgb,var(--accent) 14%,transparent);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 3v14M3 10h14" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="10" r="7" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="2 3"/></svg></div>
+<div style="flex:1"><div style="font:700 15px Inter;color:var(--text)">Unknown contact</div><div style="font:500 12px 'Space Grotesk';color:var(--muted)">Sector 4 · AZ 071° · 61%</div></div>
+<svg width="8" height="14" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="var(--faint)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+</sc-if>
+
+<sc-if value="{{ trackLocking }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;padding:18px 0 8px">
+<div style="position:relative;width:176px;height:176px;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;width:176px;height:176px;border-radius:50%;border:1px solid var(--line)"></div>
+<div style="position:absolute;width:110px;height:110px;border-radius:50%;border:1px solid var(--line)"></div>
+<div style="position:absolute;width:176px;height:176px;border-radius:50%;animation:scoutSweep 1.5s linear infinite;background:conic-gradient(from 0deg, transparent 0deg, transparent 300deg, color-mix(in srgb,var(--alert) 45%,transparent) 360deg)"></div>
+<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%);background:var(--hair)"></div>
+<div style="position:absolute;top:50%;left:0;right:0;height:1px;transform:translateY(-50%);background:var(--hair)"></div>
+<div style="position:absolute;width:54px;height:54px;border:1.5px solid var(--alert);border-radius:3px"></div>
+<div style="position:absolute;width:10px;height:10px;border-radius:50%;background:var(--alert);box-shadow:0 0 12px var(--alert)"></div>
+</div>
+<div style="margin-top:22px;font:700 16px Inter;color:var(--text)">Slewing to cue…</div>
+<div style="margin-top:5px;font:500 13px 'Space Grotesk';color:var(--muted)">Acquiring optical lock · AZ 142°</div>
+<div onClick="{{ closeDrawer }}" style="margin-top:18px;font:600 14px Inter;color:var(--muted);cursor:pointer">Cancel</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ trackLocked }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:8px;padding:2px 0 12px"><span style="width:9px;height:9px;border-radius:50%;background:var(--alert);animation:scoutPulse 1.6s infinite;--pulseCol:color-mix(in srgb,var(--alert) 40%,transparent)"></span><span style="font:700 13px 'Space Grotesk';color:var(--alert);letter-spacing:.08em">LOCK · TRACKING</span></div>
+<div style="height:188px;border-radius:18px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 12px,var(--surf) 12px,var(--surf) 24px);border:1px solid var(--line)">
+<div style="position:absolute;left:50%;top:50%;width:62px;height:62px;transform:translate(-50%,-50%);border:1.5px solid var(--alert);border-radius:3px"></div>
+<div style="position:absolute;left:50%;top:50%;width:88%;height:1px;transform:translate(-50%,-50%);background:color-mix(in srgb,var(--alert) 45%,transparent)"></div>
+<div style="position:absolute;left:50%;top:50%;width:1px;height:80%;transform:translate(-50%,-50%);background:color-mix(in srgb,var(--alert) 45%,transparent)"></div>
+<div style="position:absolute;top:11px;left:11px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:8px;font:600 10px 'Space Grotesk';color:#fff">QUADCOPTER · 94%</div>
+</div>
+<div style="display:flex;gap:9px;margin:14px 0 16px">
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">BEARING</div><div style="font:700 17px 'Space Grotesk';color:var(--text);margin-top:3px">142°</div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">RANGE</div><div style="font:700 17px 'Space Grotesk';color:var(--text);margin-top:3px">38 m</div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">SPEED</div><div style="font:700 17px 'Space Grotesk';color:var(--text);margin-top:3px">11 m/s</div></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:9px;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer;margin-bottom:10px"><svg width="15" height="15" viewBox="0 0 16 16"><path d="M2 8h12M9 3l5 5-5 5" fill="none" stroke="var(--onAccent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Report to command</div>
+<div onClick="{{ closeDrawer }}" style="display:flex;align-items:center;justify-content:center;background:var(--surf2);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Hold track</div>
+</sc-if>
+</sc-if>
+
+<!-- PATROL -->
+<sc-if value="{{ dPatrol }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ patrolLive }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 14px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:var(--accent);animation:scoutPulse 1.8s infinite"></span><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Perimeter sweep</span></div>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M3 6.5h7M6.5 3v7" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" transform="rotate(45 6.5 6.5)"/></svg></div>
+</div>
+<div style="height:236px;border-radius:18px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 12px,var(--surf) 12px,var(--surf) 24px);border:1px solid var(--line);margin-bottom:18px">
+<div style="position:absolute;left:50%;top:50%;width:50px;height:50px;transform:translate(-50%,-50%);border:1.4px solid color-mix(in srgb,var(--accent) 60%,transparent);border-radius:3px"></div>
+<div style="position:absolute;top:11px;left:11px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></span><span style="font:700 9px 'Space Grotesk';color:#fff;letter-spacing:.12em">OPTICAL</span></div>
+<div style="position:absolute;left:12px;bottom:11px;font:500 9px 'JetBrains Mono';color:#fff;opacity:.7">scanning · 30 fps</div>
+</div>
+<div style="font:600 12px 'Space Grotesk';color:var(--muted);letter-spacing:.06em;margin-bottom:14px">CHECKPOINT {{ patrolDoneCount }} OF 4 · {{ currentRoom }}</div>
+<div style="display:flex;align-items:flex-start;margin-bottom:22px">
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+<sc-if value="{{ s.notFirst }}" hint-placeholder-val="{{ true }}"><div style="flex:1;height:2px;background:{{ s.line }};margin-top:13px"></div></sc-if>
+<div style="display:flex;flex-direction:column;align-items:center;gap:7px;width:58px;flex-shrink:0">
+<div style="width:28px;height:28px;border-radius:50%;box-sizing:border-box;background:{{ s.bg }};border:2px solid {{ s.border }};display:flex;align-items:center;justify-content:center">
+<sc-if value="{{ s.showCheck }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M2.5 7l2.5 2.5L10.5 4" fill="none" stroke="var(--onAccent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+</div>
+<span style="font:600 10px Inter;color:{{ s.labelCol }};text-align:center;line-height:1.2">{{ s.name }}</span>
+</div>
+</sc-for>
+</div>
+<div onClick="{{ endPatrol }}" style="display:flex;align-items:center;justify-content:center;background:var(--surf2);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">End patrol</div>
+</sc-if>
+
+<sc-if value="{{ patrolReport }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Patrol report</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:var(--surf2);border:1px solid var(--line);border-radius:16px;padding:16px;margin:8px 0 16px">
+<div style="width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--accent) 16%,transparent);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2l6 3v4c0 4-2.6 6.6-6 8-3.4-1.4-6-4-6-8V5z" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+<div><div style="font:700 16px Inter;color:var(--text)">Perimeter held</div><div style="font:500 12px Inter;color:var(--muted)">4 sectors · 1 m 48 s · 1 contact tracked</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--hair)"><span style="width:7px;height:7px;border-radius:50%;background:var(--faint)"></span><span style="flex:1;font:600 14px Inter;color:var(--text)">Sector 1 · clear</span><span style="font:500 12px 'Space Grotesk';color:var(--muted)">✓</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--hair)"><span style="width:7px;height:7px;border-radius:50%;background:var(--alert)"></span><span style="flex:1;font:600 14px Inter;color:var(--text)">Sector 2 · UAV detected · tracked</span><span style="font:600 12px 'Space Grotesk';color:var(--alert)">!</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--hair)"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span><span style="flex:1;font:600 14px Inter;color:var(--text)">Sector 4 · unknown contact · logged</span><span style="font:500 12px 'Space Grotesk';color:var(--muted)">~</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:11px 2px"><span style="width:7px;height:7px;border-radius:50%;background:var(--faint)"></span><span style="flex:1;font:600 14px Inter;color:var(--text)">Sector 3 · clear</span><span style="font:500 12px 'Space Grotesk';color:var(--muted)">✓</span></div>
+<div onClick="{{ closeDrawer }}" style="display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer;margin-top:18px">Acknowledge</div>
+</sc-if>
+</sc-if>
+
+<!-- THREAT -->
+<sc-if value="{{ dThreat }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:var(--alert)"></span><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">UAV detected</span></div>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="font:500 13px 'Space Grotesk';color:var(--muted);padding:2px 0 14px">Sector 2 · AZ 142° · today, 02:17</div>
+<div style="height:196px;border-radius:18px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 12px,var(--surf) 12px,var(--surf) 24px);border:1px solid var(--line)">
+<div style="position:absolute;left:50%;top:50%;width:56px;height:56px;transform:translate(-50%,-50%);border:1.5px solid var(--alert);border-radius:3px"></div>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:50px;height:50px;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M6 4l11 6-11 6z" fill="#fff"/></svg></div></div>
+<div style="position:absolute;left:12px;bottom:12px;font:500 10px 'JetBrains Mono';color:#fff;opacity:.75">clip · 00:08 · on-node</div>
+</div>
+<div style="display:flex;gap:9px;margin:14px 0 0">
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">CLASS</div><div style="font:700 14px Inter;color:var(--text);margin-top:3px">Quadcopter</div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">CONFIDENCE</div><div style="font:700 14px 'Space Grotesk';color:var(--alert);margin-top:3px">94%</div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">IFF</div><div style="font:700 14px Inter;color:var(--text);margin-top:3px">None</div></div>
+</div>
+<div style="display:flex;gap:11px;background:color-mix(in srgb,var(--alert) 9%,transparent);border:1px solid color-mix(in srgb,var(--alert) 30%,transparent);border-radius:16px;padding:14px;margin:14px 0">
+<svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0;margin-top:1px"><circle cx="10" cy="10" r="8" fill="none" stroke="var(--alert)" stroke-width="1.5"/><path d="M10 6v5M10 13.5v.5" stroke="var(--alert)" stroke-width="1.6" stroke-linecap="round"/></svg>
+<div><div style="font:700 13px Inter;color:var(--text);margin-bottom:3px">On-device classification</div><div style="font:500 13px Inter;color:var(--muted);line-height:1.5">Optical signature matches a quadcopter UAV. No friendly transponder. Visual track held — footage stays on the node, no datalink required.</div></div>
+</div>
+<div style="display:flex;gap:11px">
+<div onClick="{{ openTrack }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Maintain track</div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:color-mix(in srgb,var(--alert) 14%,transparent);border:1px solid color-mix(in srgb,var(--alert) 45%,transparent);color:var(--alert);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Flag hostile</div>
+</div>
+</sc-if>
+
+<!-- NODE -->
+<sc-if value="{{ dNode }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">SCOUT-01</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:10px 0 18px">
+<div style="position:relative;width:112px;height:112px;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%, color-mix(in srgb,var(--accent) 36%,transparent), transparent 68%);animation:scoutBreathe 4.5s ease-in-out infinite"></div>
+<div style="position:absolute;width:92px;height:92px;border-radius:50%;border:2px solid var(--line)"></div>
+<div style="position:relative;width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 42% 36%,#20242c,#07090d 78%);box-shadow:inset 0 2px 8px rgba(0,0,0,.55)">
+<div style="position:absolute;inset:11px;border-radius:50%;border:5px solid var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent) 55%,transparent)"></div>
+<div style="position:absolute;inset:25px;border-radius:50%;background:#05070a"></div>
+<div style="position:absolute;top:20px;left:23px;width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(.5px)"></div>
+</div>
+</div>
+<div style="margin-top:14px;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span><span style="font:600 13px 'Space Grotesk';color:var(--text)">Online · patrolling Sector 2</span></div>
+</div>
+<div style="display:flex;gap:11px;margin-bottom:14px">
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:16px;padding:14px"><div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.04em">BATTERY</div><div style="display:flex;align-items:baseline;gap:3px;margin:7px 0 9px"><span style="font:700 24px 'Space Grotesk';color:var(--text)">78</span><span style="font:600 13px Inter;color:var(--muted)">%</span></div><div style="height:5px;border-radius:3px;background:var(--line);overflow:hidden"><div style="width:78%;height:100%;background:var(--accent);border-radius:3px"></div></div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:16px;padding:14px"><div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.04em">DATALINK</div><div style="display:flex;align-items:baseline;gap:3px;margin:7px 0 9px"><span style="font:700 24px 'Space Grotesk';color:var(--text)">Mesh</span></div><div style="display:flex;gap:3px;align-items:flex-end;height:5px"><div style="flex:1;height:100%;background:var(--accent);border-radius:2px"></div><div style="flex:1;height:100%;background:var(--accent);border-radius:2px"></div><div style="flex:1;height:100%;background:var(--accent);border-radius:2px"></div><div style="flex:1;height:100%;background:var(--line);border-radius:2px"></div></div></div>
+</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:16px">
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Optical · IMX500</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">30 fps</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Servos</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">12 / 12</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Ultrasonic · obstacle</span><span style="font:500 13px Inter;color:var(--muted)">OK</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">AI model · MobileNet SSD</span><span style="font:500 13px Inter;color:var(--muted)">loaded</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Compute · Pi 5</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">41°C</span></div>
+</div>
+<div style="display:flex;gap:11px;margin-bottom:14px">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="var(--onAccent)"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="var(--onAccent)" stroke-width="1.6" stroke-linecap="round"/></svg>Remote control</div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em">on-device AI · no cloud · no datalink dependency</div>
+</sc-if>
+
+<!-- SETTINGS -->
+<sc-if value="{{ dSettings }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 16px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Settings</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">APPEARANCE</div>
+<div style="display:flex;gap:6px;background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:20px">
+<div onClick="{{ setDark }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 14px Inter;background:{{ segDark.bg }};color:{{ segDark.col }};cursor:pointer">Dark</div>
+<div onClick="{{ setLight }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 14px Inter;background:{{ segLight.bg }};color:{{ segLight.col }};cursor:pointer">Light</div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">PATROL</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px">
+<div style="display:flex;align-items:center;padding:14px 15px"><span style="flex:1;font:600 14px Inter;color:var(--text)">Continuous perimeter sweep</span><div onClick="{{ toggleWd }}" style="width:46px;height:28px;border-radius:14px;background:{{ tWd.bg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:{{ tWd.x }};transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+<div style="display:flex;align-items:center;padding:14px 15px;border-top:1px solid var(--hair)"><span style="flex:1;font:600 14px Inter;color:var(--text)">Night patrol · low-light</span><div onClick="{{ toggleNight }}" style="width:46px;height:28px;border-radius:14px;background:{{ tNight.bg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:{{ tNight.x }};transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">DETECTION SENSITIVITY</div>
+<div style="display:flex;gap:6px;background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:20px">
+<div onClick="{{ setSensLow }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segLow.bg }};color:{{ segLow.col }};cursor:pointer">Low</div>
+<div onClick="{{ setSensMed }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segMed.bg }};color:{{ segMed.col }};cursor:pointer">Medium</div>
+<div onClick="{{ setSensHigh }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segHigh.bg }};color:{{ segHigh.col }};cursor:pointer">High</div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">ALERT ROUTING</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:18px">
+<div style="display:flex;align-items:center;padding:14px 15px"><span style="flex:1;font:600 14px Inter;color:var(--text)">UAV detections</span><div onClick="{{ togglePet }}" style="width:46px;height:28px;border-radius:14px;background:{{ tPet.bg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:{{ tPet.x }};transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+<div style="display:flex;align-items:center;padding:14px 15px;border-top:1px solid var(--hair)"><span style="flex:1;font:600 14px Inter;color:var(--text)">Unknown contacts</span><div onClick="{{ toggleMotion }}" style="width:46px;height:28px;border-radius:14px;background:{{ tMotion.bg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:{{ tMotion.x }};transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em">SCOUT · eyes on the perimeter</div>
+</sc-if>
+
+</div>
+</div>
+
+<!-- home indicator -->
+<div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:128px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--text) 30%,transparent);z-index:55"></div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:402,&quot;height&quot;:874},&quot;homeLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;feed&quot;,&quot;radar&quot;],&quot;default&quot;:&quot;feed&quot;,&quot;tsType&quot;:&quot;'feed'|'radar'&quot;},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: props.startTheme || 'dark',
+      home: props.homeLayout || 'feed',
+      drawer: null,         // null | track | patrol | threat | node | settings
+      trackState: 'list',   // list | locking | locked
+      patrolState: 'live',  // live | report
+      patrolStep: 0,
+      sens: 'Medium',
+      toggles: { wd: true, night: true, pet: true, motion: true }
+    };
+  }
+  componentWillUnmount() { this._clear(); }
+  _clear() { clearTimeout(this._t); clearInterval(this._iv); }
+
+  open(name) { this.setState({ drawer: name }); }
+  closeDrawer = () => { this._clear(); this.setState({ drawer: null, trackState: 'list', patrolState: 'live', patrolStep: 0 }); };
+
+  setFeed = () => this.setState({ home: 'feed' });
+  setRadar = () => this.setState({ home: 'radar' });
+
+  startPatrol = () => {
+    this._clear();
+    this.setState({ drawer: 'patrol', patrolState: 'live', patrolStep: 0 });
+    this._iv = setInterval(() => {
+      this.setState(s => {
+        const next = s.patrolStep + 1;
+        if (next >= 4) { clearInterval(this._iv); return { patrolStep: 4, patrolState: 'report' }; }
+        return { patrolStep: next };
+      });
+    }, 1400);
+  };
+  endPatrol = () => { this._clear(); this.setState({ patrolState: 'report' }); };
+
+  openTrack = () => { this._clear(); this.setState({ drawer: 'track', trackState: 'list' }); };
+  lockTarget = () => {
+    this.setState({ trackState: 'locking' });
+    this._t = setTimeout(() => this.setState({ trackState: 'locked' }), 2100);
+  };
+
+  openThreat = () => this.open('threat');
+  openNode = () => this.open('node');
+  openSettings = () => this.open('settings');
+
+  toggleTheme = () => this.setState(s => ({ theme: s.theme === 'dark' ? 'light' : 'dark' }));
+  setDark = () => this.setState({ theme: 'dark' });
+  setLight = () => this.setState({ theme: 'light' });
+  setSens = (v) => this.setState({ sens: v });
+  toggle = (k) => this.setState(s => ({ toggles: { ...s.toggles, [k]: !s.toggles[k] } }));
+
+  renderVals() {
+    const themes = {
+      dark: {
+        bg:'#0D0E11', surf:'#16181D', surf2:'#1E2127', line:'rgba(255,255,255,0.09)', hair:'rgba(255,255,255,0.055)',
+        text:'#ECEEF1', muted:'rgba(236,238,241,0.52)', faint:'rgba(236,238,241,0.30)',
+        accent:'#FFAB00', onAccent:'#141414', alert:'#FF4D4D', scrim:'rgba(0,0,0,0.55)', pulse:'rgba(255,171,0,0.45)'
+      },
+      light: {
+        bg:'#ECEEF1', surf:'#FFFFFF', surf2:'#F4F5F7', line:'rgba(20,22,27,0.11)', hair:'rgba(20,22,27,0.06)',
+        text:'#16181D', muted:'rgba(20,22,27,0.55)', faint:'rgba(20,22,27,0.34)',
+        accent:'#F2A100', onAccent:'#1A1206', alert:'#E03333', scrim:'rgba(0,0,0,0.32)', pulse:'rgba(242,161,0,0.40)'
+      }
+    };
+    const s = this.state;
+    const c = themes[s.theme];
+    const open = !!s.drawer;
+
+    const sectors = ['Sector 1','Sector 2','Sector 3','Sector 4'];
+    const steps = sectors.map((name, i) => {
+      const done = i < s.patrolStep;
+      const active = i === s.patrolStep && s.patrolState === 'live';
+      return {
+        name, notFirst: i > 0, showCheck: done,
+        bg: done ? c.accent : 'transparent',
+        border: (done || active) ? c.accent : c.line,
+        line: i <= s.patrolStep ? c.accent : c.line,
+        labelCol: (done || active) ? c.text : c.muted
+      };
+    });
+
+    const seg = (on) => ({ bg: on ? c.accent : 'transparent', col: on ? c.onAccent : c.muted });
+    const segq = (on) => ({ bg: on ? c.accent : 'transparent', col: on ? c.onAccent : c.muted });
+    const tgl = (on) => ({ bg: on ? c.accent : c.line, x: on ? 'translateX(18px)' : 'translateX(0px)' });
+
+    return {
+      c,
+      themeDark: s.theme === 'dark', themeLight: s.theme === 'light',
+      homeFeed: s.home === 'feed', homeRadar: s.home === 'radar',
+      segFeed: segq(s.home === 'feed'), segRadar: segq(s.home === 'radar'),
+      drawerY: open ? '0%' : '102%', scrimO: open ? '1' : '0', scrimPe: open ? 'auto' : 'none',
+
+      dTrack: s.drawer === 'track', dPatrol: s.drawer === 'patrol',
+      dThreat: s.drawer === 'threat', dNode: s.drawer === 'node', dSettings: s.drawer === 'settings',
+
+      trackList: s.trackState === 'list', trackLocking: s.trackState === 'locking', trackLocked: s.trackState === 'locked',
+      patrolLive: s.patrolState === 'live', patrolReport: s.patrolState === 'report',
+      steps, patrolDoneCount: Math.min(s.patrolStep + 1, 4), currentRoom: sectors[Math.min(s.patrolStep, 3)],
+
+      segDark: seg(s.theme === 'dark'), segLight: seg(s.theme === 'light'),
+      segLow: seg(s.sens === 'Low'), segMed: seg(s.sens === 'Medium'), segHigh: seg(s.sens === 'High'),
+      tWd: tgl(s.toggles.wd), tNight: tgl(s.toggles.night), tPet: tgl(s.toggles.pet), tMotion: tgl(s.toggles.motion),
+
+      startPatrol: this.startPatrol, endPatrol: this.endPatrol,
+      openTrack: this.openTrack, lockTarget: this.lockTarget,
+      openThreat: this.openThreat, openNode: this.openNode, openSettings: this.openSettings,
+      closeDrawer: this.closeDrawer, setFeed: this.setFeed, setRadar: this.setRadar,
+      toggleTheme: this.toggleTheme, setDark: this.setDark, setLight: this.setLight,
+      setSensLow: () => this.setSens('Low'), setSensMed: () => this.setSens('Medium'), setSensHigh: () => this.setSens('High'),
+      toggleWd: () => this.toggle('wd'), toggleNight: () => this.toggle('night'),
+      togglePet: () => this.toggle('pet'), toggleMotion: () => this.toggle('motion')
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+@keyframes scoutBreathe { 0%,100% { transform: scale(1); opacity:.78 } 50% { transform: scale(1.08); opacity:1 } }
+@keyframes scoutPulse { 0% { box-shadow: 0 0 0 0 var(--pulseCol) } 70% { box-shadow: 0 0 0 11px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+@keyframes scoutScan { 0% { transform: translateY(-4px); opacity:0 } 12% { opacity:1 } 88% { opacity:1 } 100% { transform: translateY(264px); opacity:0 } }
+@keyframes scoutBlip { 0%,100% { opacity:.55; transform:scale(1) } 50% { opacity:1; transform:scale(1.22) } }
+@keyframes scoutMark { 0% { transform:scale(.7); opacity:0 } 60% { transform:scale(1.06); opacity:1 } 100% { transform:scale(1); opacity:1 } }
+@keyframes scoutFloat { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-7px) } }
+@keyframes scoutPedestal { 0%,100% { opacity:.62 } 50% { opacity:.95 } }
+@keyframes scoutSpin { 0% { transform:translate(-50%,-50%) rotate(0) } 100% { transform:translate(-50%,-50%) rotate(360deg) } }
+@keyframes scoutRot { to { transform:rotate(360deg) } }
+@keyframes scoutStatic { 0%,100% { opacity:.5 } 50% { opacity:.85 } }
+</style>
+</helmet>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#15161a;background-image:radial-gradient(circle at 50% 30%, #20222a, #121317 75%);font-family:Inter,system-ui,sans-serif">
+
+<div style="width:402px;height:874px;border-radius:54px;background:#05070a;padding:13px;box-sizing:border-box;box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6);-webkit-font-smoothing:antialiased;--bg:{{ c.bg }};--surf:{{ c.surf }};--surf2:{{ c.surf2 }};--line:{{ c.line }};--hair:{{ c.hair }};--text:{{ c.text }};--muted:{{ c.muted }};--faint:{{ c.faint }};--accent:{{ c.accent }};--onAccent:{{ c.onAccent }};--alert:{{ c.alert }};--scrim:{{ c.scrim }};--pulseCol:{{ c.pulse }};--mh:{{ mh }};--mhSoft:{{ mhSoft }};--mhPulse:{{ mhPulse }}">
+<div style="position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);color:var(--text)">
+
+<!-- dynamic island -->
+<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:60"></div>
+
+<!-- status bar -->
+<div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:19px 32px 0;z-index:45;pointer-events:none">
+<span style="font:600 15px Inter;color:var(--text)">9:41</span>
+<div style="display:flex;align-items:center;gap:8px">
+<svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".6" fill="var(--text)"/><rect x="5" y="4.5" width="3" height="6.5" rx=".6" fill="var(--text)"/><rect x="10" y="2" width="3" height="9" rx=".6" fill="var(--text)"/><rect x="15" y="0" width="3" height="11" rx=".6" fill="var(--text)" opacity=".4"/></svg>
+<span style="font:600 11px Inter;color:var(--text)">MESH</span>
+<svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="var(--text)" stroke-opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="var(--text)"/><rect x="24" y="4" width="2" height="4" rx="1" fill="var(--text)" opacity=".5"/></svg>
+</div>
+</div>
+
+<!-- content -->
+<div style="position:absolute;top:64px;left:0;right:0;bottom:0;overflow-y:auto">
+
+<!-- ============================== MISSION SELECT ============================== -->
+<sc-if value="{{ screenSelect }}" hint-placeholder-val="{{ false }}">
+<div style="padding:8px 20px 28px">
+<div style="font:700 26px Inter;color:var(--text);letter-spacing:-.02em">Mission select</div>
+<!-- ===== ROBOT DISPLAY STAGE ===== -->
+<div style="position:relative;height:228px;margin-top:18px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(125% 95% at 50% 18%, var(--surf2), var(--surf) 72%)">
+<!-- floor grid -->
+<div style="position:absolute;left:0;right:0;bottom:0;height:96px;background-image:linear-gradient(color-mix(in srgb,var(--text) 11%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--text) 11%,transparent) 1px,transparent 1px);background-size:26px 26px;transform:perspective(190px) rotateX(58deg);transform-origin:bottom;opacity:.5;mask-image:linear-gradient(transparent,#000 60%);-webkit-mask-image:linear-gradient(transparent,#000 60%)"></div>
+<!-- ambient glow -->
+<div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:240px;height:240px;border-radius:50%;background:radial-gradient(circle, color-mix(in srgb,var(--text) 9%,transparent), transparent 62%);pointer-events:none"></div>
+<!-- slow scan ring -->
+<div style="position:absolute;left:50%;top:44%;width:182px;height:182px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--text) 20%,transparent);animation:scoutSpin 26s linear infinite;pointer-events:none"></div>
+<!-- corner brackets -->
+<div style="position:absolute;left:13px;top:13px;width:16px;height:16px;border-left:2px solid color-mix(in srgb,var(--text) 38%,transparent);border-top:2px solid color-mix(in srgb,var(--text) 38%,transparent)"></div>
+<div style="position:absolute;right:13px;top:13px;width:16px;height:16px;border-right:2px solid color-mix(in srgb,var(--text) 38%,transparent);border-top:2px solid color-mix(in srgb,var(--text) 38%,transparent)"></div>
+<div style="position:absolute;left:13px;bottom:13px;width:16px;height:16px;border-left:2px solid color-mix(in srgb,var(--text) 38%,transparent);border-bottom:2px solid color-mix(in srgb,var(--text) 38%,transparent)"></div>
+<div style="position:absolute;right:13px;bottom:13px;width:16px;height:16px;border-right:2px solid color-mix(in srgb,var(--text) 38%,transparent);border-bottom:2px solid color-mix(in srgb,var(--text) 38%,transparent)"></div>
+<!-- labels -->
+<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.42);backdrop-filter:blur(6px);padding:5px 11px;border-radius:999px"><span style="width:6px;height:6px;border-radius:50%;background:var(--text);box-shadow:0 0 6px color-mix(in srgb,var(--text) 35%,transparent)"></span><span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.16em">SCOUT-01</span></div>
+<div style="position:absolute;bottom:14px;left:16px;font:500 9px 'JetBrains Mono';color:var(--muted);letter-spacing:.06em">UNIT · READY</div>
+<div style="position:absolute;bottom:14px;right:16px;font:500 9px 'JetBrains Mono';color:var(--muted);letter-spacing:.06em">PAYLOAD BAY · OPEN</div>
+<!-- pedestal -->
+<div style="position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:176px;height:34px;border-radius:50%;background:radial-gradient(circle at 50% 35%, color-mix(in srgb,var(--text) 15%,transparent), transparent 70%);animation:scoutPedestal 4.5s ease-in-out infinite"></div>
+<div style="position:absolute;left:50%;bottom:40px;transform:translateX(-50%);width:150px;height:18px;border-radius:50%;border:1px solid color-mix(in srgb,var(--text) 24%,transparent)"></div>
+<!-- robot render slot -->
+<div style="position:absolute;left:50%;bottom:40px;transform:translateX(-50%);width:212px;height:176px">
+<div style="width:100%;height:100%;animation:scoutFloat 4.8s ease-in-out infinite">
+<x-import component-from-global-scope="image-slot" from="./image-slot.js" id="scout-unit-render" shape="rect" fit="contain" placeholder="Drop your SCOUT render" style="width:100%;height:100%" hint-size="212px,176px"></x-import>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:13px;margin-top:34px">
+<sc-for list="{{ modeCards }}" as="m" hint-placeholder-count="3">
+<dc-import name="OptionButton" icon-name="{{ m.iconName }}" title="{{ m.label }}" subtitle="{{ m.sub }}" accent="{{ m.hue }}" dark="{{ themeDark }}" restricted="{{ m.restricted }}" on-click="{{ m.pick }}" hint-size="100%,108px"></dc-import>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ============================== DEPLOY ============================== -->
+<sc-if value="{{ screenDeploy }}" hint-placeholder-val="{{ false }}">
+<div style="padding:8px 20px 28px">
+<div onClick="{{ backToSelect }}" style="display:inline-flex;align-items:center;gap:6px;font:600 13px Inter;color:var(--muted);cursor:pointer;margin-bottom:14px"><svg width="7" height="12" viewBox="0 0 7 12"><path d="M6 1L1 6l5 5" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Payload</div>
+
+<div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+<div style="width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center" data-om-raster>{{ modeIcon }}</div>
+<div style="display:flex;align-items:center;gap:10px"><span style="font:800 28px Inter;color:var(--text);letter-spacing:-.01em">{{ modeLabel }}</span><span style="width:9px;height:9px;border-radius:50%;background:var(--mh)"></span></div>
+</div>
+
+<!-- kitted-unit preview -->
+<div style="position:relative;height:190px;margin-top:16px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(125% 95% at 50% 16%, var(--surf), var(--bg) 80%)">
+<div style="position:absolute;left:0;right:0;bottom:0;height:82px;background-image:linear-gradient(color-mix(in srgb,var(--mh) 16%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--mh) 16%,transparent) 1px,transparent 1px);background-size:24px 24px;transform:perspective(170px) rotateX(58deg);transform-origin:bottom;opacity:.5;mask-image:linear-gradient(transparent,#000 60%);-webkit-mask-image:linear-gradient(transparent,#000 60%)"></div>
+<div style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:206px;height:206px;border-radius:50%;background:radial-gradient(circle, color-mix(in srgb,var(--mh) 20%,transparent), transparent 62%);pointer-events:none"></div>
+<div style="position:absolute;left:50%;top:42%;width:152px;height:152px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--mh) 34%,transparent);animation:scoutSpin 24s linear infinite;pointer-events:none"></div>
+<div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.42);backdrop-filter:blur(6px);padding:5px 11px;border-radius:999px"><span style="width:6px;height:6px;border-radius:50%;background:var(--mh);box-shadow:0 0 7px var(--mh)"></span><span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.12em">PAYLOAD · {{ modeLabel }}</span></div>
+<div style="position:absolute;bottom:13px;left:15px;font:500 9px 'JetBrains Mono';color:var(--muted);letter-spacing:.06em">SCOUT-01 · STAGED</div>
+<div style="position:absolute;left:50%;bottom:24px;transform:translateX(-50%);width:160px;height:30px;border-radius:50%;background:radial-gradient(circle at 50% 35%, color-mix(in srgb,var(--mh) 30%,transparent), transparent 70%);animation:scoutPedestal 4.5s ease-in-out infinite"></div>
+<div style="position:absolute;left:50%;bottom:33px;transform:translateX(-50%);width:132px;height:16px;border-radius:50%;border:1px solid color-mix(in srgb,var(--mh) 38%,transparent)"></div>
+<div style="position:absolute;left:50%;bottom:33px;transform:translateX(-50%);width:190px;height:150px">
+<div style="width:100%;height:100%;animation:scoutFloat 4.8s ease-in-out infinite">
+<x-import component-from-global-scope="image-slot" from="./image-slot.js" id="scout-unit-render" shape="rect" fit="contain" placeholder="Drop your SCOUT render" style="width:100%;height:100%" hint-size="190px,150px"></x-import>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:13px;margin-top:24px">
+<dc-import name="OptionButton" icon-name="bolt" title="Drop &amp; go" accent="{{ mh }}" dark="{{ themeDark }}" on-click="{{ dropGo }}" hint-size="100%,92px"></dc-import>
+<dc-import name="OptionButton" icon-name="route" title="Plan a route" accent="#7C8AA5" dark="{{ themeDark }}" on-click="{{ openPlan }}" hint-size="100%,92px"></dc-import>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:14px">
+<svg width="17" height="17" viewBox="0 0 20 20" style="flex-shrink:0"><circle cx="10" cy="10" r="8" stroke="var(--mh)" stroke-width="1.5" fill="none"/><path d="M10 6.4v4.4M10 13.4v.4" stroke="var(--mh)" stroke-width="1.7" stroke-linecap="round"/></svg>
+<div style="font:500 12.5px Inter;color:var(--muted);line-height:1.4">Alerts you the moment it sees a person or anything of interest.</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============================== PLAN ROUTE ============================== -->
+<sc-if value="{{ screenPlan }}" hint-placeholder-val="{{ false }}">
+<div style="padding:8px 20px 28px">
+<div onClick="{{ backToDeploy }}" style="display:inline-flex;align-items:center;gap:6px;font:600 13px Inter;color:var(--muted);cursor:pointer;margin-bottom:14px"><svg width="7" height="12" viewBox="0 0 7 12"><path d="M6 1L1 6l5 5" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Back</div>
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between">
+<div style="font:800 26px Inter;color:var(--text);letter-spacing:-.02em">Plan route</div>
+<span style="font:700 12px 'Space Grotesk';color:var(--mh);letter-spacing:.04em">{{ waypointCount }} STOPS</span>
+</div>
+<div style="font:500 14px Inter;color:var(--muted);margin-top:5px">Tap the floor plan to send SCOUT room to room.</div>
+
+<div onClick="{{ addWaypoint }}" style="position:relative;width:100%;height:330px;margin-top:16px;background:var(--surf2);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:crosshair">
+<sc-for list="{{ planRooms }}" as="r" hint-placeholder-count="5">
+<div style="position:absolute;{{ r.pos }};border-radius:8px;border:1.4px solid var(--hair);background:var(--surf)"><span style="display:inline-block;font:600 9px Inter;color:var(--muted);padding:5px 7px;pointer-events:none">{{ r.name }}</span></div>
+</sc-for>
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"><polyline points="{{ routePoints }}" fill="none" stroke="var(--mh)" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1.7"/></svg>
+<div style="position:absolute;left:18%;top:86%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none"><div style="width:15px;height:15px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 26%,transparent)"></div><span style="font:700 7px 'Space Grotesk';color:var(--text);letter-spacing:.1em">START</span></div>
+<sc-for list="{{ waypointDots }}" as="w" hint-placeholder-count="0">
+<div style="position:absolute;left:{{ w.left }};top:{{ w.top }};transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;background:var(--mh);color:#fff;display:flex;align-items:center;justify-content:center;font:800 12px Inter;box-shadow:0 0 0 4px color-mix(in srgb,var(--mh) 26%,transparent);pointer-events:none">{{ w.n }}</div>
+</sc-for>
+</div>
+
+<div style="display:flex;gap:11px;margin-top:13px">
+<div onClick="{{ undoWaypoint }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:14px;border-radius:13px;cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16"><path d="M6 4L2.5 7.5 6 11M2.5 7.5H10a3.5 3.5 0 0 1 0 7H8" fill="none" stroke="var(--text)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Undo</div>
+<div onClick="{{ clearWaypoints }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:14px;border-radius:13px;cursor:pointer"><svg width="15" height="15" viewBox="0 0 16 16"><path d="M3 4h10M6.5 4V2.8h3V4M5 4l.6 9a1 1 0 0 0 1 .9h2.8a1 1 0 0 0 1-.9L11 4" fill="none" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Clear</div>
+</div>
+
+<div onClick="{{ deployRoute }}" style="display:flex;align-items:center;justify-content:center;gap:10px;background:{{ routeBg }};color:{{ routeCol }};font:700 16px Inter;padding:18px;border-radius:16px;cursor:{{ routeCursor }};margin-top:13px">
+<svg width="17" height="17" viewBox="0 0 18 18"><path d="M9 1l8 4v4.5c0 4.5-3 7.5-8 9.5-5-2-8-5-8-9.5V5z" fill="none" stroke="{{ routeCol }}" stroke-width="1.7" stroke-linejoin="round"/></svg>{{ routeLabel }}
+</div>
+</div>
+</sc-if>
+
+<!-- ============================== DEPLOYING ============================== -->
+<sc-if value="{{ screenDeploying }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ skipBoot }}" style="padding:8px 20px 28px;cursor:pointer">
+
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:44px;height:44px;border-radius:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--mhSoft)"><div style="width:22px;height:22px" data-om-raster>{{ modeIcon }}</div></div>
+<div><div style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Deploying SCOUT-01</div><div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:3px">{{ modeLabel }} · Block C · Floor 2</div></div>
+</div>
+
+<!-- acquiring viewport -->
+<div style="margin-top:18px;height:282px;border-radius:22px;overflow:hidden;position:relative;border:1px solid var(--line);background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 3px,var(--surf) 3px,var(--surf) 6px)">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16),rgba(0,0,0,.16) 1px,transparent 1px,transparent 3px);animation:scoutStatic .5s steps(2) infinite"></div>
+<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%, transparent 28%, rgba(0,0,0,.6))"></div>
+<!-- corner brackets -->
+<div style="position:absolute;left:14px;top:14px;width:18px;height:18px;border-left:2px solid var(--mh);border-top:2px solid var(--mh)"></div>
+<div style="position:absolute;right:14px;top:14px;width:18px;height:18px;border-right:2px solid var(--mh);border-top:2px solid var(--mh)"></div>
+<div style="position:absolute;left:14px;bottom:14px;width:18px;height:18px;border-left:2px solid var(--mh);border-bottom:2px solid var(--mh)"></div>
+<div style="position:absolute;right:14px;bottom:14px;width:18px;height:18px;border-right:2px solid var(--mh);border-bottom:2px solid var(--mh)"></div>
+<!-- searching reticle -->
+<div style="position:absolute;left:50%;top:50%;width:104px;height:104px;border-radius:50%;border:1.4px dashed color-mix(in srgb,var(--mh) 55%,transparent);animation:scoutSpin 5.5s linear infinite"></div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border:1.4px solid color-mix(in srgb,var(--mh) 70%,transparent);border-radius:4px"></div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1px;height:120px;background:color-mix(in srgb,var(--mh) 30%,transparent)"></div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:1px;background:color-mix(in srgb,var(--mh) 30%,transparent)"></div>
+<!-- scan line -->
+<div style="position:absolute;left:8px;right:8px;top:20px;height:2px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--mh) 80%,transparent),transparent);animation:scoutScan 1.8s linear infinite"></div>
+<!-- banner -->
+<div style="position:absolute;top:13px;left:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px"><span style="width:7px;height:7px;border-radius:50%;background:var(--mh);animation:scoutPulse 1.2s infinite;--pulseCol:var(--mhPulse)"></span><span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.1em">{{ bootStatus }}</span></div>
+<div style="position:absolute;left:14px;bottom:14px;font:500 10px 'JetBrains Mono';color:#fff;opacity:.72;letter-spacing:.04em">SCOUT-01 · east stairwell</div>
+<div style="position:absolute;right:14px;bottom:14px;font:700 11px 'Space Grotesk';color:var(--mh)">{{ bootPctLabel }}</div>
+</div>
+
+<!-- progress -->
+<div style="margin-top:14px;height:5px;border-radius:3px;background:var(--line);overflow:hidden"><div style="height:100%;background:var(--mh);border-radius:3px;width:{{ bootPctCss }};transition:width .6s ease"></div></div>
+
+<!-- boot checklist -->
+<div style="margin-top:16px;background:var(--surf);border:1px solid var(--line);border-radius:16px;overflow:hidden">
+<sc-for list="{{ bootItems }}" as="b" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 15px;border-top:{{ b.bt }}">
+<div style="width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+<sc-if value="{{ b.done }}" hint-placeholder-val="{{ false }}"><div style="width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--accent) 18%,transparent);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2.5 6.2l2.4 2.4L9.6 3.4" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></sc-if>
+<sc-if value="{{ b.active }}" hint-placeholder-val="{{ false }}"><div style="width:17px;height:17px;border-radius:50%;border:2px solid color-mix(in srgb,var(--mh) 28%,transparent);border-top-color:var(--mh);animation:scoutRot .7s linear infinite"></div></sc-if>
+<sc-if value="{{ b.pending }}" hint-placeholder-val="{{ true }}"><div style="width:15px;height:15px;border-radius:50%;border:2px solid var(--line)"></div></sc-if>
+</div>
+<span style="flex:1;font:600 14px Inter;color:{{ b.labelCol }}">{{ b.label }}</span>
+<span style="font:500 12px 'Space Grotesk';color:var(--muted)">{{ b.meta }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em;margin-top:16px">tap to skip · on-device boot · no cloud</div>
+</div>
+</sc-if>
+
+<!-- ============================== LIVE ============================== -->
+<sc-if value="{{ screenLive }}" hint-placeholder-val="{{ true }}">
+
+<!-- status + mode chip + feed/map switch -->
+<div style="display:flex;align-items:center;gap:9px;padding:6px 20px 12px">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--mh);animation:scoutPulse 2.2s infinite;--pulseCol:var(--mhPulse)"></span>
+<span style="font:700 12px 'Space Grotesk';color:var(--text);letter-spacing:.06em">{{ statusLine }}</span>
+<div style="margin-left:auto;display:flex;gap:4px;background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:3px">
+<div onClick="{{ setFeed }}" style="display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;font:700 11px Inter;background:{{ segFeed.bg }};color:{{ segFeed.col }};cursor:pointer"><svg width="11" height="11" viewBox="0 0 12 12"><rect x="1" y="2" width="10" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="6" r="1.6" fill="currentColor"/></svg>Feed</div>
+<div onClick="{{ setMap }}" style="display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;font:700 11px Inter;background:{{ segMap.bg }};color:{{ segMap.col }};cursor:pointer"><svg width="11" height="11" viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 6h9M6 1.5v9" stroke="currentColor" stroke-width="1.1"/></svg>Map</div>
+</div>
+</div>
+
+<!-- mode chip row -->
+<div onClick="{{ backToSelect }}" style="display:flex;align-items:center;gap:9px;margin:0 20px 4px;background:var(--mhSoft);border:1px solid color-mix(in srgb,var(--mh) 34%,transparent);border-radius:12px;padding:9px 13px;cursor:pointer">
+<div style="width:18px;height:18px" data-om-raster>{{ modeIcon }}</div>
+<span style="font:800 12px Inter;color:var(--text);letter-spacing:.04em">{{ modeLabel }}</span>
+<span style="font:500 12px Inter;color:var(--muted)">payload</span>
+<span style="margin-left:auto;font:600 11px Inter;color:var(--mh)">Change</span>
+</div>
+
+<!-- ===== FEED ===== -->
+<sc-if value="{{ homeFeed }}" hint-placeholder-val="{{ true }}">
+<div style="margin:8px 20px 0;height:300px;border-radius:22px;overflow:hidden;position:relative;border:1px solid var(--line);background:repeating-linear-gradient(135deg, var(--surf2), var(--surf2) 12px, var(--surf) 12px, var(--surf) 24px)">
+<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%, transparent 35%, rgba(0,0,0,.4))"></div>
+<!-- corner brackets -->
+<div style="position:absolute;left:14px;top:14px;width:18px;height:18px;border-left:2px solid var(--mh);border-top:2px solid var(--mh)"></div>
+<div style="position:absolute;right:14px;top:14px;width:18px;height:18px;border-right:2px solid var(--mh);border-top:2px solid var(--mh)"></div>
+<div style="position:absolute;left:14px;bottom:14px;width:18px;height:18px;border-left:2px solid var(--mh);border-bottom:2px solid var(--mh)"></div>
+<div style="position:absolute;right:14px;bottom:14px;width:18px;height:18px;border-right:2px solid var(--mh);border-bottom:2px solid var(--mh)"></div>
+<!-- scan line -->
+<div style="position:absolute;left:8px;right:8px;top:20px;height:2px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--mh) 75%,transparent),transparent);animation:scoutScan 3.4s ease-in-out infinite"></div>
+<!-- detection box -->
+<div onClick="{{ openDetail }}" style="position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:118px;height:128px;border:1.6px solid var(--mh);border-radius:4px;cursor:pointer;box-shadow:0 0 0 9999px rgba(0,0,0,.12);animation:scoutMark .5s ease-out">
+<div style="position:absolute;left:-1px;top:-22px;background:var(--mh);color:{{ mhOn }};font:700 9px 'Space Grotesk';letter-spacing:.06em;padding:3px 7px;border-radius:5px;white-space:nowrap">{{ detTag }}</div>
+<div style="position:absolute;left:-1px;top:-1px;width:12px;height:12px;border-left:2px solid var(--mh);border-top:2px solid var(--mh)"></div>
+<div style="position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-right:2px solid var(--mh);border-bottom:2px solid var(--mh)"></div>
+</div>
+<!-- top banner -->
+<div style="position:absolute;top:13px;left:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px"><span style="width:7px;height:7px;border-radius:50%;background:var(--mh);animation:scoutPulse 1.6s infinite;--pulseCol:var(--mhPulse)"></span><span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.1em">{{ feedBanner }}</span></div>
+<div style="position:absolute;top:13px;right:13px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:6px 11px;border-radius:999px;font:600 11px 'Space Grotesk';color:#fff">{{ feedMeta }}</div>
+<div style="position:absolute;left:14px;bottom:14px;font:500 10px 'JetBrains Mono';color:#fff;opacity:.72;letter-spacing:.04em">{{ feedFoot }}</div>
+<div style="position:absolute;right:14px;bottom:14px;font:600 10px 'Space Grotesk';color:var(--mh)">{{ feedState }}</div>
+</div>
+</sc-if>
+
+<!-- ===== MAP ===== -->
+<sc-if value="{{ homeMap }}" hint-placeholder-val="{{ false }}">
+<div style="margin:8px 20px 0;border-radius:22px;border:1px solid var(--line);background:var(--surf);padding:14px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font:700 11px 'Space Grotesk';color:var(--muted);letter-spacing:.1em">BLOCK C · FLOOR 2</span><span style="font:600 11px 'Space Grotesk';color:var(--text)">{{ clearedCount }} / 4 CLEAR</span></div>
+<div style="position:relative;width:100%;height:248px;background:var(--surf2);border-radius:14px;border:1px solid var(--hair);overflow:hidden">
+<sc-for list="{{ rooms }}" as="r" hint-placeholder-count="5">
+<div style="position:absolute;{{ r.pos }};border-radius:8px;border:1.4px solid {{ r.border }};background:{{ r.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+<span style="font:600 10px Inter;color:{{ r.labelCol }}">{{ r.name }}</span>
+<sc-if value="{{ r.active }}" hint-placeholder-val="{{ false }}"><div style="width:14px;height:14px;border-radius:50%;background:var(--mh);box-shadow:0 0 10px var(--mh);animation:scoutPulse 2.2s infinite;--pulseCol:var(--mhPulse)"></div></sc-if>
+<sc-if value="{{ r.cleared }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M2.5 7l2.5 2.5L10.5 4" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:13px">
+<div style="display:flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 13 13"><path d="M2.5 7l2.5 2.5L10.5 4" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font:600 11px Inter;color:var(--muted)">cleared</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--mh)"></span><span style="font:600 11px Inter;color:var(--text)">SCOUT here</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--faint)"></span><span style="font:600 11px Inter;color:var(--muted)">pending</span></div>
+</div>
+</div>
+</sc-if>
+
+<!-- primary actions -->
+<div style="display:flex;gap:11px;padding:15px 20px 4px">
+<div onClick="{{ openDetail }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--mh);color:var(--mhOn);font:700 16px Inter;padding:18px;border-radius:12px;cursor:pointer">
+<div style="width:19px;height:19px" data-om-raster>{{ primaryIcon }}</div>{{ primaryLabel }}
+</div>
+<div onClick="{{ mark }}" style="width:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid color-mix(in srgb,var(--accent) 38%,var(--line));border-radius:12px;cursor:pointer">
+<sc-if value="{{ marked }}" hint-placeholder-val="{{ false }}"><svg width="21" height="21" viewBox="0 0 18 18"><path d="M3.5 9.4l3.4 3.4L14.5 5" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+<sc-if value="{{ markUnset }}" hint-placeholder-val="{{ true }}"><svg width="21" height="21" viewBox="0 0 18 18"><path d="M9 16s5.5-4.3 5.5-8.4A5.5 5.5 0 0 0 3.5 7.6C3.5 11.7 9 16 9 16z" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9" cy="7.4" r="1.7" fill="var(--accent)"/></svg></sc-if>
+</div>
+</div>
+
+<!-- activity preview -->
+<div style="margin:12px 20px 16px;background:var(--surf);border:1px solid var(--line);border-radius:20px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+<span style="font:700 13px Inter;color:var(--text)">Activity</span>
+<span style="font:600 11px 'Space Grotesk';color:var(--muted)">{{ statusRoom }}</span>
+</div>
+<sc-for list="{{ activity }}" as="a" hint-placeholder-count="4">
+<div onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:13px;padding:14px 16px;border-top:1px solid var(--hair);cursor:{{ a.cursor }}">
+<span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:{{ a.dot }};{{ a.glow }}"></span>
+<div style="flex:1"><div style="font:600 14px Inter;color:var(--text)">{{ a.text }}</div></div>
+<sc-if value="{{ a.action }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:5px;font:700 12px Inter;color:var(--mh)">{{ a.actionLabel }}<svg width="6" height="10" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4" fill="none" stroke="var(--mh)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></sc-if>
+<sc-if value="{{ a.time }}" hint-placeholder-val="{{ true }}"><span style="font:600 12px 'Space Grotesk';color:var(--muted)">{{ a.ts }}</span></sc-if>
+</div>
+</sc-for>
+</div>
+
+<div onClick="{{ endMission }}" style="margin:13px 20px 0;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:15px;border-radius:15px;cursor:pointer">
+<svg width="15" height="15" viewBox="0 0 16 16"><path d="M3 8.2l3.4 3.4L13 4.6" fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>End mission · view debrief
+</div>
+
+<div style="height:84px"></div>
+</sc-if>
+
+<!-- ============================== DEBRIEF ============================== -->
+<sc-if value="{{ screenDebrief }}" hint-placeholder-val="{{ false }}">
+<div style="padding:8px 20px 40px">
+
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:46px;height:46px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--mhSoft)"><div style="width:23px;height:23px" data-om-raster>{{ modeIcon }}</div></div>
+<div><div style="font:700 24px Inter;color:var(--text);letter-spacing:-.02em">After-action report</div><div style="font:500 13px 'Space Grotesk';color:var(--muted);margin-top:3px">{{ modeLabel }} · Block C · Floor 2 · 06:12</div></div>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;background:color-mix(in srgb,var(--accent) 11%,transparent);border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);border-radius:16px;padding:14px;margin-top:18px">
+<div style="width:34px;height:34px;border-radius:50%;flex-shrink:0;background:color-mix(in srgb,var(--accent) 22%,transparent);display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 18 18"><path d="M3 9.2l4 4 8-9.4" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div><div style="font:700 14px Inter;color:var(--text)">Mission complete</div><div style="font:500 12px Inter;color:var(--muted);margin-top:1px">All rooms cleared · SCOUT-01 returned to standby</div></div>
+</div>
+
+<div style="display:flex;gap:10px;margin-top:13px">
+<div style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:14px 13px"><div style="font:700 25px 'Space Grotesk';color:var(--text)">4/4</div><div style="font:600 11px Inter;color:var(--muted);margin-top:3px">rooms cleared</div></div>
+<div style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:14px 13px"><div style="font:700 25px 'Space Grotesk';color:var(--text)">06:12</div><div style="font:600 11px Inter;color:var(--muted);margin-top:3px">duration</div></div>
+<div style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:14px 13px"><div style="font:700 25px 'Space Grotesk';color:var(--mh)">{{ debriefStat }}</div><div style="font:600 11px Inter;color:var(--muted);margin-top:3px">{{ debriefStatLabel }}</div></div>
+</div>
+
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:22px 2px 9px">{{ debriefOutcomeTitle }}</div>
+<div style="background:var(--surf);border:1px solid var(--line);border-radius:16px;overflow:hidden">
+<sc-for list="{{ debriefOutcomes }}" as="o" hint-placeholder-count="2">
+<div style="display:flex;align-items:flex-start;gap:12px;padding:14px 15px;border-top:{{ o.bt }}">
+<span style="width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;background:{{ o.dot }}"></span>
+<div style="flex:1"><div style="font:600 14px Inter;color:var(--text)">{{ o.title }}</div><div style="font:500 12px Inter;color:var(--muted);margin-top:2px;line-height:1.45">{{ o.sub }}</div></div>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{ debriefAudit }}" hint-placeholder-val="{{ false }}">
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:22px 2px 9px">ENGAGEMENT AUDIT</div>
+<div style="background:var(--surf);border:1px solid color-mix(in srgb,var(--alert) 30%,transparent);border-radius:16px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:10px;padding:13px 15px;background:color-mix(in srgb,var(--alert) 9%,transparent)"><svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="var(--alert)" stroke-width="1.5"/><path d="M6.4 10l2.4 2.4 4.8-5.2" fill="none" stroke="var(--alert)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:700 13px Inter;color:var(--text)">Human-in-the-loop verified</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 13px Inter;color:var(--text)">Operator ID</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">OP-2241</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 13px Inter;color:var(--text)">Positive ID checklist</span><span style="font:500 13px Inter;color:var(--muted)">3 / 3 confirmed</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 13px Inter;color:var(--text)">Hold-to-confirm</span><span style="font:500 13px Inter;color:var(--muted)">held 1.6 s</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 13px Inter;color:var(--text)">Video + ROE record</span><span style="font:500 13px Inter;color:var(--muted)">on-node</span></div>
+</div>
+</sc-if>
+
+<div style="display:flex;gap:11px;margin-top:22px">
+<div onClick="{{ newMission }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:16px;border-radius:15px;cursor:pointer">New mission</div>
+<div onClick="{{ openLog }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:16px;border-radius:15px;cursor:pointer">Full log</div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em;margin-top:16px">report stored on-node · no cloud sync</div>
+</div>
+</sc-if>
+
+</div>
+
+<!-- bottom utility bar (live only) -->
+<sc-if value="{{ screenLive }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;bottom:0;left:0;right:0;height:74px;display:flex;align-items:flex-start;justify-content:space-around;padding:11px 14px 0;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:13">
+<div onClick="{{ backToSelect }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3l7 3.5v5c0 4.5-3 7-7 8.5-4-1.5-7-4-7-8.5v-5z" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Mission</span>
+</div>
+<div onClick="{{ openLog }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><path d="M5 5h12M5 11h12M5 17h8" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Log</span>
+</div>
+<div onClick="{{ openNode }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><rect x="4" y="7" width="14" height="11" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><line x1="11" y1="4" x2="11" y2="7" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="12.5" r="1.3" fill="var(--muted)"/><circle cx="13.5" cy="12.5" r="1.3" fill="var(--muted)"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Node</span>
+</div>
+<div onClick="{{ openSettings }}" style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+<svg width="22" height="22" viewBox="0 0 22 22"><line x1="4" y1="7" x2="18" y2="7" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><line x1="4" y1="15" x2="18" y2="15" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="14" cy="7" r="2.4" fill="var(--bg)" stroke="var(--muted)" stroke-width="1.6"/><circle cx="8" cy="15" r="2.4" fill="var(--bg)" stroke="var(--muted)" stroke-width="1.6"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Settings</span>
+</div>
+</div>
+</sc-if>
+
+<!-- scrim -->
+<div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:var(--scrim);z-index:30;transition:opacity .3s ease;opacity:{{ scrimO }};pointer-events:{{ scrimPe }}"></div>
+
+<!-- ============ DRAWER ============ -->
+<div style="position:absolute;left:0;right:0;bottom:0;max-height:86%;background:var(--surf);border-top:1px solid var(--line);border-radius:28px 28px 0 0;box-shadow:0 -16px 44px rgba(0,0,0,.4);z-index:35;transition:transform .36s cubic-bezier(.32,.72,0,1);transform:translateY({{ drawerY }});display:flex;flex-direction:column">
+<div style="display:flex;justify-content:center;padding:10px 0 2px;flex-shrink:0"><div style="width:40px;height:5px;border-radius:3px;background:var(--line)"></div></div>
+<div style="overflow-y:auto;padding:8px 22px 30px">
+
+<!-- ===== DETAIL: SURVEIL ===== -->
+<sc-if value="{{ dDetailSurveil }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:var(--mh)"></span><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Change detected</span></div>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="font:500 13px 'Space Grotesk';color:var(--muted);padding:2px 0 14px">Room 2 · baseline 14:02 · diff 3.4%</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1">
+<div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.1em;margin-bottom:6px">BASELINE</div>
+<div style="height:128px;border-radius:14px;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 10px,var(--surf) 10px,var(--surf) 20px);border:1px solid var(--line)"></div>
+</div>
+<div style="flex:1">
+<div style="font:600 9px 'Space Grotesk';color:var(--mh);letter-spacing:.1em;margin-bottom:6px">NOW</div>
+<div style="height:128px;border-radius:14px;position:relative;overflow:hidden;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 10px,var(--surf) 10px,var(--surf) 20px);border:1px solid color-mix(in srgb,var(--mh) 50%,transparent)">
+<div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:46px;height:54px;border:1.6px solid var(--mh);border-radius:3px;background:color-mix(in srgb,var(--mh) 16%,transparent)"></div>
+</div>
+</div>
+</div>
+<div style="display:flex;gap:11px;background:var(--mhSoft);border:1px solid color-mix(in srgb,var(--mh) 30%,transparent);border-radius:16px;padding:14px;margin:14px 0">
+<svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0;margin-top:1px"><rect x="3" y="3" width="14" height="14" rx="2" fill="none" stroke="var(--mh)" stroke-width="1.5"/><path d="M7 10l2 2 4-4" fill="none" stroke="var(--mh)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div><div style="font:700 13px Inter;color:var(--text);margin-bottom:3px">New object since baseline</div><div style="font:500 13px Inter;color:var(--muted);line-height:1.5">On-device frame differencing flags an object absent at 14:02. Backpack-sized, low on the east wall. Footage stays on the node.</div></div>
+</div>
+<div style="display:flex;gap:11px">
+<div onClick="{{ closeDrawer }}" style="flex:1;display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Mark &amp; report</div>
+<div onClick="{{ closeDrawer }}" style="flex:1;display:flex;align-items:center;justify-content:center;background:var(--surf2);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Update baseline</div>
+</div>
+</sc-if>
+
+<!-- ===== DETAIL: RESCUE ===== -->
+<sc-if value="{{ dDetailRescue }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:var(--mh)"></span><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Person located</span></div>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="font:500 13px 'Space Grotesk';color:var(--muted);padding:2px 0 14px">Room 2 · NE corner · thermal + optical</div>
+<div style="height:170px;border-radius:18px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 12px,var(--surf) 12px,var(--surf) 24px);border:1px solid var(--line)">
+<div style="position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);width:84px;height:84px;border:1.6px solid var(--mh);border-radius:4px;background:color-mix(in srgb,var(--mh) 14%,transparent)"></div>
+<div style="position:absolute;top:11px;left:11px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:8px;font:600 10px 'Space Grotesk';color:#fff">PERSON · 97%</div>
+</div>
+<div style="display:flex;gap:9px;margin:14px 0">
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">POSTURE</div><div style="font:700 15px Inter;color:var(--text);margin-top:3px">Prone</div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">MOTION</div><div style="font:700 15px Inter;color:var(--text);margin-top:3px">Faint</div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:13px;padding:11px 12px"><div style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">THERMAL</div><div style="font:700 15px 'Space Grotesk';color:var(--mh);margin-top:3px">Warm</div></div>
+</div>
+<div style="display:flex;gap:11px;background:var(--mhSoft);border:1px solid color-mix(in srgb,var(--mh) 30%,transparent);border-radius:16px;padding:14px;margin-bottom:14px">
+<svg width="20" height="20" viewBox="0 0 20 20" style="flex-shrink:0;margin-top:1px"><circle cx="10" cy="6" r="3" fill="none" stroke="var(--mh)" stroke-width="1.5"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" stroke="var(--mh)" stroke-width="1.5" stroke-linecap="round"/></svg>
+<div><div style="font:700 13px Inter;color:var(--text);margin-bottom:3px">Non-combatant likely</div><div style="font:500 13px Inter;color:var(--muted);line-height:1.5">Civilian posture, no visible weapon. Hold position and route a medic — do not approach.</div></div>
+</div>
+<div style="display:flex;gap:11px">
+<div onClick="{{ closeDrawer }}" style="flex:1;display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Report to medics</div>
+<div onClick="{{ closeDrawer }}" style="flex:1;display:flex;align-items:center;justify-content:center;background:var(--surf2);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Mark on map</div>
+</div>
+</sc-if>
+
+<!-- ===== DETAIL: CLEARING (gated) ===== -->
+<sc-if value="{{ dDetailClearing }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;background:var(--alert)"></span><span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Contact · assess</span></div>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+
+<!-- ASSESS: positive ID gate -->
+<sc-if value="{{ engageAssess }}" hint-placeholder-val="{{ true }}">
+<div style="font:500 13px 'Space Grotesk';color:var(--muted);padding:2px 0 14px">Room 2 · AZ 088° · 6 m</div>
+<div style="height:158px;border-radius:18px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,var(--surf2),var(--surf2) 12px,var(--surf) 12px,var(--surf) 24px);border:1px solid color-mix(in srgb,var(--alert) 45%,transparent)">
+<div style="position:absolute;left:50%;top:50%;width:64px;height:80px;transform:translate(-50%,-50%);border:1.6px solid var(--alert);border-radius:3px"></div>
+<div style="position:absolute;top:11px;left:11px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:8px;font:600 10px 'Space Grotesk';color:#fff">CONTACT · UNVERIFIED</div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:16px 2px 9px">POSITIVE ID — operator must confirm</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden">
+<div onClick="{{ toggleId1 }}" style="display:flex;align-items:center;gap:12px;padding:14px 15px;cursor:pointer"><div style="width:24px;height:24px;border-radius:7px;flex-shrink:0;border:2px solid {{ id1Border }};background:{{ id1Bg }};display:flex;align-items:center;justify-content:center"><sc-if value="{{ id1 }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M2.5 7l2.5 2.5L10.5 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></div><span style="flex:1;font:600 14px Inter;color:var(--text)">Visual on target confirmed</span></div>
+<div onClick="{{ toggleId2 }}" style="display:flex;align-items:center;gap:12px;padding:14px 15px;border-top:1px solid var(--hair);cursor:pointer"><div style="width:24px;height:24px;border-radius:7px;flex-shrink:0;border:2px solid {{ id2Border }};background:{{ id2Bg }};display:flex;align-items:center;justify-content:center"><sc-if value="{{ id2 }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M2.5 7l2.5 2.5L10.5 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></div><span style="flex:1;font:600 14px Inter;color:var(--text)">No friendly transponder / IFF</span></div>
+<div onClick="{{ toggleId3 }}" style="display:flex;align-items:center;gap:12px;padding:14px 15px;border-top:1px solid var(--hair);cursor:pointer"><div style="width:24px;height:24px;border-radius:7px;flex-shrink:0;border:2px solid {{ id3Border }};background:{{ id3Bg }};display:flex;align-items:center;justify-content:center"><sc-if value="{{ id3 }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M2.5 7l2.5 2.5L10.5 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></div><span style="flex:1;font:600 14px Inter;color:var(--text)">Within rules of engagement</span></div>
+</div>
+<div onClick="{{ arm }}" style="display:flex;align-items:center;justify-content:center;gap:9px;background:{{ armBg }};border:1px solid {{ armBorder }};color:{{ armCol }};font:700 15px Inter;padding:16px;border-radius:15px;cursor:{{ armCursor }};margin-top:16px">
+<svg width="16" height="16" viewBox="0 0 18 18"><path d="M5 8V6a4 4 0 0 1 8 0v2" fill="none" stroke="{{ armCol }}" stroke-width="1.6"/><rect x="3.5" y="8" width="11" height="8" rx="2" fill="none" stroke="{{ armCol }}" stroke-width="1.6"/></svg>{{ armLabel }}
+</div>
+<div onClick="{{ closeDrawer }}" style="display:flex;align-items:center;justify-content:center;background:var(--surf2);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer;margin-top:10px">Hold · do not engage</div>
+</sc-if>
+
+<!-- ARMED: hold to confirm -->
+<sc-if value="{{ engageArmed }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:8px;padding:2px 0 4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--alert);animation:scoutPulse 1.4s infinite;--pulseCol:color-mix(in srgb,var(--alert) 45%,transparent)"></span><span style="font:700 13px 'Space Grotesk';color:var(--alert);letter-spacing:.08em">ARMED · POSITIVE ID CONFIRMED</span></div>
+<div style="font:500 13px Inter;color:var(--muted);padding:6px 0 20px;line-height:1.5">Press and hold to confirm engagement. Release at any time to abort. This action is logged with operator ID.</div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:4px 0 8px">
+<div onMouseDown="{{ holdStart }}" onMouseUp="{{ holdEnd }}" onMouseLeave="{{ holdEnd }}" onTouchStart="{{ holdStart }}" onTouchEnd="{{ holdEnd }}" style="position:relative;width:172px;height:172px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;background:conic-gradient(var(--alert) {{ holdDeg }}, transparent 0)">
+<div style="position:absolute;inset:9px;border-radius:50%;background:color-mix(in srgb,var(--alert) 16%,var(--surf));border:1.5px solid color-mix(in srgb,var(--alert) 55%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+<svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="11" fill="none" stroke="var(--alert)" stroke-width="1.6"/><path d="M15 6v9M15 19v.5" stroke="var(--alert)" stroke-width="2" stroke-linecap="round"/></svg>
+<span style="font:700 14px Inter;color:var(--alert)">{{ holdLabel }}</span>
+<span style="font:500 10px 'Space Grotesk';color:var(--muted)">{{ holdHint }}</span>
+</div>
+</div>
+<div onClick="{{ closeDrawer }}" style="margin-top:22px;display:flex;align-items:center;justify-content:center;width:100%;background:var(--surf2);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Abort</div>
+</div>
+</sc-if>
+
+<!-- ENGAGED: result -->
+<sc-if value="{{ engageDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;padding:20px 0 6px">
+<div style="width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--alert) 16%,transparent);display:flex;align-items:center;justify-content:center;animation:scoutMark .5s ease-out"><svg width="30" height="30" viewBox="0 0 30 30"><path d="M7 15l5 5 11-11" fill="none" stroke="var(--alert)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div style="font:700 19px Inter;color:var(--text);margin-top:16px">Engagement logged</div>
+<div style="font:500 13px Inter;color:var(--muted);margin-top:5px;text-align:center;line-height:1.5">Confirmed by operator · positive ID · held 1.6 s.<br>Timestamp, video, and ROE checklist recorded on-node.</div>
+</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:18px 0 14px">
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 13px Inter;color:var(--text)">Operator ID</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">OP-2241</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 13px Inter;color:var(--text)">Human-in-the-loop</span><span style="font:500 13px Inter;color:var(--muted)">verified</span></div>
+</div>
+<div onClick="{{ closeDrawer }}" style="display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:15px;cursor:pointer">Done</div>
+</sc-if>
+</sc-if>
+
+<!-- ===== LOG ===== -->
+<sc-if value="{{ dLog }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Mission log</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="font:500 13px 'Space Grotesk';color:var(--muted);padding:2px 0 16px">{{ modeLabel }} · Block C · Floor 2</div>
+<div style="position:relative;padding-left:6px">
+<sc-for list="{{ logItems }}" as="l" hint-placeholder-count="5">
+<div style="display:flex;gap:14px;padding-bottom:18px;position:relative">
+<div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+<span style="width:11px;height:11px;border-radius:50%;background:{{ l.dot }};border:2px solid var(--surf);box-shadow:0 0 0 1px {{ l.dot }};z-index:2"></span>
+<sc-if value="{{ l.notLast }}" hint-placeholder-val="{{ true }}"><span style="flex:1;width:2px;background:var(--line);margin-top:2px"></span></sc-if>
+</div>
+<div style="flex:1;margin-top:-3px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font:700 14px Inter;color:var(--text)">{{ l.title }}</span><span style="font:600 11px 'Space Grotesk';color:var(--muted);flex-shrink:0">{{ l.ts }}</span></div>
+<div style="font:500 13px Inter;color:var(--muted);margin-top:3px;line-height:1.45">{{ l.sub }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<!-- ===== NODE ===== -->
+<sc-if value="{{ dNode }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 4px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">SCOUT-01</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:10px 0 18px">
+<div style="position:relative;width:112px;height:112px;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%, color-mix(in srgb,var(--accent) 36%,transparent), transparent 68%);animation:scoutBreathe 4.5s ease-in-out infinite"></div>
+<div style="position:absolute;width:92px;height:92px;border-radius:50%;border:2px solid var(--line)"></div>
+<div style="position:relative;width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 42% 36%,#20242c,#07090d 78%);box-shadow:inset 0 2px 8px rgba(0,0,0,.55)">
+<div style="position:absolute;inset:11px;border-radius:50%;border:5px solid var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent) 55%,transparent)"></div>
+<div style="position:absolute;inset:25px;border-radius:50%;background:#05070a"></div>
+<div style="position:absolute;top:20px;left:23px;width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(.5px)"></div>
+</div>
+</div>
+<div style="margin-top:14px;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span><span style="font:600 13px 'Space Grotesk';color:var(--text)">Online · {{ modeLabel }} · Room 2</span></div>
+</div>
+<div style="display:flex;gap:11px;margin-bottom:14px">
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:16px;padding:14px"><div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.04em">BATTERY</div><div style="display:flex;align-items:baseline;gap:3px;margin:7px 0 9px"><span style="font:700 24px 'Space Grotesk';color:var(--text)">81</span><span style="font:600 13px Inter;color:var(--muted)">%</span></div><div style="height:5px;border-radius:3px;background:var(--line);overflow:hidden"><div style="width:81%;height:100%;background:var(--accent);border-radius:3px"></div></div></div>
+<div style="flex:1;background:var(--surf2);border:1px solid var(--line);border-radius:16px;padding:14px"><div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.04em">DATALINK</div><div style="display:flex;align-items:baseline;gap:3px;margin:7px 0 9px"><span style="font:700 24px 'Space Grotesk';color:var(--text)">Mesh</span></div><div style="display:flex;gap:3px;align-items:flex-end;height:5px"><div style="flex:1;height:100%;background:var(--accent);border-radius:2px"></div><div style="flex:1;height:100%;background:var(--accent);border-radius:2px"></div><div style="flex:1;height:100%;background:var(--accent);border-radius:2px"></div><div style="flex:1;height:100%;background:var(--line);border-radius:2px"></div></div></div>
+</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:16px">
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Optical · IMX500</span><span style="font:500 13px 'Space Grotesk';color:var(--muted)">30 fps</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Drive · tracks</span><span style="font:500 13px Inter;color:var(--muted)">OK</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Ultrasonic + LIDAR</span><span style="font:500 13px Inter;color:var(--muted)">OK</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 4" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">AI · MobileNet + frame-diff</span><span style="font:500 13px Inter;color:var(--muted)">loaded</span></div>
+<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid var(--hair)"><svg width="16" height="16" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg><span style="flex:1;font:600 14px Inter;color:var(--text)">Payload bay</span><span style="font:600 13px Inter;color:var(--mh)">{{ modeLabel }}</span></div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em">on-device AI · no cloud · no datalink dependency</div>
+</sc-if>
+
+<!-- ===== SETTINGS ===== -->
+<sc-if value="{{ dSettings }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0 16px">
+<span style="font:700 21px Inter;color:var(--text);letter-spacing:-.01em">Settings</span>
+<div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">APPEARANCE</div>
+<div style="display:flex;gap:6px;background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:20px">
+<div onClick="{{ setDark }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 14px Inter;background:{{ segDark.bg }};color:{{ segDark.col }};cursor:pointer">Dark</div>
+<div onClick="{{ setLight }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 14px Inter;background:{{ segLight.bg }};color:{{ segLight.col }};cursor:pointer">Light</div>
+</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">ENGAGEMENT</div>
+<div style="background:var(--surf2);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:20px">
+<div style="display:flex;align-items:center;padding:14px 15px"><span style="flex:1;font:600 14px Inter;color:var(--text)">Require positive ID</span><div style="width:46px;height:28px;border-radius:14px;background:var(--accent);position:relative;opacity:.7"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:translateX(18px);box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+<div style="display:flex;align-items:center;padding:14px 15px;border-top:1px solid var(--hair)"><span style="flex:1;font:600 14px Inter;color:var(--text)">Hold-to-confirm</span><div style="width:46px;height:28px;border-radius:14px;background:var(--accent);position:relative;opacity:.7"><div style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transform:translateX(18px);box-shadow:0 1px 3px rgba(0,0,0,.3)"></div></div></div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:10px;font:500 11px Inter;color:var(--faint);padding:0 2px 18px;line-height:1.5"><svg width="14" height="14" viewBox="0 0 14 14" style="flex-shrink:0;margin-top:1px"><rect x="3" y="6" width="8" height="6" rx="1.2" fill="none" stroke="var(--faint)" stroke-width="1.2"/><path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="var(--faint)" stroke-width="1.2"/></svg>Safety gates are enforced by policy and cannot be disabled from the handheld.</div>
+<div style="font:600 11px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;padding:0 2px 9px">DETECTION SENSITIVITY</div>
+<div style="display:flex;gap:6px;background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:20px">
+<div onClick="{{ setSensLow }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segLow.bg }};color:{{ segLow.col }};cursor:pointer">Low</div>
+<div onClick="{{ setSensMed }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segMed.bg }};color:{{ segMed.col }};cursor:pointer">Medium</div>
+<div onClick="{{ setSensHigh }}" style="flex:1;text-align:center;padding:11px;border-radius:10px;font:700 13px Inter;background:{{ segHigh.bg }};color:{{ segHigh.col }};cursor:pointer">High</div>
+</div>
+<div style="text-align:center;font:500 11px 'JetBrains Mono';color:var(--faint);letter-spacing:.04em">SCOUT · eyes on the perimeter</div>
+</sc-if>
+
+</div>
+</div>
+
+<!-- home indicator -->
+<div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:128px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--text) 30%,transparent);z-index:55"></div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:402,&quot;height&quot;:874},&quot;startMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;surveil&quot;,&quot;rescue&quot;,&quot;clearing&quot;],&quot;default&quot;:&quot;surveil&quot;,&quot;tsType&quot;:&quot;'surveil'|'rescue'|'clearing'&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;select&quot;,&quot;deploy&quot;,&quot;live&quot;,&quot;debrief&quot;],&quot;default&quot;:&quot;select&quot;,&quot;tsType&quot;:&quot;'select'|'deploy'|'live'|'debrief'&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;startTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: props.startTheme || 'dark',
+      screen: props.startScreen || 'select',  // select | deploy | live
+      mode: props.startMode || 'surveil',      // surveil | rescue | clearing
+      home: 'feed',
+      drawer: null,            // detail | log | node | settings
+      engage: 'assess',        // assess | armed | done
+      id1: false, id2: false, id3: false,
+      holdPct: 0,
+      clearStep: 1,
+      bootStep: 0,
+      readyStep: 0,
+      deployMethod: 'auto',
+      waypoints: [],
+      marked: false,
+      sens: 'Medium'
+    };
+  }
+  componentDidMount() { if (this.state.screen === 'deploy') this._startReadiness(); }
+  componentWillUnmount() { this._clearAll(); }
+  _clearAll() { clearInterval(this._iv); clearInterval(this._hold); clearInterval(this._boot); clearTimeout(this._goLive); clearInterval(this._ready); }
+
+  _startReadiness = () => {
+    clearInterval(this._ready);
+    this.setState({ readyStep: 0 });
+    this._ready = setInterval(() => {
+      this.setState(s => (s.readyStep >= 4 ? null : { readyStep: s.readyStep + 1 }));
+    }, 600);
+  };
+  pickMode = (m) => { this.setState({ mode: m, screen: 'deploy', deployMethod: 'auto', waypoints: [] }); this._startReadiness(); };
+  backToSelect = () => { this._clearAll(); this.setState({ screen: 'select', drawer: null, home: 'feed', clearStep: 1 }); };
+  _beginDeploy = () => {
+    this._clearAll();
+    this.setState({ screen: 'deploying', drawer: null, clearStep: 1, bootStep: 0 });
+    this._boot = setInterval(() => {
+      this.setState(s => (s.bootStep >= 4 ? null : { bootStep: s.bootStep + 1 }));
+    }, 750);
+    this._goLive = setTimeout(() => this._startLive(), 3600);
+  };
+  dropGo = () => this._beginDeploy();
+  openPlan = () => this.setState({ screen: 'plan' });
+  backToDeploy = () => this.setState({ screen: 'deploy' });
+  addWaypoint = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(4, Math.min(96, ((e.clientX - r.left) / r.width) * 100));
+    const y = Math.max(4, Math.min(96, ((e.clientY - r.top) / r.height) * 100));
+    this.setState(s => (s.waypoints.length >= 6 ? null : { waypoints: [...s.waypoints, { x, y }] }));
+  };
+  undoWaypoint = () => this.setState(s => ({ waypoints: s.waypoints.slice(0, -1) }));
+  clearWaypoints = () => this.setState({ waypoints: [] });
+  deployRoute = () => { if (this.state.waypoints.length < 1) return; this._beginDeploy(); };
+  _startLive = () => {
+    clearInterval(this._boot); clearTimeout(this._goLive);
+    this.setState({ screen: 'live', bootStep: 4 });
+    this._iv = setInterval(() => {
+      this.setState(s => {
+        if (s.clearStep >= 3) { clearInterval(this._iv); return null; }
+        return { clearStep: s.clearStep + 1 };
+      });
+    }, 4200);
+  };
+  skipBoot = () => this._startLive();
+  endMission = () => { this._clearAll(); this.setState({ screen: 'debrief', drawer: null }); };
+
+  mark = () => { this.setState({ marked: true }); clearTimeout(this._mark); this._mark = setTimeout(() => this.setState({ marked: false }), 1600); };
+  setFeed = () => this.setState({ home: 'feed' });
+  setMap = () => this.setState({ home: 'map' });
+
+  openDetail = () => this.setState({ drawer: 'detail', engage: 'assess', id1: false, id2: false, id3: false, holdPct: 0 });
+  openLog = () => this.setState({ drawer: 'log' });
+  openNode = () => this.setState({ drawer: 'node' });
+  openSettings = () => this.setState({ drawer: 'settings' });
+  closeDrawer = () => { clearInterval(this._hold); this.setState({ drawer: null, engage: 'assess', id1: false, id2: false, id3: false, holdPct: 0 }); };
+
+  toggleId1 = () => this.setState(s => ({ id1: !s.id1 }));
+  toggleId2 = () => this.setState(s => ({ id2: !s.id2 }));
+  toggleId3 = () => this.setState(s => ({ id3: !s.id3 }));
+  arm = () => { if (this.state.id1 && this.state.id2 && this.state.id3) this.setState({ engage: 'armed', holdPct: 0 }); };
+
+  holdStart = () => {
+    clearInterval(this._hold);
+    this._hold = setInterval(() => {
+      this.setState(s => {
+        const next = s.holdPct + 5;
+        if (next >= 100) { clearInterval(this._hold); return { holdPct: 100, engage: 'done' }; }
+        return { holdPct: next };
+      });
+    }, 80);
+  };
+  holdEnd = () => {
+    clearInterval(this._hold);
+    if (this.state.engage === 'armed') this.setState({ holdPct: 0 });
+  };
+
+  toggleTheme = () => this.setState(s => ({ theme: s.theme === 'dark' ? 'light' : 'dark' }));
+  setDark = () => this.setState({ theme: 'dark' });
+  setLight = () => this.setState({ theme: 'light' });
+  setSens = (v) => this.setState({ sens: v });
+
+  _icon(name, col) {
+    const R = React.createElement;
+    const svg = (children) => R('svg', { width: '100%', height: '100%', viewBox: '0 0 24 24', fill: 'none' }, children);
+    if (name === 'surveil') return svg([
+      R('path', { key: 'a', d: 'M3 9h18v2.6a4.6 4.6 0 0 1-4.6 4.6h-1a2.6 2.6 0 0 1-2.5-1.9l-.2-.7a1 1 0 0 0-1.9 0l-.2.7A2.6 2.6 0 0 1 8.1 16.2h-1A4.6 4.6 0 0 1 2.5 11.6V9z', stroke: col, strokeWidth: 1.7, strokeLinejoin: 'round' }),
+      R('path', { key: 'b', d: 'M5 9V7.5A1.5 1.5 0 0 1 6.5 6M19 9V7.5A1.5 1.5 0 0 0 17.5 6', stroke: col, strokeWidth: 1.5, strokeLinecap: 'round' }),
+      R('circle', { key: 'c', cx: 7.8, cy: 11.7, r: 1.15, fill: col }),
+      R('circle', { key: 'd', cx: 16.2, cy: 11.7, r: 1.15, fill: col })
+    ]);
+    if (name === 'rescue') return svg([
+      R('circle', { key: 'a', cx: 6.4, cy: 6.6, r: 2.3, stroke: col, strokeWidth: 1.55 }),
+      R('path', { key: 'b', d: 'M2.5 18.4v-.7a3.9 3.9 0 0 1 7.8 0v.7', stroke: col, strokeWidth: 1.55, strokeLinecap: 'round' }),
+      R('circle', { key: 'c', cx: 17.6, cy: 6.6, r: 2.3, stroke: col, strokeWidth: 1.55 }),
+      R('path', { key: 'd', d: 'M13.7 18.4v-.7a3.9 3.9 0 0 1 7.8 0v.7', stroke: col, strokeWidth: 1.55, strokeLinecap: 'round' }),
+      R('circle', { key: 'e', cx: 12, cy: 11, r: 1.95, stroke: col, strokeWidth: 1.55 }),
+      R('path', { key: 'f', d: 'M8.7 20.4v-.6a3.3 3.3 0 0 1 6.6 0v.6', stroke: col, strokeWidth: 1.55, strokeLinecap: 'round' })
+    ]);
+    // clearing — shield + crosshair
+    return svg([
+      R('circle', { key: 'a', cx: 12, cy: 12, r: 8, stroke: col, strokeWidth: 1.7 }),
+      R('path', { key: 'b', d: 'M12 2v4M12 18v4M2 12h4M18 12h4', stroke: col, strokeWidth: 1.7, strokeLinecap: 'round' }),
+      R('circle', { key: 'c', cx: 12, cy: 12, r: 2, fill: col })
+    ]);
+  }
+
+  renderVals() {
+    const R = React.createElement;
+    const s = this.state;
+    const themes = {
+      dark: {
+        bg:'#0D0E11', surf:'#16181D', surf2:'#1E2127', line:'rgba(255,255,255,0.09)', hair:'rgba(255,255,255,0.055)',
+        text:'#ECEEF1', muted:'rgba(236,238,241,0.52)', faint:'rgba(236,238,241,0.30)',
+        accent:'#FFAB00', onAccent:'#141414', alert:'#FF4D4D', scrim:'rgba(0,0,0,0.55)', pulse:'rgba(255,171,0,0.45)'
+      },
+      light: {
+        bg:'#ECEEF1', surf:'#FFFFFF', surf2:'#F4F5F7', line:'rgba(20,22,27,0.11)', hair:'rgba(20,22,27,0.06)',
+        text:'#16181D', muted:'rgba(20,22,27,0.55)', faint:'rgba(20,22,27,0.34)',
+        accent:'#F2A100', onAccent:'#1A1206', alert:'#E03333', scrim:'rgba(0,0,0,0.32)', pulse:'rgba(242,161,0,0.40)'
+      }
+    };
+    const c = themes[s.theme];
+
+    const modeDefs = {
+      surveil:  { label:'RECON',     sub:'Secure the building',  hue:'#18C0CE', mhOn:'#06222A' },
+      rescue:   { label:'RESCUE',    sub:'Locate civilians',     hue:'#2FB873', mhOn:'#04230F' },
+      clearing: { label:'ELIMINATE', sub:'Engage confirmed threats', hue:'#FF4D4D', mhOn:'#2A0606', restricted:true }
+    };
+    const md = modeDefs[s.mode];
+    const mh = md.hue;
+    const mhSoft = 'color-mix(in srgb,' + mh + ' 13%, transparent)';
+    const mhPulse = 'color-mix(in srgb,' + mh + ' 45%, transparent)';
+
+    const seg = (on) => ({ bg: on ? c.accent : 'transparent', col: on ? c.onAccent : c.muted });
+
+    // mode cards (select)
+    const iconNameFor = { surveil: 'recon', rescue: 'rescue', clearing: 'eliminate' };
+    const cardFor = (key) => {
+      const d = modeDefs[key];
+      return {
+        label: d.label, sub: d.sub, hue: d.hue, restricted: !!d.restricted,
+        iconName: iconNameFor[key],
+        pick: () => this.pickMode(key)
+      };
+    };
+
+    // ROE text per mode
+    const roe = {
+      surveil:  { text:'Observation only. Change detection runs on-device; nothing is transmitted off the node.', icon:c.muted, border:c.line },
+      rescue:   { text:'Locate and report. SCOUT marks and routes a medic — it does not approach or contact persons.', icon:c.muted, border:c.line },
+      clearing: { text:'Lethal payload. Engagement requires operator positive ID and a held confirm. Human-in-the-loop is mandatory and logged.', icon:c.alert, border:'color-mix(in srgb,' + c.alert + ' 38%,transparent)' }
+    }[s.mode];
+
+    // feed copy per mode
+    const feed = {
+      surveil:  { tag:'NEW OBJECT', banner:'CHANGE DETECTED', meta:'DIFF 3.4%', foot:'baseline 14:02 · on-device diff', state:'FLAGGED', primary:'Review' },
+      rescue:   { tag:'PERSON · 97%', banner:'PERSON LOCATED', meta:'THERMAL', foot:'thermal + optical · 30 fps', state:'LOCATED', primary:'Report' },
+      clearing: { tag:'CONTACT', banner:'CONTACT · ASSESS', meta:'AZ 088°', foot:'positive ID required', state:'UNVERIFIED', primary:'Assess' }
+    }[s.mode];
+
+    const primaryIcon = this._icon(s.mode === 'clearing' ? 'clearing' : (s.mode === 'rescue' ? 'rescue' : 'surveil'), md.mhOn);
+
+    // map rooms
+    const roomLayout = [
+      { name:'Entry', pos:'left:12px;top:12px;width:96px;height:64px' },
+      { name:'Room 1', pos:'left:118px;top:12px;width:118px;height:64px' },
+      { name:'Hall', pos:'left:12px;top:86px;width:224px;height:38px' },
+      { name:'Room 2', pos:'left:12px;top:134px;width:104px;height:100px' },
+      { name:'Room 3', pos:'left:126px;top:134px;width:110px;height:100px' }
+    ];
+    const rooms = roomLayout.map((r, i) => {
+      const cleared = i < s.clearStep;
+      const active = i === s.clearStep;
+      return {
+        name: r.name, pos: r.pos,
+        cleared, active,
+        bg: active ? mhSoft : (cleared ? 'color-mix(in srgb,' + c.accent + ' 9%,transparent)' : c.surf),
+        border: active ? 'color-mix(in srgb,' + mh + ' 55%,transparent)' : (cleared ? 'color-mix(in srgb,' + c.accent + ' 38%,transparent)' : c.line),
+        labelCol: (active || cleared) ? c.text : c.muted
+      };
+    });
+    const planRooms = roomLayout.map(r => ({ name: r.name, pos: r.pos }));
+    const startPt = { x: 18, y: 86 };
+    const routePoints = [startPt, ...s.waypoints].map(p => p.x + ',' + p.y).join(' ');
+    const waypointDots = s.waypoints.map((w, i) => ({ left: w.x + '%', top: w.y + '%', n: i + 1 }));
+    const canRoute = s.waypoints.length >= 1;
+
+    // activity preview (live)
+    const act = {
+      surveil: [
+        { text:'Change flagged · Room 2', dot:mh, glow:'box-shadow:0 0 0 4px ' + mhSoft, action:true, actionLabel:'Review', onClick:this.openDetail, cursor:'pointer' },
+        { text:'Room 1 · baseline matched', dot:c.faint, time:true, ts:'14:06', cursor:'default' },
+        { text:'Entry · cleared', dot:c.accent, time:true, ts:'14:03', cursor:'default' },
+        { text:'Datalink · mesh nominal', dot:c.faint, time:true, ts:'14:01', cursor:'default' }
+      ],
+      rescue: [
+        { text:'Person located · Room 2', dot:mh, glow:'box-shadow:0 0 0 4px ' + mhSoft, action:true, actionLabel:'Open', onClick:this.openDetail, cursor:'pointer' },
+        { text:'Room 1 · no persons', dot:c.faint, time:true, ts:'14:06', cursor:'default' },
+        { text:'Entry · cleared', dot:c.accent, time:true, ts:'14:03', cursor:'default' },
+        { text:'Thermal · calibrated', dot:c.faint, time:true, ts:'14:01', cursor:'default' }
+      ],
+      clearing: [
+        { text:'Contact · Room 2 · unverified', dot:c.alert, glow:'box-shadow:0 0 0 4px color-mix(in srgb,' + c.alert + ' 20%,transparent)', action:true, actionLabel:'Assess', onClick:this.openDetail, cursor:'pointer' },
+        { text:'Room 1 · cleared', dot:c.accent, time:true, ts:'14:06', cursor:'default' },
+        { text:'Entry · cleared', dot:c.accent, time:true, ts:'14:03', cursor:'default' },
+        { text:'Positive-ID gate · armed', dot:c.faint, time:true, ts:'14:01', cursor:'default' }
+      ]
+    }[s.mode];
+
+    // mission log
+    const logBy = {
+      surveil: [
+        { title:'Change detected', sub:'Room 2 · new object vs baseline · 3.4% diff', dot:mh, ts:'14:07' },
+        { title:'Room 1 swept', sub:'Baseline matched · no change', dot:c.accent, ts:'14:06' },
+        { title:'Hall cleared', sub:'No motion · LIDAR clean', dot:c.accent, ts:'14:04' },
+        { title:'Entry cleared', sub:'Door breached · baseline captured', dot:c.accent, ts:'14:03' },
+        { title:'Deployed', sub:'SURVEIL payload · Block C, Floor 2', dot:c.faint, ts:'14:01' }
+      ],
+      rescue: [
+        { title:'Person located', sub:'Room 2 · prone · thermal warm · 97%', dot:mh, ts:'14:07' },
+        { title:'Room 1 swept', sub:'No persons detected', dot:c.accent, ts:'14:06' },
+        { title:'Hall cleared', sub:'No thermal signatures', dot:c.accent, ts:'14:04' },
+        { title:'Entry cleared', sub:'Door breached · thermal calibrated', dot:c.accent, ts:'14:03' },
+        { title:'Deployed', sub:'RESCUE payload · Block C, Floor 2', dot:c.faint, ts:'14:01' }
+      ],
+      clearing: [
+        { title:'Contact detected', sub:'Room 2 · unverified · awaiting positive ID', dot:c.alert, ts:'14:07' },
+        { title:'Room 1 cleared', sub:'No contacts', dot:c.accent, ts:'14:06' },
+        { title:'Hall cleared', sub:'No contacts · LIDAR clean', dot:c.accent, ts:'14:04' },
+        { title:'Entry cleared', sub:'Door breached · ROE armed', dot:c.accent, ts:'14:03' },
+        { title:'Deployed', sub:'ELIMINATE payload · human-in-loop required', dot:c.faint, ts:'14:01' }
+      ]
+    }[s.mode];
+    const logItems = logBy.map((l, i) => ({ ...l, notLast: i < logBy.length - 1 }));
+
+    // debrief / after-action
+    const dbBy = {
+      surveil: { stat:'3', statLabel:'changes flagged', title:'CHANGES FLAGGED', audit:false, outcomes:[
+        { dot:mh, title:'New object · Room 2', sub:'3.4% diff vs 14:02 baseline · marked & reported' },
+        { dot:mh, title:'Displaced object · Hall', sub:'Chair moved since baseline · logged, no action' },
+        { dot:c.accent, title:'Baseline updated · Room 1', sub:'Re-baselined after sweep' }
+      ]},
+      rescue: { stat:'1', statLabel:'person located', title:'PERSONS LOCATED', audit:false, outcomes:[
+        { dot:mh, title:'Person · Room 2', sub:'Prone · non-combatant · routed to medics, not approached' },
+        { dot:c.accent, title:'Clear · Rooms 1 & 3', sub:'No persons detected' }
+      ]},
+      clearing: { stat:'1', statLabel:'engagement', title:'ENGAGEMENTS', audit:true, outcomes:[
+        { dot:c.alert, title:'Contact · Room 2', sub:'Positive ID confirmed · engaged · operator OP-2241' },
+        { dot:c.accent, title:'Clear · Rooms 1 & 3', sub:'No further contacts' }
+      ]}
+    }[s.mode];
+    const debriefOutcomes = dbBy.outcomes.map((o, i) => ({ ...o, bt: i === 0 ? 'none' : '1px solid var(--hair)' }));
+
+    // deploying / boot sequence
+    const bootDefs = [
+      { label:'Mesh link established', meta:'no cloud' },
+      { label:'Sensors online', meta:'optical · LIDAR · thermal' },
+      { label:'On-device AI loaded', meta:'MobileNet + frame-diff' },
+      { label:'Camera feed acquired', meta:'30 fps' }
+    ];
+    const bootItems = bootDefs.map((b, i) => ({
+      label:b.label, meta:b.meta,
+      done: s.bootStep > i, active: s.bootStep === i, pending: s.bootStep < i,
+      labelCol: s.bootStep >= i ? c.text : c.muted,
+      bt: i === 0 ? 'none' : '1px solid var(--hair)'
+    }));
+    const bootStatusArr = ['ESTABLISHING MESH LINK','BRINGING SENSORS ONLINE','LOADING ON-DEVICE AI','ACQUIRING CAMERA FEED','FEED LIVE · ENTERING'];
+    const bp = Math.min(s.bootStep, 4);
+
+    // deploy pre-flight readiness
+    const readyDefs = [
+      { label:'Battery', meta:'81%' },
+      { label:'Sensors', meta:'optical · LIDAR · thermal' },
+      { label:'On-device AI', meta:'loaded' },
+      { label:'Mesh link', meta:'no cloud' }
+    ];
+    const readyItems = readyDefs.map((r, i) => ({
+      label:r.label, meta:r.meta,
+      done: s.readyStep > i, active: s.readyStep === i, pending: s.readyStep < i,
+      labelCol: s.readyStep >= i ? c.text : c.muted,
+      metaCol: s.readyStep > i ? c.accent : c.muted,
+      bt: i === 0 ? 'none' : '1px solid var(--hair)'
+    }));
+    const deployReady = s.readyStep >= 4;
+
+    // clearing gate
+    const allId = s.id1 && s.id2 && s.id3;
+    const idStyle = (on) => ({ bg: on ? c.alert : 'transparent', border: on ? c.alert : c.line });
+    const i1 = idStyle(s.id1), i2 = idStyle(s.id2), i3 = idStyle(s.id3);
+
+    const statusLine = (s.mode === 'clearing' ? 'ENGAGING' : (s.mode === 'rescue' ? 'SEARCHING' : 'SCANNING')) + ' · ROOM 2';
+
+    return {
+      c, mh, mhSoft, mhPulse, mhOn: md.mhOn,
+      themeDark: s.theme === 'dark', themeLight: s.theme === 'light',
+
+      screenSelect: s.screen === 'select', screenDeploy: s.screen === 'deploy', screenDeploying: s.screen === 'deploying', screenLive: s.screen === 'live', screenDebrief: s.screen === 'debrief',
+      bootItems, bootStatus: bootStatusArr[bp], bootPctCss: (bp / 4 * 100) + '%', bootPctLabel: Math.round(bp / 4 * 100) + '%',
+      readyItems, readyStatus: deployReady ? 'ALL SYSTEMS GO' : 'CHECKING…', readyAllCol: deployReady ? c.accent : c.muted,
+      deployBg: deployReady ? c.accent : c.surf2, deployCol: deployReady ? c.onAccent : c.faint, deployCursor: deployReady ? 'pointer' : 'not-allowed', deployLabel: deployReady ? 'Deploy SCOUT-01' : 'Running pre-flight…',
+      topSub: s.screen === 'live' ? ('NODE-01 · ' + md.label) : (s.screen === 'deploy' ? 'DEPLOY' : (s.screen === 'debrief' ? 'AFTER-ACTION' : 'MISSION SELECT')),
+
+      modeLabel: md.label, modeSub: md.sub, modeIcon: this._icon(s.mode, mh),
+      modeCards: [cardFor('surveil'), cardFor('rescue'), cardFor('clearing')],
+
+      roeText: roe.text, roeIcon: roe.icon, roeBorder: roe.border,
+
+      home: s.home, homeFeed: s.home === 'feed', homeMap: s.home === 'map',
+      segFeed: seg(s.home === 'feed'), segMap: seg(s.home === 'map'),
+      statusLine, statusRoom: 'ROOM 2',
+
+      detTag: feed.tag, feedBanner: feed.banner, feedMeta: feed.meta, feedFoot: feed.foot, feedState: feed.state,
+      primaryLabel: feed.primary, primaryIcon,
+
+      rooms, clearedCount: Math.min(s.clearStep, 4), activity: act, logItems,
+      debriefStat: dbBy.stat, debriefStatLabel: dbBy.statLabel, debriefOutcomeTitle: dbBy.title, debriefOutcomes, debriefAudit: dbBy.audit,
+
+      drawerY: s.drawer ? '0%' : '102%', scrimO: s.drawer ? '1' : '0', scrimPe: s.drawer ? 'auto' : 'none',
+      dDetailSurveil: s.drawer === 'detail' && s.mode === 'surveil',
+      dDetailRescue: s.drawer === 'detail' && s.mode === 'rescue',
+      dDetailClearing: s.drawer === 'detail' && s.mode === 'clearing',
+      dLog: s.drawer === 'log', dNode: s.drawer === 'node', dSettings: s.drawer === 'settings',
+
+      engageAssess: s.engage === 'assess', engageArmed: s.engage === 'armed', engageDone: s.engage === 'done',
+      id1: s.id1, id2: s.id2, id3: s.id3,
+      id1Bg: i1.bg, id1Border: i1.border, id2Bg: i2.bg, id2Border: i2.border, id3Bg: i3.bg, id3Border: i3.border,
+      armBg: allId ? c.alert : c.surf2,
+      armBorder: allId ? c.alert : c.line,
+      armCol: allId ? '#fff' : c.faint,
+      armCursor: allId ? 'pointer' : 'not-allowed',
+      armLabel: allId ? 'Arm engagement' : 'Confirm all to arm',
+      holdDeg: (s.holdPct * 3.6) + 'deg',
+      holdLabel: s.holdPct >= 100 ? 'Confirmed' : 'Hold',
+      holdHint: s.holdPct > 0 && s.holdPct < 100 ? 'keep holding…' : 'press & hold',
+
+      segDark: seg(s.theme === 'dark'), segLight: seg(s.theme === 'light'),
+      segLow: seg(s.sens === 'Low'), segMed: seg(s.sens === 'Medium'), segHigh: seg(s.sens === 'High'),
+
+      screenPlan: s.screen === 'plan',
+      planRooms, routePoints, waypointDots, waypointCount: s.waypoints.length, canRoute,
+      routeBg: canRoute ? c.accent : c.surf2, routeCol: canRoute ? c.onAccent : c.faint, routeCursor: canRoute ? 'pointer' : 'not-allowed', routeLabel: canRoute ? 'Deploy along route' : 'Tap the map to set a route',
+      mhOnSoft: 'rgba(0,0,0,0.55)',
+      backToSelect: this.backToSelect, dropGo: this.dropGo, openPlan: this.openPlan, backToDeploy: this.backToDeploy, addWaypoint: this.addWaypoint, undoWaypoint: this.undoWaypoint, clearWaypoints: this.clearWaypoints, deployRoute: this.deployRoute, endMission: this.endMission, newMission: this.backToSelect, skipBoot: this.skipBoot,
+      mark: this.mark, marked: s.marked, markUnset: !s.marked, markLabel: s.marked ? 'Marked' : 'Mark',
+      setFeed: this.setFeed, setMap: this.setMap,
+      openDetail: this.openDetail, openLog: this.openLog, openNode: this.openNode, openSettings: this.openSettings, closeDrawer: this.closeDrawer,
+      toggleId1: this.toggleId1, toggleId2: this.toggleId2, toggleId3: this.toggleId3,
+      arm: this.arm, holdStart: this.holdStart, holdEnd: this.holdEnd,
+      toggleTheme: this.toggleTheme, setDark: this.setDark, setLight: this.setLight,
+      setSensLow: () => this.setSens('Low'), setSensMed: () => this.setSens('Medium'), setSensHigh: () => this.setSens('High')
+    };
+  }
+}
+</script>
+</body>
+</html>

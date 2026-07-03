@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</helmet>
+
+<!-- ============ LEFT INFO COLUMN ============ -->
+<div style="position:absolute;left:80px;top:60px;width:470px;font-family:Inter,system-ui,sans-serif">
+<div style="font:500 12px 'JetBrains Mono';color:#8a8170;letter-spacing:.22em;margin-bottom:14px">EDTH MUNICH 2026 · DESIGN EXPLORATION</div>
+<div style="font:800 40px Inter;color:#1c1f26;letter-spacing:-.025em;line-height:1.05">SCOUT — iOS App</div>
+<div style="font:500 17px Inter;color:#605a4e;margin-top:10px;line-height:1.45">Home screen, explored in <b style="color:#1c1f26">3 directions</b> across <b style="color:#1c1f26">2 palettes</b>. Pick a direction + palette and I'll build the full interactive prototype with drawer-based navigation.</div>
+</div>
+
+<!-- system card -->
+<div style="position:absolute;left:80px;top:262px;width:470px;background:#fff;border:1px solid #e7e3da;border-radius:14px;padding:22px 24px;box-shadow:0 1px 3px rgba(0,0,0,.05);font-family:Inter,system-ui">
+<div style="font:700 13px Inter;color:#1c1f26;letter-spacing:.02em;margin-bottom:16px">THE SYSTEM</div>
+<div style="display:flex;gap:12px;margin-bottom:13px"><div style="width:6px;border-radius:3px;background:#1c1f26;flex-shrink:0"></div><div><div style="font:700 13px Inter;color:#1c1f26">Type</div><div style="font:500 13px Inter;color:#605a4e;line-height:1.5">Inter for UI · <span style="font-family:'Space Grotesk'">Space Grotesk</span> for data &amp; numbers · <span style="font-family:'JetBrains Mono'">JetBrains Mono</span> for telemetry / captions.</div></div></div>
+<div style="display:flex;gap:12px;margin-bottom:13px"><div style="width:6px;border-radius:3px;background:#f5a623;flex-shrink:0"></div><div><div style="font:700 13px Inter;color:#1c1f26">SCOUT's eye</div><div style="font:500 13px Inter;color:#605a4e;line-height:1.5">The glowing lens is a placeholder for the 3D robot model — it'll drop into the same slot later.</div></div></div>
+<div style="display:flex;gap:12px;margin-bottom:13px"><div style="width:6px;border-radius:3px;background:#4a90d9;flex-shrink:0"></div><div><div style="font:700 13px Inter;color:#1c1f26">Drawer-first nav</div><div style="font:500 13px Inter;color:#605a4e;line-height:1.5">Direction C shows the approach you asked for: a peeking bottom drawer instead of hopping between screens.</div></div></div>
+<div style="display:flex;gap:12px"><div style="width:6px;border-radius:3px;background:#9a9race;flex-shrink:0;background:#bdb6a6"></div><div><div style="font:700 13px Inter;color:#1c1f26">Striped blocks = real footage</div><div style="font:500 13px Inter;color:#605a4e;line-height:1.5">Camera feeds &amp; pet photos are placeholders where live robot footage will go.</div></div></div>
+</div>
+
+<!-- Guardian palette card -->
+<div style="position:absolute;left:80px;top:560px;width:470px;background:#fff;border:1px solid #e7e3da;border-radius:14px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,.05);font-family:Inter">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:15px"><div style="font:700 15px Inter;color:#1c1f26">Guardian Blue</div><div style="font:500 12px 'Space Grotesk';color:#8a8170">trust · consumer + B2B</div></div>
+<div style="display:flex;gap:10px">
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#1A3A5C"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#1A3A5C</div><div style="font:600 11px Inter;color:#1c1f26">Navy</div></div>
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#4A90D9"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#4A90D9</div><div style="font:600 11px Inter;color:#1c1f26">Sky</div></div>
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#F5A623"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#F5A623</div><div style="font:600 11px Inter;color:#1c1f26">Amber</div></div>
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#46C08A"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#46C08A</div><div style="font:600 11px Inter;color:#1c1f26">All-clear</div></div>
+</div>
+</div>
+
+<!-- Steel palette card -->
+<div style="position:absolute;left:80px;top:740px;width:470px;background:#fff;border:1px solid #e7e3da;border-radius:14px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,.05);font-family:Inter">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:15px"><div style="font:700 15px Inter;color:#1c1f26">Berlin Steel</div><div style="font:500 12px 'Space Grotesk';color:#8a8170">premium · tech / defense</div></div>
+<div style="display:flex;gap:10px">
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#1C1F26"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#1C1F26</div><div style="font:600 11px Inter;color:#1c1f26">Gunmetal</div></div>
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#FFAB00"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#FFAB00</div><div style="font:600 11px Inter;color:#1c1f26">Amber</div></div>
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#00C853"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#00C853</div><div style="font:600 11px Inter;color:#1c1f26">Signal</div></div>
+<div style="flex:1"><div style="height:54px;border-radius:9px;background:#22262E"></div><div style="font:500 10px 'JetBrains Mono';color:#605a4e;margin-top:6px">#22262E</div><div style="font:600 11px Inter;color:#1c1f26">Surface</div></div>
+</div>
+</div>
+
+<!-- post-it -->
+<div style="position:absolute;left:80px;top:932px;width:300px;background:#fef4a8;padding:16px 18px;font:500 13px/1.5 Inter;color:#5c5320;box-shadow:0 2px 8px rgba(0,0,0,.1);transform:rotate(-1.2deg)">
+Tell me your pick (e.g. <b>“B in Berlin Steel”</b>) — or mix &amp; match. Next I'll build it as a tappable prototype: Patrol, Find Milo, Alerts, all via drawers.
+</div>
+
+<!-- ============ ROW LABELS ============ -->
+<div data-drags-parent="0" style="position:absolute;left:620px;top:392px;font-family:Inter">
+<span style="font:800 15px Inter;color:#1A3A5C;letter-spacing:.04em">GUARDIAN BLUE</span>
+<span style="font:500 13px Inter;color:#8a8170;margin-left:10px">· trust-forward</span>
+</div>
+<div data-drags-parent="0" style="position:absolute;left:620px;top:1352px;font-family:Inter">
+<span style="font:800 15px Inter;color:#1C1F26;letter-spacing:.04em">BERLIN STEEL</span>
+<span style="font:500 13px Inter;color:#8a8170;margin-left:10px">· premium / defense</span>
+</div>
+
+<!-- ============ ROW 1 — GUARDIAN ============ -->
+<div style="position:absolute;left:620px;top:440px;width:402px">
+<div data-drags-parent="1" style="position:absolute;top:-40px;left:2px;font-family:Inter"><div style="font:700 16px Inter;color:#1c1f26">A · Command Center</div><div style="font:500 12px Inter;color:#8a8170">Live feed + activity log · security-pro</div></div>
+<dc-import name="ScoutHome" direction="a" palette="guardian" hint-size="402px,874px"></dc-import>
+</div>
+<div style="position:absolute;left:1110px;top:440px;width:402px">
+<div data-drags-parent="1" style="position:absolute;top:-40px;left:2px;font-family:Inter"><div style="font:700 16px Inter;color:#1c1f26">B · Companion</div><div style="font:500 12px Inter;color:#8a8170">Calm status + pet-first · friendly</div></div>
+<dc-import name="ScoutHome" direction="b" palette="guardian" hint-size="402px,874px"></dc-import>
+</div>
+<div style="position:absolute;left:1600px;top:440px;width:402px">
+<div data-drags-parent="1" style="position:absolute;top:-40px;left:2px;font-family:Inter"><div style="font:700 16px Inter;color:#1c1f26">C · Tactical Map</div><div style="font:500 12px Inter;color:#8a8170">Floorplan + peeking drawer · spatial</div></div>
+<dc-import name="ScoutHome" direction="c" palette="guardian" hint-size="402px,874px"></dc-import>
+</div>
+
+<!-- ============ ROW 2 — BERLIN STEEL ============ -->
+<div style="position:absolute;left:620px;top:1400px;width:402px">
+<div data-drags-parent="1" style="position:absolute;top:-32px;left:2px;font:700 14px Inter;color:#605a4e">A · Command Center</div>
+<dc-import name="ScoutHome" direction="a" palette="steel" hint-size="402px,874px"></dc-import>
+</div>
+<div style="position:absolute;left:1110px;top:1400px;width:402px">
+<div data-drags-parent="1" style="position:absolute;top:-32px;left:2px;font:700 14px Inter;color:#605a4e">B · Companion</div>
+<dc-import name="ScoutHome" direction="b" palette="steel" hint-size="402px,874px"></dc-import>
+</div>
+<div style="position:absolute;left:1600px;top:1400px;width:402px">
+<div data-drags-parent="1" style="position:absolute;top:-32px;left:2px;font:700 14px Inter;color:#605a4e">C · Tactical Map</div>
+<dc-import name="ScoutHome" direction="c" palette="steel" hint-size="402px,874px"></dc-import>
+</div>
+
+</x-dc>
+</body>
+</html>

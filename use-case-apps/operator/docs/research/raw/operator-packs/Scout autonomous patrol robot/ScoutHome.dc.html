@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@keyframes scoutBreathe { 0%,100% { transform: scale(1); opacity:.75 } 50% { transform: scale(1.09); opacity:1 } }
+@keyframes scoutPulse { 0% { box-shadow: 0 0 0 0 var(--pulseCol) } 70% { box-shadow: 0 0 0 12px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+@keyframes scoutSweep { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+</style>
+</helmet>
+<div style="width:402px;height:874px;border-radius:54px;background:#05070a;padding:13px;box-sizing:border-box;box-shadow:0 30px 70px rgba(0,0,0,.32), 0 0 0 1px rgba(0,0,0,.5);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;--screenBg:{{ c.screenBg }};--surf:{{ c.surf }};--surf2:{{ c.surf2 }};--line:{{ c.line }};--text:{{ c.text }};--muted:{{ c.muted }};--primary:{{ c.primary }};--accent:{{ c.accent }};--onAccent:{{ c.onAccent }};--positive:{{ c.positive }};--alert:{{ c.alert }};--pulseCol:{{ c.pulse }}">
+<div style="position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--screenBg);color:var(--text)">
+
+<!-- dynamic island -->
+<div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);width:118px;height:34px;border-radius:20px;background:#000;z-index:30"></div>
+
+<!-- status bar -->
+<div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:19px 32px 0;z-index:25;pointer-events:none">
+<span style="font:600 15px Inter;color:var(--text)">9:41</span>
+<div style="display:flex;align-items:center;gap:8px">
+<svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".6" fill="var(--text)"/><rect x="5" y="4.5" width="3" height="6.5" rx=".6" fill="var(--text)"/><rect x="10" y="2" width="3" height="9" rx=".6" fill="var(--text)"/><rect x="15" y="0" width="3" height="11" rx=".6" fill="var(--text)" opacity=".4"/></svg>
+<span style="font:600 11px Inter;color:var(--text)">5G</span>
+<svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="var(--text)" stroke-opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.6" fill="var(--text)"/><rect x="24" y="4" width="2" height="4" rx="1" fill="var(--text)" opacity=".5"/></svg>
+</div>
+</div>
+
+<!-- ============ DIRECTION A — COMMAND CENTER ============ -->
+<sc-if value="{{ isA }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;top:58px;bottom:0;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 18px 12px">
+<div style="display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--line);padding:8px 13px;border-radius:999px">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:scoutPulse 2.2s infinite"></span>
+<span style="font:600 12px Inter;color:var(--text);letter-spacing:.01em">Patrolling</span>
+</div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:14px;color:var(--muted);font:600 12px 'Space Grotesk'">
+<span style="color:var(--text)">78%</span>
+<span>Signal strong</span>
+</div>
+</div>
+
+<div style="margin:0 16px;height:228px;border-radius:22px;overflow:hidden;position:relative;border:1px solid var(--line);background:repeating-linear-gradient(135deg, var(--surf2), var(--surf2) 11px, var(--surf) 11px, var(--surf) 22px)">
+<div style="position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);padding:6px 10px;border-radius:999px">
+<span style="width:7px;height:7px;border-radius:50%;background:var(--alert);animation:scoutPulse 1.6s infinite;--pulseCol:var(--alert)"></span>
+<span style="font:700 10px 'Space Grotesk';color:#fff;letter-spacing:.12em">LIVE · LIVING ROOM</span>
+</div>
+<div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);padding:6px 10px;border-radius:999px;font:600 11px 'Space Grotesk';color:#fff">2:17 PM</div>
+<div style="position:absolute;left:14px;bottom:14px;font:500 10px 'JetBrains Mono';color:var(--text);opacity:.6;letter-spacing:.08em">[ robot cam · live feed ]</div>
+</div>
+
+<div style="display:flex;gap:10px;padding:14px 16px 4px">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--accent);color:var(--onAccent);font:700 15px Inter;padding:15px;border-radius:16px">
+<svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 3l9 5-9 5z" fill="var(--onAccent)"/></svg>Start Patrol
+</div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 15px Inter;padding:15px;border-radius:16px">
+<svg width="17" height="17" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="var(--primary)" stroke-width="1.7"/><circle cx="9" cy="9" r="2.4" fill="var(--primary)"/></svg>Find Milo
+</div>
+</div>
+
+<div style="margin:10px 16px 0;background:var(--surf);border:1px solid var(--line);border-radius:20px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px 9px">
+<span style="font:700 13px Inter;color:var(--text)">Activity</span>
+<span style="font:600 11px 'Space Grotesk';color:var(--muted)">Today</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line)">
+<span style="width:9px;height:9px;border-radius:50%;background:var(--positive);box-shadow:0 0 0 4px color-mix(in srgb,var(--positive) 22%,transparent)"></span>
+<span style="flex:1;font:600 14px Inter;color:var(--text)">Milo spotted · living room</span>
+<span style="font:600 12px 'Space Grotesk';color:var(--muted)">2:15</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line)">
+<span style="width:9px;height:9px;border-radius:50%;background:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 22%,transparent)"></span>
+<span style="flex:1;font:600 14px Inter;color:var(--text)">Front door · closed</span>
+<span style="font:600 12px 'Space Grotesk';color:var(--muted)">2:16</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--alert) 9%,transparent)">
+<span style="width:9px;height:9px;border-radius:50%;background:var(--alert);box-shadow:0 0 0 4px color-mix(in srgb,var(--alert) 22%,transparent)"></span>
+<span style="flex:1;font:600 14px Inter;color:var(--text)">Motion detected · hallway</span>
+<span style="font:700 12px 'Space Grotesk';color:var(--alert)">2:17</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ DIRECTION B — COMPANION ============ -->
+<sc-if value="{{ isB }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;top:58px;bottom:0;display:flex;flex-direction:column;padding:8px 20px 0">
+<div style="padding:6px 0 0">
+<div style="font:600 12px 'Space Grotesk';color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Good afternoon, Henry</div>
+<div style="font:700 27px Inter;color:var(--text);letter-spacing:-.02em;margin-top:5px;line-height:1.15">Everything's calm<br>at home.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;padding:14px 0 4px">
+<div style="position:relative;width:128px;height:128px;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 45%, color-mix(in srgb,var(--accent) 40%, transparent), transparent 68%);animation:scoutBreathe 4.5s ease-in-out infinite"></div>
+<div style="position:absolute;width:104px;height:104px;border-radius:50%;border:2px solid var(--line)"></div>
+<div style="position:relative;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 42% 36%, #16344f, #05121e 78%);box-shadow:inset 0 2px 8px rgba(0,0,0,.5)">
+<div style="position:absolute;inset:13px;border-radius:50%;border:6px solid var(--accent);box-shadow:0 0 16px color-mix(in srgb,var(--accent) 55%,transparent)"></div>
+<div style="position:absolute;inset:29px;border-radius:50%;background:#04121d"></div>
+<div style="position:absolute;top:24px;left:28px;width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(.5px)"></div>
+</div>
+</div>
+<div style="margin-top:14px;font:600 13px 'Space Grotesk';color:var(--muted)">SCOUT · on patrol · kitchen</div>
+</div>
+
+<div style="display:flex;gap:13px;background:var(--surf);border:1px solid var(--line);border-radius:22px;padding:13px;box-shadow:0 8px 24px color-mix(in srgb,var(--text) 7%,transparent);margin-top:4px">
+<div style="width:62px;height:62px;border-radius:16px;flex-shrink:0;position:relative;overflow:hidden;background:repeating-linear-gradient(135deg, var(--surf2), var(--surf2) 8px, var(--line) 8px, var(--line) 16px)">
+<div style="position:absolute;left:6px;bottom:5px;font:500 7px 'JetBrains Mono';color:var(--muted)">milo</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+<div style="font:700 16px Inter;color:var(--text)">Milo</div>
+<div style="font:500 12px 'Space Grotesk';color:var(--muted);margin-top:2px">On the couch · 2:15 PM</div>
+</div>
+<div style="align-self:center;display:flex;align-items:center;gap:6px;background:var(--primary);color:#fff;font:700 12px Inter;padding:9px 13px;border-radius:12px">
+<svg width="13" height="13" viewBox="0 0 14 14"><path d="M3 2h8a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H6l-3 2V3a1 1 0 0 1 1-1z" fill="#fff"/></svg>Talk
+</div>
+</div>
+
+<div style="display:flex;gap:9px;padding:15px 0 0">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--accent);color:var(--onAccent);font:700 13px Inter;padding:13px;border-radius:14px">
+<svg width="13" height="13" viewBox="0 0 16 16"><path d="M4 3l9 5-9 5z" fill="var(--onAccent)"/></svg>Patrol
+</div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 13px Inter;padding:13px;border-radius:14px">Find</div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 13px Inter;padding:13px;border-radius:14px">Live</div>
+</div>
+
+<div style="margin-top:14px;background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:15px 17px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:700 13px Inter;color:var(--text)">Patrol route</span>
+<span style="font:600 11px 'Space Grotesk';color:var(--positive)">2 of 3 done</span>
+</div>
+<div style="display:flex;align-items:center">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:24px;height:24px;border-radius:50%;background:var(--positive);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.5l2.5 2.5L10 3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<span style="font:600 10px Inter;color:var(--muted)">Kitchen</span>
+</div>
+<div style="flex:1;height:2px;background:var(--positive);margin:0 4px;margin-bottom:18px"></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:24px;height:24px;border-radius:50%;background:var(--positive);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.5l2.5 2.5L10 3" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<span style="font:600 10px Inter;color:var(--muted)">Living</span>
+</div>
+<div style="flex:1;height:2px;background:var(--line);margin:0 4px;margin-bottom:18px"></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--accent);box-sizing:border-box;background:color-mix(in srgb,var(--accent) 16%,transparent)"></div>
+<span style="font:600 10px Inter;color:var(--text)">Bedroom</span>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ DIRECTION C — TACTICAL MAP ============ -->
+<sc-if value="{{ isC }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;top:58px;bottom:0">
+<div style="position:absolute;top:6px;left:16px;right:16px;z-index:6;display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--line);padding:8px 13px;border-radius:999px">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:scoutPulse 2.2s infinite"></span>
+<span style="font:600 12px Inter;color:var(--text)">Patrol 2 / 4</span>
+</div>
+<div style="background:var(--surf);border:1px solid var(--line);padding:8px 13px;border-radius:999px;font:600 12px 'Space Grotesk';color:var(--muted)"><span style="color:var(--text)">78%</span> · Living Room</div>
+</div>
+
+<!-- map -->
+<div style="position:absolute;left:16px;right:16px;top:50px;bottom:150px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:var(--surf);background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);background-size:34px 34px">
+<div style="position:absolute;left:22px;top:24px;width:120px;height:96px;border-radius:10px;border:1.5px solid var(--line);background:var(--surf2);display:flex;align-items:flex-end;padding:8px"><span style="font:500 9px 'JetBrains Mono';color:var(--muted);letter-spacing:.1em">KITCHEN</span></div>
+<div style="position:absolute;right:20px;top:24px;width:118px;height:140px;border-radius:10px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);display:flex;align-items:flex-end;padding:8px"><span style="font:500 9px 'JetBrains Mono';color:var(--text);letter-spacing:.1em">LIVING</span></div>
+<div style="position:absolute;left:22px;bottom:24px;width:96px;height:120px;border-radius:10px;border:1.5px solid var(--line);background:var(--surf2);display:flex;align-items:flex-end;padding:8px"><span style="font:500 9px 'JetBrains Mono';color:var(--muted);letter-spacing:.1em">BEDROOM</span></div>
+<div style="position:absolute;left:130px;bottom:30px;width:70px;height:88px;border-radius:10px;border:1.5px solid var(--line);background:var(--surf2);display:flex;align-items:flex-end;padding:7px"><span style="font:500 8px 'JetBrains Mono';color:var(--muted);letter-spacing:.08em">HALL</span></div>
+
+<svg width="100%" height="100%" viewBox="0 0 330 420" preserveAspectRatio="none" style="position:absolute;inset:0">
+<polyline points="70,120 165,150 250,90 165,300 70,330" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="3 7" stroke-linecap="round" opacity=".75"/>
+</svg>
+<!-- checkpoints -->
+<div style="position:absolute;left:62px;top:112px;width:12px;height:12px;border-radius:50%;background:var(--positive);border:2px solid var(--screenBg)"></div>
+<div style="position:absolute;left:242px;top:82px;width:12px;height:12px;border-radius:50%;background:var(--positive);border:2px solid var(--screenBg)"></div>
+<!-- robot position -->
+<div style="position:absolute;left:155px;top:140px;width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--screenBg);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 28%,transparent);animation:scoutPulse 2s infinite;--pulseCol:color-mix(in srgb,var(--accent) 40%,transparent)"></div>
+<div style="position:absolute;left:12px;top:12px;font:500 9px 'JetBrains Mono';color:var(--muted);opacity:.7;letter-spacing:.1em">[ home map · live position ]</div>
+</div>
+
+<!-- floating actions -->
+<div style="position:absolute;left:16px;right:16px;bottom:158px;display:flex;gap:10px;z-index:7">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--onAccent);font:700 14px Inter;padding:14px;border-radius:15px;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)">
+<svg width="14" height="14" viewBox="0 0 16 16"><path d="M4 3l9 5-9 5z" fill="var(--onAccent)"/></svg>Start Patrol
+</div>
+<div style="display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--line);color:var(--text);font:700 14px Inter;padding:14px 18px;border-radius:15px">Find</div>
+</div>
+
+<!-- peeking drawer -->
+<div style="position:absolute;left:0;right:0;bottom:0;height:148px;background:var(--surf);border-top:1px solid var(--line);border-radius:26px 26px 0 0;box-shadow:0 -12px 34px rgba(0,0,0,.32);z-index:8;padding:10px 18px 0">
+<div style="width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+<span style="font:700 14px Inter;color:var(--text)">Activity</span>
+<span style="font:600 10px 'Space Grotesk';color:var(--muted);letter-spacing:.06em">SWIPE UP ↑</span>
+</div>
+<div style="display:flex;align-items:center;gap:11px;padding:7px 0;border-top:1px solid var(--line)">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--positive)"></span>
+<span style="flex:1;font:600 13px Inter;color:var(--text)">Milo spotted · living room</span>
+<span style="font:600 11px 'Space Grotesk';color:var(--muted)">2:15</span>
+</div>
+<div style="display:flex;align-items:center;gap:11px;padding:7px 0;border-top:1px solid var(--line)">
+<span style="width:8px;height:8px;border-radius:50%;background:var(--alert)"></span>
+<span style="flex:1;font:600 13px Inter;color:var(--text)">Motion detected · hallway</span>
+<span style="font:700 11px 'Space Grotesk';color:var(--alert)">2:17</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ============ TAB BAR (A & B only) ============ -->
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;bottom:0;left:0;right:0;height:86px;display:flex;align-items:flex-start;justify-content:space-around;padding:11px 6px 0;background:color-mix(in srgb,var(--screenBg) 85%, transparent);backdrop-filter:blur(18px);border-top:1px solid var(--line);z-index:15">
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:58px">
+<svg width="22" height="22" viewBox="0 0 22 22"><path d="M3 10.5L11 4l8 6.5V18a1 1 0 0 1-1 1h-4v-5h-6v5H4a1 1 0 0 1-1-1z" fill="color-mix(in srgb,var(--accent) 20%,transparent)" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+<span style="font:600 10px Inter;color:var(--accent)">Home</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:58px">
+<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7.5" fill="none" stroke="var(--muted)" stroke-width="1.6"/><circle cx="11" cy="11" r="3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><circle cx="11" cy="11" r="1.1" fill="var(--muted)"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Find</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:58px">
+<svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 4L19 18H3z" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-linejoin="round"/><line x1="11" y1="9" x2="11" y2="13" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="15.5" r="1" fill="var(--muted)"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Alerts</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:58px">
+<svg width="22" height="22" viewBox="0 0 22 22"><rect x="4" y="7" width="14" height="11" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><line x1="11" y1="4" x2="11" y2="7" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="12.5" r="1.3" fill="var(--muted)"/><circle cx="13.5" cy="12.5" r="1.3" fill="var(--muted)"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Robot</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;width:58px">
+<svg width="22" height="22" viewBox="0 0 22 22"><line x1="4" y1="7" x2="18" y2="7" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><line x1="4" y1="15" x2="18" y2="15" stroke="var(--muted)" stroke-width="1.6" stroke-linecap="round"/><circle cx="14" cy="7" r="2.4" fill="var(--screenBg)" stroke="var(--muted)" stroke-width="1.6"/><circle cx="8" cy="15" r="2.4" fill="var(--screenBg)" stroke="var(--muted)" stroke-width="1.6"/></svg>
+<span style="font:600 10px Inter;color:var(--muted)">Settings</span>
+</div>
+</div>
+</sc-if>
+
+<!-- home indicator -->
+<div style="position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:128px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--text) 32%,transparent);z-index:40"></div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:402,&quot;height&quot;:874},&quot;direction&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;],&quot;default&quot;:&quot;a&quot;,&quot;tsType&quot;:&quot;'a'|'b'|'c'&quot;},&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;guardian&quot;,&quot;steel&quot;],&quot;default&quot;:&quot;guardian&quot;,&quot;tsType&quot;:&quot;'guardian'|'steel'&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const P = {
+      guardian: {
+        dark: {
+          screenBg:'#0C1826', surf:'#13283D', surf2:'#1B3A57', line:'rgba(255,255,255,0.10)',
+          text:'#EAF1F8', muted:'rgba(234,241,248,0.55)', primary:'#4A90D9', accent:'#F5A623',
+          onAccent:'#1A1206', positive:'#46C08A', alert:'#E5544B', pulse:'rgba(245,166,35,0.45)'
+        },
+        light: {
+          screenBg:'#EEF3F8', surf:'#FFFFFF', surf2:'#F4F7FB', line:'rgba(26,58,92,0.12)',
+          text:'#16314C', muted:'rgba(22,49,76,0.55)', primary:'#1A3A5C', accent:'#F5A623',
+          onAccent:'#1A1206', positive:'#2FA36B', alert:'#E5544B', pulse:'rgba(245,166,35,0.45)'
+        }
+      },
+      steel: {
+        dark: {
+          screenBg:'#101216', surf:'#181B21', surf2:'#22262E', line:'rgba(255,255,255,0.09)',
+          text:'#ECEEF1', muted:'rgba(236,238,241,0.52)', primary:'#00C853', accent:'#FFAB00',
+          onAccent:'#141414', positive:'#00C853', alert:'#E5544B', pulse:'rgba(255,171,0,0.45)'
+        },
+        light: {
+          screenBg:'#F1F2F4', surf:'#FFFFFF', surf2:'#F6F7F8', line:'rgba(28,31,38,0.12)',
+          text:'#1C1F26', muted:'rgba(28,31,38,0.55)', primary:'#1C1F26', accent:'#FFAB00',
+          onAccent:'#141414', positive:'#00A844', alert:'#D8443C', pulse:'rgba(255,171,0,0.45)'
+        }
+      }
+    };
+    const dir = this.props.direction || 'a';
+    const pal = this.props.palette || 'guardian';
+    const theme = dir === 'b' ? 'light' : 'dark';
+    const c = (P[pal] || P.guardian)[theme];
+    return {
+      c,
+      isA: dir === 'a', isB: dir === 'b', isC: dir === 'c',
+      showTabs: dir === 'a' || dir === 'b'
+    };
+  }
+}
+</script>
+</body>
+</html>

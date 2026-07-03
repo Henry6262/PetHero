@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@keyframes cmdSweep { to { transform: rotate(360deg) } }
+@keyframes cmdRing { 0% { box-shadow:0 0 0 0 rgba(255,171,0,.5) } 70% { box-shadow:0 0 0 10px rgba(255,171,0,0) } 100% { box-shadow:0 0 0 0 rgba(255,171,0,0) } }
+@keyframes cmdBlip { 0%,100% { transform:rotate(45deg) scale(1); opacity:.85 } 50% { transform:rotate(45deg) scale(1.25); opacity:1 } }
+@keyframes cmdDash { to { stroke-dashoffset:-12 } }
+@keyframes cmdDrone { 0% { transform:translate(0,0) } 25% { transform:translate(14px,-8px) } 50% { transform:translate(4px,-16px) } 75% { transform:translate(-10px,-6px) } 100% { transform:translate(0,0) } }
+@keyframes cmdRec { 0%,100% { opacity:1 } 50% { opacity:.25 } }
+@keyframes cmdScan { 0% { transform:translateY(-2px);opacity:0 } 14% { opacity:.9 } 86% { opacity:.9 } 100% { transform:translateY(150px);opacity:0 } }
+@keyframes cmdPulseDot { 0%,100% { opacity:.5;transform:scale(1) } 50% { opacity:1;transform:scale(1.3) } }
+@keyframes cmdPedA { 0% { left:25% } 100% { left:43% } }
+@keyframes cmdPedB { 0% { left:67% } 100% { left:49% } }
+@keyframes cmdPatrol { 0% { left:47.2%;top:62% } 55% { left:47.2%;top:45% } 100% { left:55%;top:34% } }
+@keyframes cmdRobotMove { 0% { top:30% } 100% { top:63% } }
+</style>
+</helmet>
+
+<div style="position:relative;width:1512px;height:944px;background:#0B0C0F;color:#ECEEF1;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;--bg:#0B0C0F;--panel:#101216;--surf:#16191F;--surf2:#1E222A;--line:rgba(255,255,255,0.08);--hair:rgba(255,255,255,0.05);--text:#ECEEF1;--muted:rgba(236,238,241,0.55);--faint:rgba(236,238,241,0.32);--amber:#FFAB00;--blue:#3D8BFF;--red:#FF4D4D;--green:#2FB873;--cyan:#18C0CE">
+
+<!-- ===================== TOP COMMAND BAR ===================== -->
+<div style="position:absolute;top:0;left:0;right:0;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:#0D0F13;border-bottom:1px solid var(--line);z-index:40">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="display:flex;align-items:center;gap:11px">
+<div style="width:30px;height:30px;position:relative;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 30 30"><path d="M15 2l11 6.5v13L15 28 4 21.5v-13z" fill="none" stroke="#FFAB00" stroke-width="1.6" stroke-linejoin="round"/><circle cx="15" cy="15" r="3.4" fill="#FFAB00"/></svg></div>
+<div style="display:flex;flex-direction:column;line-height:1"><span style="font:800 16px Inter;letter-spacing:.18em;color:#ECEEF1">SCOUT</span><span style="font:600 8px 'Space Grotesk';letter-spacing:.26em;color:rgba(236,238,241,0.55);margin-top:3px">COMMAND</span></div>
+</div>
+<div style="width:1px;height:30px;background:var(--line)"></div>
+<div style="display:flex;flex-direction:column;line-height:1.1"><span style="font:700 14px Inter;color:#ECEEF1;letter-spacing:.02em">OPERATION IRONHAND</span><span style="font:600 10px 'Space Grotesk';color:var(--amber);letter-spacing:.12em;margin-top:3px">PHASE 2 · ENTRY</span></div>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;padding:7px 16px;background:#0B0C0F;border:1px solid var(--line);border-radius:11px">
+<span style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:cmdRec 1.4s infinite"></span>
+<span style="font:700 11px 'Space Grotesk';color:var(--muted);letter-spacing:.18em">LIVE</span>
+<span style="font:700 19px 'JetBrains Mono';color:#ECEEF1;letter-spacing:.04em">T+ {{ clock }}</span>
+</div>
+
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 13px;background:rgba(255,171,0,0.1);border:1px solid color-mix(in srgb,var(--amber) 36%,transparent);border-radius:10px"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 1.5l6.5 11.5h-13z" fill="none" stroke="#FFAB00" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v3.4M8 11v.3" stroke="#FFAB00" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font:700 11px 'Space Grotesk';color:var(--amber);letter-spacing:.08em">THREAT · ELEVATED</span></div>
+<div style="display:flex;align-items:center;gap:7px;padding:8px 13px;background:var(--surf);border:1px solid var(--line);border-radius:10px"><svg width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2" fill="#18C0CE"/><circle cx="8" cy="8" r="5.5" fill="none" stroke="#18C0CE" stroke-width="1.2" opacity=".6"/></svg><span style="font:700 11px 'Space Grotesk';color:var(--text);letter-spacing:.06em">MESH · 12 NODES</span></div>
+<div style="display:flex;align-items:center;gap:7px;padding:8px 13px;background:var(--surf);border:1px solid var(--line);border-radius:10px"><span style="font:700 11px 'Space Grotesk';color:var(--text);letter-spacing:.06em">5 UGV · 5 PAX</span></div>
+<div style="width:38px;height:38px;border-radius:10px;background:var(--surf);border:1px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 18 18"><path d="M9 2a3 3 0 0 0-3 3v3.5L4.5 12h9L12 8.5V5a3 3 0 0 0-3-3z" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linejoin="round"/><path d="M7.2 14a1.8 1.8 0 0 0 3.6 0" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg></div>
+<div style="display:flex;align-items:center;gap:9px;padding:5px 7px 5px 11px;background:var(--surf);border:1px solid var(--line);border-radius:10px"><div style="text-align:right;line-height:1.1"><div style="font:700 11px Inter;color:var(--text)">CMD · OP-9001</div><div style="font:600 9px 'Space Grotesk';color:var(--muted);margin-top:2px">Maj. Halden</div></div><div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#2A2F38,#161A20);display:flex;align-items:center;justify-content:center;font:800 12px Inter;color:var(--amber)">H</div></div>
+</div>
+</div>
+
+<!-- ===================== BODY ===================== -->
+<div style="position:absolute;top:62px;left:0;right:0;bottom:0;display:flex">
+
+<!-- ============ LEFT RAIL · ROSTER ============ -->
+<div style="width:288px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px"><span style="font:800 13px Inter;letter-spacing:.14em;color:var(--text)">UNITS</span><span style="font:600 10px 'Space Grotesk';color:var(--muted);letter-spacing:.08em">10 ACTIVE</span></div>
+<div style="flex:1;overflow-y:auto;padding:0 12px 16px">
+
+<div style="font:700 10px 'Space Grotesk';color:var(--faint);letter-spacing:.14em;padding:8px 6px 8px">GROUND ROBOTS · ARES-4</div>
+<sc-for list="{{ rosterRobots }}" as="u" hint-placeholder-count="5">
+<div onClick="{{ u.select }}" style="display:flex;align-items:center;gap:11px;padding:11px 11px;border-radius:12px;cursor:pointer;margin-bottom:5px;background:{{ u.rowBg }};border:1px solid {{ u.rowBorder }}">
+<div style="width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,{{ u.tint }} 16%,transparent);border:1.4px solid color-mix(in srgb,{{ u.tint }} 60%,transparent);font:800 11px Inter;color:{{ u.tint }}">{{ u.code }}</div>
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><span style="font:700 13px Inter;color:var(--text)">{{ u.name }}</span></div><div style="font:500 10.5px Inter;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.role }}</div></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><span style="width:7px;height:7px;border-radius:50%;background:{{ u.statusColor }}"></span><span style="font:600 10px 'JetBrains Mono';color:var(--muted)">{{ u.metric }}</span></div>
+</div>
+</sc-for>
+
+<div style="font:700 10px 'Space Grotesk';color:var(--faint);letter-spacing:.14em;padding:14px 6px 8px">DISMOUNTS · 2 FIRETEAMS</div>
+<sc-for list="{{ rosterSoldiers }}" as="u" hint-placeholder-count="5">
+<div onClick="{{ u.select }}" style="display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:12px;cursor:pointer;margin-bottom:5px;background:{{ u.rowBg }};border:1px solid {{ u.rowBorder }}">
+<div style="width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--blue) 16%,transparent);border:1.4px solid color-mix(in srgb,var(--blue) 60%,transparent);font:800 10px Inter;color:var(--blue)">{{ u.code }}</div>
+<div style="flex:1;min-width:0"><span style="font:700 13px Inter;color:var(--text)">{{ u.name }}</span><div style="font:500 10.5px Inter;color:var(--muted);margin-top:1px">{{ u.role }}</div></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><span style="width:7px;height:7px;border-radius:50%;background:{{ u.statusColor }}"></span><span style="font:600 10px 'JetBrains Mono';color:var(--muted)">{{ u.metric }}</span></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<!-- ============ CENTER · TACTICAL MAP ============ -->
+<div style="flex:1;position:relative;overflow:hidden;background:#0C0E12;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:46px 46px">
+<div style="position:absolute;inset:0;background:radial-gradient(80% 70% at 50% 42%, transparent 40%, rgba(0,0,0,0.45))"></div>
+
+<!-- radar sweep -->
+<div style="position:absolute;left:54%;top:44%;width:760px;height:760px;transform:translate(-50%,-50%);border-radius:50%;background:conic-gradient(from 0deg, rgba(24,192,206,0.10), transparent 32%);animation:cmdSweep 9s linear infinite;pointer-events:none"></div>
+<div style="position:absolute;left:54%;top:44%;width:520px;height:520px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(255,255,255,0.05);pointer-events:none"></div>
+<div style="position:absolute;left:54%;top:44%;width:760px;height:760px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(255,255,255,0.04);pointer-events:none"></div>
+
+<!-- STREET GRID -->
+<div style="position:absolute;inset:0;pointer-events:none">
+<div style="position:absolute;left:0;right:0;top:19.5%;height:3%;background:#171b22;border-top:1px solid rgba(255,255,255,0.045);border-bottom:1px solid rgba(255,255,255,0.045)"><div style="position:absolute;top:50%;left:0;right:0;border-top:1.4px dashed rgba(255,206,120,0.15)"></div></div>
+<div style="position:absolute;left:0;right:0;top:44.5%;height:3%;background:#171b22;border-top:1px solid rgba(255,255,255,0.045);border-bottom:1px solid rgba(255,255,255,0.045)"><div style="position:absolute;top:50%;left:0;right:0;border-top:1.4px dashed rgba(255,206,120,0.15)"></div></div>
+<div style="position:absolute;left:0;right:0;top:69%;height:3%;background:#171b22;border-top:1px solid rgba(255,255,255,0.045);border-bottom:1px solid rgba(255,255,255,0.045)"><div style="position:absolute;top:50%;left:0;right:0;border-top:1.4px dashed rgba(255,206,120,0.15)"></div></div>
+<div style="position:absolute;top:0;bottom:0;left:21.5%;width:2.5%;background:#171b22;border-left:1px solid rgba(255,255,255,0.045);border-right:1px solid rgba(255,255,255,0.045)"><div style="position:absolute;left:50%;top:0;bottom:0;border-left:1.4px dashed rgba(255,206,120,0.15)"></div></div>
+<div style="position:absolute;top:0;bottom:0;left:46%;width:2.5%;background:#171b22;border-left:1px solid rgba(255,255,255,0.045);border-right:1px solid rgba(255,255,255,0.045)"><div style="position:absolute;left:50%;top:0;bottom:0;border-left:1.4px dashed rgba(255,206,120,0.15)"></div></div>
+<div style="position:absolute;top:0;bottom:0;left:69.5%;width:2.5%;background:#171b22;border-left:1px solid rgba(255,255,255,0.045);border-right:1px solid rgba(255,255,255,0.045)"><div style="position:absolute;left:50%;top:0;bottom:0;border-left:1.4px dashed rgba(255,206,120,0.15)"></div></div>
+<div style="position:absolute;top:18%;left:30%;font:600 8.5px 'JetBrains Mono';color:rgba(236,238,241,0.28);letter-spacing:.22em">VICTOR AVE</div>
+<div style="position:absolute;top:43%;left:52%;font:600 8.5px 'JetBrains Mono';color:rgba(236,238,241,0.28);letter-spacing:.22em">MERIDIAN ST</div>
+<div style="position:absolute;top:25%;left:20.1%;transform:rotate(-90deg);transform-origin:left top;font:600 8.5px 'JetBrains Mono';color:rgba(236,238,241,0.28);letter-spacing:.22em">RTE 4</div>
+</div>
+
+<!-- BLOCK FOOTPRINTS -->
+<sc-for list="{{ genericBlocks }}" as="g" hint-placeholder-count="9">
+<div style="position:absolute;{{ g.box }};border-radius:6px;background:#13161c;border:1px solid rgba(255,255,255,0.04)"></div>
+</sc-for>
+
+<!-- PARK (terrain) -->
+<div style="position:absolute;left:26%;top:50%;width:16%;height:17%;border-radius:8px;border:1.4px solid color-mix(in srgb,#2FB873 24%,transparent);background:color-mix(in srgb,#2FB873 7%,transparent);overflow:hidden">
+<div style="position:absolute;left:20%;top:28%;width:10px;height:10px;border-radius:50%;background:color-mix(in srgb,#2FB873 38%,transparent)"></div>
+<div style="position:absolute;left:62%;top:22%;width:13px;height:13px;border-radius:50%;background:color-mix(in srgb,#2FB873 34%,transparent)"></div>
+<div style="position:absolute;left:40%;top:58%;width:11px;height:11px;border-radius:50%;background:color-mix(in srgb,#2FB873 32%,transparent)"></div>
+<div style="position:absolute;left:76%;top:64%;width:9px;height:9px;border-radius:50%;background:color-mix(in srgb,#2FB873 36%,transparent)"></div>
+<div style="position:absolute;bottom:8px;left:9px;font:700 8.5px 'Space Grotesk';color:color-mix(in srgb,#2FB873 80%,#ECEEF1);letter-spacing:.1em">PARK</div>
+</div>
+
+<!-- BUILDINGS / ZONES -->
+<sc-for list="{{ buildings }}" as="b" hint-placeholder-count="7">
+<div onClick="{{ b.select }}" style="position:absolute;{{ b.box }};border-radius:8px;border:1.5px solid {{ b.border }};background:{{ b.fill }};cursor:pointer;overflow:hidden">
+<div style="position:absolute;inset:0;background:{{ b.hatch }};opacity:.5"></div>
+<div style="position:absolute;top:8px;left:9px;font:700 10px 'Space Grotesk';color:{{ b.labelColor }};letter-spacing:.1em">{{ b.name }}</div>
+<div style="position:absolute;bottom:8px;left:9px;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:{{ b.stateColor }}"></span><span style="font:700 8.5px 'Space Grotesk';color:{{ b.stateColor }};letter-spacing:.1em">{{ b.stateLabel }}</span></div>
+<sc-if value="{{ b.objective }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px"><svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="13" fill="none" stroke="#FFAB00" stroke-width="1.4" stroke-dasharray="3 3"/><circle cx="17" cy="17" r="4" fill="#FFAB00"/></svg></div></sc-if>
+</div>
+</sc-for>
+
+<!-- ROUTES (SVG overlay) -->
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:{{ routeLayerOpacity }}">
+<polyline points="{{ routePoints }}" fill="none" stroke="{{ routeColor }}" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 1.4" stroke-opacity="{{ routeOpacity }}" style="animation:{{ routeAnim }}"></polyline>
+</svg>
+
+<!-- CIVILIANS -->
+<div style="position:absolute;inset:0;opacity:{{ civLayerOpacity }};pointer-events:{{ civLayerPe }}">
+<sc-for list="{{ civUnits }}" as="u" hint-placeholder-count="1">
+<div style="position:absolute;{{ u.pos }};transform:translate(-50%,-50%)"><div style="width:15px;height:15px;border-radius:50%;background:color-mix(in srgb,var(--green) 30%,transparent);border:1.6px solid var(--green);display:flex;align-items:center;justify-content:center;font:800 7px Inter;color:var(--green)">C</div></div>
+</sc-for>
+</div>
+
+<!-- HOSTILES -->
+<div style="position:absolute;inset:0;opacity:{{ threatLayerOpacity }};pointer-events:{{ threatLayerPe }}">
+<sc-for list="{{ hostileUnits }}" as="u" hint-placeholder-count="3">
+<div style="position:absolute;{{ u.pos }};transform:translate(-50%,-50%);z-index:6"><div style="width:16px;height:16px;background:color-mix(in srgb,var(--red) 32%,transparent);border:1.7px solid var(--red);animation:cmdBlip 1.8s infinite"></div><div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 8px 'Space Grotesk';color:var(--red);letter-spacing:.06em">{{ u.label }}</div></div>
+</sc-for>
+</div>
+
+<!-- DRONE (from KITE) -->
+<div style="position:absolute;left:60%;top:33%;transform:translate(-50%,-50%);z-index:7;pointer-events:none;opacity:{{ droneLayerOpacity }}"><div style="animation:cmdDrone 7s ease-in-out infinite"><div style="width:16px;height:16px;border-radius:50%;background:color-mix(in srgb,var(--cyan) 28%,transparent);border:1.6px solid var(--cyan);display:flex;align-items:center;justify-content:center"><svg width="9" height="9" viewBox="0 0 10 10"><circle cx="2" cy="2" r="1.5" fill="#18C0CE"/><circle cx="8" cy="2" r="1.5" fill="#18C0CE"/><circle cx="2" cy="8" r="1.5" fill="#18C0CE"/><circle cx="8" cy="8" r="1.5" fill="#18C0CE"/></svg></div><div style="position:absolute;top:19px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 8px 'Space Grotesk';color:var(--cyan);letter-spacing:.06em">UAV-1</div></div></div>
+
+<!-- SOLDIERS -->
+<sc-for list="{{ soldierUnits }}" as="u" hint-placeholder-count="5">
+<div onClick="{{ u.select }}" style="position:absolute;{{ u.pos }};transform:translate(-50%,-50%);cursor:pointer;z-index:{{ u.z }}">
+<sc-if value="{{ u.sel }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--amber);animation:cmdRing 1.8s infinite"></div></sc-if>
+<div style="width:17px;height:17px;border-radius:50%;background:color-mix(in srgb,var(--blue) 32%,#0E1014);border:1.7px solid var(--blue);display:flex;align-items:center;justify-content:center;font:800 7px Inter;color:#dCEBFF">{{ u.code }}</div>
+<div style="position:absolute;top:21px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 8px 'Space Grotesk';color:#cfe0ff;letter-spacing:.05em;background:rgba(0,0,0,0.45);padding:1px 4px;border-radius:3px">{{ u.name }}</div>
+</div>
+</sc-for>
+
+<!-- ROBOTS -->
+<sc-for list="{{ robotUnits }}" as="u" hint-placeholder-count="5">
+<div onClick="{{ u.select }}" style="position:absolute;{{ u.pos }};transform:translate(-50%,-50%);cursor:pointer;z-index:{{ u.z }}">
+<sc-if value="{{ u.sel }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:-7px;border-radius:11px;border:2px solid var(--amber);animation:cmdRing 1.8s infinite"></div></sc-if>
+<div style="width:25px;height:25px;border-radius:7px;background:color-mix(in srgb,var(--blue) 26%,#0E1014);border:1.7px solid var(--blue);display:flex;align-items:center;justify-content:center;font:800 11px Inter;color:#dCEBFF">{{ u.code }}</div>
+<div style="position:absolute;top:28px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 8px 'Space Grotesk';color:#cfe0ff;letter-spacing:.05em;background:rgba(0,0,0,0.45);padding:1px 4px;border-radius:3px">{{ u.name }}</div>
+</div>
+</sc-for>
+
+<!-- AMBIENT MOVEMENT -->
+<div style="position:absolute;inset:0;pointer-events:none;z-index:4">
+<div style="position:absolute;left:25%;top:21%;transform:translate(-50%,-50%);animation:cmdPedA 13s ease-in-out infinite alternate"><svg width="12" height="12" viewBox="0 0 13 13"><circle cx="6.5" cy="3.4" r="2.1" fill="#2FB873"/><path d="M2.6 12c0-2.4 1.7-4 3.9-4s3.9 1.6 3.9 4z" fill="#2FB873"/></svg></div>
+<div style="position:absolute;left:67%;top:46.5%;transform:translate(-50%,-50%);animation:cmdPedB 17s ease-in-out infinite alternate"><svg width="12" height="12" viewBox="0 0 13 13"><circle cx="6.5" cy="3.4" r="2.1" fill="#2FB873"/><path d="M2.6 12c0-2.4 1.7-4 3.9-4s3.9 1.6 3.9 4z" fill="#2FB873"/></svg></div>
+<div style="position:absolute;left:33%;top:69%;transform:translate(-50%,-50%);animation:cmdPedA 15s ease-in-out infinite alternate-reverse"><svg width="12" height="12" viewBox="0 0 13 13"><circle cx="6.5" cy="3.4" r="2.1" fill="#2FB873"/><path d="M2.6 12c0-2.4 1.7-4 3.9-4s3.9 1.6 3.9 4z" fill="#2FB873"/></svg></div>
+<div style="position:absolute;left:47.2%;top:62%;transform:translate(-50%,-50%);animation:cmdPatrol 14s ease-in-out infinite alternate"><svg width="14" height="14" viewBox="0 0 13 13"><circle cx="6.5" cy="3.3" r="2.3" fill="#3D8BFF"/><path d="M2.3 12c0-2.5 1.9-4.2 4.2-4.2s4.2 1.7 4.2 4.2z" fill="#3D8BFF"/></svg></div>
+<div style="position:absolute;left:22.7%;top:30%;transform:translate(-50%,-50%);animation:cmdRobotMove 19s ease-in-out infinite alternate"><div style="width:15px;height:15px;border-radius:5px;background:color-mix(in srgb,#18C0CE 24%,#0E1014);border:1.4px solid #18C0CE;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:2px;height:2px;border-radius:50%;background:#18C0CE"></span><span style="width:2px;height:2px;border-radius:50%;background:#18C0CE"></span></div></div>
+</div>
+
+<!-- MAP TOOLBAR (top-left) -->
+<div style="position:absolute;top:16px;left:16px;display:flex;flex-direction:column;gap:9px;z-index:20">
+<div style="display:flex;gap:5px;background:rgba(13,15,19,0.86);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:11px;padding:5px">
+<sc-for list="{{ tools }}" as="t" hint-placeholder-count="5">
+<div onClick="{{ t.onClick }}" title="{{ t.name }}" style="width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ t.bg }};color:{{ t.col }}" data-om-raster>{{ t.icon }}</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:5px;max-width:230px">
+<sc-for list="{{ layers }}" as="l" hint-placeholder-count="5">
+<div onClick="{{ l.onClick }}" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;cursor:pointer;background:{{ l.bg }};border:1px solid {{ l.border }}"><span style="width:7px;height:7px;border-radius:2px;background:{{ l.dot }}"></span><span style="font:700 10px 'Space Grotesk';color:{{ l.col }};letter-spacing:.04em">{{ l.name }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<!-- MAP CHROME labels -->
+<div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);font:600 10px 'JetBrains Mono';color:var(--faint);letter-spacing:.1em;z-index:10">SECTOR 7 · GRID 4471·2208</div>
+
+<!-- ALERTS STACK (top-right) -->
+<div style="position:absolute;top:16px;right:16px;width:248px;display:flex;flex-direction:column;gap:8px;z-index:20">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px 2px"><span style="font:800 11px Inter;letter-spacing:.1em;color:var(--text)">TACTICAL FEED</span><span style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:cmdRec 1.4s infinite"></span></div>
+<sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+<div onClick="{{ a.onClick }}" style="display:flex;align-items:flex-start;gap:10px;padding:11px 12px;background:rgba(13,15,19,0.9);backdrop-filter:blur(8px);border:1px solid {{ a.border }};border-radius:11px;cursor:pointer">
+<span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;background:{{ a.color }};{{ a.glow }}"></span>
+<div style="flex:1;min-width:0"><div style="font:700 12px Inter;color:var(--text)">{{ a.text }}</div><div style="font:500 10.5px Inter;color:var(--muted);margin-top:1px">{{ a.sub }}</div></div>
+<span style="font:600 9px 'JetBrains Mono';color:var(--faint);flex-shrink:0">{{ a.ts }}</span>
+</div>
+</sc-for>
+</div>
+
+<!-- LEGEND (bottom-left) -->
+<div style="position:absolute;bottom:16px;left:16px;display:flex;gap:16px;padding:11px 15px;background:rgba(13,15,19,0.86);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:11px;z-index:20">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="font:700 8.5px 'Space Grotesk';color:var(--faint);letter-spacing:.12em">LOCATIONS</div>
+<div style="display:flex;gap:13px">
+<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--blue)"></span><span style="font:600 10px Inter;color:var(--muted)">Secured</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--green)"></span><span style="font:600 10px Inter;color:var(--muted)">Cleared</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--amber)"></span><span style="font:600 10px Inter;color:var(--muted)">Clearing</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--red)"></span><span style="font:600 10px Inter;color:var(--muted)">Hostile</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--faint)"></span><span style="font:600 10px Inter;color:var(--muted)">Uncleared</span></div>
+</div>
+</div>
+<div style="width:1px;background:var(--line)"></div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="font:700 8.5px 'Space Grotesk';color:var(--faint);letter-spacing:.12em">UNITS</div>
+<div style="display:flex;gap:13px">
+<div style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:var(--blue)"></span><span style="font:600 10px Inter;color:var(--muted)">Friendly</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;background:var(--red);transform:rotate(45deg)"></span><span style="font:600 10px Inter;color:var(--muted)">Hostile</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:var(--green)"></span><span style="font:600 10px Inter;color:var(--muted)">Civilian</span></div>
+<div style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:var(--cyan)"></span><span style="font:600 10px Inter;color:var(--muted)">UAV</span></div>
+</div>
+</div>
+</div>
+
+<!-- HANDSET MIRROR (bottom-right) -->
+<div style="position:absolute;bottom:16px;right:16px;width:168px;z-index:25">
+<div style="font:700 9px 'Space Grotesk';color:var(--muted);letter-spacing:.12em;margin-bottom:7px;text-align:right">OPERATOR HANDSET · {{ handsetWho }}</div>
+<div style="width:168px;height:312px;border-radius:24px;background:#05070a;padding:7px;box-sizing:border-box;box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,0.06)">
+<div style="position:relative;width:100%;height:100%;border-radius:18px;overflow:hidden;background:var(--bg)">
+<div style="position:absolute;top:7px;left:50%;transform:translateX(-50%);width:44px;height:13px;border-radius:8px;background:#000;z-index:3"></div>
+<div style="position:absolute;top:0;left:0;right:0;height:30px;display:flex;align-items:center;justify-content:space-between;padding:11px 13px 0"><span style="font:700 9px Inter;color:var(--text)">9:41</span><span style="font:700 8px 'Space Grotesk';color:var(--muted)">MESH</span></div>
+<div style="position:absolute;top:34px;left:11px;right:11px;display:flex;align-items:center;gap:6px;background:{{ handsetBannerBg }};border:1px solid {{ handsetBannerBorder }};border-radius:9px;padding:7px 9px">
+<span style="width:6px;height:6px;border-radius:50%;background:{{ handsetBannerDot }};{{ handsetBannerAnim }}"></span><span style="font:700 9px 'Space Grotesk';color:{{ handsetBannerCol }};letter-spacing:.06em">{{ handsetBanner }}</span>
+</div>
+<div style="position:absolute;top:74px;left:11px;right:11px;bottom:11px;border-radius:12px;overflow:hidden;background:#0E1014;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:18px 18px">
+<div style="position:absolute;left:14%;top:18%;width:30%;height:22%;border-radius:4px;border:1px solid color-mix(in srgb,var(--amber) 50%,transparent);background:color-mix(in srgb,var(--amber) 12%,transparent)"></div>
+<div style="position:absolute;left:52%;top:54%;width:30%;height:24%;border-radius:4px;border:1px dashed color-mix(in srgb,var(--amber) 60%,transparent)"></div>
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><polyline points="32,40 40,52 58,66" fill="none" stroke="{{ routeColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4" stroke-opacity="{{ routeOpacity }}" style="animation:{{ routeAnim }}"></polyline></svg>
+<div style="position:absolute;left:32%;top:40%;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;background:var(--blue);border:2px solid #cfe0ff"></div>
+<div style="position:absolute;left:58%;top:66%;transform:translate(-50%,-50%)"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="6.5" fill="none" stroke="#FFAB00" stroke-width="1.3" stroke-dasharray="2.5 2.5"/><circle cx="9" cy="9" r="2" fill="#FFAB00"/></svg></div>
+<div style="position:absolute;left:8px;bottom:8px;font:700 8px 'Space Grotesk';color:{{ handsetMoveCol }};letter-spacing:.04em">{{ handsetMove }}</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ============ RIGHT RAIL · CONTEXT + ORDERS ============ -->
+<div onClick="{{ tabOpen }}" style="position:absolute;top:84px;right:0;z-index:29;display:{{ tabDisplay }};flex-direction:column;align-items:center;gap:8px;background:var(--surf);border:1px solid var(--line);border-right:none;border-radius:11px 0 0 11px;padding:14px 8px;cursor:pointer;box-shadow:-7px 0 18px rgba(0,0,0,0.32)"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M8 1L3 6l5 5" fill="none" stroke="var(--text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="writing-mode:vertical-rl;transform:rotate(180deg);font:700 9px 'Space Grotesk';letter-spacing:.18em;color:var(--text)">UNIT</span></div>
+<div style="position:absolute;top:0;right:0;bottom:0;width:362px;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;z-index:30;transform:translateX({{ sheetX }});transition:transform .34s cubic-bezier(.32,.72,0,1);box-shadow:-20px 0 44px rgba(0,0,0,0.45)">
+<div style="padding:18px 18px 16px">
+
+<!-- selected header -->
+<div style="display:flex;align-items:flex-start;gap:13px">
+<div style="width:46px;height:46px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,{{ selTint }} 18%,transparent);border:1.5px solid color-mix(in srgb,{{ selTint }} 55%,transparent);font:800 17px Inter;color:{{ selTint }}">{{ selCode }}</div>
+<div style="flex:1;min-width:0">
+<div style="font:800 20px Inter;color:var(--text);letter-spacing:-.01em">{{ selName }}</div>
+<div style="font:600 12px Inter;color:var(--muted);margin-top:2px">{{ selRole }}</div>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:5px 9px;border-radius:7px;background:color-mix(in srgb,{{ selKindColor }} 16%,transparent);flex-shrink:0"><span style="width:6px;height:6px;border-radius:50%;background:{{ selKindColor }}"></span><span style="font:700 9px 'Space Grotesk';color:{{ selKindColor }};letter-spacing:.08em">{{ selKind }}</span></div>
+<div onClick="{{ closePanel }}" style="width:30px;height:30px;border-radius:8px;background:var(--surf);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 13 13"><path d="M4 2l5 4.5L4 11" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</div>
+
+<!-- live feed -->
+<div style="margin-top:15px;height:174px;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line);background:repeating-linear-gradient(125deg,#16191F,#16191F 11px,#1A1E25 11px,#1A1E25 22px)">
+<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%, transparent 30%, rgba(0,0,0,0.5))"></div>
+<div style="position:absolute;left:9px;top:9px;width:15px;height:15px;border-left:2px solid {{ selTint }};border-top:2px solid {{ selTint }}"></div>
+<div style="position:absolute;right:9px;top:9px;width:15px;height:15px;border-right:2px solid {{ selTint }};border-top:2px solid {{ selTint }}"></div>
+<div style="position:absolute;left:9px;bottom:9px;width:15px;height:15px;border-left:2px solid {{ selTint }};border-bottom:2px solid {{ selTint }}"></div>
+<div style="position:absolute;right:9px;bottom:9px;width:15px;height:15px;border-right:2px solid {{ selTint }};border-bottom:2px solid {{ selTint }}"></div>
+<div style="position:absolute;left:8px;right:8px;top:18px;height:2px;background:linear-gradient(90deg,transparent,color-mix(in srgb,{{ selTint }} 70%,transparent),transparent);animation:cmdScan 3.2s ease-in-out infinite"></div>
+<div style="position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);padding:5px 9px;border-radius:7px"><span style="width:6px;height:6px;border-radius:50%;background:var(--red);animation:cmdRec 1.4s infinite"></span><span style="font:700 9px 'Space Grotesk';color:#fff;letter-spacing:.06em">REC</span></div>
+<div style="position:absolute;bottom:10px;left:11px;font:600 9.5px 'JetBrains Mono';color:#fff;opacity:.8;letter-spacing:.03em">{{ selFeed }}</div>
+</div>
+
+<!-- stat tiles -->
+<div style="display:flex;gap:9px;margin-top:13px">
+<div style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px"><div style="font:700 8.5px 'Space Grotesk';color:var(--muted);letter-spacing:.06em">{{ selStat1Label }}</div><div style="font:700 17px 'Space Grotesk';color:var(--text);margin-top:5px">{{ selStat1 }}</div></div>
+<div style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px"><div style="font:700 8.5px 'Space Grotesk';color:var(--muted);letter-spacing:.06em">{{ selStat2Label }}</div><div style="font:700 17px Inter;color:var(--text);margin-top:5px">{{ selStat2 }}</div></div>
+<div style="flex:1;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px"><div style="font:700 8.5px 'Space Grotesk';color:var(--muted);letter-spacing:.06em">ZONE</div><div style="font:700 13px Inter;color:var(--text);margin-top:5px">{{ selZone }}</div><div style="display:flex;align-items:center;gap:4px;margin-top:3px"><span style="width:5px;height:5px;border-radius:50%;background:{{ selZoneColor }}"></span><span style="font:700 8px 'Space Grotesk';color:{{ selZoneColor }};letter-spacing:.06em">{{ selZoneState }}</span></div></div>
+</div>
+
+<!-- loadout -->
+<div style="font:700 10px 'Space Grotesk';color:var(--faint);letter-spacing:.14em;padding:18px 2px 9px">PAYLOAD · LOADOUT</div>
+<div style="background:var(--surf);border:1px solid var(--line);border-radius:13px;overflow:hidden">
+<sc-for list="{{ selLoadout }}" as="g" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:11px;padding:11px 13px;border-top:{{ g.bt }}">
+<span style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:{{ selTint }}"></span>
+<span style="flex:1;font:600 12.5px Inter;color:var(--text)">{{ g.name }}</span>
+<span style="font:600 9px 'Space Grotesk';color:var(--muted);letter-spacing:.04em">{{ g.tag }}</span>
+</div>
+</sc-for>
+</div>
+
+<!-- orders -->
+<div style="font:700 10px 'Space Grotesk';color:var(--faint);letter-spacing:.14em;padding:18px 2px 9px">ORDERS</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<div onClick="{{ orderRoute }}" style="display:flex;align-items:center;gap:9px;padding:13px;border-radius:11px;cursor:pointer;background:{{ routeBtnBg }};border:1px solid {{ routeBtnBorder }}"><svg width="17" height="17" viewBox="0 0 18 18"><circle cx="4" cy="4.5" r="2" fill="none" stroke="{{ routeBtnCol }}" stroke-width="1.5"/><circle cx="14" cy="13.5" r="2" fill="none" stroke="{{ routeBtnCol }}" stroke-width="1.5"/><path d="M6 4.5h5a2.5 2.5 0 0 1 0 5H7a2.5 2.5 0 0 0 0 5h5" fill="none" stroke="{{ routeBtnCol }}" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font:700 12.5px Inter;color:{{ routeBtnCol }}">Route</span></div>
+<div onClick="{{ orderHold }}" style="display:flex;align-items:center;gap:9px;padding:13px;border-radius:11px;cursor:pointer;background:var(--surf);border:1px solid var(--line)"><svg width="17" height="17" viewBox="0 0 18 18"><rect x="4" y="3.5" width="3.4" height="11" rx="1" fill="none" stroke="var(--text)" stroke-width="1.5"/><rect x="10.6" y="3.5" width="3.4" height="11" rx="1" fill="none" stroke="var(--text)" stroke-width="1.5"/></svg><span style="font:700 12.5px Inter;color:var(--text)">Hold</span></div>
+<div onClick="{{ orderRecon }}" style="display:flex;align-items:center;gap:9px;padding:13px;border-radius:11px;cursor:pointer;background:var(--surf);border:1px solid var(--line)"><svg width="17" height="17" viewBox="0 0 18 18"><circle cx="9" cy="9" r="2" fill="var(--cyan)"/><circle cx="9" cy="9" r="5" fill="none" stroke="var(--cyan)" stroke-width="1.4" opacity=".7"/><circle cx="9" cy="9" r="7.6" fill="none" stroke="var(--cyan)" stroke-width="1.2" opacity=".35"/></svg><span style="font:700 12.5px Inter;color:var(--text)">Recon</span></div>
+<div onClick="{{ orderDanger }}" style="display:flex;align-items:center;gap:9px;padding:13px;border-radius:11px;cursor:pointer;background:var(--surf);border:1px solid var(--line)"><svg width="17" height="17" viewBox="0 0 18 18"><path d="M9 2l7 12.5H2z" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7v3.4M9 12v.3" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font:700 12.5px Inter;color:var(--text)">Danger</span></div>
+</div>
+
+<div onClick="{{ pushHandset }}" style="display:flex;align-items:center;justify-content:center;gap:10px;background:{{ pushBg }};color:{{ pushCol }};font:700 14px Inter;padding:16px;border-radius:13px;cursor:pointer;margin-top:11px">
+<div data-om-raster style="width:17px;height:17px;display:flex">{{ pushIcon }}</div>{{ pushLabel }}
+</div>
+<sc-if value="{{ pushed }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ recall }}" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:9px;font:700 12px Inter;color:var(--muted);cursor:pointer">Recall order</div>
+</sc-if>
+<div style="text-align:center;font:500 10px 'JetBrains Mono';color:var(--faint);letter-spacing:.03em;margin-top:13px">shared context · pushed over mesh · no cloud</div>
+
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1512,&quot;height&quot;:944}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { selected: 'ARES-1', tool: 'select', pushed: false, t: 6 * 3600 + 14 * 60 + 22, panelOpen: false,
+      layUnits: true, layThreats: true, layRoutes: true, layCiv: true, layDrone: true };
+    this.BLUE = '#3D8BFF'; this.RED = '#FF4D4D'; this.GREEN = '#2FB873'; this.AMBER = '#FFAB00'; this.CYAN = '#18C0CE';
+    this._units = [
+      { id:'ARES-1', kind:'robot', code:'P', name:'ARES-1 · OVERWATCH', role:'Patrol & Overwatch', tint:this.AMBER, x:58, y:29, battery:78, posture:'Overwatch', zone:'Block C', zoneState:'CLEARING', zoneColor:this.AMBER, feed:'ARES-1 · FWD THERMAL · 30fps',
+        loadout:[{name:'Rotary cannon',tag:'KINETIC'},{name:'Flashbang / grenade pods',tag:'BREACH'},{name:'360° LiDAR + thermal',tag:'SENSE'},{name:'Rear recovery winch',tag:'UTIL'}] },
+      { id:'ARES-2', kind:'robot', code:'M', name:'ARES-2 · ANGEL', role:'Medevac & Recovery', tint:this.GREEN, x:30, y:10, battery:64, posture:'Recovering', zone:'Courtyard', zoneState:'CLEARED', zoneColor:this.GREEN, feed:'ARES-2 · CASUALTY CAM',
+        loadout:[{name:'Hydraulic manipulator arm',tag:'LIFT'},{name:'High-tensile tow winch',tag:'TOW'},{name:'UWB life-sign radar',tag:'SENSE'},{name:'Searchlight array',tag:'LIGHT'}] },
+      { id:'ARES-3', kind:'robot', code:'B', name:'ARES-3 · RAM', role:'Assault & Breaching', tint:'#E8A35C', x:76, y:33, battery:81, posture:'Staged', zone:'Warehouse 7', zoneState:'HOSTILE', zoneColor:this.RED, feed:'ARES-3 · BREACH CAM',
+        loadout:[{name:'Diamond-tip circular saw',tag:'CUT'},{name:'Front ballistic shield',tag:'ARMOR'},{name:'Breaching charges',tag:'EXPLO'},{name:'360° LiDAR',tag:'SENSE'}] },
+      { id:'ARES-4', kind:'robot', code:'D', name:'ARES-4 · KITE', role:'Drone Carrier / Air Recon', tint:this.CYAN, x:58, y:50, battery:57, posture:'UAV aloft', zone:'Overlook', zoneState:'SECURED', zoneColor:this.BLUE, feed:'ARES-4 · UAV DOWNLINK',
+        loadout:[{name:'Protective UAV capsule',tag:'BAY'},{name:'Micro-UAV quadcopter',tag:'AIR'},{name:'Unified vision relay',tag:'LINK'},{name:'Signal repeater',tag:'MESH'}] },
+      { id:'ARES-5', kind:'robot', code:'S', name:'ARES-5 · WRAITH', role:'Stealth Infiltrator', tint:this.RED, x:56, y:10, battery:49, posture:'Infiltrating', zone:'N. Compound', zoneState:'HOSTILE', zoneColor:this.RED, feed:'ARES-5 · LOW-LIGHT · IR-NULL',
+        loadout:[{name:'Suppressed tactical pistol',tag:'SILENT'},{name:'Garrote-wire crane',tag:'CQB'},{name:'Multi-spectral camera',tag:'STEALTH'},{name:'IR-null housing',tag:'COVERT'}] },
+      { id:'B-1', kind:'soldier', code:'B1', name:'B-1 · RIVERA', role:'Bravo · Team Lead', tint:this.BLUE, x:55, y:35, battery:88, posture:'Stacked', zone:'Block C', zoneState:'CLEARING', zoneColor:this.AMBER, feed:'B-1 · HELMET CAM · 1080p',
+        loadout:[{name:'Helmet cam + IMU',tag:'SENSE'},{name:'Mesh handset (SCOUT)',tag:'C2'},{name:'IFF transponder',tag:'IFF'}], vitals:'HR 88' },
+      { id:'B-2', kind:'soldier', code:'B2', name:'B-2 · OKAFOR', role:'Bravo · Breacher', tint:this.BLUE, x:61, y:33, battery:91, posture:'Stacked', zone:'Block C', zoneState:'CLEARING', zoneColor:this.AMBER, feed:'B-2 · HELMET CAM', loadout:[{name:'Helmet cam + IMU',tag:'SENSE'},{name:'Breaching kit',tag:'BREACH'},{name:'IFF transponder',tag:'IFF'}], vitals:'HR 96' },
+      { id:'B-3', kind:'soldier', code:'B3', name:'B-3 · LIN', role:'Bravo · Rifleman', tint:this.BLUE, x:53, y:31, battery:84, posture:'Cover', zone:'Block C', zoneState:'CLEARING', zoneColor:this.AMBER, feed:'B-3 · HELMET CAM', loadout:[{name:'Helmet cam + IMU',tag:'SENSE'},{name:'IFF transponder',tag:'IFF'}], vitals:'HR 84' },
+      { id:'A-1', kind:'soldier', code:'A1', name:'A-1 · DELACRUZ', role:'Alpha · Team Lead', tint:this.BLUE, x:28, y:13, battery:72, posture:'Holding', zone:'Courtyard', zoneState:'CLEARED', zoneColor:this.GREEN, feed:'A-1 · HELMET CAM', loadout:[{name:'Helmet cam + IMU',tag:'SENSE'},{name:'Mesh handset (SCOUT)',tag:'C2'},{name:'IFF transponder',tag:'IFF'}], vitals:'HR 79' },
+      { id:'A-2', kind:'soldier', code:'A2', name:'A-2 · NOVAK', role:'Alpha · Marksman', tint:this.BLUE, x:34, y:14, battery:80, posture:'Overwatch', zone:'Courtyard', zoneState:'CLEARED', zoneColor:this.GREEN, feed:'A-2 · HELMET CAM', loadout:[{name:'Helmet cam + IMU',tag:'SENSE'},{name:'IFF transponder',tag:'IFF'}], vitals:'HR 76' }
+    ];
+    this._hostiles = [ { label:'CONTACT', x:88, y:30 }, { label:'SUSPECT', x:93, y:38 }, { label:'CONTACT', x:62, y:8 } ];
+    this._civ = [ { x:39, y:9 } ];
+    this._buildings = [
+      { name:'CMD POST', state:'SECURED', box:'left:3%;top:25%;width:15%;height:17%' },
+      { name:'COURTYARD', state:'CLEARED', box:'left:26%;top:4%;width:16%;height:13%' },
+      { name:'N. COMPOUND', state:'UNCLEARED', box:'left:50%;top:4%;width:17%;height:13%' },
+      { name:'BLOCK C', state:'CLEARING', box:'left:50%;top:25%;width:17%;height:17%' },
+      { name:'WAREHOUSE 7', state:'HOSTILE', box:'left:74%;top:25%;width:22%;height:17%' },
+      { name:'S. MARKET', state:'UNCLEARED', box:'left:3%;top:50%;width:15%;height:17%' },
+      { name:'PLAZA', state:'OBJECTIVE', box:'left:50%;top:50%;width:17%;height:17%' }
+    ];
+    this._blocks = [
+      { box:'left:3%;top:4%;width:15%;height:13%' },
+      { box:'left:74%;top:4%;width:22%;height:13%' },
+      { box:'left:26%;top:25%;width:16%;height:17%' },
+      { box:'left:26%;top:50%;width:16%;height:17%' },
+      { box:'left:74%;top:50%;width:22%;height:17%' },
+      { box:'left:3%;top:74%;width:15%;height:22%' },
+      { box:'left:26%;top:74%;width:16%;height:22%' },
+      { box:'left:50%;top:74%;width:17%;height:22%' },
+      { box:'left:74%;top:74%;width:22%;height:22%' }
+    ];
+  }
+  componentDidMount() { this._iv = setInterval(() => this.setState(s => ({ t: s.t + 1 })), 1000); }
+  componentWillUnmount() { clearInterval(this._iv); }
+
+  select = (id) => this.setState({ selected: id, panelOpen: true });
+  togglePanel = () => this.setState(s => ({ panelOpen: !s.panelOpen }));
+  closePanel = () => this.setState({ panelOpen: false });
+  openPanel = () => this.setState({ panelOpen: true });
+  setTool = (t) => this.setState({ tool: t });
+  toggleLayer = (k) => this.setState(s => ({ [k]: !s[k] }));
+  orderRoute = () => this.setState({ tool: 'route' });
+  orderHold = () => {}; orderRecon = () => this.setState({ tool: 'recon' }); orderDanger = () => this.setState({ tool: 'mark' });
+  pushHandset = () => this.setState({ pushed: true });
+  recall = () => this.setState({ pushed: false });
+
+  _stateColor(st) {
+    return { SECURED:this.BLUE, CLEARED:this.GREEN, CLEARING:this.AMBER, HOSTILE:this.RED, UNCLEARED:'rgba(236,238,241,0.34)', OBJECTIVE:this.AMBER }[st] || 'rgba(236,238,241,0.34)';
+  }
+  _fmt(t) { const h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60; const p = n => String(n).padStart(2,'0'); return p(h)+':'+p(m)+':'+p(s); }
+
+  _icon(name, col) {
+    const R = React.createElement;
+    const svg = (ch) => R('svg', { width:'18', height:'18', viewBox:'0 0 18 18', fill:'none' }, ch);
+    if (name === 'select') return svg([R('path',{key:1,d:'M4 3l10 5-4 1.4L8.6 14z',fill:'none',stroke:col,strokeWidth:1.5,strokeLinejoin:'round'})]);
+    if (name === 'route') return svg([R('circle',{key:1,cx:4,cy:4.5,r:1.8,stroke:col,strokeWidth:1.5}),R('circle',{key:2,cx:14,cy:13.5,r:1.8,stroke:col,strokeWidth:1.5}),R('path',{key:3,d:'M6 4.5h5a2.5 2.5 0 0 1 0 5H7a2.5 2.5 0 0 0 0 5h5',stroke:col,strokeWidth:1.5,strokeLinecap:'round'})]);
+    if (name === 'mark') return svg([R('path',{key:1,d:'M9 2l7 12.5H2z',stroke:col,strokeWidth:1.5,strokeLinejoin:'round'}),R('path',{key:2,d:'M9 7v3.4M9 12v.3',stroke:col,strokeWidth:1.5,strokeLinecap:'round'})]);
+    if (name === 'recon') return svg([R('circle',{key:1,cx:9,cy:9,r:1.8,fill:col}),R('circle',{key:2,cx:9,cy:9,r:5,stroke:col,strokeWidth:1.3,opacity:.6}),R('circle',{key:3,cx:9,cy:9,r:7.6,stroke:col,strokeWidth:1.1,opacity:.3})]);
+    if (name === 'rally') return svg([R('path',{key:1,d:'M5 2v14',stroke:col,strokeWidth:1.5,strokeLinecap:'round'}),R('path',{key:2,d:'M5 3h8l-2 2.5L13 8H5',fill:'none',stroke:col,strokeWidth:1.4,strokeLinejoin:'round'})]);
+    if (name === 'send') return svg([R('path',{key:1,d:'M16 2L2 8l5.5 2L10 16l2-7z',fill:'none',stroke:col,strokeWidth:1.5,strokeLinejoin:'round'})]);
+    return null;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sel = this._units.find(u => u.id === s.selected) || this._units[0];
+    const isSoldier = sel.kind === 'soldier';
+
+    const rosterRow = (u) => {
+      const on = u.id === s.selected;
+      return { name:u.name, role:u.role, code:u.code, tint:u.tint, select:() => this.select(u.id),
+        rowBg: on ? 'color-mix(in srgb,'+this.AMBER+' 12%,transparent)' : 'transparent',
+        rowBorder: on ? 'color-mix(in srgb,'+this.AMBER+' 38%,transparent)' : 'transparent',
+        statusColor: u.zoneState === 'HOSTILE' ? this.RED : (u.battery < 55 ? this.AMBER : this.GREEN),
+        metric: isFinite(u.battery) ? (u.kind==='soldier' ? u.vitals : u.battery + '%') : '' };
+    };
+    const robots = this._units.filter(u => u.kind==='robot');
+    const soldiers = this._units.filter(u => u.kind==='soldier');
+
+    const mapUnit = (u) => ({ pos:'left:'+u.x+'%;top:'+u.y+'%', code:u.code, name:u.name.split(' · ')[0], sel:u.id===s.selected, z:u.id===s.selected?9:5, select:() => this.select(u.id) });
+
+    const buildings = this._buildings.map(b => {
+      const col = this._stateColor(b.state);
+      const unc = b.state === 'UNCLEARED';
+      return { name:b.name, box:b.box, stateLabel:b.state, stateColor:col, labelColor:'var(--text)',
+        border: 'color-mix(in srgb,'+col+' '+(unc?'26':'50')+'%,transparent)',
+        fill: 'color-mix(in srgb,'+col+' '+(unc?'5':'11')+'%,transparent)',
+        hatch: unc ? 'repeating-linear-gradient(45deg,transparent,transparent 7px,rgba(255,255,255,0.03) 7px,rgba(255,255,255,0.03) 9px)' : 'none',
+        objective: b.state === 'OBJECTIVE', select:() => {} };
+    });
+
+    const toolDef = (id, name) => ({ name, onClick:() => this.setTool(id), icon:this._icon(id, s.tool===id ? '#141414' : 'var(--muted)'),
+      bg: s.tool===id ? this.AMBER : 'transparent', col: s.tool===id ? '#141414' : 'var(--muted)' });
+    const tools = [ toolDef('select','Select'), toolDef('route','Route'), toolDef('mark','Mark danger'), toolDef('recon','Recon ping'), toolDef('rally','Rally point') ];
+
+    const layerDef = (k, name, dot) => { const on = s[k]; return { name, onClick:() => this.toggleLayer(k), dot:on?dot:'var(--faint)',
+      bg: on ? 'rgba(13,15,19,0.86)' : 'rgba(13,15,19,0.4)', border: on ? 'var(--line)' : 'transparent', col: on ? 'var(--text)' : 'var(--faint)' }; };
+    const layers = [ layerDef('layThreats','Threats',this.RED), layerDef('layRoutes','Routes',this.BLUE), layerDef('layCiv','Civilians',this.GREEN), layerDef('layDrone','Drone',this.CYAN) ];
+
+    const alerts = [
+      { text:'Contact · Warehouse 7', sub:'2 hostiles · ARES-3 holding', color:this.RED, glow:'box-shadow:0 0 0 4px rgba(255,77,77,0.18)', border:'color-mix(in srgb,'+this.RED+' 40%,transparent)', ts:'06:14', onClick:() => this.select('ARES-3') },
+      { text:'Change detected · Block C', sub:'New object vs baseline', color:this.CYAN, glow:'', border:'var(--line)', ts:'06:12', onClick:() => this.select('ARES-1') },
+      { text:'Civilian · Courtyard', sub:'Non-combatant · ARES-2', color:this.GREEN, glow:'', border:'var(--line)', ts:'06:09', onClick:() => this.select('ARES-2') }
+    ];
+
+    const pushed = s.pushed;
+    const loadout = (sel.loadout||[]).map((g,i) => ({ name:g.name, tag:g.tag, bt: i===0 ? 'none' : '1px solid var(--hair)' }));
+
+    return {
+      clock: this._fmt(s.t),
+      panelOpen: s.panelOpen, togglePanel: this.togglePanel, closePanel: this.closePanel, tabOpen: this.openPanel,
+      sheetX: s.panelOpen ? '0%' : '100%', tabDisplay: s.panelOpen ? 'none' : 'flex',
+      rosterRobots: robots.map(rosterRow), rosterSoldiers: soldiers.map(rosterRow),
+      robotUnits: robots.map(mapUnit), soldierUnits: soldiers.map(mapUnit),
+      hostileUnits: this._hostiles.map(h => ({ pos:'left:'+h.x+'%;top:'+h.y+'%', label:h.label })),
+      civUnits: this._civ.map(cu => ({ pos:'left:'+cu.x+'%;top:'+cu.y+'%' })),
+      genericBlocks: this._blocks, buildings, tools, layers, alerts,
+
+      threatLayerOpacity: s.layThreats ? '1' : '0.12', threatLayerPe: s.layThreats ? 'auto' : 'none',
+      civLayerOpacity: s.layCiv ? '1' : '0.12', civLayerPe: s.layCiv ? 'auto' : 'none',
+      droneLayerOpacity: s.layDrone ? '1' : '0.12',
+      routeLayerOpacity: s.layRoutes ? '1' : '0.12',
+
+      routePoints: '55,35 57,46 58,58',
+      routeColor: pushed ? this.AMBER : this.BLUE,
+      routeOpacity: pushed ? '1' : '0.4',
+      routeAnim: pushed ? 'cmdDash 0.9s linear infinite' : 'none',
+
+      selCode: sel.code, selName: sel.name, selRole: sel.role, selTint: sel.tint,
+      selKind: sel.kind === 'robot' ? 'UGV · ONLINE' : 'DISMOUNT · LIVE', selKindColor: sel.kind === 'robot' ? this.CYAN : this.BLUE,
+      selFeed: sel.feed,
+      selStat1Label: 'BATTERY', selStat1: sel.battery + '%',
+      selStat2Label: isSoldier ? 'VITALS' : 'POSTURE', selStat2: isSoldier ? sel.vitals : sel.posture,
+      selZone: sel.zone, selZoneState: sel.zoneState, selZoneColor: sel.zoneColor,
+      selLoadout: loadout,
+
+      orderRoute: this.orderRoute, orderHold: this.orderHold, orderRecon: this.orderRecon, orderDanger: this.orderDanger,
+      routeBtnBg: s.tool==='route' ? 'color-mix(in srgb,'+this.AMBER+' 16%,transparent)' : 'var(--surf)',
+      routeBtnBorder: s.tool==='route' ? 'color-mix(in srgb,'+this.AMBER+' 50%,transparent)' : 'var(--line)',
+      routeBtnCol: s.tool==='route' ? this.AMBER : 'var(--text)',
+
+      pushHandset: this.pushHandset, recall: this.recall, pushed,
+      pushBg: pushed ? 'color-mix(in srgb,'+this.GREEN+' 18%,transparent)' : this.AMBER,
+      pushCol: pushed ? this.GREEN : '#141414',
+      pushLabel: pushed ? 'Order delivered · live on handset' : (isSoldier ? 'Push order to handset' : 'Send task to unit'),
+      pushIcon: this._icon('send', pushed ? this.GREEN : '#141414'),
+
+      handsetWho: isSoldier ? sel.name.split(' · ')[1] || sel.code : 'B-1 RIVERA',
+      handsetBanner: pushed ? 'NEW ROUTE ORDER' : 'STANDING BY',
+      handsetBannerCol: pushed ? this.AMBER : 'var(--muted)',
+      handsetBannerBg: pushed ? 'rgba(255,171,0,0.12)' : 'var(--surf)',
+      handsetBannerBorder: pushed ? 'color-mix(in srgb,'+this.AMBER+' 45%,transparent)' : 'var(--line)',
+      handsetBannerDot: pushed ? this.AMBER : 'var(--faint)',
+      handsetBannerAnim: pushed ? 'animation:cmdPulseDot 1.2s infinite' : '',
+      handsetMove: pushed ? 'MOVE TO FALCON · 60m' : 'Awaiting orders',
+      handsetMoveCol: pushed ? this.AMBER : 'var(--muted)'
+    };
+  }
+}
+</script>
+</body>
+</html>

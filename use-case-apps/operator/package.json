@@ -1,0 +1,49 @@
+{
+  "name": "operator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "web:dev": "vite --host 0.0.0.0 --port 3070 apps/web",
+    "web:build": "vite build apps/web",
+    "web:preview": "vite preview --host 0.0.0.0 --port 3071 apps/web",
+    "e2e": "cd apps/web && npx playwright test",
+    "e2e:install": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/postprocessing": "^3.0.4",
+    "@three.ez/instanced-mesh": "^0.3.15",
+    "@vitejs/plugin-react": "^4.3.4",
+    "alea": "^1.0.1",
+    "camera-controls": "^3.1.2",
+    "gsap": "^3.12.7",
+    "honeycomb-grid": "^4.1.5",
+    "hono": "^4.12.18",
+    "motion": "^12.23.24",
+    "ogl": "^1.0.11",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "seedrandom": "^3.0.5",
+    "simplex-noise": "^4.0.3",
+    "three": "^0.166.1",
+    "three-mesh-bvh": "^0.9.10",
+    "vite": "^6.0.7",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/bun": "latest",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/seedrandom": "^3.0.8",
+    "@types/three": "^0.185.0",
+    "typescript": "^5"
+  }
+}
