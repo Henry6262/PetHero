@@ -36,6 +36,7 @@
 | Date | Topic | Source | File | Relevance |
 |------|-------|--------|------|-----------|
 | Jul 3 | Military Robotics & AI Drone Market Synthesis | Kimi agent deep-research packet (`/Users/henry/Downloads/Kimi_Agent_Military Robotics Market Edge/`) | `military-robotics-market/` (11 files + `assets/`) | **Operator / SCOUT critical path.** Validates the four-pillar concept (multi-agent coordination, gossip/mesh resilience, 3D hex tactical viz, portable C2), maps €500K–6M non-dilutive EU/NATO funding, defines EUDIS/Berlin hackathon plan, and sizes a $2–5B tactical-edge C2 opportunity. |
+| Jul 3 | Operator Building Visualization Research | Web research + synthesis (Three.js community, Cesium, MIL-STD-2525, free asset libraries) | `operator-building-visualization/` (5 files) | **Operator / SCOUT.** Options and implementation path to move Operator's buildings from extruded rectangles to recognizable, tactical, performant structures using textures, procedural roofs, archetypes, and free assets. |
 
 ## Planned Research Areas
 
