@@ -360,7 +360,7 @@ export default function OperatorDashboard() {
                       interiorView={interiorView}
                     />
                     <RockLayer buildings={buildingData} />
-                    <PropLayer />
+                    <PropLayer buildings={buildingData} />
                     <RouteLines />
                     <AgentPucks agents={agents} />
                     <AgentScanSectors agents={agents} visible={showFov} />
