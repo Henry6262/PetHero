@@ -5,15 +5,32 @@ import { Html } from "@react-three/drei";
 import { buildAgents3D } from "../../lib/agents";
 import type { Agent } from "../../data/sections";
 
-function addOutline(geometry: THREE.BufferGeometry, color: THREE.Color): THREE.LineSegments {
-  return new THREE.LineSegments(
-    new THREE.EdgesGeometry(geometry),
-    new THREE.LineBasicMaterial({
-      color,
-      transparent: true,
-      opacity: 0.65,
-      depthWrite: false,
-    })
+function PinMarker({
+  accent,
+  topY,
+}: {
+  accent: string;
+  topY: number;
+}) {
+  const color = useMemo(() => new THREE.Color(accent), [accent]);
+  return (
+    <group position={[0, topY, 0]}>
+      {/* Pin head */}
+      <mesh castShadow>
+        <sphereGeometry args={[0.16, 16, 16]} />
+        <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} fog={false} />
+      </mesh>
+      {/* Pin cone */}
+      <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.28, 0]} castShadow>
+        <coneGeometry args={[0.1, 0.45, 16]} />
+        <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} fog={false} />
+      </mesh>
+      {/* Vertical pole */}
+      <mesh position={[0, -topY / 2, 0]} castShadow>
+        <cylinderGeometry args={[0.02, 0.02, topY, 8]} />
+        <meshStandardMaterial color={color} transparent opacity={0.5} fog={false} />
+      </mesh>
+    </group>
   );
 }
 
@@ -45,6 +62,9 @@ function HumanAgent({
       rotation={[0, rotation, 0]}
       scale={[scale, scale, scale]}
     >
+      {/* Pin marker */}
+      <PinMarker accent={accent} topY={2.6} />
+
       {/* Legs */}
       <mesh position={[-0.12, 0.35, 0]} castShadow>
         <capsuleGeometry args={[0.09, 0.7, 4, 8]} />
@@ -111,13 +131,7 @@ function HumanAgent({
         <meshStandardMaterial color="#2b3038" roughness={0.85} fog={false} />
       </mesh>
 
-      {/* Outline — approximate bounding box */}
-      <primitive
-        object={addOutline(new THREE.BoxGeometry(0.62, 1.7, 0.45), color)}
-        position={[0, 0.86, 0.02]}
-      />
-
-      <Html position={[0, 1.95, 0]} center distanceFactor={12}>
+      <Html position={[0, 3.1, 0]} center distanceFactor={12}>
         <div className="pointer-events-none whitespace-nowrap rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
           {name}
         </div>
@@ -159,12 +173,14 @@ function DroneAgent({
       position={[position.x, position.y, position.z]}
       rotation={[0, rotation, 0]}
     >
+      {/* Pin marker */}
+      <PinMarker accent={accent} topY={1.6} />
+
       {/* Body */}
       <mesh castShadow>
         <boxGeometry args={[0.55 * s, 0.18 * s, 0.75 * s]} />
         <meshStandardMaterial color="#2b3038" roughness={0.5} metalness={0.3} fog={false} />
       </mesh>
-      <primitive object={addOutline(new THREE.BoxGeometry(0.55 * s, 0.18 * s, 0.75 * s), color)} />
 
       {/* Accent stripe */}
       <mesh position={[0, 0.02 * s, 0]} castShadow>
@@ -200,14 +216,10 @@ function DroneAgent({
             <boxGeometry args={[0.55 * s, 0.02 * s, 0.06 * s]} />
             <meshStandardMaterial color="#1a1d23" transparent opacity={0.8} fog={false} />
           </mesh>
-          <primitive
-            object={addOutline(new THREE.BoxGeometry(0.55 * s, 0.02 * s, 0.06 * s), color)}
-            position={[0, 0.1 * s, 0]}
-          />
         </group>
       ))}
 
-      <Html position={[0, 0.7 * s, 0]} center distanceFactor={12}>
+      <Html position={[0, 2.0, 0]} center distanceFactor={12}>
         <div className="pointer-events-none whitespace-nowrap rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
           {name}
         </div>
