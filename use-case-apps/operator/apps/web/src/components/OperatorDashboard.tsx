@@ -19,6 +19,7 @@ import { generateCells } from "../lib/hex";
 import { buildChunks } from "../lib/chunks";
 import {
   AgentPucks,
+  AgentScanSectors,
   BuildingLayer,
   ChunkVisibility,
   FOVCones,
@@ -369,7 +370,7 @@ export default function OperatorDashboard() {
                       <PropLayer />
                       <RouteLines />
                       <AgentPucks agents={agents} />
-                      <FOVCones agents={agents} visible={showFov} />
+                      <AgentScanSectors agents={agents} visible={showFov} />
                       <XRayBuilding
                         building={selectedBuilding}
                         selectedRoom={selectedRoom}

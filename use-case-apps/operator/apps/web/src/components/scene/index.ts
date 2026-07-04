@@ -5,6 +5,7 @@ export { default as PropLayer } from "./PropLayer";
 export { default as AgentPucks } from "./AgentPucks";
 export { default as RouteLines } from "./RouteLines";
 export { default as FOVCones } from "./FOVCones";
+export { default as AgentScanSectors } from "./AgentScanSectors";
 export { default as FloorplanPanel } from "./FloorplanPanel";
 export { default as XRayBuilding } from "./XRayBuilding";
 export { default as Minimap } from "./Minimap";

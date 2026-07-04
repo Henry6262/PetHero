@@ -40,6 +40,8 @@ export const BUILDING_KINDS: Record<string, BuildingKind> = {
   GARAGE: { width: 4.0, depth: 2.2, storyHeight: 2.2 },
   SHOPFRONT: { width: 3.0, depth: 2.0, storyHeight: 2.5 },
   TOWER: { width: 2.2, depth: 6.0, storyHeight: 3.0 },
+  BARRACKS: { width: 6.0, depth: 2.4, storyHeight: 2.4 },
+  "WATCH TOWER": { width: 1.6, depth: 1.6, storyHeight: 2.8 },
 };
 
 const ROOF_KINDS: Record<string, "flat" | "peaked" | "shed"> = {
@@ -49,6 +51,8 @@ const ROOF_KINDS: Record<string, "flat" | "peaked" | "shed"> = {
   GARAGE: "flat",
   SHOPFRONT: "flat",
   TOWER: "flat",
+  BARRACKS: "shed",
+  "WATCH TOWER": "flat",
 };
 
 export function getBuildingFootprint(building: Building): [number, number][] {
@@ -93,6 +97,8 @@ export function createFacadeTexture(kind: string): THREE.CanvasTexture {
     GARAGE: "#5e646b",
     SHOPFRONT: "#7a8189",
     TOWER: "#5c6168",
+    BARRACKS: "#6e685d",
+    "WATCH TOWER": "#5a5f66",
   };
 
   ctx.fillStyle = wallColors[kind] ?? "#6b7078";
