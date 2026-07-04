@@ -130,7 +130,7 @@ export default function BuildingLayer({
 
   return (
     <group>
-      {meshData.map(({ b3d, geometry, roofGeometry, material }) => (
+      {meshData.map(({ b3d, geometry, roofGeometry, outlineGeometry, roofOutlineGeometry, material, outlineMaterial }) => (
         <group
           key={b3d.id}
           position={b3d.position}

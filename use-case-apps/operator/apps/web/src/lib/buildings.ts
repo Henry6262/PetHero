@@ -223,7 +223,7 @@ export function createRoofGeometry(footprint: THREE.Vector2[], kind: string): TH
     const lip = new THREE.ExtrudeGeometry(lipShape, { depth: 0.25, bevelEnabled: false });
     lip.rotateX(-Math.PI / 2);
 
-    return mergeGeometries([cap, hvac, lip]);
+    return mergeGeometries([cap.toNonIndexed(), hvac.toNonIndexed(), lip.toNonIndexed()]);
   }
 
   if (roofType === "peaked") {
