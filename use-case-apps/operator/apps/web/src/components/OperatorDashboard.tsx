@@ -19,6 +19,7 @@ import {
   AgentPucks,
   AgentScanSectors,
   BuildingLayer,
+  CarLayer,
   FOVCones,
   FloorplanPanel,
   HexGridLines,
@@ -361,6 +362,7 @@ export default function OperatorDashboard() {
                     />
                     <RockLayer buildings={buildingData} />
                     <PropLayer buildings={buildingData} />
+                    <CarLayer buildings={buildingData} />
                     <RouteLines />
                     <AgentPucks agents={agents} />
                     <AgentScanSectors agents={agents} visible={showFov} />

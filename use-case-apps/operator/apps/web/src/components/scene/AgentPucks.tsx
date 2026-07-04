@@ -5,32 +5,59 @@ import { Html } from "@react-three/drei";
 import { buildAgents3D } from "../../lib/agents";
 import type { Agent } from "../../data/sections";
 
-function PinMarker({
-  accent,
-  topY,
-}: {
-  accent: string;
-  topY: number;
-}) {
+const BEAM_HEIGHT = 45;
+
+const BEAM_VERTEX_SHADER = `
+  varying float vY;
+  void main() {
+    vY = position.y;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const BEAM_FRAGMENT_SHADER = `
+  uniform vec3 uColor;
+  uniform float uOpacity;
+  uniform float uHeight;
+  varying float vY;
+
+  void main() {
+    float t = vY / uHeight;
+    float alpha = (1.0 - smoothstep(0.0, 1.0, t)) * uOpacity;
+    float core = 1.0 - smoothstep(0.0, 0.15, t);
+    gl_FragColor = vec4(uColor, alpha * (0.6 + core * 0.4));
+  }
+`;
+
+function LightBeam({ accent }: { accent: string }) {
   const color = useMemo(() => new THREE.Color(accent), [accent]);
+  const material = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: BEAM_VERTEX_SHADER,
+        fragmentShader: BEAM_FRAGMENT_SHADER,
+        uniforms: {
+          uColor: { value: color },
+          uOpacity: { value: 0.35 },
+          uHeight: { value: BEAM_HEIGHT },
+        },
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+      }),
+    [color]
+  );
+
+  useFrame(({ clock }) => {
+    const pulse = 0.9 + Math.sin(clock.getElapsedTime() * 3) * 0.1;
+    material.uniforms.uOpacity.value = 0.35 * pulse;
+  });
+
   return (
-    <group position={[0, topY, 0]}>
-      {/* Pin head */}
-      <mesh castShadow>
-        <sphereGeometry args={[0.16, 16, 16]} />
-        <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} fog={false} />
-      </mesh>
-      {/* Pin cone */}
-      <mesh rotation={[Math.PI, 0, 0]} position={[0, -0.28, 0]} castShadow>
-        <coneGeometry args={[0.1, 0.45, 16]} />
-        <meshStandardMaterial color={color} roughness={0.5} metalness={0.2} fog={false} />
-      </mesh>
-      {/* Vertical pole */}
-      <mesh position={[0, -topY / 2, 0]} castShadow>
-        <cylinderGeometry args={[0.02, 0.02, topY, 8]} />
-        <meshStandardMaterial color={color} transparent opacity={0.5} fog={false} />
-      </mesh>
-    </group>
+    <mesh position={[0, BEAM_HEIGHT / 2, 0]} material={material}>
+      <cylinderGeometry args={[0.06, 0.45, BEAM_HEIGHT, 16, 1, true]} />
+    </mesh>
   );
 }
 
@@ -62,8 +89,8 @@ function HumanAgent({
       rotation={[0, rotation, 0]}
       scale={[scale, scale, scale]}
     >
-      {/* Pin marker */}
-      <PinMarker accent={accent} topY={2.6} />
+      {/* God light beam */}
+      <LightBeam accent={accent} />
 
       {/* Legs */}
       <mesh position={[-0.12, 0.35, 0]} castShadow>
@@ -131,7 +158,7 @@ function HumanAgent({
         <meshStandardMaterial color="#2b3038" roughness={0.85} fog={false} />
       </mesh>
 
-      <Html position={[0, 3.1, 0]} center distanceFactor={12}>
+      <Html position={[0, BEAM_HEIGHT / scale + 0.4, 0]} center distanceFactor={12}>
         <div className="pointer-events-none whitespace-nowrap rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
           {name}
         </div>
@@ -173,8 +200,8 @@ function DroneAgent({
       position={[position.x, position.y, position.z]}
       rotation={[0, rotation, 0]}
     >
-      {/* Pin marker */}
-      <PinMarker accent={accent} topY={1.6} />
+      {/* God light beam */}
+      <LightBeam accent={accent} />
 
       {/* Body */}
       <mesh castShadow>
@@ -219,7 +246,7 @@ function DroneAgent({
         </group>
       ))}
 
-      <Html position={[0, 2.0, 0]} center distanceFactor={12}>
+      <Html position={[0, BEAM_HEIGHT + 0.4, 0]} center distanceFactor={12}>
         <div className="pointer-events-none whitespace-nowrap rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
           {name}
         </div>

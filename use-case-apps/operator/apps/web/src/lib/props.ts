@@ -4,7 +4,6 @@ import { getTerrainHeight } from "./terrain";
 import type { Building } from "../data/sections";
 
 export type PropType =
-  | "car"
   | "wrecked-car"
   | "truck"
   | "barrier"
@@ -24,8 +23,14 @@ export interface PropInstance {
   color: string;
 }
 
+export interface CarInstance {
+  position: THREE.Vector3;
+  rotation: number;
+  scale: THREE.Vector3;
+  color: string;
+}
+
 const PROP_COLORS = {
-  car: ["#5fb2ff", "#94a3b8", "#fbbf24", "#cbd5e1", "#f87171", "#a78bfa"],
   "wrecked-car": ["#3f3f46", "#52525b", "#713f12", "#1f2937"],
   truck: ["#4b5563", "#166534", "#92400e", "#1e3a8a"],
   barrier: ["#f97316", "#ef4444", "#e5e7eb", "#f59e0b"],
@@ -37,6 +42,8 @@ const PROP_COLORS = {
   gate: ["#9ca3af"],
   "dock-beacon": ["#34d399"],
 };
+
+const CAR_COLORS = ["#5fb2ff", "#94a3b8", "#fbbf24", "#cbd5e1", "#f87171", "#a78bfa", "#34d399"];
 
 function pick<T>(arr: T[], rng: () => number): T {
   return arr[Math.floor(rng() * arr.length)];
@@ -50,9 +57,10 @@ function seededRandom(seed: number): () => number {
   };
 }
 
-export function generateProps(buildings: Building[]): PropInstance[] {
+export function generateProps(buildings: Building[]): { props: PropInstance[]; cars: CarInstance[] } {
   const cells = generateCells();
   const props: PropInstance[] = [];
+  const cars: CarInstance[] = [];
   const rng = seededRandom(42);
 
   const buildingPositions = buildings.map((b) => {
@@ -60,51 +68,44 @@ export function generateProps(buildings: Building[]): PropInstance[] {
     return { x, z, id: b.id };
   });
 
-  // --- Compound walls around the central building cluster ---
-  const compoundMargin = 5;
+  // --- One outer wall side (top edge of battle zone) ---
   const xs = buildingPositions.map((b) => b.x);
   const zs = buildingPositions.map((b) => b.z);
-  const minX = Math.min(...xs) - compoundMargin;
-  const maxX = Math.max(...xs) + compoundMargin;
-  const minZ = Math.min(...zs) - compoundMargin;
-  const maxZ = Math.max(...zs) + compoundMargin;
-  const segmentLength = 3.5;
+  const minX = Math.min(...xs) - 4;
+  const maxX = Math.max(...xs) + 4;
+  const maxZ = Math.max(...zs) + 4;
+  const segmentLength = 3.6;
   const wallHeight = 2.4;
 
-  // Gate opening on the top edge, slightly off-center.
-  const gateCenterZ = minZ;
-  const gateCenterX = (minX + maxX) / 2 + 4;
-  const gateWidth = 6;
-
-  function nearGate(x: number, z: number, isHorizontal: boolean): boolean {
-    if (!isHorizontal) return false;
-    const dx = x - gateCenterX;
-    return Math.abs(dx) < gateWidth / 2;
-  }
-
-  // Top and bottom walls.
   for (let x = minX; x <= maxX; x += segmentLength) {
-    if (!nearGate(x, minZ, true)) {
-      props.push(wallSegment(x, minZ, 0, segmentLength, wallHeight, rng));
-    }
     props.push(wallSegment(x, maxZ, 0, segmentLength, wallHeight, rng));
   }
-  // Left and right walls.
-  for (let z = minZ + segmentLength; z < maxZ; z += segmentLength) {
-    props.push(wallSegment(minX, z, Math.PI / 2, segmentLength, wallHeight, rng));
-    props.push(wallSegment(maxX, z, Math.PI / 2, segmentLength, wallHeight, rng));
+
+  // --- Internal walls inside the battle zone ---
+  // Place wall segments along some street cells to create alleys and cover.
+  for (const cell of cells) {
+    if (!cell.street) continue;
+    if (cell.station || cell.goal) continue;
+    if (cell.route && rng() > 0.75) continue; // keep route mostly clear
+
+    const { x, z } = cellWorldPosition(cell.col, cell.row);
+
+    // Chance for an internal wall segment across this street cell.
+    if (rng() > 0.92) {
+      const rotation = rng() > 0.5 ? 0 : Math.PI / 2;
+      props.push(wallSegment(x, z, rotation, segmentLength, wallHeight, rng));
+    }
   }
 
-  // Gate barrier.
-  props.push({
-    type: "gate",
-    position: new THREE.Vector3(gateCenterX, getTerrainHeight(gateCenterX, gateCenterZ), gateCenterZ),
-    rotation: 0,
-    scale: new THREE.Vector3(1.2, 1, 1),
-    color: "#9ca3af",
-  });
+  // Random internal wall segments in non-street open ground.
+  for (let i = 0; i < 18; i++) {
+    const x = minX + rng() * (maxX - minX);
+    const z = (Math.min(...zs) - 4) + rng() * (maxZ - (Math.min(...zs) - 4));
+    if (tooCloseToBuilding(x, z, buildingPositions)) continue;
+    props.push(wallSegment(x, z, rng() > 0.5 ? 0 : Math.PI / 2, segmentLength, wallHeight, rng));
+  }
 
-  // --- Street props ---
+  // --- Street props and cars ---
   for (const cell of cells) {
     if (!cell.street) continue;
     if (cell.station || cell.goal) continue;
@@ -113,25 +114,41 @@ export function generateProps(buildings: Building[]): PropInstance[] {
     const roll = rng();
 
     if (cell.route) {
-      // Main route: cars, occasional wrecked car, barriers.
-      if (roll > 0.55) {
-        const type: PropType = roll > 0.9 ? "wrecked-car" : roll > 0.75 ? "truck" : "car";
-        const length = type === "truck" ? 4.8 : 3.6;
+      // Main route: reusable textured cars, occasional wrecked car/truck, barriers.
+      if (roll > 0.5) {
         const px = x + (rng() - 0.5) * HEX_SIZE;
         const pz = z + (rng() - 0.5) * HEX_SIZE;
-        props.push({
-          type,
-          position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.12, pz),
-          rotation: rng() * Math.PI * 2,
-          scale: type === "truck" ? new THREE.Vector3(1.1, 1.1, 1.1) : new THREE.Vector3(0.95, 0.95, 0.95),
-          color: pick(PROP_COLORS[type], rng),
-        });
+        if (roll > 0.88) {
+          props.push({
+            type: "wrecked-car",
+            position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.12, pz),
+            rotation: rng() * Math.PI * 2,
+            scale: new THREE.Vector3(0.95, 0.95, 0.95),
+            color: pick(PROP_COLORS["wrecked-car"], rng),
+          });
+        } else if (roll > 0.72) {
+          props.push({
+            type: "truck",
+            position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.12, pz),
+            rotation: rng() * Math.PI * 2,
+            scale: new THREE.Vector3(1.1, 1.1, 1.1),
+            color: pick(PROP_COLORS.truck, rng),
+          });
+        } else {
+          // Reusable textured cars are tracked separately.
+          cars.push({
+            position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.12, pz),
+            rotation: rng() * Math.PI * 2,
+            scale: new THREE.Vector3(1, 1, 1),
+            color: pick(CAR_COLORS, rng),
+          });
+        }
       }
       continue;
     }
 
     // Side streets and yards.
-    if (roll > 0.96) {
+    if (roll > 0.95) {
       const type: PropType = pick(["barrier", "sandbag-wall", "barrel", "tire-stack", "crate"], rng);
       const px = x + (rng() - 0.5) * HEX_SIZE * 0.7;
       const pz = z + (rng() - 0.5) * HEX_SIZE * 0.7;
@@ -147,19 +164,28 @@ export function generateProps(buildings: Building[]): PropInstance[] {
 
   // --- Extra cars/barriers near buildings ---
   for (const bp of buildingPositions) {
-    if (rng() > 0.35) continue;
+    if (rng() > 0.4) continue;
     const angle = rng() * Math.PI * 2;
     const dist = 3 + rng() * 3;
     const px = bp.x + Math.cos(angle) * dist;
     const pz = bp.z + Math.sin(angle) * dist;
-    const type: PropType = rng() > 0.6 ? "car" : rng() > 0.3 ? "crate" : "barrel";
-    props.push({
-      type,
-      position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.1, pz),
-      rotation: rng() * Math.PI * 2,
-      scale: new THREE.Vector3(0.9, 0.9, 0.9),
-      color: pick(PROP_COLORS[type], rng),
-    });
+    if (rng() > 0.55) {
+      cars.push({
+        position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.12, pz),
+        rotation: rng() * Math.PI * 2,
+        scale: new THREE.Vector3(1, 1, 1),
+        color: pick(CAR_COLORS, rng),
+      });
+    } else {
+      const type: PropType = rng() > 0.5 ? "crate" : "barrel";
+      props.push({
+        type,
+        position: new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.1, pz),
+        rotation: rng() * Math.PI * 2,
+        scale: new THREE.Vector3(0.85, 0.85, 0.85),
+        color: pick(PROP_COLORS[type], rng),
+      });
+    }
   }
 
   // --- Dock beacon at the station cell ---
@@ -175,7 +201,16 @@ export function generateProps(buildings: Building[]): PropInstance[] {
     });
   }
 
-  return props;
+  return { props, cars };
+}
+
+function tooCloseToBuilding(x: number, z: number, buildings: { x: number; z: number; id: string }[], minDist = 3.5): boolean {
+  for (const b of buildings) {
+    const dx = b.x - x;
+    const dz = b.z - z;
+    if (dx * dx + dz * dz < minDist * minDist) return true;
+  }
+  return false;
 }
 
 function wallSegment(
@@ -186,9 +221,8 @@ function wallSegment(
   height: number,
   rng: () => number
 ): PropInstance {
-  // Slight damage variation: some walls shorter.
-  const damaged = rng() > 0.85;
-  const h = damaged ? height * (0.4 + rng() * 0.4) : height;
+  const damaged = rng() > 0.82;
+  const h = damaged ? height * (0.35 + rng() * 0.45) : height;
   return {
     type: "wall",
     position: new THREE.Vector3(x, getTerrainHeight(x, z) + h / 2 - 0.1, z),
@@ -200,8 +234,6 @@ function wallSegment(
 
 export function propGeometry(type: PropType): THREE.BufferGeometry {
   switch (type) {
-    case "car":
-      return new THREE.BoxGeometry(1.9, 1.0, 3.8);
     case "wrecked-car":
       return new THREE.BoxGeometry(1.9, 0.75, 3.6);
     case "truck":

@@ -68,9 +68,10 @@ describe("hex geometry", () => {
     geom.dispose();
   });
 
-  test("createHexMaterial is a MeshBasicMaterial", () => {
+  test("createHexMaterial is a transparent material", () => {
     const material = createHexMaterial();
-    expect(material).toBeInstanceOf(THREE.MeshBasicMaterial);
+    expect(material.transparent).toBe(true);
+    expect(material.opacity).toBeLessThan(1);
     material.dispose();
   });
 });

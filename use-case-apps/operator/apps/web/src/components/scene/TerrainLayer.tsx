@@ -27,8 +27,8 @@ export default function TerrainLayer() {
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#3a3d42",
-        roughness: 0.92,
+        color: "#2d5a3d",
+        roughness: 0.9,
         metalness: 0.0,
       }),
     []

@@ -5,7 +5,7 @@ import type { Building } from "../../data/sections";
 
 export default function PropLayer({ buildings }: { buildings: Building[] }) {
   const groupRef = useRef<THREE.Group>(null);
-  const props = useMemo(() => generateProps(buildings), [buildings]);
+  const props = useMemo(() => generateProps(buildings).props, [buildings]);
 
   useEffect(() => {
     const group = groupRef.current;
@@ -14,7 +14,6 @@ export default function PropLayer({ buildings }: { buildings: Building[] }) {
     // Build one InstancedMesh per prop type.
     const byType = new Map<PropType, THREE.InstancedMesh>();
     const types: PropType[] = [
-      "car",
       "wrecked-car",
       "truck",
       "barrier",
