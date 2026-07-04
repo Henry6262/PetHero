@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer, FXAA } from "@react-three/postprocessing";
 import {
@@ -15,9 +15,12 @@ import {
 } from "../data/sections";
 import OperatorNav from "./OperatorNav";
 import { buildAgents3D } from "../lib/agents";
+import { generateCells } from "../lib/hex";
+import { buildChunks } from "../lib/chunks";
 import {
   AgentPucks,
   BuildingLayer,
+  ChunkVisibility,
   FOVCones,
   FloorplanPanel,
   HexGridLines,
@@ -94,6 +97,9 @@ export default function OperatorDashboard() {
   const [selectedRoom, setSelectedRoom] = useState<RoomInterior | null>(null);
   const [selectedFloor, setSelectedFloor] = useState(0);
   const [terrainKey, setTerrainKey] = useState(0);
+
+  const cells = useMemo(() => generateCells(), []);
+  const chunks = useMemo(() => buildChunks(cells, buildingData), [cells]);
 
   useEffect(() => {
     setSelectedRoom(null);
@@ -332,7 +338,7 @@ export default function OperatorDashboard() {
                   style={{ background: "transparent" }}
                 >
                   <color attach="background" args={["#0d1117"]} />
-                  <fog attach="fog" args={["#0d1117", 0.008]} />
+                  <fog attach="fog" args={["#0d1117", 0.005]} />
                   <EffectComposer>
                     <ambientLight intensity={0.55} />
                     <hemisphereLight intensity={0.35} groundColor="#06080c" color="#9fb2c7" />
@@ -343,33 +349,35 @@ export default function OperatorDashboard() {
                       shadow-mapSize={[2048, 2048]}
                       shadow-camera-near={1}
                       shadow-camera-far={300}
-                      shadow-camera-left={-120}
-                      shadow-camera-right={120}
-                      shadow-camera-top={120}
-                      shadow-camera-bottom={-120}
+                      shadow-camera-left={-180}
+                      shadow-camera-right={180}
+                      shadow-camera-top={180}
+                      shadow-camera-bottom={-180}
                       shadow-bias={-0.0005}
                     />
-                    <TerrainLayer key={terrainKey} />
-                    <HexMapScene />
-                    <HexGridLines opacity={0.18} />
-                    <BuildingLayer
-                      buildings={buildingData}
-                      selectedBuilding={selectedBuilding}
-                      onSelectBuilding={setSelectedBuilding}
-                      interiorView={interiorView}
-                    />
-                    <RockLayer buildings={buildingData} />
-                    <PropLayer />
-                    <RouteLines />
-                    <AgentPucks agents={agents} />
-                    <FOVCones agents={agents} visible={showFov} />
-                    <XRayBuilding
-                      building={selectedBuilding}
-                      selectedRoom={selectedRoom}
-                      visible={interiorView && selectedBuilding !== null}
-                      floor={selectedFloor}
-                    />
-                    <TacticalCamera ref={cameraRef} />
+                    <ChunkVisibility chunks={chunks}>
+                      <TerrainLayer key={terrainKey} />
+                      <HexMapScene />
+                      <HexGridLines opacity={0.18} />
+                      <BuildingLayer
+                        buildings={buildingData}
+                        selectedBuilding={selectedBuilding}
+                        onSelectBuilding={setSelectedBuilding}
+                        interiorView={interiorView}
+                      />
+                      <RockLayer buildings={buildingData} />
+                      <PropLayer />
+                      <RouteLines />
+                      <AgentPucks agents={agents} />
+                      <FOVCones agents={agents} visible={showFov} />
+                      <XRayBuilding
+                        building={selectedBuilding}
+                        selectedRoom={selectedRoom}
+                        visible={interiorView && selectedBuilding !== null}
+                        floor={selectedFloor}
+                      />
+                      <TacticalCamera ref={cameraRef} />
+                    </ChunkVisibility>
                     <Bloom
                       luminanceThreshold={0.65}
                       luminanceSmoothing={0.85}

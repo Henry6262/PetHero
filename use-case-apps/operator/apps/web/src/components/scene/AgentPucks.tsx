@@ -9,8 +9,8 @@ export default function AgentPucks({ agents }: { agents: Agent[] }) {
   const groundRef = useRef<THREE.InstancedMesh>(null);
   const aerialRef = useRef<THREE.InstancedMesh>(null);
 
-  const groundGeom = useMemo(() => new THREE.CylinderGeometry(1.1, 1.1, 0.35, 24), []);
-  const aerialGeom = useMemo(() => new THREE.SphereGeometry(0.9, 24, 24), []);
+  const groundGeom = useMemo(() => new THREE.CylinderGeometry(1.5, 1.5, 0.45, 24), []);
+  const aerialGeom = useMemo(() => new THREE.SphereGeometry(1.3, 24, 24), []);
   const groundMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -77,7 +77,7 @@ export default function AgentPucks({ agents }: { agents: Agent[] }) {
       <instancedMesh ref={groundRef} args={[groundGeom, groundMat, groundCount]} castShadow receiveShadow />
       <instancedMesh ref={aerialRef} args={[aerialGeom, aerialMat, aerialCount]} castShadow receiveShadow />
       {agents3D.map((a) => (
-        <Html key={a.id} position={[a.position.x, a.position.y + 1.6, a.position.z]} center distanceFactor={12}>
+        <Html key={a.id} position={[a.position.x, a.position.y + 2.0, a.position.z]} center distanceFactor={12}>
           <div className="agent-puck-label">{a.agent.id}</div>
         </Html>
       ))}

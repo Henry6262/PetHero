@@ -7,8 +7,8 @@ export default function TerrainLayer() {
     const geo = new THREE.PlaneGeometry(
       TERRAIN_SIZE.width,
       TERRAIN_SIZE.depth,
-      120,
-      80
+      160,
+      110
     );
     geo.rotateX(-Math.PI / 2);
 

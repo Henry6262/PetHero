@@ -11,4 +11,5 @@ export { default as Minimap } from "./Minimap";
 export { default as HexGridLines } from "./HexGridLines";
 export { default as TerrainLayer } from "./TerrainLayer";
 export { default as RockLayer } from "./RockLayer";
+export { default as ChunkVisibility } from "./ChunkVisibility";
 export type { TacticalCameraHandle } from "./TacticalCamera";

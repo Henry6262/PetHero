@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import type { MeshBVH } from "three-mesh-bvh";
-import { GenerateMeshBVHWorker } from "three-mesh-bvh/worker";
-import { buildBuilding3D, buildingMaterial } from "../../lib/buildings";
+import { MeshBVH } from "three-mesh-bvh";
+import { buildBuilding3D, buildingMaterial, createRoofGeometry } from "../../lib/buildings";
 import { requestBuildingGeometry } from "../../lib/geometryWorker";
+import { cellChunk } from "../../lib/chunks";
 import type { Building } from "../../data/sections";
+import { useVisibleChunks } from "./ChunkVisibility";
 
 interface CachedBuilding {
   geometry: THREE.BufferGeometry;
@@ -14,6 +15,7 @@ interface CachedBuilding {
 interface BuildingMeshData {
   b3d: ReturnType<typeof buildBuilding3D>;
   geometry: THREE.BufferGeometry;
+  roofGeometry: THREE.BufferGeometry | null;
   material: THREE.MeshStandardMaterial;
 }
 
@@ -28,18 +30,22 @@ export default function BuildingLayer({
   onSelectBuilding: (building: Building | null) => void;
   interiorView: boolean;
 }) {
+  const visibleChunks = useVisibleChunks();
   const building3Ds = buildings.map((b) => buildBuilding3D(b, selectedBuilding?.id === b.id));
+
+  const visibleBuilding3Ds = useMemo(() => {
+    if (visibleChunks.size === 0) return building3Ds;
+    return building3Ds.filter((b3d) => {
+      const { col, row } = cellChunk(b3d.hexCol, b3d.hexRow);
+      return visibleChunks.has(`${col}-${row}`);
+    });
+  }, [building3Ds, visibleChunks]);
 
   const [meshData, setMeshData] = useState<BuildingMeshData[]>([]);
   const cacheRef = useRef(new Map<string, CachedBuilding>());
-  const workerRef = useRef<GenerateMeshBVHWorker | null>(null);
   const materialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
 
   useEffect(() => {
-    if (!workerRef.current) {
-      workerRef.current = new GenerateMeshBVHWorker();
-    }
-    const bvhWorker = workerRef.current;
     let cancelled = false;
 
     (async () => {
@@ -47,7 +53,7 @@ export default function BuildingLayer({
       materialsRef.current.forEach((m) => m.dispose());
       materialsRef.current = [];
 
-      const missing = building3Ds.filter((b3d) => !cacheRef.current.has(b3d.id));
+      const missing = visibleBuilding3Ds.filter((b3d) => !cacheRef.current.has(b3d.id));
 
       // Fetch missing extruded geometries in parallel.
       const geometryResults = await Promise.all(
@@ -58,15 +64,15 @@ export default function BuildingLayer({
         })
       );
 
-      // The BVH worker only runs one job at a time, so generate sequentially.
+      // Compute BVH synchronously on the main thread (small number of buildings).
       for (const { b3d, geometry } of geometryResults) {
-        const bvh = await bvhWorker.generate(geometry);
+        const bvh = new MeshBVH(geometry);
         geometry.boundsTree = bvh;
         cacheRef.current.set(b3d.id, { geometry, bvh });
       }
 
       // Drop buildings that no longer exist.
-      const currentIds = new Set(building3Ds.map((b) => b.id));
+      const currentIds = new Set(visibleBuilding3Ds.map((b) => b.id));
       for (const [id, { geometry }] of Array.from(cacheRef.current.entries())) {
         if (!currentIds.has(id)) {
           geometry.dispose();
@@ -76,11 +82,12 @@ export default function BuildingLayer({
 
       if (cancelled) return;
 
-      const results: BuildingMeshData[] = building3Ds.map((b3d) => {
+      const results: BuildingMeshData[] = visibleBuilding3Ds.map((b3d) => {
         const cached = cacheRef.current.get(b3d.id)!;
         const isXray = interiorView && b3d.selected;
-        const material = buildingMaterial(b3d.status, b3d.selected, isXray);
-        return { b3d, geometry: cached.geometry, material };
+        const material = buildingMaterial(b3d.status, b3d.kind, b3d.selected, isXray);
+        const roofGeometry = createRoofGeometry(b3d.footprint, b3d.kind);
+        return { b3d, geometry: cached.geometry, roofGeometry, material };
       });
 
       materialsRef.current = results.map((r) => r.material);
@@ -90,12 +97,10 @@ export default function BuildingLayer({
     return () => {
       cancelled = true;
     };
-  }, [building3Ds, interiorView]);
+  }, [visibleBuilding3Ds, interiorView]);
 
   useEffect(() => {
     return () => {
-      workerRef.current?.terminate();
-      workerRef.current = null;
       materialsRef.current.forEach((m) => m.dispose());
       materialsRef.current = [];
       cacheRef.current.forEach(({ geometry }) => geometry.dispose());
@@ -105,21 +110,33 @@ export default function BuildingLayer({
 
   return (
     <group>
-      {meshData.map(({ b3d, geometry, material }) => (
-        <mesh
+      {meshData.map(({ b3d, geometry, roofGeometry, material }) => (
+        <group
           key={b3d.id}
           position={b3d.position}
           rotation={[0, b3d.rotation, 0]}
-          geometry={geometry}
-          material={material}
-          castShadow
-          receiveShadow
-          onPointerDown={(e) => {
-            e.stopPropagation();
-            const match = buildings.find((b) => b.id === b3d.id) ?? null;
-            onSelectBuilding(match);
-          }}
-        />
+        >
+          <mesh
+            geometry={geometry}
+            material={material}
+            castShadow
+            receiveShadow
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              const match = buildings.find((b) => b.id === b3d.id) ?? null;
+              onSelectBuilding(match);
+            }}
+          />
+          {roofGeometry && (
+            <mesh
+              geometry={roofGeometry}
+              material={material}
+              position={[0, b3d.height, 0]}
+              castShadow
+              receiveShadow
+            />
+          )}
+        </group>
       ))}
     </group>
   );
