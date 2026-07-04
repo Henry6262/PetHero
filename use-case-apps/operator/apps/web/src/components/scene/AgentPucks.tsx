@@ -5,15 +5,16 @@ import { Html } from "@react-three/drei";
 import { buildAgents3D } from "../../lib/agents";
 import type { Agent } from "../../data/sections";
 
-const OUTLINE_MATERIAL = new THREE.LineBasicMaterial({
-  color: 0xffffff,
-  transparent: true,
-  opacity: 0.6,
-  depthWrite: false,
-});
-
-function addOutline(geometry: THREE.BufferGeometry): THREE.LineSegments {
-  return new THREE.LineSegments(new THREE.EdgesGeometry(geometry), OUTLINE_MATERIAL);
+function addOutline(geometry: THREE.BufferGeometry, color: THREE.Color): THREE.LineSegments {
+  return new THREE.LineSegments(
+    new THREE.EdgesGeometry(geometry),
+    new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0.65,
+      depthWrite: false,
+    })
+  );
 }
 
 function HumanAgent({
@@ -110,7 +111,7 @@ function HumanAgent({
 
       {/* Outline — approximate bounding box */}
       <primitive
-        object={addOutline(new THREE.BoxGeometry(0.62, 1.7, 0.45))}
+        object={addOutline(new THREE.BoxGeometry(0.62, 1.7, 0.45), color)}
         position={[0, 0.86, 0.02]}
       />
 
@@ -161,7 +162,7 @@ function DroneAgent({
         <boxGeometry args={[0.55 * s, 0.18 * s, 0.75 * s]} />
         <meshStandardMaterial color="#2b3038" roughness={0.5} metalness={0.3} fog={false} />
       </mesh>
-      <primitive object={addOutline(new THREE.BoxGeometry(0.55 * s, 0.18 * s, 0.75 * s))} />
+      <primitive object={addOutline(new THREE.BoxGeometry(0.55 * s, 0.18 * s, 0.75 * s), color)} />
 
       {/* Accent stripe */}
       <mesh position={[0, 0.02 * s, 0]} castShadow>
@@ -198,7 +199,7 @@ function DroneAgent({
             <meshStandardMaterial color="#1a1d23" transparent opacity={0.8} fog={false} />
           </mesh>
           <primitive
-            object={addOutline(new THREE.BoxGeometry(0.55 * s, 0.02 * s, 0.06 * s))}
+            object={addOutline(new THREE.BoxGeometry(0.55 * s, 0.02 * s, 0.06 * s), color)}
             position={[0, 0.1 * s, 0]}
           />
         </group>
