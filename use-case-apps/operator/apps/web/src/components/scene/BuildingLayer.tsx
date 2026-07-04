@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { MeshBVH } from "three-mesh-bvh";
-import { buildBuilding3D, buildingMaterial, createRoofGeometry } from "../../lib/buildings";
+import {
+  buildBuilding3D,
+  buildingMaterial,
+  createBuildingOutlineGeometry,
+  createRoofGeometry,
+  buildingOutlineMaterial,
+} from "../../lib/buildings";
 import { requestBuildingGeometry } from "../../lib/geometryWorker";
 import { cellChunk } from "../../lib/chunks";
 import type { Building } from "../../data/sections";
@@ -16,7 +22,10 @@ interface BuildingMeshData {
   b3d: ReturnType<typeof buildBuilding3D>;
   geometry: THREE.BufferGeometry;
   roofGeometry: THREE.BufferGeometry | null;
+  outlineGeometry: THREE.BufferGeometry;
+  roofOutlineGeometry: THREE.BufferGeometry | null;
   material: THREE.MeshStandardMaterial;
+  outlineMaterial: THREE.LineBasicMaterial;
 }
 
 export default function BuildingLayer({
@@ -82,12 +91,23 @@ export default function BuildingLayer({
 
       if (cancelled) return;
 
+      const outlineMaterial = buildingOutlineMaterial();
       const results: BuildingMeshData[] = visibleBuilding3Ds.map((b3d) => {
         const cached = cacheRef.current.get(b3d.id)!;
         const isXray = interiorView && b3d.selected;
         const material = buildingMaterial(b3d.status, b3d.kind, b3d.selected, isXray);
         const roofGeometry = createRoofGeometry(b3d.footprint, b3d.kind);
-        return { b3d, geometry: cached.geometry, roofGeometry, material };
+        const outlineGeometry = createBuildingOutlineGeometry(cached.geometry);
+        const roofOutlineGeometry = roofGeometry ? createBuildingOutlineGeometry(roofGeometry) : null;
+        return {
+          b3d,
+          geometry: cached.geometry,
+          roofGeometry,
+          outlineGeometry,
+          roofOutlineGeometry,
+          material,
+          outlineMaterial,
+        };
       });
 
       materialsRef.current = results.map((r) => r.material);
@@ -127,6 +147,7 @@ export default function BuildingLayer({
               onSelectBuilding(match);
             }}
           />
+          <lineSegments geometry={outlineGeometry} material={outlineMaterial} />
           {roofGeometry && (
             <mesh
               geometry={roofGeometry}
@@ -134,6 +155,13 @@ export default function BuildingLayer({
               position={[0, b3d.height, 0]}
               castShadow
               receiveShadow
+            />
+          )}
+          {roofOutlineGeometry && (
+            <lineSegments
+              geometry={roofOutlineGeometry}
+              material={outlineMaterial}
+              position={[0, b3d.height, 0]}
             />
           )}
         </group>

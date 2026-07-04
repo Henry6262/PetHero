@@ -337,7 +337,7 @@ export function buildingMaterial(
   const palette = STATUS_BUILDING_COLORS[status];
   const texture = createFacadeTexture(kind);
   return new THREE.MeshStandardMaterial({
-    color: palette.color,
+    color: "#7a8189",
     map: texture,
     emissive: palette.emissive,
     emissiveIntensity: selected ? palette.intensity * 2.2 : palette.intensity,
@@ -348,4 +348,19 @@ export function buildingMaterial(
     depthWrite: !xray,
     fog: false,
   });
+}
+
+const OUTLINE_MATERIAL = new THREE.LineBasicMaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0.55,
+  depthWrite: false,
+});
+
+export function createBuildingOutlineGeometry(geometry: THREE.BufferGeometry): THREE.BufferGeometry {
+  return new THREE.EdgesGeometry(geometry);
+}
+
+export function buildingOutlineMaterial(): THREE.LineBasicMaterial {
+  return OUTLINE_MATERIAL;
 }

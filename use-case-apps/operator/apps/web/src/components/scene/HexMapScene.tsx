@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { createHexMaterial, generateCells, cellColor, HEX_SIZE, cellWorldPosition } from "../../lib/hex";
+import { getTerrainHeight, getTerrainNormal } from "../../lib/terrain";
 import { requestHexGeometry } from "../../lib/geometryWorker";
 import { buildChunks, CHUNK_SIZE_CELLS, type Chunk } from "../../lib/chunks";
 import { useVisibleChunks } from "./ChunkVisibility";
@@ -47,6 +48,7 @@ export default function HexMapScene({
 
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
+    const up = new THREE.Vector3(0, 1, 0);
 
     for (const chunk of chunks) {
       let mesh = meshRefs.current.get(chunk.id);
@@ -57,8 +59,11 @@ export default function HexMapScene({
       }
 
       chunk.cells.forEach((cell, i) => {
-        const { x, y, z } = cellWorldPosition(cell.col, cell.row);
+        const { x, z } = cellWorldPosition(cell.col, cell.row);
+        const y = getTerrainHeight(x, z) + 0.02;
+        const normal = getTerrainNormal(x, z);
         dummy.position.set(x, y, z);
+        dummy.quaternion.setFromUnitVectors(up, normal);
         dummy.updateMatrix();
         mesh!.setMatrixAt(i, dummy.matrix);
         mesh!.setColorAt(i, color.set(cellColor(cell)));
