@@ -39,6 +39,7 @@
 | Jul 3 | Operator Building Visualization Research | Web research + synthesis (Three.js community, Cesium, MIL-STD-2525, free asset libraries) | `operator-building-visualization/` (5 files) | **Operator / SCOUT.** Options and implementation path to move Operator's buildings from extruded rectangles to recognizable, tactical, performant structures using textures, procedural roofs, archetypes, and free assets. |
 | Jul 3 | Operator Large-Map Optimization Research | Web research + synthesis (Three.js docs, R3F scaling guide, `@three.ez/instanced-mesh`, `three-mesh-bvh`, community optimization articles) | `operator-large-map-optimization/` (5 files) | **Operator / SCOUT.** How to double the map area while keeping 60 FPS via draw-call reduction, chunking, per-instance frustum culling, LOD, and terrain tiling. |
 | Jul 3 | Operator Battlefield Environment Research | Web research + synthesis (Three.js instancing, Sketchfab/Kenney assets, village battlefield design) | `operator-battlefield-environment/` (4 files) | **Operator / SCOUT.** How to add village battlefield elements: compounds, walls, cars, sandbags, barriers, wrecked cars, and obstacles using procedural generation and instancing. |
+| Jul 4 | Terrain + Coordinate Repo Cheatsheet | Curated reference list (react-three-terrain, THREE.Terrain, geodesy, proj4, r3f-globe, etc.) | `operator-terrain-coordinate-cheatsheet/` (1 file) | **Operator / SCOUT.** Copy-paste reference for terrain BufferGeometry construction, coordinate conversion, and LOD options. |
 
 ## Planned Research Areas
 
