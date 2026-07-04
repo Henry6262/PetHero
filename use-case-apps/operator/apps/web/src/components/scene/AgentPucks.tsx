@@ -30,10 +30,11 @@ function HumanAgent({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const color = useMemo(() => new THREE.Color(accent), [accent]);
+  const scale = 1.5;
 
   useFrame(({ clock }) => {
     if (groupRef.current) {
-      groupRef.current.position.y = position.y + Math.sin(clock.getElapsedTime() * 2 + position.x) * 0.015;
+      groupRef.current.position.y = position.y + Math.sin(clock.getElapsedTime() * 2 + position.x) * 0.02;
     }
   });
 
@@ -42,6 +43,7 @@ function HumanAgent({
       ref={groupRef}
       position={[position.x, position.y, position.z]}
       rotation={[0, rotation, 0]}
+      scale={[scale, scale, scale]}
     >
       {/* Legs */}
       <mesh position={[-0.12, 0.35, 0]} castShadow>
