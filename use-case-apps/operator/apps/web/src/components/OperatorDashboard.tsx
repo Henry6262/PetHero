@@ -353,7 +353,7 @@ export default function OperatorDashboard() {
                     />
                     <TerrainLayer key={terrainKey} />
                     <HexMapScene />
-                    <HexGridLines opacity={0.18} />
+                    <HexGridLines opacity={0.06} />
                     <BuildingLayer
                       buildings={buildingData}
                       selectedBuilding={selectedBuilding}

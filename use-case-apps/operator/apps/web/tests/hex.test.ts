@@ -68,10 +68,11 @@ describe("hex geometry", () => {
     geom.dispose();
   });
 
-  test("createHexMaterial is a transparent material", () => {
+  test("createHexMaterial is a greenish transparent material", () => {
     const material = createHexMaterial();
     expect(material.transparent).toBe(true);
     expect(material.opacity).toBeLessThan(1);
+    expect(material.color.g).toBeGreaterThan(material.color.r);
     material.dispose();
   });
 });

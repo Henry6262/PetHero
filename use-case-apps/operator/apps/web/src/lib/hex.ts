@@ -35,13 +35,13 @@ export function cellWorldPosition(col: number, row: number): { x: number; y: num
 }
 
 const STATUS_PALETTE = {
-  goal: "#5fe6b0",
-  station: "#34d399",
-  conflict: "#f87171",
-  stale: "#fbbf24",
-  route: "#5fb2ff",
-  street: "#3a4659",
-  default: "#2e3848",
+  goal: "#4ade80",
+  station: "#22c55e",
+  conflict: "#86efac",
+  stale: "#6ee7b7",
+  route: "#3b8c5f",
+  street: "#2f6b47",
+  default: "#2d5a3d",
 };
 
 export function cellColor(cell: HexCell): THREE.Color {
@@ -82,16 +82,13 @@ export function createHexGeometry(radius: number, height: number): THREE.BufferG
   return geometry;
 }
 
-export function createHexMaterial(): THREE.MeshPhysicalMaterial {
-  return new THREE.MeshPhysicalMaterial({
-    color: "#3f7a55",
-    roughness: 0.2,
+export function createHexMaterial(): THREE.MeshStandardMaterial {
+  return new THREE.MeshStandardMaterial({
+    color: "#3d8c5f",
+    roughness: 0.45,
     metalness: 0.05,
-    transmission: 0.25,
-    thickness: 0.5,
     transparent: true,
-    opacity: 0.88,
-    side: THREE.DoubleSide,
+    opacity: 0.92,
     fog: false,
   });
 }
