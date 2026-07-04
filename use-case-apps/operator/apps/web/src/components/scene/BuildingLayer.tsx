@@ -9,9 +9,7 @@ import {
   buildingOutlineMaterial,
 } from "../../lib/buildings";
 import { requestBuildingGeometry } from "../../lib/geometryWorker";
-import { cellChunk } from "../../lib/chunks";
 import type { Building } from "../../data/sections";
-import { useVisibleChunks } from "./ChunkVisibility";
 
 interface CachedBuilding {
   geometry: THREE.BufferGeometry;
@@ -39,17 +37,7 @@ export default function BuildingLayer({
   onSelectBuilding: (building: Building | null) => void;
   interiorView: boolean;
 }) {
-  const visibleChunks = useVisibleChunks();
   const building3Ds = buildings.map((b) => buildBuilding3D(b, selectedBuilding?.id === b.id));
-
-  const visibleBuilding3Ds = useMemo(() => {
-    if (visibleChunks.size === 0) return building3Ds;
-    return building3Ds.filter((b3d) => {
-      const { col, row } = cellChunk(b3d.hexCol, b3d.hexRow);
-      return visibleChunks.has(`${col}-${row}`);
-    });
-  }, [building3Ds, visibleChunks]);
-
   const [meshData, setMeshData] = useState<BuildingMeshData[]>([]);
   const cacheRef = useRef(new Map<string, CachedBuilding>());
   const materialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
@@ -62,7 +50,7 @@ export default function BuildingLayer({
       materialsRef.current.forEach((m) => m.dispose());
       materialsRef.current = [];
 
-      const missing = visibleBuilding3Ds.filter((b3d) => !cacheRef.current.has(b3d.id));
+      const missing = building3Ds.filter((b3d) => !cacheRef.current.has(b3d.id));
 
       // Fetch missing extruded geometries in parallel.
       const geometryResults = await Promise.all(
@@ -81,7 +69,7 @@ export default function BuildingLayer({
       }
 
       // Drop buildings that no longer exist.
-      const currentIds = new Set(visibleBuilding3Ds.map((b) => b.id));
+      const currentIds = new Set(building3Ds.map((b) => b.id));
       for (const [id, { geometry }] of Array.from(cacheRef.current.entries())) {
         if (!currentIds.has(id)) {
           geometry.dispose();
@@ -92,7 +80,7 @@ export default function BuildingLayer({
       if (cancelled) return;
 
       const outlineMaterial = buildingOutlineMaterial();
-      const results: BuildingMeshData[] = visibleBuilding3Ds.map((b3d) => {
+      const results: BuildingMeshData[] = building3Ds.map((b3d) => {
         const cached = cacheRef.current.get(b3d.id)!;
         const isXray = interiorView && b3d.selected;
         const material = buildingMaterial(b3d.status, b3d.kind, b3d.selected, isXray);
@@ -117,7 +105,7 @@ export default function BuildingLayer({
     return () => {
       cancelled = true;
     };
-  }, [visibleBuilding3Ds, interiorView]);
+  }, [building3Ds, interiorView]);
 
   useEffect(() => {
     return () => {

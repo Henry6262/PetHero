@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer, FXAA } from "@react-three/postprocessing";
 import {
@@ -15,13 +15,10 @@ import {
 } from "../data/sections";
 import OperatorNav from "./OperatorNav";
 import { buildAgents3D } from "../lib/agents";
-import { generateCells } from "../lib/hex";
-import { buildChunks } from "../lib/chunks";
 import {
   AgentPucks,
   AgentScanSectors,
   BuildingLayer,
-  ChunkVisibility,
   FOVCones,
   FloorplanPanel,
   HexGridLines,
@@ -98,9 +95,6 @@ export default function OperatorDashboard() {
   const [selectedRoom, setSelectedRoom] = useState<RoomInterior | null>(null);
   const [selectedFloor, setSelectedFloor] = useState(0);
   const [terrainKey, setTerrainKey] = useState(0);
-
-  const cells = useMemo(() => generateCells(), []);
-  const chunks = useMemo(() => buildChunks(cells, buildingData), [cells]);
 
   useEffect(() => {
     setSelectedRoom(null);
@@ -356,29 +350,27 @@ export default function OperatorDashboard() {
                       shadow-camera-bottom={-180}
                       shadow-bias={-0.0005}
                     />
-                    <ChunkVisibility chunks={chunks}>
-                      <TerrainLayer key={terrainKey} />
-                      <HexMapScene />
-                      <HexGridLines opacity={0.18} />
-                      <BuildingLayer
-                        buildings={buildingData}
-                        selectedBuilding={selectedBuilding}
-                        onSelectBuilding={setSelectedBuilding}
-                        interiorView={interiorView}
-                      />
-                      <RockLayer buildings={buildingData} />
-                      <PropLayer />
-                      <RouteLines />
-                      <AgentPucks agents={agents} />
-                      <AgentScanSectors agents={agents} visible={showFov} />
-                      <XRayBuilding
-                        building={selectedBuilding}
-                        selectedRoom={selectedRoom}
-                        visible={interiorView && selectedBuilding !== null}
-                        floor={selectedFloor}
-                      />
-                      <TacticalCamera ref={cameraRef} />
-                    </ChunkVisibility>
+                    <TerrainLayer key={terrainKey} />
+                    <HexMapScene />
+                    <HexGridLines opacity={0.18} />
+                    <BuildingLayer
+                      buildings={buildingData}
+                      selectedBuilding={selectedBuilding}
+                      onSelectBuilding={setSelectedBuilding}
+                      interiorView={interiorView}
+                    />
+                    <RockLayer buildings={buildingData} />
+                    <PropLayer />
+                    <RouteLines />
+                    <AgentPucks agents={agents} />
+                    <AgentScanSectors agents={agents} visible={showFov} />
+                    <XRayBuilding
+                      building={selectedBuilding}
+                      selectedRoom={selectedRoom}
+                      visible={interiorView && selectedBuilding !== null}
+                      floor={selectedFloor}
+                    />
+                    <TacticalCamera ref={cameraRef} />
                     <Bloom
                       luminanceThreshold={0.65}
                       luminanceSmoothing={0.85}

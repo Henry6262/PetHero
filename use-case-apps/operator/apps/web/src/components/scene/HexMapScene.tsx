@@ -4,8 +4,6 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { createHexMaterial, generateCells, cellColor, HEX_SIZE, cellWorldPosition } from "../../lib/hex";
 import { getTerrainHeight, getTerrainNormal } from "../../lib/terrain";
 import { requestHexGeometry } from "../../lib/geometryWorker";
-import { buildChunks, CHUNK_SIZE_CELLS, type Chunk } from "../../lib/chunks";
-import { useVisibleChunks } from "./ChunkVisibility";
 
 export default function HexMapScene({
   onHoverCell,
@@ -13,23 +11,12 @@ export default function HexMapScene({
   onHoverCell?: (index: number | null) => void;
 }) {
   const { raycaster, pointer, camera } = useThree();
-  const visibleChunks = useVisibleChunks();
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const hoveredRef = useRef<number | null>(null);
 
   const cells = useMemo(() => generateCells(), []);
-  const chunks = useMemo(() => buildChunks(cells, []), [cells]);
-  const cellByIndex = useMemo(() => {
-    const map = new Map<number, { cell: typeof cells[0]; chunk: Chunk; localIndex: number }>();
-    for (const chunk of chunks) {
-      chunk.cells.forEach((cell, localIndex) => {
-        map.set(cell.index, { cell, chunk, localIndex });
-      });
-    }
-    return map;
-  }, [chunks]);
-
   const material = useMemo(() => createHexMaterial(), []);
   const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
-  const hoveredRef = useRef<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -41,92 +28,59 @@ export default function HexMapScene({
     };
   }, []);
 
-  const meshRefs = useRef<Map<string, THREE.InstancedMesh>>(new Map());
-
   useEffect(() => {
-    if (!geometry) return;
+    const mesh = meshRef.current;
+    if (!mesh || !geometry) return;
 
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
     const up = new THREE.Vector3(0, 1, 0);
 
-    for (const chunk of chunks) {
-      let mesh = meshRefs.current.get(chunk.id);
-      if (!mesh) {
-        mesh = new THREE.InstancedMesh(geometry, material, chunk.cells.length);
-        mesh.frustumCulled = false;
-        meshRefs.current.set(chunk.id, mesh);
-      }
+    cells.forEach((cell, i) => {
+      const { x, z } = cellWorldPosition(cell.col, cell.row);
+      const y = getTerrainHeight(x, z) + 0.02;
+      const normal = getTerrainNormal(x, z);
+      dummy.position.set(x, y, z);
+      dummy.quaternion.setFromUnitVectors(up, normal);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+      mesh.setColorAt(i, color.set(cellColor(cell)));
+    });
 
-      chunk.cells.forEach((cell, i) => {
-        const { x, z } = cellWorldPosition(cell.col, cell.row);
-        const y = getTerrainHeight(x, z) + 0.02;
-        const normal = getTerrainNormal(x, z);
-        dummy.position.set(x, y, z);
-        dummy.quaternion.setFromUnitVectors(up, normal);
-        dummy.updateMatrix();
-        mesh!.setMatrixAt(i, dummy.matrix);
-        mesh!.setColorAt(i, color.set(cellColor(cell)));
-      });
-
-      mesh.instanceMatrix.needsUpdate = true;
-      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-    }
-  }, [chunks, geometry, material]);
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  }, [cells, geometry]);
 
   useFrame(() => {
-    const visibleMeshes: THREE.InstancedMesh[] = [];
-    for (const chunk of chunks) {
-      if (visibleChunks.size === 0 || visibleChunks.has(chunk.id)) {
-        const mesh = meshRefs.current.get(chunk.id);
-        if (mesh) visibleMeshes.push(mesh);
-      }
-    }
-    if (visibleMeshes.length === 0) return;
+    const mesh = meshRef.current;
+    if (!mesh) return;
 
     raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObjects(visibleMeshes);
+    const hits = raycaster.intersectObject(mesh);
     const hit = hits[0];
     const instanceId = hit?.instanceId ?? null;
-    const hitMesh = hit?.object as THREE.InstancedMesh | undefined;
-    const globalIndex =
-      instanceId !== null && hitMesh
-        ? chunks.find((c) => meshRefs.current.get(c.id) === hitMesh)?.cells[instanceId]?.index ?? null
-        : null;
 
-    if (globalIndex !== hoveredRef.current) {
+    if (instanceId !== hoveredRef.current) {
       if (hoveredRef.current !== null) {
-        const prev = hoveredRef.current;
-        const prevInfo = cellByIndex.get(prev);
-        if (prevInfo) {
-          const prevMesh = meshRefs.current.get(prevInfo.chunk.id);
-          if (prevMesh) {
-            prevMesh.setColorAt(prevInfo.localIndex, cellColor(prevInfo.cell));
-            if (prevMesh.instanceColor) prevMesh.instanceColor.needsUpdate = true;
-          }
-        }
+        mesh.setColorAt(hoveredRef.current, cellColor(cells[hoveredRef.current]));
       }
-      if (globalIndex !== null && hitMesh && instanceId !== null) {
-        const hovered = cellColor(cells[globalIndex]).clone();
+      if (instanceId !== null) {
+        const hovered = cellColor(cells[instanceId]).clone();
         hovered.offsetHSL(0, 0, 0.12);
-        hitMesh.setColorAt(instanceId, hovered);
-        if (hitMesh.instanceColor) hitMesh.instanceColor.needsUpdate = true;
+        mesh.setColorAt(instanceId, hovered);
       }
-      hoveredRef.current = globalIndex;
-      onHoverCell?.(globalIndex);
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      hoveredRef.current = instanceId;
+      onHoverCell?.(instanceId);
     }
   });
 
   if (!geometry) return null;
 
   return (
-    <>
-      {chunks.map((chunk) => {
-        const mesh = meshRefs.current.get(chunk.id);
-        if (!mesh) return null;
-        if (visibleChunks.size > 0 && !visibleChunks.has(chunk.id)) return null;
-        return <primitive key={chunk.id} object={mesh} />;
-      })}
-    </>
+    <instancedMesh
+      ref={meshRef}
+      args={[geometry, material, cells.length]}
+    />
   );
 }
