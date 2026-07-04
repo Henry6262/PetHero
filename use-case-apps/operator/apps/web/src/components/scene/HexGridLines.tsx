@@ -15,20 +15,18 @@ export default function HexGridLines({
   const geometry = useMemo(() => {
     const cells = generateCells();
     const positions: number[] = [];
-    const angleStep = Math.PI / 3;
 
     for (const cell of cells) {
       const { x, z } = cellWorldPosition(cell.col, cell.row);
-      const corners: [number, number, number][] = [];
-      for (let i = 0; i < 6; i++) {
-        const angle = i * angleStep;
-        const cx = x + Math.cos(angle) * radius;
-        const cz = z + Math.sin(angle) * radius;
-        corners.push([cx, getTerrainHeight(cx, cz) + 0.03, cz]);
-      }
-      for (let i = 0; i < 6; i++) {
+      const corners: [number, number, number][] = [
+        [x - radius, getTerrainHeight(x - radius, z - radius) + 0.03, z - radius],
+        [x + radius, getTerrainHeight(x + radius, z - radius) + 0.03, z - radius],
+        [x + radius, getTerrainHeight(x + radius, z + radius) + 0.03, z + radius],
+        [x - radius, getTerrainHeight(x - radius, z + radius) + 0.03, z + radius],
+      ];
+      for (let i = 0; i < 4; i++) {
         const [x1, y1, z1] = corners[i];
-        const [x2, y2, z2] = corners[(i + 1) % 6];
+        const [x2, y2, z2] = corners[(i + 1) % 4];
         positions.push(x1, y1, z1, x2, y2, z2);
       }
     }

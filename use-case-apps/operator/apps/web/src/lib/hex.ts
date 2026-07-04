@@ -26,12 +26,14 @@ export {
   GRID_CENTER,
 };
 
+const CELL_SPACING = HEX_SIZE * 2;
+const CENTER_COL = (GRID_COLS + 1) / 2;
+const CENTER_ROW = (GRID_ROWS + 1) / 2;
+
 export function cellWorldPosition(col: number, row: number): { x: number; y: number; z: number } {
-  const { q, r } = evenrToAxial(col, row);
-  const { x, z } = axialToWorld(q, r);
-  const cx = x - GRID_CENTER.x;
-  const cz = z - GRID_CENTER.z;
-  return { x: cx, y: getTerrainHeight(cx, cz) + 0.02, z: cz };
+  const x = (col - CENTER_COL) * CELL_SPACING;
+  const z = (row - CENTER_ROW) * CELL_SPACING;
+  return { x, y: getTerrainHeight(x, z) + 0.02, z };
 }
 
 const STATUS_PALETTE = {
@@ -62,14 +64,12 @@ export function cellColor(cell: HexCell): THREE.Color {
 }
 
 export function createHexGeometry(radius: number, height: number): THREE.BufferGeometry {
+  // Square cells instead of hexagons.
   const shape = new THREE.Shape();
-  for (let i = 0; i < 6; i++) {
-    const angle = i * Math.PI / 3;
-    const x = Math.cos(angle) * radius;
-    const y = Math.sin(angle) * radius;
-    if (i === 0) shape.moveTo(x, y);
-    else shape.lineTo(x, y);
-  }
+  shape.moveTo(-radius, -radius);
+  shape.lineTo(radius, -radius);
+  shape.lineTo(radius, radius);
+  shape.lineTo(-radius, radius);
   shape.closePath();
 
   const geometry = new THREE.ExtrudeGeometry(shape, {

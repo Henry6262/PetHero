@@ -1,17 +1,15 @@
 import * as THREE from "three";
 import { createNoise2D } from "simplex-noise";
 import alea from "alea";
-import { GRID_COLS, GRID_ROWS, HEX_SIZE, evenrToAxial, axialToWorld } from "./hex-math";
+import { GRID_COLS, GRID_ROWS, HEX_SIZE } from "./hex-math";
 
 const TERRAIN_SEED = "operator-village-north-001";
 const MARGIN = 6;
-
-const topLeft = axialToWorld(...(Object.values(evenrToAxial(1, 1)) as [number, number]));
-const bottomRight = axialToWorld(...(Object.values(evenrToAxial(GRID_COLS, GRID_ROWS)) as [number, number]));
+const CELL_SPACING = HEX_SIZE * 2;
 
 export const TERRAIN_SIZE = {
-  width: bottomRight.x - topLeft.x + MARGIN * 2,
-  depth: bottomRight.z - topLeft.z + MARGIN * 2,
+  width: (GRID_COLS - 1) * CELL_SPACING + MARGIN * 2,
+  depth: (GRID_ROWS - 1) * CELL_SPACING + MARGIN * 2,
 };
 
 const noiseBase = createNoise2D(alea(TERRAIN_SEED));
