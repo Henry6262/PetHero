@@ -38,7 +38,7 @@ export default function Minimap({
 
   useEffect(() => {
     let active = true;
-    requestHexGeometry(HEX_SIZE * 0.94, 0.06).then((geom) => {
+    requestHexGeometry(HEX_SIZE, 0.06).then((geom) => {
       if (active) setGeometry(geom);
     });
     return () => {

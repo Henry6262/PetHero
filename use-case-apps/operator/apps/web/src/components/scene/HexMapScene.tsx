@@ -20,7 +20,7 @@ export default function HexMapScene({
 
   useEffect(() => {
     let active = true;
-    requestHexGeometry(HEX_SIZE * 0.94, 0.22).then((geom) => {
+    requestHexGeometry(HEX_SIZE, 0.22).then((geom) => {
       if (active) setGeometry(geom);
     });
     return () => {

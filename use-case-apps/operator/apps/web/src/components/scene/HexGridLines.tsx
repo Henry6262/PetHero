@@ -21,7 +21,8 @@ export default function HexGridLines({
       const { x, z } = cellWorldPosition(cell.col, cell.row);
       const corners: [number, number, number][] = [];
       for (let i = 0; i < 6; i++) {
-        const angle = i * angleStep;
+        // Match the pointy-top orientation used by createHexGeometry.
+        const angle = i * angleStep + Math.PI / 6;
         const cx = x + Math.cos(angle) * radius;
         const cz = z + Math.sin(angle) * radius;
         corners.push([cx, getTerrainHeight(cx, cz) + 0.03, cz]);

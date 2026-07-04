@@ -64,7 +64,8 @@ export function cellColor(cell: HexCell): THREE.Color {
 export function createHexGeometry(radius: number, height: number): THREE.BufferGeometry {
   const shape = new THREE.Shape();
   for (let i = 0; i < 6; i++) {
-    const angle = i * Math.PI / 3;
+    // Rotate by 30° so the hex is pointy-top and matches the grid spacing.
+    const angle = i * Math.PI / 3 + Math.PI / 6;
     const x = Math.cos(angle) * radius;
     const y = Math.sin(angle) * radius;
     if (i === 0) shape.moveTo(x, y);
