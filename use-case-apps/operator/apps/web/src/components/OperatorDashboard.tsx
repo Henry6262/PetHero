@@ -532,8 +532,9 @@ export default function OperatorDashboard() {
                       </div>
                       <div className="agent-info">
                         <div className="agent-name">
-                          <span>{agent.name}</span>
+                          <span>{agent.name} — {agent.role}</span>
                         </div>
+                        <div className="agent-activity" style={{ color: agent.accent }}>{agent.activity}</div>
                       </div>
                       <div className="agent-battery">
                         <div className="battery-bar">

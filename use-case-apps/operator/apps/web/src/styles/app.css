@@ -1225,8 +1225,8 @@ main {
 .agent-card-mini {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 9px 11px;
+  gap: 13px;
+  padding: 10px 11px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.022);
   cursor: pointer;
@@ -1250,8 +1250,8 @@ main {
 }
 
 .agent-icon {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   flex: none;
   border-radius: 50%;
   background: color-mix(in srgb, var(--agent) 10%, transparent);
@@ -1273,6 +1273,9 @@ main {
 .agent-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .agent-name {
@@ -1283,7 +1286,19 @@ main {
 
 .agent-name span:first-child {
   color: #e6ebf2;
-  font: 600 15px/1 "IBM Plex Mono", ui-monospace, monospace;
+  font: 600 16px/1.1 "IBM Plex Mono", ui-monospace, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agent-activity {
+  font: 600 10px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .agent-battery {

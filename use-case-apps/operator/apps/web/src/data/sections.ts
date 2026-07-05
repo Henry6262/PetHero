@@ -113,6 +113,7 @@ export type Agent = {
   role: string;
   accent: string;
   status: string;
+  activity: string;
   battery: number;
   icon: string;
   image?: string;
@@ -127,6 +128,7 @@ export const agents: Agent[] = [
     role: "FIELD OPERATOR",
     accent: "#fbbf24",
     status: "ON FOOT · RELAY · cell F11",
+    activity: "Awaiting orders",
     battery: 64,
     section: "human",
     icon: "op",
@@ -144,6 +146,7 @@ export const agents: Agent[] = [
     role: "CQB SPOTTER",
     accent: "#a78bfa",
     status: "ACTIVE · NORTH WING · cell C7",
+    activity: "Heading Alpha",
     battery: 82,
     section: "human",
     icon: "op",
@@ -161,6 +164,7 @@ export const agents: Agent[] = [
     role: "PERIMETER LEAD",
     accent: "#60a5fa",
     status: "ACTIVE · SOUTH GATE · cell P10",
+    activity: "Active at south gate",
     battery: 91,
     section: "human",
     icon: "op",
@@ -178,6 +182,7 @@ export const agents: Agent[] = [
     role: "BREACH OBSERVER",
     accent: "#f87171",
     status: "ACTIVE · EAST DOCK · cell H13",
+    activity: "Observing east dock",
     battery: 77,
     section: "human",
     icon: "op",
@@ -192,9 +197,10 @@ export const agents: Agent[] = [
   {
     id: "Q1",
     name: "Q1",
-    role: "QUADRUPED",
+    role: "QUADRUPED SCOUT",
     accent: "#34d399",
     status: "DOCKED · SYNCING · cell B14",
+    activity: "Docked · syncing",
     battery: 88,
     section: "robot",
     icon: "quad",
@@ -208,9 +214,10 @@ export const agents: Agent[] = [
   {
     id: "H1",
     name: "H1",
-    role: "HEXAPOD",
+    role: "HEXAPOD MEDIC",
     accent: "#5fb2ff",
     status: "EXPLORING · cell J5",
+    activity: "Exploring sector J",
     battery: 73,
     section: "robot",
     icon: "hexapod",
@@ -227,6 +234,7 @@ export const agents: Agent[] = [
     role: "DRONE · SIM",
     accent: "#94a3b8",
     status: "STANDBY · AERIAL · cell N8",
+    activity: "Standby · aerial",
     battery: 100,
     section: "robot",
     icon: "drone",
