@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { buildAgents3D } from "../../lib/agents";
 import { getTerrainHeight } from "../../lib/terrain";
-import type { Agent } from "../../data/sections";
+import type { Agent } from "../../types/data";
 
 const SCAN_VERTEX_SHADER = `
   varying float vDist;

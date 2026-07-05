@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { getTerrainHeight } from "./terrain";
-import type { Agent } from "../data/sections";
+import type { Agent } from "../types/data";
 
 export interface Agent3D {
   id: string;

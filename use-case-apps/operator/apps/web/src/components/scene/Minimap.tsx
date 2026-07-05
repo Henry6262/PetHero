@@ -5,7 +5,7 @@ import { cellColor, generateCells, HEX_SIZE, cellWorldPosition } from "../../lib
 import { requestHexGeometry } from "../../lib/geometryWorker";
 import { buildBuilding3D } from "../../lib/buildings";
 import { buildAgents3D } from "../../lib/agents";
-import type { Agent, Building } from "../../data/sections";
+import type { Agent, Building } from "../../types/data";
 
 const PADDING = 1.12;
 

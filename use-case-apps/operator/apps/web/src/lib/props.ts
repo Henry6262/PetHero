@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { generateCells, cellWorldPosition, HEX_SIZE } from "./hex";
 import { getTerrainHeight } from "./terrain";
-import type { Building } from "../data/sections";
+import type { Building } from "../types/data";
 
 export type PropType =
   | "wrecked-car"

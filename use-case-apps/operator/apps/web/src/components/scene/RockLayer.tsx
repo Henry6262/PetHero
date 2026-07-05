@@ -3,7 +3,7 @@ import * as THREE from "three";
 import seedrandom from "seedrandom";
 import { getTerrainHeight, getTerrainSlope, TERRAIN_SIZE } from "../../lib/terrain";
 import { generateCells, cellWorldPosition } from "../../lib/hex";
-import type { Building } from "../../data/sections";
+import type { Building } from "../../types/data";
 
 const ROCK_COUNT = 300;
 const ROCK_SEED = "operator-village-north-001-rocks";

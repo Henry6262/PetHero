@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { buildAgents3D } from "../../lib/agents";
-import type { Agent } from "../../data/sections";
+import type { Agent } from "../../types/data";
 
 export default function FOVCones({ agents, visible }: { agents: Agent[]; visible: boolean }) {
   const agents3D = useMemo(() => buildAgents3D(agents), [agents]);

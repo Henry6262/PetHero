@@ -6,7 +6,7 @@ import SpotlightCard from "./react-bits/SpotlightCard/SpotlightCard";
 import DroneHero from "./components/DroneHero";
 import OperatorNav from "./components/OperatorNav";
 import OperatorDashboard from "./components/OperatorDashboard";
-import { contextCards, events, fleet, playbooks } from "./data/sections";
+import { contextCards, events, fleet, playbooks } from "./data/demo";
 
 function App() {
   const [bandwidth, setBandwidth] = useState(18);

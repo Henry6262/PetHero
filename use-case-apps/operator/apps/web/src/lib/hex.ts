@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { getTerrainHeight } from "./terrain";
+import { STATUS_THEME } from "./theme";
 import {
   type HexCell,
   generateCells,
@@ -34,31 +35,20 @@ export function cellWorldPosition(col: number, row: number): { x: number; y: num
   return { x: cx, y: getTerrainHeight(cx, cz) + 0.02, z: cz };
 }
 
-const STATUS_PALETTE = {
-  goal: "#4ade80",
-  station: "#22c55e",
-  conflict: "#86efac",
-  stale: "#6ee7b7",
-  route: "#3b8c5f",
-  street: "#2f6b47",
-  default: "#2d5a3d",
-};
+const HEX_STATUS_PRIORITY: { key: keyof HexCell; kind: keyof typeof STATUS_THEME }[] = [
+  { key: "goal", kind: "goal" },
+  { key: "station", kind: "station" },
+  { key: "conflict", kind: "conflict" },
+  { key: "stale", kind: "stale" },
+  { key: "route", kind: "route" },
+  { key: "street", kind: "street" },
+];
 
 export function cellColor(cell: HexCell): THREE.Color {
-  const key: keyof typeof STATUS_PALETTE = cell.goal
-    ? "goal"
-    : cell.station
-    ? "station"
-    : cell.conflict
-    ? "conflict"
-    : cell.stale
-    ? "stale"
-    : cell.route
-    ? "route"
-    : cell.street
-    ? "street"
-    : "default";
-  return new THREE.Color(STATUS_PALETTE[key]);
+  for (const { key, kind } of HEX_STATUS_PRIORITY) {
+    if (cell[key]) return new THREE.Color(STATUS_THEME[kind].color);
+  }
+  return new THREE.Color(STATUS_THEME.street.color);
 }
 
 export function createHexGeometry(radius: number, height: number): THREE.BufferGeometry {

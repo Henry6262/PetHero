@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { generateProps, propGeometry, type PropType } from "../../lib/props";
-import type { Building } from "../../data/sections";
+import type { Building } from "../../types/data";
 
 export default function PropLayer({ buildings }: { buildings: Building[] }) {
   const groupRef = useRef<THREE.Group>(null);

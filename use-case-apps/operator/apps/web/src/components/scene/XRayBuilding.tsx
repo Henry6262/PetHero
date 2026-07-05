@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { generateInteriors } from "../../lib/interiors";
 import { buildingWorldPosition } from "../../lib/buildings";
-import type { Building } from "../../data/sections";
+import type { Building } from "../../types/data";
 import type { RoomInterior } from "../../lib/interiors";
 
 function roomColor(confidence: number, state: RoomInterior["state"]): string {

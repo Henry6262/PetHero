@@ -23,6 +23,17 @@ Start with the backend and docs:
 - staleness decay and re-check tasking
 - dock check-in, upload, merge, and initialization
 - visible tactical playbook engine for simple formations
+- drone scouting video → map pipeline preparation (cleanup and base-layer abstraction done; pipeline implementation is next)
+
+## Recent cleanup (done)
+
+- Centralized theme/status tokens in `apps/web/src/lib/theme.ts`.
+- Split `apps/web/src/data/sections.ts` into `apps/web/src/types/data.ts` + `apps/web/src/data/demo.ts`.
+- Refactored `apps/web/src/lib/terrain.ts` into a pluggable `TerrainSource` registry (`ProceduralTerrainSource`, `HeightmapTerrainSource`).
+- Extracted reusable dashboard components into `apps/web/src/components/dashboard/`.
+- Added `BaseMapLayer` (`procedural` / `drone`) and wired a base-layer selector into `OperatorDashboard.tsx`.
+- Split backend `src/api/app.ts` into `src/api/routes/{agents,cells,dock,playbook,state}.ts` with shared `src/api/schemas.ts`.
+- All checks green: `bun run typecheck`, `bun test` (17 tests), `npm run e2e` (1 test).
 
 ## Non-Negotiables
 
@@ -74,6 +85,8 @@ Key docs to read before major changes:
 - `docs/research/README.md`
 - `docs/research/synthesis/operator-product-synthesis.md`
 - `docs/research/synthesis/demo-and-challenge-synthesis.md`
+- `docs/research/synthesis/drone-video-to-map-research.md`
+- `docs/architecture/video-to-map-dashboard.md`
 - `docs/research/raw/primary-kimi-agent-defense-challenge/C2_TACTICAL_COMMAND_SYSTEM.md`
 - `docs/research/raw/primary-kimi-agent-defense-challenge/SCOUT_Operator_Concept_Document.md`
 - `docs/research/raw/primary-kimi-agent-defense-challenge/graph_explo/README.md`
@@ -81,4 +94,4 @@ Key docs to read before major changes:
 
 ## Last Updated
 
-2026-07-01
+2026-07-05

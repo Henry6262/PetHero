@@ -1,5 +1,5 @@
 import { getBuildingFootprint } from "./buildings";
-import type { Building } from "../data/sections";
+import type { Building } from "../types/data";
 
 export type RoomInterior = {
   id: string;

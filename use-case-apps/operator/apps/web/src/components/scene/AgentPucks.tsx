@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import { buildAgents3D } from "../../lib/agents";
-import type { Agent } from "../../data/sections";
+import type { Agent } from "../../types/data";
 
 const BEAM_HEIGHT = 45;
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { createHexMaterial, generateCells, cellColor, HEX_SIZE, cellWorldPosition } from "../../lib/hex";
-import { getTerrainHeight } from "../../lib/terrain";
+import { alignToTerrain } from "../../lib/terrain";
 import { requestHexGeometry } from "../../lib/geometryWorker";
 
 export default function HexMapScene({
@@ -37,9 +37,7 @@ export default function HexMapScene({
 
     cells.forEach((cell, i) => {
       const { x, z } = cellWorldPosition(cell.col, cell.row);
-      const y = getTerrainHeight(x, z) + 0.02;
-      dummy.position.set(x, y, z);
-      dummy.rotation.set(0, 0, 0);
+      alignToTerrain(dummy, x, z, 0.02);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
       mesh.setColorAt(i, color.set(cellColor(cell)));

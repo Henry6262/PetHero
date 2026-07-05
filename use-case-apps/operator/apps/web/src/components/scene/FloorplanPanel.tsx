@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { generateInteriors, type RoomInterior } from "../../lib/interiors";
-import type { Building } from "../../data/sections";
+import type { Building } from "../../types/data";
 
 export default function FloorplanPanel({
   building,

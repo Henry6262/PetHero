@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer, FXAA } from "@react-three/postprocessing";
+import type { Agent, Building } from "../types/data";
 import {
-  type Agent,
-  type Building,
-  type BuildingStatus,
   agents,
   buildings as buildingData,
   commandPlaybooks,
@@ -12,7 +10,7 @@ import {
   legend,
   logFilters,
   timeline,
-} from "../data/sections";
+} from "../data/demo";
 import OperatorNav from "./OperatorNav";
 import { buildAgents3D } from "../lib/agents";
 import {
@@ -21,62 +19,22 @@ import {
   BuildingLayer,
   CarLayer,
   FOVCones,
-  FloorplanPanel,
   HexGridLines,
   HexMapScene,
   PropLayer,
   RockLayer,
   RouteLines,
   TacticalCamera,
-  TerrainLayer,
+  BaseMapLayer,
   XRayBuilding,
   type TacticalCameraHandle,
+  type BaseMapSource,
 } from "./scene";
 import type { RoomInterior } from "../lib/interiors";
-
-
-
-const agentIcons: Record<string, JSX.Element> = {
-  op: (
-    <svg width="28" height="28" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="24" cy="15" r="6" />
-      <path d="M13 38v-3a11 11 0 0122 0v3" />
-      <path d="M18 14a8 8 0 0112 0" />
-    </svg>
-  ),
-  quad: (
-    <svg width="28" height="28" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="11" y="19" width="21" height="9" rx="2.5" />
-      <path d="M32 21l6-4" />
-      <circle cx="39" cy="16" r="2.2" fill="currentColor" stroke="none" />
-      <path d="M14 28v7M20 28v7M27 28v7M31 28v7" />
-    </svg>
-  ),
-  hexapod: (
-    <svg width="28" height="28" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 18h12l4 6-4 6H18l-4-6z" />
-      <path d="M18 21l-7-4M15 24H7M18 27l-7 4M30 21l7-4M33 24h8M30 27l7 4" />
-    </svg>
-  ),
-  drone: (
-    <svg width="28" height="28" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="24" cy="24" r="4.5" />
-      <path d="M24 19V12M24 29v7M19 24h-7M29 24h7" />
-      <circle cx="24" cy="11" r="3.6" />
-      <circle cx="24" cy="37" r="3.6" />
-      <circle cx="11" cy="24" r="3.6" />
-      <circle cx="37" cy="24" r="3.6" />
-    </svg>
-  ),
-};
-
-const buildingPanelStatus: Record<BuildingStatus, { label: string; col: string; bg: string; bd: string }> = {
-  clear: { label: "INSPECTED", col: "#34d399", bg: "rgba(52,211,153,0.14)", bd: "rgba(52,211,153,0.4)" },
-  partial: { label: "PARTIAL", col: "#fbbf24", bg: "rgba(251,191,36,0.14)", bd: "rgba(251,191,36,0.4)" },
-  unmapped: { label: "NOT INSPECTED", col: "#94a3b8", bg: "rgba(148,163,184,0.12)", bd: "rgba(148,163,184,0.35)" },
-  conflict: { label: "CONFLICT", col: "#f87171", bg: "rgba(248,113,113,0.14)", bd: "rgba(248,113,113,0.4)" },
-  stale: { label: "STALE", col: "#fbbf24", bg: "rgba(251,191,36,0.14)", bd: "rgba(251,191,36,0.4)" },
-};
+import AgentIcon, { agentIcons } from "./dashboard/AgentIcon";
+import AgentPopover from "./dashboard/AgentPopover";
+import ActionToast from "./dashboard/ActionToast";
+import BuildingPanel from "./dashboard/BuildingPanel";
 
 export default function OperatorDashboard() {
   const [logOpen, setLogOpen] = useState(false);
@@ -95,6 +53,7 @@ export default function OperatorDashboard() {
   const [selectedRoom, setSelectedRoom] = useState<RoomInterior | null>(null);
   const [selectedFloor, setSelectedFloor] = useState(0);
   const [terrainKey, setTerrainKey] = useState(0);
+  const [baseLayer, setBaseLayer] = useState<BaseMapSource>("procedural");
 
   useEffect(() => {
     setSelectedRoom(null);
@@ -177,14 +136,10 @@ export default function OperatorDashboard() {
     if (playing) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       setPlaying(false);
-    } else if (demoStage === "COMPLETE") {
-      playDemo();
     } else {
       playDemo();
     }
   };
-
-
 
   useEffect(() => {
     return () => {
@@ -219,24 +174,6 @@ export default function OperatorDashboard() {
 
   const curStageIndex = demoStage === "COMPLETE" ? 4 : demoStages.indexOf(demoStage);
   const playLabel = playing ? "⏸ PAUSE" : demoStage === "COMPLETE" ? "↻ REPLAY" : "▶ PLAY DEMO";
-
-  const panel = selectedBuilding
-    ? {
-        ...selectedBuilding,
-        statusMeta: buildingPanelStatus[selectedBuilding.status],
-      }
-    : null;
-
-  let popoverLeft = 0;
-  let popoverTop = 0;
-  let pointTop = 0;
-  if (activeAgent && agentPos) {
-    const pw = 246;
-    popoverLeft = agentPos.left - pw - 14;
-    if (popoverLeft < 8) popoverLeft = agentPos.left + 304;
-    popoverTop = Math.max(10, Math.min(agentPos.top - 8, window.innerHeight - 320));
-    pointTop = Math.max(16, agentPos.top - popoverTop + agentPos.height / 2);
-  }
 
   const telSheetWidth = telOpen ? 300 : 54;
 
@@ -293,7 +230,7 @@ export default function OperatorDashboard() {
                       shadow-camera-bottom={-180}
                       shadow-bias={-0.0005}
                     />
-                    <TerrainLayer key={terrainKey} />
+                    <BaseMapLayer source={baseLayer} key={terrainKey} />
                     <HexMapScene />
                     <HexGridLines opacity={0.06} />
                     <BuildingLayer
@@ -358,6 +295,22 @@ export default function OperatorDashboard() {
                     INT
                   </button>
                 </div>
+                <div className="map-control-group" title="Base map source">
+                  <button
+                    className={baseLayer === "procedural" ? "active" : undefined}
+                    onClick={() => setBaseLayer("procedural")}
+                    style={{ width: "auto", padding: "0 10px", fontSize: "10px" }}
+                  >
+                    PROC
+                  </button>
+                  <button
+                    className={baseLayer === "drone" ? "active" : undefined}
+                    onClick={() => setBaseLayer("drone")}
+                    style={{ width: "auto", padding: "0 10px", fontSize: "10px" }}
+                  >
+                    DRONE
+                  </button>
+                </div>
               </div>
 
               <div className="map-help">drag to rotate · scroll to zoom · right-drag to pan</div>
@@ -414,63 +367,15 @@ export default function OperatorDashboard() {
                 ))}
               </div>
 
-              {panel && (
-                <div className="building-panel sheet-scroll">
-                  <div className="building-panel-head">
-                    <div className="building-panel-icon">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9fd0ff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M4 21V8l7-4 7 4v13" />
-                        <path d="M9 21v-5h6v5" />
-                        <path d="M9 11h.01M15 11h.01" />
-                      </svg>
-                    </div>
-                    <div className="building-panel-title">
-                      <div>{panel.id} · {panel.kind}</div>
-                      <small>{panel.w}×{panel.h2} cells · {panel.area} m² · {panel.floors} floors</small>
-                    </div>
-                    <button className="sheet-toggle" onClick={() => setSelectedBuilding(null)} title="Close">✕</button>
-                  </div>
-                  <div className="building-panel-body">
-                    <div className="building-panel-status">
-                      <span className="lbl">STATUS</span>
-                      <span style={{ color: panel.statusMeta.col, background: panel.statusMeta.bg, border: `1px solid ${panel.statusMeta.bd}` }}>
-                        {panel.statusMeta.label}
-                      </span>
-                    </div>
-                    <div>
-                      <FloorplanPanel
-                        building={selectedBuilding}
-                        selectedRoomId={selectedRoom?.id ?? null}
-                        onSelectRoom={setSelectedRoom}
-                        floor={selectedFloor}
-                        onFloorChange={setSelectedFloor}
-                      />
-                    </div>
-                    <div>
-                      <div className="lbl">DRONE FRAMES · SHARED</div>
-                      {panel.frames > 0 ? (
-                        <div className="building-panel-frames">
-                          {Array.from({ length: Math.min(panel.frames, 6) }).map((_, i) => (
-                            <div key={i}>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(159,208,255,0.7)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="3" y="6" width="18" height="13" rx="2" />
-                                <circle cx="12" cy="12.5" r="3.2" />
-                                <path d="M8 6l1.5-2h5L16 6" />
-                              </svg>
-                              <span>{panel.by}·{i + 1}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="building-panel-empty">No imagery shared yet — assign D1 for a pass.</span>
-                      )}
-                    </div>
-                    <div className="building-panel-provenance">
-                      <span style={{ background: panel.statusMeta.col }} />
-                      <span>{panel.status === "unmapped" ? "Not yet inspected — assign a scan" : `Inspected by ${panel.by} · ${panel.ago} ago`}</span>
-                    </div>
-                  </div>
-                </div>
+              {selectedBuilding && (
+                <BuildingPanel
+                  building={selectedBuilding}
+                  selectedRoom={selectedRoom}
+                  selectedFloor={selectedFloor}
+                  onSelectRoom={setSelectedRoom}
+                  onFloorChange={setSelectedFloor}
+                  onClose={() => setSelectedBuilding(null)}
+                />
               )}
             </div>
 
@@ -527,14 +432,14 @@ export default function OperatorDashboard() {
                         {agent.image ? (
                           <img src={agent.image} alt={agent.name} />
                         ) : (
-                          agentIcons[agent.icon]
+                          <AgentIcon icon={agent.icon} />
                         )}
                       </div>
                       <div className="agent-info">
                         <div className="agent-name">
                           <span>{agent.name} — {agent.role}</span>
                         </div>
-                        <div className="agent-activity" style={{ color: agent.accent }}>{agent.activity}</div>
+                        <div className="agent-activity" style={{ color: agent.accent }}>{agent.status}</div>
                       </div>
                       <div className="agent-battery">
                         <div className="battery-bar">
@@ -580,67 +485,19 @@ export default function OperatorDashboard() {
       </section>
 
       {activeAgent && agentPos && (
-        <div
-          className="agent-popover"
-          style={{
-            left: popoverLeft,
-            top: popoverTop,
-          }}
+        <AgentPopover
+          agent={activeAgent}
+          position={agentPos}
+          onAction={(agent, action) => fireAction(agent, action.label)}
           onMouseEnter={keepOpen}
           onMouseLeave={closeSoon}
-        >
-          <span
-            className="agent-popover-point"
-            style={{ top: pointTop }}
-          />
-          <div className="agent-popover-head">
-            <span style={{ background: activeAgent.accent, boxShadow: `0 0 8px ${activeAgent.accent}` }} />
-            <span>{activeAgent.name}</span>
-            <span>{activeAgent.role}</span>
-          </div>
-          <div className="agent-popover-status">{activeAgent.status}</div>
-          <div className="agent-popover-actions">
-            <div className="lbl">QUICK ACTIONS</div>
-            {activeAgent.actions.map((action) => (
-              <div key={action.label} onClick={() => fireAction(activeAgent, action.label)}>
-                <ActionIcon icon={action.icon} accent={activeAgent.accent} />
-                <span>{action.label}</span>
-                <span className="mono">›</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        />
       )}
 
-      {toast && (
-        <div className="action-toast" style={{ borderColor: toast.accent }}>
-          <span style={{ background: toast.accent, boxShadow: `0 0 8px ${toast.accent}` }} />
-          <span>{toast.msg}</span>
-        </div>
-      )}
+      {toast && <ActionToast msg={toast.msg} accent={toast.accent} />}
     </main>
   );
 }
 
-function ActionIcon({ icon, accent }: { icon: string; accent: string }) {
-  const path =
-    {
-      goto: "M12 21s-7-6.3-7-11a7 7 0 0114 0c0 4.7-7 11-7 11zM12 10a2 2 0 100 4 2 2 0 000-4z",
-      dock: "M5 21V8l7-4 7 4v13M9 21v-6h6v6",
-      scan: "M12 12m-3 0a3 3 0 106 0 3 3 0 10-6 0M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3",
-      mode: "M12 12m-3 0a3 3 0 106 0 3 3 0 10-6 0M12 3v3M12 18v3M3 12h3M18 12h3",
-      recall: "M9 14l-4-4 4-4M5 10h9a5 5 0 015 5v3",
-      advise: "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z",
-      photo: "M3 6h18v13H3zM8 6l1.5-2h5L16 6M12 12.5a3.2 3.2 0 100 6.4 3.2 3.2 0 000-6.4z",
-      call: "M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.6A2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.6a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.5-1.1a2 2 0 012.1-.5c.8.3 1.7.5 2.6.6a2 2 0 011.7 2z",
-      launch: "M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z",
-      orbit: "M3 12a9 4 0 1018 0 9 4 0 10-18 0M12 12m-2.5 0a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0",
-      hold: "M7 6h3.5v12H7zM13.5 6H17v12h-3.5z",
-    }[icon] ?? "";
-
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-      <path d={path} />
-    </svg>
-  );
-}
+// Re-export icon data for any consumers that need raw SVG elements.
+export { agentIcons };

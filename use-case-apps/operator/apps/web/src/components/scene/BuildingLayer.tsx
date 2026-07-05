@@ -9,7 +9,7 @@ import {
   buildingOutlineMaterial,
 } from "../../lib/buildings";
 import { requestBuildingGeometry } from "../../lib/geometryWorker";
-import type { Building } from "../../data/sections";
+import type { Building } from "../../types/data";
 
 interface CachedBuilding {
   geometry: THREE.BufferGeometry;

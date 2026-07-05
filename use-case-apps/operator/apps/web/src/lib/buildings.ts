@@ -2,15 +2,8 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { cellWorldPosition } from "./hex";
 import { getTerrainHeight } from "./terrain";
-import type { Building, BuildingStatus } from "../data/sections";
-
-export const STATUS_BUILDING_COLORS: Record<BuildingStatus, { color: string; emissive: string; intensity: number }> = {
-  clear: { color: "#1a2330", emissive: "#34d399", intensity: 0.35 },
-  partial: { color: "#252214", emissive: "#fbbf24", intensity: 0.35 },
-  unmapped: { color: "#181c22", emissive: "#6b7280", intensity: 0.15 },
-  conflict: { color: "#2a1618", emissive: "#f87171", intensity: 0.55 },
-  stale: { color: "#252214", emissive: "#fbbf24", intensity: 0.3 },
-};
+import { STATUS_THEME } from "./theme";
+import type { Building, BuildingStatus } from "../types/data";
 
 export interface Building3D {
   id: string;
@@ -340,13 +333,13 @@ export function buildingMaterial(
   selected: boolean,
   xray = false
 ): THREE.MeshStandardMaterial {
-  const palette = STATUS_BUILDING_COLORS[status];
+  const theme = STATUS_THEME[status];
   const texture = createFacadeTexture(kind);
   return new THREE.MeshStandardMaterial({
     color: "#7a8189",
     map: texture,
-    emissive: palette.emissive,
-    emissiveIntensity: selected ? palette.intensity * 2.2 : palette.intensity,
+    emissive: theme.emissive,
+    emissiveIntensity: selected ? theme.emissiveIntensity * 2.2 : theme.emissiveIntensity,
     roughness: 0.72,
     metalness: 0.08,
     transparent: xray,

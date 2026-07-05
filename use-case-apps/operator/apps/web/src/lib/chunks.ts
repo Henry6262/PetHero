@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import type { HexCell } from "./hex-math";
-import type { Building } from "../data/sections";
+import type { Building } from "../types/data";
 
 export const CHUNK_SIZE_CELLS = 8;
 
