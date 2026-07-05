@@ -24,7 +24,6 @@ import {
   FloorplanPanel,
   HexGridLines,
   HexMapScene,
-  Minimap,
   PropLayer,
   RockLayer,
   RouteLines,
@@ -80,7 +79,7 @@ const buildingPanelStatus: Record<BuildingStatus, { label: string; col: string; 
 };
 
 export default function OperatorDashboard() {
-  const [logOpen, setLogOpen] = useState(true);
+  const [logOpen, setLogOpen] = useState(false);
   const [telOpen, setTelOpen] = useState(true);
   const [view, setView] = useState<"iso" | "flat">("iso");
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
@@ -239,7 +238,6 @@ export default function OperatorDashboard() {
     pointTop = Math.max(16, agentPos.top - popoverTop + agentPos.height / 2);
   }
 
-  const logSheetWidth = logOpen ? 238 : 54;
   const telSheetWidth = telOpen ? 300 : 54;
 
   return (
@@ -260,62 +258,6 @@ export default function OperatorDashboard() {
         </header>
 
         <div className="dashboard-body">
-          <aside
-            className="dashboard-log"
-            style={{ width: logSheetWidth }}
-          >
-            {!logOpen && (
-              <div className="log-collapsed">
-                <button className="sheet-toggle" onClick={() => setLogOpen(true)} title="Expand log">
-                  ›
-                </button>
-                <div className="sheet-vertical-label">MISSION LOG · {timeline.length}</div>
-                <div className="sheet-dots">
-                  {timeline.map((e, i) => (
-                    <span key={i} className={e.live ? "livedot" : undefined} style={{ background: e.color, boxShadow: `0 0 7px ${e.color}` }} title={e.type} />
-                  ))}
-                </div>
-              </div>
-            )}
-            {logOpen && (
-              <div className="log-expanded">
-                <div className="panel-title">
-                  <span className="live-dot" />
-                  <strong>Mission Log</strong>
-                  <small>{timeline.length} EVENTS</small>
-                  <button className="sheet-toggle" onClick={() => setLogOpen(false)} title="Collapse log">
-                    ‹
-                  </button>
-                </div>
-                <div className="log-filter-row">
-                  {logFilters.map((f) => (
-                    <button key={f} className={f === "ALL" ? "active" : undefined}>
-                      {f}
-                    </button>
-                  ))}
-                </div>
-                <div className="sheet-scroll timeline">
-                  {timeline.map((e, i) => (
-                    <article key={i} className="timeline-item">
-                      <div className="timeline-track">
-                        <span className={e.live ? "livedot" : undefined} style={{ background: e.color, boxShadow: `0 0 8px ${e.color}` }} />
-                        <span className="timeline-line" />
-                      </div>
-                      <div className="timeline-body">
-                        <div className="timeline-meta">
-                          <span style={{ color: e.color }}>{e.type}</span>
-                          <span>{e.tag}</span>
-                          <span>{e.t}</span>
-                        </div>
-                        <p>{e.text}</p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            )}
-          </aside>
-
           <section className="ops-map-panel">
             <div className="ops-map-head">
               <div>
@@ -384,21 +326,6 @@ export default function OperatorDashboard() {
                 </Canvas>
               </div>
 
-              <div className="ops-map-minimap">
-                <Canvas
-                  shadows={false}
-                  camera={{ position: [0, 0, 0] }}
-                  gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-                  style={{ background: "transparent" }}
-                >
-                  <Minimap
-                    buildings={buildingData}
-                    selectedBuilding={selectedBuilding}
-                    agents={agents}
-                  />
-                </Canvas>
-              </div>
-
               <div className="map-controls">
                 <div className="map-control-group">
                   <button className={view === "iso" ? "active" : undefined} onClick={setIsoView}>ISO</button>
@@ -434,6 +361,49 @@ export default function OperatorDashboard() {
               </div>
 
               <div className="map-help">drag to rotate · scroll to zoom · right-drag to pan</div>
+
+              <div className={`ops-map-log ${logOpen ? "open" : ""}`}>
+                {!logOpen && (
+                  <button className="log-toggle" onClick={() => setLogOpen(true)} title="Expand mission log">
+                    <span className="live-dot" />
+                    <span>LOG · {timeline.length}</span>
+                    <span>›</span>
+                  </button>
+                )}
+                {logOpen && (
+                  <>
+                    <div className="log-head">
+                      <span className="live-dot" />
+                      <strong>Mission Log</strong>
+                      <small>{timeline.length} EVENTS</small>
+                      <button className="sheet-toggle" onClick={() => setLogOpen(false)} title="Collapse log">‹</button>
+                    </div>
+                    <div className="log-filter-row">
+                      {logFilters.map((f) => (
+                        <button key={f} className={f === "ALL" ? "active" : undefined}>{f}</button>
+                      ))}
+                    </div>
+                    <div className="log-scroll timeline">
+                      {timeline.map((e, i) => (
+                        <article key={i} className="timeline-item">
+                          <div className="timeline-track">
+                            <span className={e.live ? "livedot" : undefined} style={{ background: e.color, boxShadow: `0 0 8px ${e.color}` }} />
+                            <span className="timeline-line" />
+                          </div>
+                          <div className="timeline-body">
+                            <div className="timeline-meta">
+                              <span style={{ color: e.color }}>{e.type}</span>
+                              <span>{e.tag}</span>
+                              <span>{e.t}</span>
+                            </div>
+                            <p>{e.text}</p>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
 
               <div className="map-legend">
                 {legend.map((lg) => (
@@ -563,9 +533,7 @@ export default function OperatorDashboard() {
                       <div className="agent-info">
                         <div className="agent-name">
                           <span>{agent.name}</span>
-                          <span>{agent.role}</span>
                         </div>
-                        <div className="agent-status" style={{ color: agent.accent }}>{agent.status}</div>
                       </div>
                       <div className="agent-battery">
                         <div className="battery-bar">
