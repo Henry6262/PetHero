@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 export const agentIcons: Record<string, JSX.Element> = {
   op: (
     <svg width="28" height="28" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

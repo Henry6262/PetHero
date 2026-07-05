@@ -12,12 +12,15 @@ const PADDING = 1.12;
 function buildingStatusColor(status: Building["status"], selected: boolean): string {
   if (selected) return "#ffffff";
   switch (status) {
-    case "active":
-      return "#3b82f6";
-    case "warning":
+    case "clear":
+      return "#22c55e";
+    case "partial":
       return "#f59e0b";
-    case "critical":
+    case "conflict":
       return "#ef4444";
+    case "stale":
+      return "#94a3b8";
+    case "unmapped":
     default:
       return "#64748b";
   }

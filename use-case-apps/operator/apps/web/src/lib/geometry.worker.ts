@@ -43,7 +43,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
     const geometry = createHexGeometry(msg.size, msg.height);
     const { positions, normals, uvs } = serializeGeometry(geometry);
     const payload: HexGeometryPayload = { positions, normals, uvs };
-    self.postMessage({ type: "hex", id: msg.id, payload }, [positions.buffer, normals.buffer, uvs.buffer]);
+    self.postMessage({ type: "hex", id: msg.id, payload }, [positions.buffer, normals.buffer, uvs.buffer] as any[]);
     geometry.dispose();
   } else if (msg.type === "building") {
     const geometry = createBuildingGeometry(
@@ -54,7 +54,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
     const payload: BuildingGeometryPayload = { positions, normals, uvs, index };
     const transferables = [positions.buffer, normals.buffer, uvs.buffer];
     if (index) transferables.push(index.buffer);
-    self.postMessage({ type: "building", id: msg.id, payload }, transferables);
+    self.postMessage({ type: "building", id: msg.id, payload }, transferables as any[]);
     geometry.dispose();
   }
 };
