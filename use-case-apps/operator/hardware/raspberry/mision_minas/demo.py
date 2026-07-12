@@ -17,7 +17,7 @@ import time
 
 import cv2
 import numpy as np
-from flask import Flask, Response
+from flask import Flask, Response, make_response
 
 # ----------------------------- configuracion --------------------------------
 PUERTO = 8000
@@ -218,6 +218,13 @@ es.addEventListener('mina', e => {
 
 def crear_app(cam):
     app = Flask(__name__)
+
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        return response
 
     @app.route("/")
     def index():
