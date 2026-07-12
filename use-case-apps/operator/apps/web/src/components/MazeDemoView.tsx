@@ -111,9 +111,13 @@ interface RutaStep {
 }
 
 function computeTrajectory(steps: RutaStep[]) {
-  // Defaults from _archivo/navegar.py calibration fallback.
-  const pasoM = 0.06;
-  const defaultGiroDeg = 15;
+  // Calibration from the real robot (calibracion.json).
+  const pasoM = 0.027;
+  const giroCmdDeg = 30;
+  const giroRealDeg = 37.5;
+  const giroRatio = giroRealDeg / giroCmdDeg;
+  const defaultAnguloDeg = 15;
+
   let x = 0;
   let y = 0;
   // 0 degrees = up on the canvas (negative Y in math coordinates).
@@ -126,11 +130,15 @@ function computeTrajectory(steps: RutaStep[]) {
       x += pasoM * Math.cos(heading);
       y += pasoM * Math.sin(heading);
       pts.push({ x, y });
+    } else if (a === "backward") {
+      x -= pasoM * Math.cos(heading);
+      y -= pasoM * Math.sin(heading);
+      pts.push({ x, y });
     } else if (a.includes("right")) {
-      const deg = s.angulo ?? defaultGiroDeg;
+      const deg = (s.angulo ?? defaultAnguloDeg) * giroRatio;
       heading += (deg * Math.PI) / 180;
     } else if (a.includes("left")) {
-      const deg = s.angulo ?? defaultGiroDeg;
+      const deg = (s.angulo ?? defaultAnguloDeg) * giroRatio;
       heading -= (deg * Math.PI) / 180;
     }
   }
