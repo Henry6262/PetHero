@@ -104,76 +104,141 @@ function usePiEvents(cameraUrl: string) {
   return piState;
 }
 
-function MazeCanvas({ map, plan, robotPose }: { map: MazeMap; plan: MazePlan | null; robotPose: [number, number] | null }) {
+interface RutaStep {
+  accion: string;
+  velocidad: number;
+  angulo?: number;
+}
+
+function computeTrajectory(steps: RutaStep[]) {
+  // Defaults from _archivo/navegar.py calibration fallback.
+  const pasoM = 0.06;
+  const defaultGiroDeg = 15;
+  let x = 0;
+  let y = 0;
+  // 0 degrees = up on the canvas (negative Y in math coordinates).
+  let heading = -Math.PI / 2;
+  const pts = [{ x, y }];
+
+  for (const s of steps) {
+    const a = s.accion.toLowerCase();
+    if (a === "forward") {
+      x += pasoM * Math.cos(heading);
+      y += pasoM * Math.sin(heading);
+      pts.push({ x, y });
+    } else if (a.includes("right")) {
+      const deg = s.angulo ?? defaultGiroDeg;
+      heading += (deg * Math.PI) / 180;
+    } else if (a.includes("left")) {
+      const deg = s.angulo ?? defaultGiroDeg;
+      heading -= (deg * Math.PI) / 180;
+    }
+  }
+  return pts;
+}
+
+function TrajectoryCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [steps, setSteps] = useState<RutaStep[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/maze/ruta.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setSteps(data))
+      .catch((e) => setError(String(e)));
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || steps.length === 0) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rows = map.height;
-    const cols = map.width;
     const size = 384;
     canvas.width = size;
     canvas.height = size;
-    const cell = size / Math.max(rows, cols);
+
+    const pts = computeTrajectory(steps);
+
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    for (const p of pts) {
+      minX = Math.min(minX, p.x);
+      maxX = Math.max(maxX, p.x);
+      minY = Math.min(minY, p.y);
+      maxY = Math.max(maxY, p.y);
+    }
+
+    const margin = 24;
+    const width = Math.max(maxX - minX, 0.001);
+    const height = Math.max(maxY - minY, 0.001);
+    const scale = Math.min((size - margin * 2) / width, (size - margin * 2) / height);
+    const offsetX = (size - width * scale) / 2 - minX * scale;
+    const offsetY = (size - height * scale) / 2 - minY * scale;
+
+    const toCanvas = (p: { x: number; y: number }) => ({
+      x: p.x * scale + offsetX,
+      y: p.y * scale + offsetY,
+    });
 
     ctx.fillStyle = "#0b0d12";
     ctx.fillRect(0, 0, size, size);
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = c * cell;
-        const y = r * cell;
-        if (map.grid[r]?.[c] === 1) {
-          ctx.fillStyle = "#334155";
-          ctx.fillRect(x, y, cell, cell);
-        } else {
-          ctx.fillStyle = "#0f172a";
-          ctx.fillRect(x, y, cell, cell);
-        }
-        ctx.strokeStyle = "#1e293b";
-        ctx.strokeRect(x, y, cell, cell);
-      }
-    }
-
-    if (plan?.path) {
+    // Grid lines for reference.
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= size; i += 48) {
       ctx.beginPath();
-      ctx.strokeStyle = "#22c55e";
-      ctx.lineWidth = Math.max(2, cell * 0.4);
-      for (let i = 0; i < plan.path.length; i++) {
-        const [r, c] = plan.path[i];
-        const x = c * cell + cell / 2;
-        const y = r * cell + cell / 2;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, size);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(size, i);
       ctx.stroke();
     }
 
-    const [sr, sc] = map.start;
+    // Trajectory line.
+    ctx.beginPath();
+    ctx.strokeStyle = "#22c55e";
+    ctx.lineWidth = 3;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    for (let i = 0; i < pts.length; i++) {
+      const c = toCanvas(pts[i]);
+      if (i === 0) ctx.moveTo(c.x, c.y);
+      else ctx.lineTo(c.x, c.y);
+    }
+    ctx.stroke();
+
+    // Start point.
+    const start = toCanvas(pts[0]);
     ctx.fillStyle = "#ef4444";
     ctx.beginPath();
-    ctx.arc(sc * cell + cell / 2, sr * cell + cell / 2, cell * 0.35, 0, Math.PI * 2);
+    ctx.arc(start.x, start.y, 6, 0, Math.PI * 2);
     ctx.fill();
 
-    const [er, ec] = map.end;
+    // End point / current robot pose.
+    const end = toCanvas(pts[pts.length - 1]);
     ctx.fillStyle = "#3b82f6";
     ctx.beginPath();
-    ctx.arc(ec * cell + cell / 2, er * cell + cell / 2, cell * 0.35, 0, Math.PI * 2);
+    ctx.arc(end.x, end.y, 6, 0, Math.PI * 2);
     ctx.fill();
 
-    if (robotPose) {
-      const [rr, rc] = robotPose;
-      ctx.fillStyle = "#facc15";
-      ctx.beginPath();
-      ctx.arc(rc * cell + cell / 2, rr * cell + cell / 2, cell * 0.3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }, [map, plan, robotPose]);
+    // Legend.
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "12px system-ui, sans-serif";
+    ctx.fillText(`steps: ${steps.length} · pts: ${pts.length}`, 10, size - 10);
+  }, [steps]);
 
+  if (error) return <p className="maze-error">Could not load ruta.json: {error}</p>;
+  if (steps.length === 0) return <div className="maze-canvas-placeholder">Loading route…</div>;
   return <canvas ref={canvasRef} className="maze-canvas" />;
 }
 
@@ -326,11 +391,7 @@ export default function MazeDemoView() {
             </span>
           </div>
 
-          {state?.map ? (
-            <MazeCanvas map={state.map} plan={state.plan} robotPose={state.robot.pose} />
-          ) : (
-            <div className="maze-canvas-placeholder">No map loaded</div>
-          )}
+          <TrajectoryCanvas />
 
           {error && <p className="maze-error">Backend error: {error}</p>}
 

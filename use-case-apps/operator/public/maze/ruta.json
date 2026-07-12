@@ -1,0 +1,230 @@
+[
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "turn right angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "turn right angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "turn right angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "turn right angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "turn left angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "turn left angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "turn left angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ },
+ {
+  "accion": "turn right angle",
+  "velocidad": 80,
+  "angulo": 15
+ },
+ {
+  "accion": "forward",
+  "velocidad": 80
+ }
+]
