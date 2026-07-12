@@ -106,6 +106,7 @@ The demo covers four challenges:
   - Copied `~/mision_minas` from the Pi into `hardware/raspberry/mision_minas/`.
   - Includes teleop route recorder (`grabar.py`), replay + yellow-mine detection demo (`demo.py`), archived autonomous grid-navigation code (`_archivo/`), and a web dashboard served by the Pi.
   - This gives us a local editing copy; push back to the Pi with `rsync` when ready.
+- PiCrawler upstream reference cloned into `hardware/picrawler/` (shallow clone of https://github.com/sunfounder/picrawler.git) for gait API context, ultrasonic example, and Vilib camera examples.
 - Maze dashboard camera integration:
   - `MazeDemoView.tsx` now has a right-side camera panel: enter the Pi URL (e.g. `http://172.20.10.4:8000`), click Set, and the MJPEG stream appears live while the robot moves and scans.
   - The panel also consumes the Pi's Server-Sent Events (`/eventos`) to show current phase and detected mines in real time.
