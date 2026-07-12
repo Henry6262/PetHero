@@ -179,11 +179,11 @@ function MazeCanvas({ map, plan, robotPose }: { map: MazeMap; plan: MazePlan | n
 
 function CameraPanel({
   cameraUrl,
-  setCameraUrl,
+  onSetCameraUrl,
   post,
 }: {
   cameraUrl: string;
-  setCameraUrl: (url: string) => void;
+  onSetCameraUrl: (url: string) => void;
   post: (path: string, body?: unknown) => Promise<void>;
 }) {
   const [input, setInput] = useState(cameraUrl);
@@ -202,13 +202,13 @@ function CameraPanel({
         <input
           type="text"
           value={input}
-          placeholder="http://172.20.10.4:8000"
+          placeholder="http://172.20.10.10:8000"
           onChange={(e) => setInput(e.target.value)}
         />
         <button
           onClick={() => {
             const url = input.replace(/\/$/, "");
-            setCameraUrl(url);
+            onSetCameraUrl(url);
             post("/telemetry", { cameraUrl: url });
           }}
         >
@@ -271,14 +271,22 @@ function FileDrop({
   );
 }
 
+const CAMERA_URL_KEY = "operatorMazeCameraUrl";
+
 export default function MazeDemoView() {
   const { state, error } = usePollState();
   const [busy, setBusy] = useState(false);
-  const [cameraUrl, setCameraUrl] = useState(state?.robot.cameraUrl ?? "");
+  const [cameraUrl, setCameraUrl] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(CAMERA_URL_KEY) ?? "";
+    }
+    return "";
+  });
 
   useEffect(() => {
     if (state?.robot.cameraUrl && state.robot.cameraUrl !== cameraUrl) {
       setCameraUrl(state.robot.cameraUrl);
+      localStorage.setItem(CAMERA_URL_KEY, state.robot.cameraUrl);
     }
   }, [state?.robot.cameraUrl]);
 
@@ -345,7 +353,14 @@ export default function MazeDemoView() {
         </div>
 
         <aside className="maze-sidebar">
-          <CameraPanel cameraUrl={cameraUrl} setCameraUrl={setCameraUrl} post={post} />
+          <CameraPanel
+            cameraUrl={cameraUrl}
+            onSetCameraUrl={(url) => {
+              setCameraUrl(url);
+              localStorage.setItem(CAMERA_URL_KEY, url);
+            }}
+            post={post}
+          />
 
           <div className="maze-status">
             <h2>Robot</h2>
