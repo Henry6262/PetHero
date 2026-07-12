@@ -1,0 +1,15 @@
+{
+  "framework": "vite",
+  "buildCommand": "bun run web:build",
+  "outputDirectory": "apps/web/dist",
+  "installCommand": "bun install",
+  "rewrites": [
+    { "source": "/favicon.ico", "destination": "/favicon.svg" },
+    { "source": "/operational", "destination": "/index.html" },
+    { "source": "/operational/(.*)", "destination": "/index.html" },
+    { "source": "/maze", "destination": "/index.html" },
+    { "source": "/maze/(.*)", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/dashboard/index.html" },
+    { "source": "/dashboard/(.*)", "destination": "/dashboard/index.html" }
+  ]
+}

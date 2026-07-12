@@ -90,8 +90,6 @@ export class HeightmapTerrainSource implements TerrainSource {
   private width: number;
   private height: number;
   private bounds: { minX: number; maxX: number; minZ: number; maxZ: number };
-  private scale: number;
-  private offset: number;
 
   constructor(options: {
     imageData: ImageData;
@@ -103,8 +101,6 @@ export class HeightmapTerrainSource implements TerrainSource {
     this.width = imageData.width;
     this.height = imageData.height;
     this.bounds = bounds;
-    this.scale = scale;
-    this.offset = offset;
 
     const pixels = imageData.data;
     this.elevations = new Float32Array(this.width * this.height);

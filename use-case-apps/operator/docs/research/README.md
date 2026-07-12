@@ -15,8 +15,7 @@ docs/research/
     primary-kimi-agent-defense-challenge/
     kimi-agent-defense-challenge/
     context-mesh-deep-dive/
-    drone-researches/
-    operator-packs/
+    operator-packs/          # design handoff only; duplicate uploads removed
 ```
 
 ## How To Use This Research
@@ -31,8 +30,7 @@ Use raw research for source traceability:
 - `raw/primary-kimi-agent-defense-challenge/` is the compact packet Henry pointed to directly. Treat this as the primary source packet.
 - `raw/kimi-agent-defense-challenge/` is the larger extracted packet from the Kimi research archive.
 - `raw/context-mesh-deep-dive/` covers decentralized context sharing, CRDTs, transport layers, and dock-based initialization.
-- `raw/drone-researches/` contains the smaller drone/product research subset from Downloads.
-- `raw/operator-packs/` contains design handoff and UI concept exports.
+- `raw/operator-packs/` contains the SCOUT design handoff and UI concept exports.
 
 ## Product Filter
 

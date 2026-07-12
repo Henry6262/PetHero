@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { getTerrainSource, TERRAIN_SIZE } from "../../lib/terrain";
 
@@ -96,6 +96,13 @@ export default function TerrainLayer() {
       }),
     []
   );
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
 
   return <mesh geometry={geometry} material={material} receiveShadow />;
 }

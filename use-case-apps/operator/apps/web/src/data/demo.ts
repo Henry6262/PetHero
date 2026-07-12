@@ -6,10 +6,23 @@ import type {
   CommandPlaybook,
   FleetEntry,
   LegendEntry,
+  Mission,
+  MissionZone,
   PlaybookEntry,
+  Squadron,
+  TheaterOperation,
   TimelineEvent,
 } from "../types/data";
 import { STATUS_THEME } from "../lib/theme";
+import { mulberry32, pick } from "@shared/rng";
+import { squadronCallsign } from "@shared/squadron";
+import {
+  buildTheaterSquadrons,
+  THEATER_FRONT_LINE,
+  THEATER_VECTORS,
+  THEATER_ZONES,
+} from "@shared/theater";
+import { demoSubSectors } from "../lib/theater-sectors";
 
 export const events = [
   "00:00 Q1 launched without prior map context.",
@@ -143,6 +156,7 @@ export const agents: Agent[] = [
     icon: "op",
     image: "/operators/op-lion.png",
     actions: operatorActions,
+    destination: { x: -2, z: -2, label: "Market Square" },
   },
   {
     id: "V-02",
@@ -155,6 +169,7 @@ export const agents: Agent[] = [
     icon: "op",
     image: "/operators/op-gas.png",
     actions: operatorActions,
+    destination: { x: -30, z: -12, label: "North Gate" },
   },
   {
     id: "A-03",
@@ -167,6 +182,7 @@ export const agents: Agent[] = [
     icon: "op",
     image: "/operators/op-fbi.png",
     actions: operatorActions,
+    destination: { x: -34, z: -12, label: "North Gate" },
   },
   {
     id: "R-04",
@@ -179,6 +195,7 @@ export const agents: Agent[] = [
     icon: "op",
     image: "/operators/op-riot.png",
     actions: operatorActions,
+    destination: { x: 28, z: 2, label: "East Outskirts" },
   },
   {
     id: "Q1",
@@ -190,6 +207,7 @@ export const agents: Agent[] = [
     section: "robot",
     icon: "quad",
     actions: groundActions,
+    destination: { x: -36, z: 16, label: "Relay Point Alpha" },
   },
   {
     id: "H1",
@@ -201,6 +219,7 @@ export const agents: Agent[] = [
     section: "robot",
     icon: "hexapod",
     actions: hexapodActions,
+    destination: { x: -18, z: 22, label: "South Ridge" },
   },
   {
     id: "D1",
@@ -212,6 +231,7 @@ export const agents: Agent[] = [
     section: "robot",
     icon: "drone",
     actions: droneActions,
+    destination: { x: 28, z: 2, label: "East Outskirts" },
   },
 ];
 
@@ -491,6 +511,161 @@ export const legend: LegendEntry[] = [
   { label: "CONFLICT", bg: STATUS_THEME.conflict.bg, border: "1px dashed #fbbf24" },
   { label: "STATION", bg: STATUS_THEME.station.bg, border: STATUS_THEME.station.border },
   { label: "GOAL", bg: STATUS_THEME.goal.bg, border: STATUS_THEME.goal.border },
+];
+
+export const missions: Mission[] = [
+  {
+    id: "M-01",
+    name: "VILLAGE SECURE",
+    active: true,
+    sectors: [
+      {
+        id: "S-A1",
+        name: "North Gate",
+        status: "friendly",
+        polygon: [
+          [-38, -18],
+          [-22, -18],
+          [-22, -6],
+          [-38, -6],
+        ],
+      },
+      {
+        id: "S-A2",
+        name: "Market Square",
+        status: "objective",
+        polygon: [
+          [-8, -12],
+          [10, -12],
+          [10, 6],
+          [-8, 6],
+        ],
+      },
+      {
+        id: "S-A3",
+        name: "East Outskirts",
+        status: "hostile",
+        polygon: [
+          [18, -8],
+          [38, -8],
+          [38, 14],
+          [18, 14],
+        ],
+      },
+      {
+        id: "S-A4",
+        name: "South Ridge",
+        status: "neutral",
+        polygon: [
+          [-30, 16],
+          [-4, 16],
+          [-4, 30],
+          [-30, 30],
+        ],
+      },
+    ],
+    objectives: [
+      { id: "O-1", label: "Hold North Gate", targetSectorId: "S-A1", targetAgentId: "A-03", status: "active" },
+      { id: "O-2", label: "Secure Market Square", targetSectorId: "S-A2", targetAgentId: "OP-7", status: "pending" },
+      { id: "O-3", label: "Scan East Outskirts", targetSectorId: "S-A3", targetAgentId: "D1", status: "active" },
+    ],
+  },
+  {
+    id: "M-02",
+    name: "RELAY CHAIN SETUP",
+    active: false,
+    sectors: [
+      {
+        id: "S-B1",
+        name: "Relay Point Alpha",
+        status: "objective",
+        polygon: [
+          [-42, 10],
+          [-30, 10],
+          [-30, 22],
+          [-42, 22],
+        ],
+      },
+    ],
+    objectives: [
+      { id: "O-4", label: "Deploy relay at Alpha", targetSectorId: "S-B1", targetAgentId: "Q1", status: "pending" },
+    ],
+  },
+];
+
+/**
+ * Front line used by the operational map. Matches the backend simulator's
+ * theater geometry so the frontend demo and live feed draw the same picture.
+ */
+export const demoFrontLine: [number, number][] = THEATER_FRONT_LINE;
+
+/**
+ * Battalions placed in realistic brigade clusters along the Ukraine-Russia
+ * contact line. Uses the shared theater geometry so the demo matches the
+ * backend simulator when the API is offline.
+ */
+export const demoSquadrons: Squadron[] = buildTheaterSquadrons("demo");
+
+/** Theater-level operational zones: safe rear, danger strip, kill zone. */
+export const demoZones: MissionZone[] = THEATER_ZONES;
+
+/** Operational narrative vectors: current pushes, pressure, and incursions. */
+export const demoVectors = THEATER_VECTORS;
+
+/** Boundary-aligned dominance sectors generated from real oblast polygons. */
+export { demoSubSectors };
+
+/** Minimal theater-level operation tree for the mission hierarchy sidebar. */
+export const demoOperations: TheaterOperation[] = [
+  {
+    id: "OP-01",
+    name: "Border Shield",
+    active: true,
+    status: "active",
+    missions: [
+      {
+        id: "M-01",
+        name: "Hold Northern Sector",
+        active: true,
+        status: "active",
+        type: "area_scan",
+        objectives: [
+          {
+            id: "O-01",
+            label: "Secure EA RED",
+            status: "active",
+            zoneId: "EA-RED",
+            targets: [
+              { id: "T-01", name: "BTR position 7", status: "engaged" },
+              { id: "T-02", name: "Forward outpost", status: "discovered" },
+            ],
+          },
+          {
+            id: "O-02",
+            label: "Recon NFA 1 corridor",
+            status: "pending",
+            targets: [{ id: "T-03", name: "Suspected supply route", status: "nominated" }],
+          },
+        ],
+      },
+      {
+        id: "M-02",
+        name: "Block Eastern Approach",
+        active: false,
+        status: "pending",
+        type: "perimeter_watch",
+        objectives: [
+          {
+            id: "O-03",
+            label: "Contain Kill Zone ORANGE",
+            status: "pending",
+            zoneId: "BZ-ORANGE",
+            targets: [{ id: "T-04", name: "Armored column", status: "validated" }],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 /** Re-export types for convenience when both data and types are needed. */

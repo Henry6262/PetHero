@@ -15,9 +15,9 @@ export interface TacticalCameraHandle {
   snapTo: (position: { x: number; y: number; z: number }) => void;
 }
 
-const ISO_POSITION = new THREE.Vector3(-14, 34, 56);
+const ISO_POSITION = new THREE.Vector3(-22, 46, 82);
 const ISO_TARGET = new THREE.Vector3(0, 0, 0);
-const FLAT_POSITION = new THREE.Vector3(0, 85, 0);
+const FLAT_POSITION = new THREE.Vector3(0, 120, 0);
 const FLAT_TARGET = new THREE.Vector3(0, 0, 0);
 
 const TacticalCamera = forwardRef<TacticalCameraHandle>((_, ref) => {

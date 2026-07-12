@@ -1,0 +1,29 @@
+# Ruta fija de la demo: secuencia de acciones que el robot repite tal cual.
+# Acciones validas: forward, backward, "turn left angle", "turn right angle", pausa.
+# Con angle=30, 3 giros = ~90 grados (ajustar segun lo que gire de verdad su robot).
+
+velocidad: 80
+angulo_giro: 30          # grados nominales por giro
+
+ruta:
+  - {accion: forward, veces: 6}
+  - {accion: "turn left angle", veces: 3}
+  - {accion: forward, veces: 8}
+  - {accion: "turn right angle", veces: 3}
+  - {accion: forward, veces: 5}
+  - {accion: pausa, segundos: 1}
+
+# Al terminar la ruta se activa la deteccion de minas (objetos AMARILLOS)
+escaneo:
+  duracion_s: 60         # cuanto tiempo escanea al llegar
+  barrido: false         # true = gira lentamente mientras escanea (vuelta panoramica)
+
+color_mina:              # amarillo en HSV (H 0-179)
+  - [[20, 100, 100], [35, 255, 255]]
+area_minima: 500         # px^2 minimos para considerar una deteccion
+
+# Opcional: si el sitio de monitoreo es EXTERNO, URL a la que se hace POST de cada
+# deteccion (JSON). Dejar en null para usar solo el dashboard integrado de la Pi.
+webhook: null
+
+puerto_web: 8000

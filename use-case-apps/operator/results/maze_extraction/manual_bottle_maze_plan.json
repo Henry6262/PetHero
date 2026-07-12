@@ -1,0 +1,502 @@
+{
+  "map_file": "results/maze_extraction/manual_bottle_maze.json",
+  "width": 60,
+  "height": 60,
+  "cell_size_m": 0.05,
+  "start": [
+    54,
+    30
+  ],
+  "end": [
+    29,
+    30
+  ],
+  "path": [
+    [
+      54,
+      30
+    ],
+    [
+      55,
+      30
+    ],
+    [
+      55,
+      31
+    ],
+    [
+      55,
+      32
+    ],
+    [
+      55,
+      33
+    ],
+    [
+      55,
+      34
+    ],
+    [
+      55,
+      35
+    ],
+    [
+      55,
+      36
+    ],
+    [
+      55,
+      37
+    ],
+    [
+      55,
+      38
+    ],
+    [
+      55,
+      39
+    ],
+    [
+      54,
+      39
+    ],
+    [
+      54,
+      40
+    ],
+    [
+      54,
+      41
+    ],
+    [
+      53,
+      41
+    ],
+    [
+      52,
+      41
+    ],
+    [
+      51,
+      41
+    ],
+    [
+      50,
+      41
+    ],
+    [
+      50,
+      42
+    ],
+    [
+      50,
+      43
+    ],
+    [
+      50,
+      44
+    ],
+    [
+      50,
+      45
+    ],
+    [
+      50,
+      46
+    ],
+    [
+      50,
+      47
+    ],
+    [
+      50,
+      48
+    ],
+    [
+      49,
+      48
+    ],
+    [
+      49,
+      49
+    ],
+    [
+      49,
+      50
+    ],
+    [
+      48,
+      50
+    ],
+    [
+      47,
+      50
+    ],
+    [
+      46,
+      50
+    ],
+    [
+      45,
+      50
+    ],
+    [
+      44,
+      50
+    ],
+    [
+      43,
+      50
+    ],
+    [
+      42,
+      50
+    ],
+    [
+      42,
+      51
+    ],
+    [
+      42,
+      52
+    ],
+    [
+      42,
+      53
+    ],
+    [
+      42,
+      54
+    ],
+    [
+      42,
+      55
+    ],
+    [
+      41,
+      55
+    ],
+    [
+      41,
+      56
+    ],
+    [
+      41,
+      57
+    ],
+    [
+      40,
+      57
+    ],
+    [
+      39,
+      57
+    ],
+    [
+      38,
+      57
+    ],
+    [
+      37,
+      57
+    ],
+    [
+      36,
+      57
+    ],
+    [
+      35,
+      57
+    ],
+    [
+      34,
+      57
+    ],
+    [
+      33,
+      57
+    ],
+    [
+      32,
+      57
+    ],
+    [
+      31,
+      57
+    ],
+    [
+      31,
+      56
+    ],
+    [
+      31,
+      55
+    ],
+    [
+      31,
+      54
+    ],
+    [
+      31,
+      53
+    ],
+    [
+      31,
+      52
+    ],
+    [
+      31,
+      51
+    ],
+    [
+      31,
+      50
+    ],
+    [
+      31,
+      49
+    ],
+    [
+      31,
+      48
+    ],
+    [
+      30,
+      48
+    ],
+    [
+      30,
+      47
+    ],
+    [
+      30,
+      46
+    ],
+    [
+      29,
+      46
+    ],
+    [
+      29,
+      45
+    ],
+    [
+      29,
+      44
+    ],
+    [
+      29,
+      43
+    ],
+    [
+      29,
+      42
+    ],
+    [
+      29,
+      41
+    ],
+    [
+      29,
+      40
+    ],
+    [
+      29,
+      39
+    ],
+    [
+      29,
+      38
+    ],
+    [
+      29,
+      37
+    ],
+    [
+      29,
+      36
+    ],
+    [
+      29,
+      35
+    ],
+    [
+      29,
+      34
+    ],
+    [
+      29,
+      33
+    ],
+    [
+      29,
+      32
+    ],
+    [
+      29,
+      31
+    ],
+    [
+      29,
+      30
+    ]
+  ],
+  "commands": [
+    {
+      "action": "turn_right",
+      "steps": 4
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 27
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 6
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 12
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 21
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 6
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 21
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 15
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 6
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 30
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 27
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 6
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 48
+    },
+    {
+      "action": "sit",
+      "steps": 1
+    }
+  ],
+  "heading": "N",
+  "distance_cells": 81,
+  "estimated_time_s": 144.4,
+  "calibration": {
+    "forward_steps_per_cell": 3,
+    "turn_steps_per_90": 2,
+    "speed": 60
+  }
+}

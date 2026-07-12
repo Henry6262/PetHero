@@ -12,6 +12,7 @@ import {
   axialToWorld,
   worldToAxial,
   GRID_CENTER,
+  pointInPolygon,
 } from "./hex-math";
 
 export {
@@ -44,11 +45,43 @@ const HEX_STATUS_PRIORITY: { key: keyof HexCell; kind: keyof typeof STATUS_THEME
   { key: "street", kind: "street" },
 ];
 
-export function cellColor(cell: HexCell): THREE.Color {
+export type SectorColor = {
+  friendly: string;
+  hostile: string;
+  neutral: string;
+  objective: string;
+};
+
+export const SECTOR_HEX_COLORS: SectorColor = {
+  friendly: "#4a6b8a",
+  hostile: "#8a4a4a",
+  neutral: "#6b6b6b",
+  objective: "#8a6a3a",
+};
+
+const STATUS_COLOR_CACHE = new Map<string, THREE.Color>();
+const TERRAIN_HEX_COLOR = new THREE.Color("#5a544d");
+
+function getStatusColor(kind: keyof typeof STATUS_THEME): THREE.Color {
+  const cached = STATUS_COLOR_CACHE.get(kind);
+  if (cached) return cached;
+  const color = new THREE.Color(STATUS_THEME[kind].color);
+  STATUS_COLOR_CACHE.set(kind, color);
+  return color;
+}
+
+export function cellColor(cell: HexCell, sectors: { polygon: [number, number][]; status: keyof SectorColor }[] = []): THREE.Color {
   for (const { key, kind } of HEX_STATUS_PRIORITY) {
-    if (cell[key]) return new THREE.Color(STATUS_THEME[kind].color);
+    if (cell[key]) return getStatusColor(kind);
   }
-  return new THREE.Color(STATUS_THEME.street.color);
+
+  for (const sector of sectors) {
+    if (pointInPolygon(cell.x, cell.z, sector.polygon)) {
+      return new THREE.Color(SECTOR_HEX_COLORS[sector.status]).clone().multiplyScalar(0.75);
+    }
+  }
+
+  return TERRAIN_HEX_COLOR;
 }
 
 export function createHexGeometry(radius: number, height: number): THREE.BufferGeometry {
@@ -75,11 +108,11 @@ export function createHexGeometry(radius: number, height: number): THREE.BufferG
 
 export function createHexMaterial(): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
-    color: "#3d8c5f",
-    roughness: 0.45,
-    metalness: 0.05,
+    color: "#5a544d",
+    roughness: 0.85,
+    metalness: 0.02,
     transparent: true,
-    opacity: 0.92,
+    opacity: 0.55,
     fog: false,
   });
 }

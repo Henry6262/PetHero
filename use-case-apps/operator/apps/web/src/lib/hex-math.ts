@@ -1,5 +1,5 @@
-export const GRID_COLS = 31;
-export const GRID_ROWS = 23;
+export const GRID_COLS = 41;
+export const GRID_ROWS = 31;
 export const HEX_SIZE = 2.0;
 export const HEX_HEIGHT = 0.22;
 
@@ -43,6 +43,17 @@ export function worldToAxial(x: number, z: number): { q: number; r: number } {
   const q = (Math.sqrt(3) / 3 * x - (1 / 3) * z) / HEX_SIZE;
   const r = ((2 / 3) * z) / HEX_SIZE;
   return cubeRound(q, r);
+}
+
+export function pointInPolygon(x: number, z: number, polygon: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [xi, zi] = polygon[i];
+    const [xj, zj] = polygon[j];
+    const intersect = zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi;
+    if (intersect) inside = !inside;
+  }
+  return inside;
 }
 
 function cubeRound(q: number, r: number): { q: number; r: number } {

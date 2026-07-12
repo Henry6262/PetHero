@@ -14,6 +14,9 @@ import type { Building } from "../../types/data";
 interface CachedBuilding {
   geometry: THREE.BufferGeometry;
   bvh: MeshBVH;
+  roofGeometry: THREE.BufferGeometry | null;
+  outlineGeometry: THREE.BufferGeometry;
+  roofOutlineGeometry: THREE.BufferGeometry | null;
 }
 
 interface BuildingMeshData {
@@ -24,6 +27,15 @@ interface BuildingMeshData {
   roofOutlineGeometry: THREE.BufferGeometry | null;
   material: THREE.MeshStandardMaterial;
   outlineMaterial: THREE.LineBasicMaterial;
+}
+
+function disposeTransient(data: BuildingMeshData[]) {
+  for (const d of data) {
+    d.roofGeometry?.dispose();
+    d.outlineGeometry.dispose();
+    d.roofOutlineGeometry?.dispose();
+    d.material.dispose();
+  }
 }
 
 export default function BuildingLayer({
@@ -37,19 +49,18 @@ export default function BuildingLayer({
   onSelectBuilding: (building: Building | null) => void;
   interiorView: boolean;
 }) {
-  const building3Ds = buildings.map((b) => buildBuilding3D(b, selectedBuilding?.id === b.id));
+  const building3Ds = useMemo(
+    () => buildings.map((b) => buildBuilding3D(b, selectedBuilding?.id === b.id)),
+    [buildings, selectedBuilding?.id]
+  );
   const [meshData, setMeshData] = useState<BuildingMeshData[]>([]);
   const cacheRef = useRef(new Map<string, CachedBuilding>());
-  const materialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
+  const prevMeshDataRef = useRef<BuildingMeshData[]>([]);
 
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      // Dispose materials from the previous frame; geometry is cached separately.
-      materialsRef.current.forEach((m) => m.dispose());
-      materialsRef.current = [];
-
       const missing = building3Ds.filter((b3d) => !cacheRef.current.has(b3d.id));
 
       // Fetch missing extruded geometries in parallel.
@@ -65,14 +76,20 @@ export default function BuildingLayer({
       for (const { b3d, geometry } of geometryResults) {
         const bvh = new MeshBVH(geometry);
         geometry.boundsTree = bvh;
-        cacheRef.current.set(b3d.id, { geometry, bvh });
+        const roofGeometry = createRoofGeometry(b3d.footprint, b3d.kind);
+        const outlineGeometry = createBuildingOutlineGeometry(geometry);
+        const roofOutlineGeometry = roofGeometry ? createBuildingOutlineGeometry(roofGeometry) : null;
+        cacheRef.current.set(b3d.id, { geometry, bvh, roofGeometry, outlineGeometry, roofOutlineGeometry });
       }
 
-      // Drop buildings that no longer exist.
+      // Drop buildings that no longer exist and dispose their cached data.
       const currentIds = new Set(building3Ds.map((b) => b.id));
-      for (const [id, { geometry }] of Array.from(cacheRef.current.entries())) {
+      for (const [id, cached] of Array.from(cacheRef.current.entries())) {
         if (!currentIds.has(id)) {
-          geometry.dispose();
+          cached.geometry.dispose();
+          cached.roofGeometry?.dispose();
+          cached.outlineGeometry.dispose();
+          cached.roofOutlineGeometry?.dispose();
           cacheRef.current.delete(id);
         }
       }
@@ -84,21 +101,19 @@ export default function BuildingLayer({
         const cached = cacheRef.current.get(b3d.id)!;
         const isXray = interiorView && b3d.selected;
         const material = buildingMaterial(b3d.status, b3d.kind, b3d.selected, isXray);
-        const roofGeometry = createRoofGeometry(b3d.footprint, b3d.kind);
-        const outlineGeometry = createBuildingOutlineGeometry(cached.geometry);
-        const roofOutlineGeometry = roofGeometry ? createBuildingOutlineGeometry(roofGeometry) : null;
         return {
           b3d,
           geometry: cached.geometry,
-          roofGeometry,
-          outlineGeometry,
-          roofOutlineGeometry,
+          roofGeometry: cached.roofGeometry,
+          outlineGeometry: cached.outlineGeometry,
+          roofOutlineGeometry: cached.roofOutlineGeometry,
           material,
           outlineMaterial,
         };
       });
 
-      materialsRef.current = results.map((r) => r.material);
+      disposeTransient(prevMeshDataRef.current);
+      prevMeshDataRef.current = results;
       setMeshData(results);
     })();
 
@@ -109,9 +124,14 @@ export default function BuildingLayer({
 
   useEffect(() => {
     return () => {
-      materialsRef.current.forEach((m) => m.dispose());
-      materialsRef.current = [];
-      cacheRef.current.forEach(({ geometry }) => geometry.dispose());
+      disposeTransient(prevMeshDataRef.current);
+      prevMeshDataRef.current = [];
+      for (const cached of cacheRef.current.values()) {
+        cached.geometry.dispose();
+        cached.roofGeometry?.dispose();
+        cached.outlineGeometry.dispose();
+        cached.roofOutlineGeometry?.dispose();
+      }
       cacheRef.current.clear();
     };
   }, []);

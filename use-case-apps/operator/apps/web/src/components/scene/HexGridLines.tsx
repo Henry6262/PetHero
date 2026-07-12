@@ -4,7 +4,7 @@ import { generateCells, HEX_SIZE, cellWorldPosition } from "../../lib/hex";
 import { getTerrainHeight } from "../../lib/terrain";
 
 export default function HexGridLines({
-  color = "#9fb2c7",
+  color = "#5a656f",
   opacity = 0.22,
   radius = HEX_SIZE * 0.94,
 }: {

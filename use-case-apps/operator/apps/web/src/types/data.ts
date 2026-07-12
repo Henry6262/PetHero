@@ -3,6 +3,9 @@
  *
  * Keep this file free of runtime demo data so components can import types
  * without pulling in the entire synthetic mission payload.
+ *
+ * Squadron and theater-level mission types are imported from the project-wide
+ * shared modules so the backend and frontend stay in sync.
  */
 
 export type TimelineEvent = {
@@ -38,6 +41,11 @@ export type Agent = {
   image?: string;
   section: AgentSection;
   actions: AgentAction[];
+  destination?: {
+    x: number;
+    z: number;
+    label?: string;
+  };
 };
 
 export type BuildingStatus = "clear" | "partial" | "unmapped" | "conflict" | "stale";
@@ -90,3 +98,63 @@ export type FleetEntry = {
 };
 
 export type PlaybookEntry = [string, string];
+
+export type SectorStatus = "friendly" | "hostile" | "neutral" | "objective";
+
+export type MissionSector = {
+  id: string;
+  name: string;
+  status: SectorStatus;
+  polygon: [number, number][];
+  height?: number;
+};
+
+export type MissionObjective = {
+  id: string;
+  label: string;
+  targetSectorId?: string;
+  targetAgentId?: string;
+  status: "pending" | "active" | "complete";
+};
+
+/** Tactical mission used by the 3D dashboard; distinct from theater-level missions. */
+export type Mission = {
+  id: string;
+  name: string;
+  active: boolean;
+  sectors: MissionSector[];
+  objectives: MissionObjective[];
+};
+
+// Re-export shared squadron and theater-hierarchy types so components can keep
+// importing from `../types/data`.
+export type {
+  AdvisorDecision,
+  AdvisorRecommendation,
+  Asset,
+  AssetKind,
+  AssetRole,
+  AssetStatus,
+  AutonomyPolicy,
+  Covariance2D,
+  FusedTrack,
+  GeoPoint,
+  MissionPayload,
+  MissionType,
+  MissionZone,
+  MissionZoneType,
+  ReasoningLogEntry,
+  RouteWaypoint,
+  SensorFeed,
+  SensorSource,
+  Squadron,
+  SquadronAffiliation,
+  SquadronStatus,
+  SquadronType,
+  TheaterMission,
+  TheaterObjective,
+  TheaterOperation,
+  TheaterTarget,
+  TrackClassification,
+  VelocityENU,
+} from "@shared";

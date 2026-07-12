@@ -186,6 +186,35 @@ export const AGENT_ACCENT: Record<string, string> = {
   D1: "#94a3b8",
 };
 
+/** Affiliation colors for the operational map (friendly / hostile / neutral / unknown).
+ *  Fills are solid hex values; MapLibre's layer `fill-opacity` controls transparency.
+ */
+export const AFFILIATION_THEME: Record<string, { color: string; fill: string }> = {
+  friendly: { color: "#00a8dc", fill: "#00a8dc" },
+  hostile: { color: "#ff3031", fill: "#ff3031" },
+  neutral: { color: "#fbbf24", fill: "#fbbf24" },
+  unknown: { color: "#f5e600", fill: "#f5e600" },
+};
+
+/**
+ * Squadron puck colors. These are brighter than the zone fills and always pair
+ * with a dark stroke so the dot stays readable when sitting on top of a zone of
+ * the same affiliation.
+ */
+export const SQUADRON_AFFILIATION_THEME: Record<string, { color: string; stroke: string }> = {
+  // Lighter than zone colors so pucks pop on same-affiliation fills.
+  friendly: { color: "#7dd3fc", stroke: "#0b0f14" },
+  hostile: { color: "#f87171", stroke: "#0b0f14" },
+  neutral: { color: "#fde047", stroke: "#0b0f14" },
+  unknown: { color: "#f5e600", stroke: "#0b0f14" },
+};
+
+/** Status colors that are not affiliation-based. */
+export const SQUADRON_STATUS_THEME: Record<string, string> = {
+  offline: "#64748b",
+  engaging: "#f472b6",
+};
+
 /** Common UI colors not tied to a status. */
 export const UI_THEME = {
   background: "#0d1117",
@@ -197,8 +226,8 @@ export const UI_THEME = {
 
 /** Terrain surface colors by height and slope. */
 export const TERRAIN_THEME = {
-  lowFlat: "#3d7a4f",
-  midGentle: "#4a6b45",
-  steep: "#6b5d4d",
-  high: "#3e4d3f",
+  lowFlat: "#5c5648",
+  midGentle: "#6e6759",
+  steep: "#7d7568",
+  high: "#4a453d",
 };

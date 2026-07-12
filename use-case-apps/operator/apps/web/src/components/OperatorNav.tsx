@@ -1,5 +1,5 @@
 type OperatorNavProps = {
-  active: "landing" | "dashboard";
+  active: "landing" | "dashboard" | "operational" | "maze";
 };
 
 export default function OperatorNav({ active }: OperatorNavProps) {
@@ -12,6 +12,8 @@ export default function OperatorNav({ active }: OperatorNavProps) {
       <div className="operator-nav-links">
         <a className={active === "landing" ? "active" : undefined} href="/">Landing</a>
         <a className={active === "dashboard" ? "active" : undefined} href="/dashboard/">Dashboard</a>
+        <a className={active === "operational" ? "active" : undefined} href="/operational/">Operational</a>
+        <a className={active === "maze" ? "active" : undefined} href="/maze/">Maze</a>
       </div>
     </nav>
   );

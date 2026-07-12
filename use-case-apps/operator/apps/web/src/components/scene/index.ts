@@ -16,4 +16,7 @@ export type { BaseMapSource } from "./BaseMapLayer";
 export { default as RockLayer } from "./RockLayer";
 export { default as CarLayer } from "./CarLayer";
 export { default as ChunkVisibility } from "./ChunkVisibility";
+export { default as AgentPaths } from "./AgentPaths";
+export { default as CloudLayer } from "./CloudLayer";
+export { default as SkyEnvironment } from "./SkyEnvironment";
 export type { TacticalCameraHandle } from "./TacticalCamera";

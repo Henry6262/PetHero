@@ -1,29 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer, FXAA } from "@react-three/postprocessing";
-import type { Agent, Building } from "../types/data";
+import type { Agent, Building, Mission } from "../types/data";
 import {
-  agents,
+  agents as demoAgents,
   buildings as buildingData,
   commandPlaybooks,
   demoStages,
   legend,
   logFilters,
+  missions as demoMissions,
   timeline,
 } from "../data/demo";
 import OperatorNav from "./OperatorNav";
 import { buildAgents3D } from "../lib/agents";
 import {
+  AgentPaths,
   AgentPucks,
   AgentScanSectors,
   BuildingLayer,
   CarLayer,
-  FOVCones,
+  CloudLayer,
   HexGridLines,
   HexMapScene,
   PropLayer,
   RockLayer,
   RouteLines,
+  SkyEnvironment,
   TacticalCamera,
   BaseMapLayer,
   XRayBuilding,
@@ -35,14 +38,21 @@ import AgentIcon, { agentIcons } from "./dashboard/AgentIcon";
 import AgentPopover from "./dashboard/AgentPopover";
 import ActionToast from "./dashboard/ActionToast";
 import BuildingPanel from "./dashboard/BuildingPanel";
+import MissionPanel from "./dashboard/MissionPanel";
+import RobotClearancePanel from "./dashboard/RobotClearancePanel";
 
 export default function OperatorDashboard() {
   const [logOpen, setLogOpen] = useState(false);
   const [telOpen, setTelOpen] = useState(true);
+  const [missionOpen, setMissionOpen] = useState(false);
+  const [missions, setMissions] = useState<Mission[]>(demoMissions);
+  const [agents] = useState<Agent[]>(demoAgents);
+
+  const activeMission = missions.find((m) => m.active);
+  const activeSectors = activeMission?.sectors ?? [];
+
   const [view, setView] = useState<"iso" | "flat">("iso");
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
-  const [q1Prog, setQ1Prog] = useState(1);
-  const [h1Prog, setH1Prog] = useState(0.5);
   const [playing, setPlaying] = useState(false);
   const [demoStage, setDemoStage] = useState("");
   const [activeAgent, setActiveAgent] = useState<Agent | null>(null);
@@ -97,32 +107,20 @@ export default function OperatorDashboard() {
   const playDemo = () => {
     const start = performance.now();
     setPlaying(true);
-    setQ1Prog(0);
-    setH1Prog(0);
     setDemoStage("EXPLORE");
     setSelectedBuilding(null);
 
     const loop = () => {
       const elapsed = (performance.now() - start) / 1000;
       if (elapsed < 3.0) {
-        setQ1Prog(elapsed / 3);
-        setH1Prog(0);
         setDemoStage("EXPLORE");
       } else if (elapsed < 3.8) {
-        setQ1Prog(1);
-        setH1Prog(0);
         setDemoStage("DOCK");
       } else if (elapsed < 4.6) {
-        setQ1Prog(1);
-        setH1Prog(0);
         setDemoStage("MERGE");
       } else if (elapsed < 7.8) {
-        setQ1Prog(1);
-        setH1Prog((elapsed - 4.6) / 3.2);
         setDemoStage("SOLVE");
       } else {
-        setQ1Prog(1);
-        setH1Prog(1);
         setDemoStage("COMPLETE");
         setPlaying(false);
         return;
@@ -183,7 +181,7 @@ export default function OperatorDashboard() {
       <section className="dashboard-frame">
         <header className="dashboard-topbar">
           <div className="dashboard-brand">
-            <strong>SCOUT</strong>
+            <strong>OPERATOR</strong>
             <span className="live-dot" />
           </div>
           <div style={{ flex: 1 }} />
@@ -212,27 +210,28 @@ export default function OperatorDashboard() {
                   gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
                   style={{ background: "transparent" }}
                 >
-                  <color attach="background" args={["#0d1117"]} />
-                  <fog attach="fog" args={["#0d1117", 0.005]} />
+                  <SkyEnvironment />
                   <EffectComposer>
-                    <ambientLight intensity={0.55} />
-                    <hemisphereLight intensity={0.35} groundColor="#06080c" color="#9fb2c7" />
+                    <ambientLight intensity={0.45} />
+                    <hemisphereLight intensity={0.25} groundColor="#101418" color="#7a8796" />
                     <directionalLight
                       position={[35, 55, 25]}
-                      intensity={1.15}
+                      intensity={0.85}
                       castShadow
                       shadow-mapSize={[2048, 2048]}
                       shadow-camera-near={1}
                       shadow-camera-far={300}
-                      shadow-camera-left={-180}
-                      shadow-camera-right={180}
-                      shadow-camera-top={180}
-                      shadow-camera-bottom={-180}
+                      shadow-camera-left={-260}
+                      shadow-camera-right={260}
+                      shadow-camera-top={260}
+                      shadow-camera-bottom={-260}
                       shadow-bias={-0.0005}
                     />
                     <BaseMapLayer source={baseLayer} key={terrainKey} />
-                    <HexMapScene />
+                    <CloudLayer />
+                    <HexMapScene sectors={activeSectors} />
                     <HexGridLines opacity={0.06} />
+                    <AgentPaths agents={agents} />
                     <BuildingLayer
                       buildings={buildingData}
                       selectedBuilding={selectedBuilding}
@@ -255,13 +254,15 @@ export default function OperatorDashboard() {
                     <Bloom
                       luminanceThreshold={0.65}
                       luminanceSmoothing={0.85}
-                      intensity={0.55}
+                      intensity={0.35}
                       height={300}
                     />
                     <FXAA />
                   </EffectComposer>
                 </Canvas>
               </div>
+
+              <RobotClearancePanel />
 
               <div className="map-controls">
                 <div className="map-control-group">
@@ -311,6 +312,15 @@ export default function OperatorDashboard() {
                     DRONE
                   </button>
                 </div>
+                <div className="map-control-group" title="Mission panel">
+                  <button
+                    className={missionOpen ? "active" : undefined}
+                    onClick={() => setMissionOpen((s) => !s)}
+                    style={{ width: "auto", padding: "0 10px", fontSize: "10px" }}
+                  >
+                    MSN
+                  </button>
+                </div>
               </div>
 
               <div className="map-help">drag to rotate · scroll to zoom · right-drag to pan</div>
@@ -357,6 +367,15 @@ export default function OperatorDashboard() {
                   </>
                 )}
               </div>
+
+              {missionOpen && (
+                <div className="mission-floating-panel">
+                  <MissionPanel missions={missions} onChange={setMissions} />
+                  <button className="mission-close" onClick={() => setMissionOpen(false)} title="Close mission panel">
+                    ×
+                  </button>
+                </div>
+              )}
 
               <div className="map-legend">
                 {legend.map((lg) => (

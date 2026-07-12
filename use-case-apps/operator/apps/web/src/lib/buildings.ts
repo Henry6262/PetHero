@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { cellWorldPosition } from "./hex";
 import { getTerrainHeight } from "./terrain";
 import { STATUS_THEME } from "./theme";
@@ -119,7 +118,7 @@ export function createFacadeTexture(kind: string): THREE.CanvasTexture {
       ctx.fillStyle = "#1a2330";
       ctx.fillRect(x, y, winW, winH);
       // Glint
-      ctx.fillStyle = "rgba(159,208,255,0.12)";
+      ctx.fillStyle = "rgba(159,208,255,0.05)";
       ctx.fillRect(x + 2, y + 2, winW - 4, winH / 2);
       // Sill
       ctx.fillStyle = "#4a5057";
@@ -145,7 +144,6 @@ export function applyFacadeUVs(geometry: THREE.BufferGeometry, footprint: THREE.
   const pos = geometry.attributes.position;
   const uv = geometry.attributes.uv;
   const { width, depth } = footprintDimensions(footprint);
-  const perimeter = 2 * (width + depth);
 
   // ExtrudeGeometry side UVs: u is along the perimeter, v is along the extrusion height.
   for (let i = 0; i < pos.count; i++) {
@@ -193,6 +191,51 @@ export function createBuildingGeometry(footprint: THREE.Vector2[], height: numbe
   return geom;
 }
 
+/**
+ * Merge a list of BufferGeometries into a single indexed BufferGeometry
+ * without calling toNonIndexed(), avoiding the "already non-indexed" warning.
+ */
+function mergeGeometriesSafe(geometries: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  const positions: number[] = [];
+  const normals: number[] = [];
+  const indices: number[] = [];
+  let vertexOffset = 0;
+
+  for (const geom of geometries) {
+    const pos = geom.attributes.position;
+    const normal = geom.attributes.normal;
+    const index = geom.index;
+
+    for (let i = 0; i < pos.count; i++) {
+      positions.push(pos.getX(i), pos.getY(i), pos.getZ(i));
+      if (normal) {
+        normals.push(normal.getX(i), normal.getY(i), normal.getZ(i));
+      }
+    }
+
+    if (index) {
+      for (let i = 0; i < index.count; i++) {
+        indices.push(index.getX(i) + vertexOffset);
+      }
+    } else {
+      for (let i = 0; i < pos.count; i++) {
+        indices.push(i + vertexOffset);
+      }
+    }
+
+    vertexOffset += pos.count;
+  }
+
+  const merged = new THREE.BufferGeometry();
+  merged.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  if (normals.length > 0) {
+    merged.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+  }
+  merged.setIndex(indices);
+  merged.computeVertexNormals();
+  return merged;
+}
+
 export function createRoofGeometry(footprint: THREE.Vector2[], kind: string): THREE.BufferGeometry | null {
   const roofType = ROOF_KINDS[kind] ?? "flat";
   const { width, depth } = footprintDimensions(footprint);
@@ -222,7 +265,7 @@ export function createRoofGeometry(footprint: THREE.Vector2[], kind: string): TH
     const lip = new THREE.ExtrudeGeometry(lipShape, { depth: 0.25, bevelEnabled: false });
     lip.rotateX(-Math.PI / 2);
 
-    return mergeGeometries([cap.toNonIndexed(), hvac.toNonIndexed(), lip.toNonIndexed()]);
+    return mergeGeometriesSafe([cap, hvac, lip]);
   }
 
   if (roofType === "peaked") {
@@ -335,13 +378,14 @@ export function buildingMaterial(
 ): THREE.MeshStandardMaterial {
   const theme = STATUS_THEME[status];
   const texture = createFacadeTexture(kind);
+  const baseIntensity = theme.emissiveIntensity * 0.55;
   return new THREE.MeshStandardMaterial({
     color: "#7a8189",
     map: texture,
     emissive: theme.emissive,
-    emissiveIntensity: selected ? theme.emissiveIntensity * 2.2 : theme.emissiveIntensity,
-    roughness: 0.72,
-    metalness: 0.08,
+    emissiveIntensity: selected ? baseIntensity * 2.0 : baseIntensity,
+    roughness: 0.78,
+    metalness: 0.06,
     transparent: xray,
     opacity: xray ? 0.22 : 1,
     depthWrite: !xray,

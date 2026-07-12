@@ -1,4 +1,4 @@
-import type { Building, BuildingStatus } from "../../types/data";
+import type { Building } from "../../types/data";
 import { STATUS_THEME } from "../../lib/theme";
 import { FloorplanPanel } from "../scene";
 import type { RoomInterior } from "../../lib/interiors";

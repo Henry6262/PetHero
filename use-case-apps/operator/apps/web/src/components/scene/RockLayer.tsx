@@ -5,7 +5,7 @@ import { getTerrainHeight, getTerrainSlope, TERRAIN_SIZE } from "../../lib/terra
 import { generateCells, cellWorldPosition } from "../../lib/hex";
 import type { Building } from "../../types/data";
 
-const ROCK_COUNT = 300;
+const ROCK_COUNT = 90;
 const ROCK_SEED = "operator-village-north-001-rocks";
 
 function isStreetCell(col: number, row: number): boolean {
@@ -94,7 +94,7 @@ export default function RockLayer({ buildings }: { buildings: Building[] }) {
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#6b6560",
+        color: "#5c574f",
         roughness: 0.95,
         metalness: 0.05,
       }),
@@ -109,6 +109,13 @@ export default function RockLayer({ buildings }: { buildings: Building[] }) {
     });
     mesh.instanceMatrix.needsUpdate = true;
   }, [placedMatrices]);
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
 
   return (
     <instancedMesh

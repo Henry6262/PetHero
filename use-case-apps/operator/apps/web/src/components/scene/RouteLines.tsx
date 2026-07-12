@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { buildRouteCurve } from "../../lib/route";
@@ -45,6 +45,13 @@ export default function RouteLines() {
   useFrame(({ clock }) => {
     material.uniforms.uTime.value = clock.getElapsedTime();
   });
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
 
   return <mesh geometry={geometry} material={material} />;
 }

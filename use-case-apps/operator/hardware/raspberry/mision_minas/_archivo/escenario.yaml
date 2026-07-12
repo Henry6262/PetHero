@@ -1,0 +1,29 @@
+# Escenario medido a mano. Todas las medidas en METROS, desde la esquina origen (0,0).
+# Ejes: X a lo largo de un borde, Y a lo largo del otro. theta en grados (0 = mirando +X).
+
+escenario:
+  envolvente: [3.0, 3.5]     # rectangulo que contiene todo el escenario [ancho X, largo Y]
+  resolucion: 0.05           # tamano de celda del grid (m)
+  radio_robot: 0.15          # medio-ancho del PiCrawler + margen (m), se usa para inflar obstaculos
+  contorno:                  # vertices del borde real en orden (forma irregular). Quitar si es rectangular.
+    - [0.0, 0.0]
+    - [3.0, 0.4]
+    - [2.7, 2.1]
+    - [1.8, 3.5]
+    - [0.2, 2.8]
+
+inicio: [0.4, 0.5, 0]        # x, y, theta_grados del robot al arrancar
+meta:   [2.3, 2.0]           # punto final (aproximado esta bien)
+
+obstaculos:
+  - {tipo: caja, x: 1.2, y: 0.8, ancho: 0.40, largo: 0.30, alto: 0.25}
+  - {tipo: cilindro, x: 2.0, y: 1.4, radio: 0.15, alto: 0.20}
+
+# Rangos de color HSV (OpenCV: H 0-179, S 0-255, V 0-255).
+# Cada color es una lista de rangos [lo, hi] (el rojo necesita dos por el wrap del matiz).
+colores:
+  baliza:                    # objeto de color en la META para el homing visual (opcional)
+    - [[40, 80, 80], [85, 255, 255]]      # verde
+  mina:                      # las "minas" simuladas (discos/tapas de color)
+    - [[0, 120, 80], [10, 255, 255]]      # rojo (parte baja del matiz)
+    - [[170, 120, 80], [179, 255, 255]]   # rojo (parte alta del matiz)

@@ -1,0 +1,326 @@
+{
+  "map_file": "results/maze_extraction/ddas_maze_map.json",
+  "width": 84,
+  "height": 86,
+  "cell_size_m": 0.05,
+  "start": [
+    45,
+    18
+  ],
+  "end": [
+    45,
+    55
+  ],
+  "path": [
+    [
+      45,
+      18
+    ],
+    [
+      45,
+      19
+    ],
+    [
+      45,
+      20
+    ],
+    [
+      45,
+      21
+    ],
+    [
+      45,
+      22
+    ],
+    [
+      45,
+      23
+    ],
+    [
+      45,
+      24
+    ],
+    [
+      45,
+      25
+    ],
+    [
+      45,
+      26
+    ],
+    [
+      45,
+      27
+    ],
+    [
+      46,
+      27
+    ],
+    [
+      47,
+      27
+    ],
+    [
+      48,
+      27
+    ],
+    [
+      49,
+      27
+    ],
+    [
+      50,
+      27
+    ],
+    [
+      51,
+      27
+    ],
+    [
+      52,
+      27
+    ],
+    [
+      53,
+      27
+    ],
+    [
+      53,
+      28
+    ],
+    [
+      53,
+      29
+    ],
+    [
+      54,
+      29
+    ],
+    [
+      54,
+      30
+    ],
+    [
+      54,
+      31
+    ],
+    [
+      54,
+      32
+    ],
+    [
+      54,
+      33
+    ],
+    [
+      54,
+      34
+    ],
+    [
+      54,
+      35
+    ],
+    [
+      54,
+      36
+    ],
+    [
+      54,
+      37
+    ],
+    [
+      54,
+      38
+    ],
+    [
+      54,
+      39
+    ],
+    [
+      54,
+      40
+    ],
+    [
+      54,
+      41
+    ],
+    [
+      54,
+      42
+    ],
+    [
+      54,
+      43
+    ],
+    [
+      54,
+      44
+    ],
+    [
+      54,
+      45
+    ],
+    [
+      53,
+      45
+    ],
+    [
+      53,
+      46
+    ],
+    [
+      53,
+      47
+    ],
+    [
+      52,
+      47
+    ],
+    [
+      51,
+      47
+    ],
+    [
+      50,
+      47
+    ],
+    [
+      49,
+      47
+    ],
+    [
+      48,
+      47
+    ],
+    [
+      47,
+      47
+    ],
+    [
+      46,
+      47
+    ],
+    [
+      45,
+      47
+    ],
+    [
+      45,
+      48
+    ],
+    [
+      45,
+      49
+    ],
+    [
+      45,
+      50
+    ],
+    [
+      45,
+      51
+    ],
+    [
+      45,
+      52
+    ],
+    [
+      45,
+      53
+    ],
+    [
+      45,
+      54
+    ],
+    [
+      45,
+      55
+    ]
+  ],
+  "commands": [
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 27
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 24
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 6
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 48
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 3
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 6
+    },
+    {
+      "action": "turn_left",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 24
+    },
+    {
+      "action": "turn_right",
+      "steps": 2
+    },
+    {
+      "action": "forward",
+      "steps": 24
+    },
+    {
+      "action": "sit",
+      "steps": 1
+    }
+  ],
+  "heading": "N",
+  "distance_cells": 55,
+  "estimated_time_s": 93.8,
+  "calibration": {
+    "forward_steps_per_cell": 3,
+    "turn_steps_per_90": 2,
+    "speed": 60
+  }
+}

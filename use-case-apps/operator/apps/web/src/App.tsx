@@ -6,6 +6,8 @@ import SpotlightCard from "./react-bits/SpotlightCard/SpotlightCard";
 import DroneHero from "./components/DroneHero";
 import OperatorNav from "./components/OperatorNav";
 import OperatorDashboard from "./components/OperatorDashboard";
+import OperationalMapView from "./components/OperationalMapView";
+import MazeDemoView from "./components/MazeDemoView";
 import { contextCards, events, fleet, playbooks } from "./data/demo";
 
 function App() {
@@ -16,6 +18,14 @@ function App() {
 
   if (route === "/dashboard") {
     return <OperatorDashboard />;
+  }
+
+  if (route === "/operational") {
+    return <OperationalMapView />;
+  }
+
+  if (route === "/maze") {
+    return <MazeDemoView />;
   }
 
   return (

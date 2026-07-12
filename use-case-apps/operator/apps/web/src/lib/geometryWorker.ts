@@ -10,7 +10,7 @@ function nextId() {
 
 export function requestHexGeometry(size: number, height: number): Promise<THREE.BufferGeometry> {
   const id = nextId();
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const onMessage = (e: MessageEvent<{ type: "hex"; id: number; payload: HexGeometryPayload }>) => {
       if (e.data.type !== "hex" || e.data.id !== id) return;
       GeometryWorker.removeEventListener("message", onMessage);
@@ -28,7 +28,7 @@ export function requestHexGeometry(size: number, height: number): Promise<THREE.
 
 export function requestBuildingGeometry(footprint: [number, number][], height: number): Promise<THREE.BufferGeometry> {
   const id = nextId();
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const onMessage = (e: MessageEvent<{ type: "building"; id: number; payload: BuildingGeometryPayload }>) => {
       if (e.data.type !== "building" || e.data.id !== id) return;
       GeometryWorker.removeEventListener("message", onMessage);

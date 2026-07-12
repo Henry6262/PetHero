@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export {
+  squadronAffiliationSchema,
+  squadronProvenanceSchema,
+  squadronSchema,
+  squadronStatusSchema,
+  squadronTypeSchema,
+  squadronUpdateSchema,
+} from "../shared/squadron.ts";
+
 export const eventSchema = z.object({
   kind: z.enum(["map_cell", "detection", "change", "agent_status", "link_status"]),
   cellId: z.string().optional(),

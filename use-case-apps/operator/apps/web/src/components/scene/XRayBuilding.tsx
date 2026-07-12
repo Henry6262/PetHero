@@ -12,6 +12,51 @@ function roomColor(confidence: number, state: RoomInterior["state"]): string {
   return "#f87171";
 }
 
+function RoomBox({
+  room,
+  floorHeight,
+  floorY,
+  selectedRoomId,
+}: {
+  room: RoomInterior;
+  floorHeight: number;
+  floorY: number;
+  selectedRoomId: string | null;
+}) {
+  const { geometry, material, position } = useMemo(() => {
+    const xs = room.polygon.map((p) => p[0]);
+    const zs = room.polygon.map((p) => p[1]);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minZ = Math.min(...zs);
+    const maxZ = Math.max(...zs);
+    const w = maxX - minX;
+    const d = maxZ - minZ;
+    const cx = (minX + maxX) / 2;
+    const cz = (minZ + maxZ) / 2;
+    const color = roomColor(room.scanConfidence, room.state);
+
+    const geometry = new THREE.BoxGeometry(w, floorHeight, d);
+    const material = new THREE.MeshStandardMaterial({
+      color,
+      transparent: true,
+      opacity: 0.42,
+      emissive: color,
+      emissiveIntensity: 0.15,
+      roughness: 0.7,
+      metalness: 0.1,
+      depthWrite: false,
+    });
+    return { geometry, material, position: new THREE.Vector3(cx, floorY + floorHeight / 2, cz) };
+  }, [room, floorHeight, floorY]);
+
+  const isSelected = selectedRoomId === room.id;
+  material.opacity = isSelected ? 0.85 : 0.42;
+  material.emissiveIntensity = isSelected ? 0.6 : 0.15;
+
+  return <mesh geometry={geometry} material={material} position={position} />;
+}
+
 export default function XRayBuilding({
   building,
   selectedRoom,
@@ -40,43 +85,16 @@ export default function XRayBuilding({
   const rotationY = (b.rotation * Math.PI) / 180;
 
   return (
-    <group
-      position={position}
-      rotation={[0, rotationY, 0]}
-    >
-      {currentFloor.rooms.map((room) => {
-        const xs = room.polygon.map((p) => p[0]);
-        const zs = room.polygon.map((p) => p[1]);
-        const minX = Math.min(...xs);
-        const maxX = Math.max(...xs);
-        const minZ = Math.min(...zs);
-        const maxZ = Math.max(...zs);
-        const w = maxX - minX;
-        const d = maxZ - minZ;
-        const cx = (minX + maxX) / 2;
-        const cz = (minZ + maxZ) / 2;
-        const isSelected = selectedRoom?.id === room.id;
-        const color = roomColor(room.scanConfidence, room.state);
-
-        return (
-          <mesh
-            key={room.id}
-            position={[cx, floorY + currentFloor.height / 2, cz]}
-          >
-            <boxGeometry args={[w, currentFloor.height, d]} />
-            <meshStandardMaterial
-              color={color}
-              transparent
-              opacity={isSelected ? 0.85 : 0.42}
-              emissive={color}
-              emissiveIntensity={isSelected ? 0.6 : 0.15}
-              roughness={0.7}
-              metalness={0.1}
-              depthWrite={false}
-            />
-          </mesh>
-        );
-      })}
+    <group position={position} rotation={[0, rotationY, 0]}>
+      {currentFloor.rooms.map((room) => (
+        <RoomBox
+          key={room.id}
+          room={room}
+          floorHeight={currentFloor.height}
+          floorY={floorY}
+          selectedRoomId={selectedRoom?.id ?? null}
+        />
+      ))}
     </group>
   );
 }

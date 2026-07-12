@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { createHexMaterial, generateCells, cellColor, HEX_SIZE, cellWorldPosition } from "../../lib/hex";
+import type { MissionSector } from "../../types/data";
 import { alignToTerrain } from "../../lib/terrain";
 import { requestHexGeometry } from "../../lib/geometryWorker";
 
 export default function HexMapScene({
   onHoverCell,
+  sectors = [],
 }: {
   onHoverCell?: (index: number | null) => void;
+  sectors?: MissionSector[];
 }) {
   const { raycaster, pointer, camera } = useThree();
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -29,6 +32,13 @@ export default function HexMapScene({
   }, []);
 
   useEffect(() => {
+    return () => {
+      geometry?.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
+
+  useEffect(() => {
     const mesh = meshRef.current;
     if (!mesh || !geometry) return;
 
@@ -40,12 +50,12 @@ export default function HexMapScene({
       alignToTerrain(dummy, x, z, 0.02);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
-      mesh.setColorAt(i, color.set(cellColor(cell)));
+      mesh.setColorAt(i, color.set(cellColor(cell, sectors)));
     });
 
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [cells, geometry]);
+  }, [cells, geometry, sectors]);
 
   useFrame(() => {
     const mesh = meshRef.current;
@@ -58,10 +68,10 @@ export default function HexMapScene({
 
     if (instanceId !== hoveredRef.current) {
       if (hoveredRef.current !== null) {
-        mesh.setColorAt(hoveredRef.current, cellColor(cells[hoveredRef.current]));
+        mesh.setColorAt(hoveredRef.current, cellColor(cells[hoveredRef.current], sectors));
       }
       if (instanceId !== null) {
-        const hovered = cellColor(cells[instanceId]).clone();
+        const hovered = cellColor(cells[instanceId], sectors).clone();
         hovered.offsetHSL(0, 0, 0.12);
         mesh.setColorAt(instanceId, hovered);
       }

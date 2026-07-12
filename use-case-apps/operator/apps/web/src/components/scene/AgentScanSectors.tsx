@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { buildAgents3D } from "../../lib/agents";
@@ -24,8 +24,8 @@ const SCAN_FRAGMENT_SHADER = `
 
   void main() {
     float radial = 1.0 - smoothstep(0.0, 1.0, vDist);
-    float scanLine = smoothstep(0.7, 0.75, fract(vDist * 3.0 - uTime * 0.8));
-    float alpha = radial * (0.15 + scanLine * 0.25) * uOpacity;
+    float scanLine = smoothstep(0.7, 0.75, fract(vDist * 3.0 - uTime * 0.8)) * 0.12;
+    float alpha = radial * (0.08 + scanLine) * uOpacity;
     gl_FragColor = vec4(uColor, alpha);
   }
 `;
@@ -81,43 +81,60 @@ function createSectorGeometry(
   return geom;
 }
 
-export default function AgentScanSectors({ agents, visible }: { agents: Agent[]; visible: boolean }) {
-  const agents3D = useMemo(() => buildAgents3D(agents), [agents]);
-  const materialRef = useRef(
-    new THREE.ShaderMaterial({
+function SectorMesh({
+  position,
+  heading,
+  accent,
+  isDrone,
+}: {
+  position: THREE.Vector3;
+  heading: number;
+  accent: string;
+  isDrone: boolean;
+}) {
+  const { geometry, material } = useMemo(() => {
+    const radius = isDrone ? 14 : 8;
+    const angle = isDrone ? Math.PI / 3 : Math.PI / 4;
+    const geometry = createSectorGeometry(position, heading, radius, angle, 16, 24);
+    const material = new THREE.ShaderMaterial({
       vertexShader: SCAN_VERTEX_SHADER,
       fragmentShader: SCAN_FRAGMENT_SHADER,
       uniforms: {
-        uColor: { value: new THREE.Color(0xffffff) },
-        uOpacity: { value: 1.0 },
+        uColor: { value: new THREE.Color(accent).multiplyScalar(0.42) },
+        uOpacity: { value: isDrone ? 0.22 : 0.34 },
         uTime: { value: 0 },
-        uRadius: { value: 1.0 },
+        uRadius: { value: radius },
       },
       transparent: true,
       depthWrite: false,
       side: THREE.DoubleSide,
-    })
-  );
+    });
+    return { geometry, material };
+  }, [position, heading, accent, isDrone]);
 
   useFrame(({ clock }) => {
-    materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
+    material.uniforms.uTime.value = clock.getElapsedTime();
   });
+
+  return <mesh geometry={geometry} material={material} />;
+}
+
+export default function AgentScanSectors({ agents, visible }: { agents: Agent[]; visible: boolean }) {
+  const agents3D = useMemo(() => buildAgents3D(agents), [agents]);
 
   if (!visible) return null;
 
   return (
     <group>
-      {agents3D.map((a) => {
-        const isDrone = a.agent.icon === "drone";
-        const radius = isDrone ? 14 : 8;
-        const angle = isDrone ? Math.PI / 3 : Math.PI / 4;
-        const geometry = createSectorGeometry(a.position, a.heading, radius, angle, 16, 24);
-        const material = materialRef.current.clone();
-        material.uniforms.uColor.value = new THREE.Color(a.agent.accent);
-        material.uniforms.uOpacity.value = isDrone ? 0.7 : 1.0;
-        material.uniforms.uRadius.value = radius;
-        return <mesh key={a.id} geometry={geometry} material={material} />;
-      })}
+      {agents3D.map((a) => (
+        <SectorMesh
+          key={a.id}
+          position={a.position}
+          heading={a.heading}
+          accent={a.agent.accent}
+          isDrone={a.agent.icon === "drone"}
+        />
+      ))}
     </group>
   );
 }

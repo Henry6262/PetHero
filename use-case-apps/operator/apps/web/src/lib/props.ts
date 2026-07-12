@@ -31,19 +31,19 @@ export interface CarInstance {
 }
 
 const PROP_COLORS = {
-  "wrecked-car": ["#3f3f46", "#52525b", "#713f12", "#1f2937"],
-  truck: ["#4b5563", "#166534", "#92400e", "#1e3a8a"],
-  barrier: ["#f97316", "#ef4444", "#e5e7eb", "#f59e0b"],
-  "sandbag-wall": ["#a68b5b", "#8c7352", "#bfa37a"],
-  crate: ["#8b5cf6", "#64748b", "#a16207", "#92400e"],
-  barrel: ["#1d4ed8", "#b91c1c", "#065f46", "#52525b"],
-  "tire-stack": ["#1f2937", "#111827", "#374151"],
-  wall: ["#78716c", "#57534e", "#a8a29e", "#d6d3d1"],
-  gate: ["#9ca3af"],
-  "dock-beacon": ["#34d399"],
+  "wrecked-car": ["#4a4a4f", "#5a5a5f", "#5c4a2e", "#2a2f36"],
+  truck: ["#4a5055", "#3a4a36", "#5a4a32", "#2a3a52"],
+  barrier: ["#8a5a2e", "#7a3a3a", "#9ca3af", "#8a6a2e"],
+  "sandbag-wall": ["#8c7a5e", "#6e6048", "#9e8a6a"],
+  crate: ["#5a4a6e", "#52535a", "#6a5228", "#5a3a22"],
+  barrel: ["#2a4a7a", "#6a2a2a", "#2a5242", "#3a3a3e"],
+  "tire-stack": ["#262a2e", "#1a1d20", "#363a3e"],
+  wall: ["#6b6560", "#4a4642", "#7d7872", "#9e9a94"],
+  gate: ["#6b7280"],
+  "dock-beacon": ["#3d7c6e"],
 };
 
-const CAR_COLORS = ["#5fb2ff", "#94a3b8", "#fbbf24", "#cbd5e1", "#f87171", "#a78bfa", "#34d399"];
+const CAR_COLORS = ["#5a646e", "#6b716a", "#7a6e52", "#8a7a66", "#6e5a5a", "#5a566e", "#4a504a"];
 
 function pick<T>(arr: T[], rng: () => number): T {
   return arr[Math.floor(rng() * arr.length)];
@@ -98,7 +98,7 @@ export function generateProps(buildings: Building[]): { props: PropInstance[]; c
   }
 
   // Random internal wall segments in non-street open ground.
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 7; i++) {
     const x = minX + rng() * (maxX - minX);
     const z = (Math.min(...zs) - 4) + rng() * (maxZ - (Math.min(...zs) - 4));
     if (tooCloseToBuilding(x, z, buildingPositions)) continue;
@@ -148,7 +148,7 @@ export function generateProps(buildings: Building[]): { props: PropInstance[]; c
     }
 
     // Side streets and yards.
-    if (roll > 0.95) {
+    if (roll > 0.97) {
       const type: PropType = pick(["barrier", "sandbag-wall", "barrel", "tire-stack", "crate"], rng);
       const px = x + (rng() - 0.5) * HEX_SIZE * 0.7;
       const pz = z + (rng() - 0.5) * HEX_SIZE * 0.7;
@@ -164,7 +164,7 @@ export function generateProps(buildings: Building[]): { props: PropInstance[]; c
 
   // --- Extra cars/barriers near buildings ---
   for (const bp of buildingPositions) {
-    if (rng() > 0.4) continue;
+    if (rng() > 0.65) continue;
     const angle = rng() * Math.PI * 2;
     const dist = 3 + rng() * 3;
     const px = bp.x + Math.cos(angle) * dist;
@@ -217,7 +217,7 @@ function wallSegment(
   x: number,
   z: number,
   rotation: number,
-  length: number,
+  _length: number,
   height: number,
   rng: () => number
 ): PropInstance {
